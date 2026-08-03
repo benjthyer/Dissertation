@@ -1,0 +1,136 @@
+% =============================================================
+%  SI.tex -- standalone Copernicus-journal supplement.
+%  Shares its scientific content with the dissertation-chapter
+%  version (Chapter1/chapter1_SI.tex) via chapter1_SI_body.tex --
+%  edit that file, not this one, to change text/equations/figures/
+%  citations. Citations use \citep/\citet resolved against the local
+%  \bibitem list below via natbib (same mechanism as TubeMethodPaper.tex),
+%  so this file's bibliography stays independent of the dissertation's
+%  shared references.bib/biblatex pipeline, matching the journal's
+%  required house style.
+% =============================================================
+\documentclass[gchron, manuscript]{copernicus}
+
+% copernicus.cls only loads `float` conditionally -- when algorithm.sty is
+% present AND the class is NOT in "final" stage -- so it can't be relied
+% on. Load it explicitly to guarantee it's available regardless of that
+% conditional (some packages/figures may still reference float internals).
+\usepackage{float}
+
+% chapter1_SI_body.tex uses \FloatBarrier once (to keep
+% fig:predicted-vs-measured-permeation from floating past its following
+% table's caption, without pinning it to its source position via [H] --
+% [H] guarantees position but not that it fits the remaining page, which
+% was overflowing the page by ~4.2in in the dissertation compile).
+\usepackage{placeins}
+
+% copernicus.cls loads `supertabular` natively but NOT `longtable`.
+% Three of this file's \chplandscape-wrapped tables (a no-op here) --
+% tab:s-mc-emptytube-4he, tab:s-h2o-4he, tab:s-sulfur-4he -- now use
+% `longtable` instead of `supertabular`; see the comment at
+% tab:s-mc-emptytube-4he in chapter1_SI_body.tex for why. Load it
+% explicitly so \begin{longtable} is defined in this standalone
+% supplement too (dissertation_preamble.tex already loads it for the
+% thesis side).
+\usepackage{longtable}
+
+\graphicspath{{../Figures/source/}{../Figures/generated/}}
+
+\begin{document}
+
+\title{Supplement of: A Simple Method for Helium Step Heat Experiments at High Water or Sulfur Fugacity}
+
+\Author[1][bthyer@caltech.edu]{Ben J.}{Thyer}
+\Author[1]{Jonathan}{Treffkorn}
+\Author[1]{Ken A.}{Farley}
+
+\affil[1]{Division of Geological and Planetary Sciences, California Institute of Technology, Pasadena, CA 91125, USA}
+
+\runningtitle{Supplement of: Helium Step Heat Experiments at High Water or Sulfur Fugacity}
+
+\runningauthor{Thyer et al.}
+
+\received{}
+\pubdiscuss{}
+\revised{}
+\accepted{}
+\published{}
+
+\firstpage{1}
+
+\maketitle
+
+% chapter1_SI_body.tex wraps its widest tables in \chplandscape so the
+% dissertation version (Chapter1/chapter1_SI.tex) can rotate them to
+% landscape for extra width while this journal supplement keeps them
+% portrait at their original compact size -- defined here as a no-op.
+\newenvironment{chplandscape}{}{}
+
+\input{chapter1_SI_body}
+
+
+\begin{thebibliography}{}
+
+\bibitem[Altemose(1961)]{altemose1961}
+Altemose, V. O. Helium Diffusion through Glass. \emph{Journal of Applied Physics} \textbf{32}, 1309--1316 (1961).
+
+\bibitem[Carman(1956)]{carman1956}
+Carman, P. C. \emph{Flow of Gases through Porous Media} (Academic Press, New York, 1956).
+
+\bibitem[Carslaw and Jaeger(1959)]{carslawjaeger1959}
+Carslaw, H. S. \& Jaeger, J. C. \emph{Conduction of Heat in Solids}, 2nd edn (Oxford University Press, Oxford, 1959).
+
+\bibitem[Farley et al.(1996)]{farley1996}
+Farley, K. A., Wolf, R. A. \& Silver, L. T. The effects of long alpha-stopping distances on (U-Th)/He ages. \emph{Geochimica et Cosmochimica Acta} \textbf{60}, 4223--4229 (1996).
+
+\bibitem[Farley et al.(1999)]{farley1999}
+Farley, K. A., Reiners, P. W. \& Nenow, V. An Apparatus for High-Precision Helium Diffusion Measurements from Minerals. \emph{Anal. Chem.} \textbf{71}, 2059--2061 (1999).
+
+\bibitem[Farley et al.(2024)]{farley2024}
+Farley, K. A., Monteiro, H. B., Vasconcelos, P. M. \& Waltenberg, K. Dehydration of goethite during vacuum step-heating and implications for he retentivity characterization. \emph{Chemical Geology} \textbf{663}, 122254 (2024).
+
+\bibitem[Goldsmith et al.(2020)]{goldsmith2020}
+Goldsmith, A. S., Ketcham, R. A. \& Stockli, D. F. Simulating effects of heterogeneous 4He concentration profiles and radiation damage annealing on whole-grain zircon diffusivity analyses. \emph{Geochimica et Cosmochimica Acta} \textbf{284}, 239--253 (2020).
+
+\bibitem[Jones(1953)]{jones1953}
+Jones, W. M. Permeability and Solubility of He\textsuperscript{3} and He\textsuperscript{4} in Vitreous Silica. \emph{J. Am. Chem. Soc.} \textbf{75}, 3093--3096 (1953).
+
+\bibitem[Ketcham et al.(2011)]{ketcham2011}
+Ketcham, R. A., Gautheron, C. \& Tassan-Got, L. Accounting for long alpha-particle stopping distances in (U-Th-Sm)/He geochronology: Refinement of the baseline case. \emph{Geochimica et Cosmochimica Acta} \textbf{75}, 7779--7791 (2011).
+
+\bibitem[Masaryk(1968)]{masaryk1968}
+Masaryk, J. S. Permeation in Fused Silica (1968).
+
+\bibitem[Norton(1953)]{norton1953}
+Norton, F. J. Helium Diffusion Through Glass. \emph{Journal of the American Ceramic Society} \textbf{36}, 90--96 (1953).
+
+\bibitem[Ostrogorsky and Glicksman(2015)]{ostrogorskyglicksman2015}
+Ostrogorsky, A. G. \& Glicksman, M. E. Segregation and Component Distribution. In: \emph{Handbook of Crystal Growth}, 2nd edn, Vol. IIA, Ch. 25 (Elsevier, Amsterdam, 2015).
+
+\bibitem[Rogers et al.(1954)]{rogers1954}
+Rogers, W. A., Buritz, R. S. \& Alpert, D. Diffusion Coefficient, Solubility, and Permeability for Helium in Glass. \emph{J. Appl. Phys.} \textbf{25}, 868--875 (1954).
+
+\bibitem[Shackelford et al.(1972)]{shackelford1972}
+Shackelford, J. F., Studt, P. L. \& Fulrath, R. M. Solubility of Gases in Glass. II. He, Ne, and H2 in Fused Silica. \emph{Journal of Applied Physics} \textbf{43}, 1619--1626 (1972).
+
+\bibitem[Shelby(1976)]{shelby1976}
+Shelby, J. E. Pressure dependence of helium and neon solubility in vitreous silica. \emph{Journal of Applied Physics} \textbf{47}, 135--139 (1976).
+
+\bibitem[Shuster et al.(2004)]{shuster2004}
+Shuster, D. L., Farley, K. A., Sisterson, J. M. \& Burnett, D. S. Quantifying the diffusion kinetics and spatial distributions of radiogenic 4He in minerals containing proton-induced 3He. \emph{Earth and Planetary Science Letters} \textbf{217}, 19--32 (2004).
+
+\bibitem[Studt(1962)]{studt1962}
+Studt, P. L. Mechanism of Gaseous Permeation through Glass, Single-Crystal Silicon, and Germanium; and Stress-Enhanced Gaseous Permeation through Alumina Bodies. \url{https://escholarship.org/uc/item/9pj1h2x1} (1962).
+
+\bibitem[Swets et al.(1961)]{swets1961}
+Swets, D. E., Lee, R. W. \& Frank, R. C. Diffusion Coefficients of Helium in Fused Quartz. \emph{The Journal of Chemical Physics} \textbf{34}, 17--22 (1961).
+
+\bibitem[Wilson and Bisson(1973)]{wilson1973}
+Wilson, W. D. \& Bisson, C. L. Atomistics of helium diffusion in copper and tungsten. \emph{Radiation Effects} \textbf{19}, 53--58 (1973).
+
+\bibitem[Yakubovich et al.(2010)]{yakubovich2010}
+Yakubovich, O. V., Shukolyukov, Yu. A., Kotov, A. B., Yakovleva, S. Z. \& Sal'nikova, E. B. Geothermochronology based on noble gases: II. Stability of the (U-Th)/He isotope system in zircon. \emph{Petrology} \textbf{18}, 555--570 (2010).
+
+\end{thebibliography}
+
+\end{document}

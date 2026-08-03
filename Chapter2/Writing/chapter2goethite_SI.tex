@@ -1,0 +1,93 @@
+% =============================================================
+%  chapter2goethite_SI.tex (standalone draft) -- Supplementary
+%  Information for Chapter 2: Helium Step Heat Experiment on
+%  Goethite in Hydrothermal Conditions
+%
+%  Shares its scientific content with the dissertation-chapter
+%  version (Chapter2/chapter2_SI.tex) via chapter2goethite_SI_body.tex
+%  -- edit that file, not this one, to change text/equations/figures/
+%  citations.
+%
+%  Standardized on pdflatex (matching the rest of the dissertation) --
+%  this file previously required xelatex for fontspec/unicode-math,
+%  but the handful of literal Greek letters/math symbols that needed
+%  it have been converted to portable LaTeX commands in
+%  chapter2goethite_SI_body.tex.
+%
+%  Citations use \citep/\citet against the SAME shared references.bib
+%  as the rest of the dissertation (see dissertation_preamble.tex), so
+%  this standalone draft loads biblatex itself, same natbib-compatible
+%  config, and prints its own bibliography at the end.
+% =============================================================
+\documentclass[11pt]{report}
+
+% --- Fonts (pdflatex) ---
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% --- Core packages ---
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{soul}          % \hl{} highlighting used in pandoc output
+\usepackage[colorinlistoftodos,prependcaption,textsize=footnotesize]{todonotes}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{booktabs}      % \toprule/\midrule/\bottomrule for the distilled naive-method data tables
+\usepackage{longtable}     % lets the distilled data tables break across pages
+\usepackage{pdflscape}     % \begin{landscape}...\end{landscape} for the wide data tables
+
+% --- Bibliography (shared references.bib, same config as dissertation_preamble.tex) ---
+% Keep this block in sync with dissertation_preamble.tex / chapter2goethite.tex.
+\usepackage[
+  backend     = biber,
+  style       = authoryear,
+  sorting     = nyt,
+  maxnames    = 2,
+  minnames    = 1,
+  maxbibnames = 99,
+  uniquelist  = true,
+  giveninits  = true,
+  uniquename  = init,
+  natbib      = true,
+]{biblatex}
+\addbibresource{../../references.bib}
+
+\graphicspath{{../Figures/source/}{../Figures/generated/}}
+
+% Macro used throughout the draft
+\newcommand{\UThHe}{U-Th/He}
+
+% Auto-generated Stage 1 regression macros (\ChTwoEa, \ChTwoEaErr,
+% \ChTwoTc, \ChTwoTcErr, \ChTwoRtwo, \ChTwoN) -- see
+% Figures/write_chapter2_macros.py. Needed here (a separate document from
+% chapter2goethite.tex) for the R^2 figure quoted in the Diffusivities
+% section of chapter2goethite_SI_body.tex. Do not edit the generated file
+% by hand.
+\input{chapter2_derived_values}
+
+% Auto-generated \ChTwoNaiveRawTable/\ChTwoNaiveFitTable macros (the raw
+% isothermal-permeation dataset and its per-sequence lambda/n0 fits) -- see
+% Figures/fig_naive_isothermal_fits.py. Do not edit the generated file by hand.
+\input{chapter2_naive_isothermal_tables}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{2}
+
+\title{Chapter 2 Supplementary Information (working draft): Helium Step Heat Experiment on Goethite in Hydrothermal Conditions}
+\author{Ben Thyer}
+\date{\today}
+
+\begin{document}
+
+\chapter{Supplementary Information for Chapter 2: Helium Step Heat Experiment on Goethite in Hydrothermal Conditions}
+\label{ch:goethite-SI}
+
+\input{chapter2goethite_SI_body}
+
+\printbibliography[title={References}]
+
+\end{document}

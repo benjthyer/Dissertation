@@ -1,0 +1,150 @@
+Simming 3 sequential 90C steps 120min
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+Fitted parameters for 90C 120min: lambda = 2.582e-05, n0 = 9.213e-01
+Covariance matrix: [[ 5.67277314e-15 -1.46523727e-10]
+ [-1.46523727e-10  3.95090017e-06]]
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+Simming 3 sequential 90C steps 150min
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+Fitted parameters for 90C 150min: lambda = 2.544e-05, n0 = 9.225e-01
+Covariance matrix: [[ 2.48904620e-15 -5.96630198e-11]
+ [-5.96630198e-11  1.54445698e-06]]
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+Simming 3 sequential 90C steps 180min
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+Fitted parameters for 90C 180min: lambda = 2.518e-05, n0 = 9.231e-01
+Covariance matrix: [[ 1.27415987e-15 -2.79369532e-11]
+ [-2.79369532e-11  6.96935679e-07]]
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+Simming 3 sequential 95C steps 120min
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+Fitted parameters for 95C 120min: lambda = 2.863e-05, n0 = 9.220e-01
+Covariance matrix: [[ 4.48014924e-15 -1.00197896e-10]
+ [-1.00197896e-10  2.37246192e-06]]
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+Simming 3 sequential 95C steps 150min
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+Fitted parameters for 95C 150min: lambda = 2.822e-05, n0 = 9.229e-01
+Covariance matrix: [[ 1.97280045e-15 -4.02846488e-11]
+ [-4.02846488e-11  9.13318384e-07]]
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+Simming 3 sequential 95C steps 180min
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+Fitted parameters for 95C 180min: lambda = 2.796e-05, n0 = 9.234e-01
+Covariance matrix: [[ 1.01374170e-15 -1.85751199e-11]
+ [-1.85751199e-11  4.07553009e-07]]
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+Simming 3 sequential 100C steps 120min
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+Fitted parameters for 100C 120min: lambda = 3.166e-05, n0 = 9.226e-01
+Covariance matrix: [[ 3.54332176e-15 -6.84034974e-11]
+ [-6.84034974e-11  1.42469765e-06]]
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+Simming 3 sequential 100C steps 150min
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+Fitted parameters for 100C 150min: lambda = 3.123e-05, n0 = 9.233e-01
+Covariance matrix: [[ 1.56647702e-15 -2.70885374e-11]
+ [-2.70885374e-11  5.40513338e-07]]
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+Simming 3 sequential 100C steps 180min
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+Fitted parameters for 100C 180min: lambda = 3.095e-05, n0 = 9.237e-01
+Covariance matrix: [[ 8.08309163e-16 -1.22504066e-11]
+ [-1.22504066e-11  2.39269642e-07]]
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+Simming 3 sequential 105C steps 120min
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+Fitted parameters for 105C 120min: lambda = 3.493e-05, n0 = 9.230e-01
+Covariance matrix: [[ 2.80637890e-15 -4.65793361e-11]
+ [-4.65793361e-11  8.55697383e-07]]
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+Simming 3 sequential 105C steps 150min
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+Fitted parameters for 105C 150min: lambda = 3.448e-05, n0 = 9.236e-01
+Covariance matrix: [[ 1.24610488e-15 -1.81086441e-11]
+ [-1.81086441e-11  3.20532857e-07]]
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+Simming 3 sequential 105C steps 180min
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+Fitted parameters for 105C 180min: lambda = 3.419e-05, n0 = 9.239e-01
+Covariance matrix: [[ 6.45914824e-16 -7.98619230e-12]
+ [-7.98619230e-12  1.41597826e-07]]
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+Simming 3 sequential 110C steps 120min
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+Fitted parameters for 110C 120min: lambda = 3.844e-05, n0 = 9.233e-01
+Covariance matrix: [[ 2.22579731e-15 -3.16022407e-11]
+ [-3.16022407e-11  5.14246803e-07]]
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+EQM: 7260s out of 7200 s
+Simming 3 sequential 110C steps 150min
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+Fitted parameters for 110C 150min: lambda = 3.798e-05, n0 = 9.238e-01
+Covariance matrix: [[ 9.93031809e-16 -1.20064409e-11]
+ [-1.20064409e-11  1.90910092e-07]]
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+EQM: 9060s out of 9000 s
+Simming 3 sequential 110C steps 180min
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+Fitted parameters for 110C 180min: lambda = 3.767e-05, n0 = 9.240e-01
+Covariance matrix: [[ 5.17261541e-16 -5.12044246e-12]
+ [-5.12044246e-12  8.50183041e-08]]
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s
+EQM: 10860s out of 10800 s

@@ -1,0 +1,283 @@
+% =============================================================
+%  dissertation_preamble.tex
+%  Shared package imports and custom commands.
+%  \input this file at the top of dissertation.tex ONLY.
+% =============================================================
+
+% --- Page geometry -----------------------------------------------------------
+% NOTE: caltech_thesis.cls already loads `geometry` itself (1.5in side
+% margins, 1in top/bottom, per Caltech's binding/margin requirements), so
+% this preamble must NOT load it again with different options -- LaTeX
+% would apply whichever load wins and silently ignore the other, which is
+% exactly the kind of margin mismatch that gets a thesis bounced at
+% submission. If dissertation.tex is ever compiled under a different
+% (non-Caltech) document class that does NOT already set geometry, restore
+% a line like `\usepackage[margin=1in, letterpaper]{geometry}` here.
+
+% --- Typography --------------------------------------------------------------
+\usepackage{lmodern}          % scalable Latin Modern fonts
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{microtype}        % improved justification
+
+% --- Math --------------------------------------------------------------------
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage{siunitx}          % consistent SI units, e.g. \SI{4.2}{\mega\year}
+
+% --- Figures & tables --------------------------------------------------------
+\usepackage{graphicx}
+\usepackage{calc}             % arithmetic in lengths (\real{}, +, -, *) -- needed
+                               % by Pandoc-generated longtable column specs like
+                               % p{(\linewidth - 12\tabcolsep) * \real{0.1951}},
+                               % used by Chapter 3's Table 1 (Chapter3/Writing/
+                               % HeInSulfides_Main_Body.tex)
+\usepackage{float}
+\usepackage{placeins}         % \FloatBarrier -- forces pending floats to
+                               % resolve before a fixed point (e.g. right
+                               % before a non-floating longtable/supertabular
+                               % caption) without pinning them to their
+                               % source position via [H], which can force a
+                               % float onto a page it doesn't fit on and run
+                               % it off the bottom margin. See chapter1_SI_
+                               % body.tex (fig:predicted-vs-measured-permeation)
+                               % for the case this was added for.
+\usepackage{booktabs}         % professional table rules
+\usepackage{longtable}        % tables that span pages
+\usepackage{supertabular}     % multi-page table in Chapter 1 (apatite step-heat
+                               % data), shared verbatim with TubeMethodPaper.tex,
+                               % which loads supertabular natively via copernicus.cls
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{array}           % extended column-spec features (>{...},
+                              % \newcolumntype); harmless to keep loaded
+                              % even though no table currently needs it
+                              % now that Chapter 1's widest tables moved
+                              % to \chplandscape (landscape) instead of
+                              % font-shrinking -- see chapter1_body.tex.
+\usepackage{pdflscape}        % \landscape environment, used via the
+                              % \chplandscape wrapper (defined per-wrapper
+                              % in Chapter1/chapter1.tex and Chapter1/
+                              % chapter1_SI.tex) to rotate Chapter 1's
+                              % widest tables for extra width in the
+                              % thesis only -- the standalone
+                              % TubeMethodPaper.tex/Paper/SI.tex define
+                              % \chplandscape as a no-op instead, keeping
+                              % those journal manuscripts portrait.
+
+% Auto-center every table and shrink its text, without editing individual
+% tables. Caltech's required 1.5in side margins leave only a 5.5in text
+% width -- narrower than most of these tables were originally drafted for,
+% which is why they were rolling off the right edge while left-justified.
+%
+% NOTE: an earlier version of this tried to wrap every \tabular in an
+% adjustbox (\AtBeginEnvironment{tabular}{\begin{adjustbox}{max
+% width=\textwidth}}) to hard-guarantee a fit regardless of native column
+% widths. That broke the build (fatal "Missing }"/"invalid character"
+% errors) -- \AtBeginEnvironment cannot safely wrap an environment that
+% takes a mandatory brace argument (tabular's {column-spec}) in another
+% such environment, because the injected \begin{adjustbox}{...} steals the
+% argument-parsing slot tabular expects for its own column spec. Plain
+% declarations (\centering, \footnotesize, \scriptsize -- no arguments of
+% their own) are safe here; wrapping one environment inside another via
+% this mechanism is not.
+\AtBeginEnvironment{table}{\centering\footnotesize}
+\AtBeginEnvironment{longtable}{\centering\scriptsize}
+\AtBeginEnvironment{supertabular}{\centering\scriptsize}
+\setlength{\tabcolsep}{3pt}   % default is 6pt -- tighter padding buys back
+                              % real width on many-column numeric tables
+
+% A few of the widest tables use fixed-width p{...} columns (in cm) rather
+% than content-driven columns, so shrinking the font alone doesn't reclaim
+% any width -- those still need a per-table \resizebox wrap (done directly
+% in the affected .tex files, not here) for a hard guarantee of fit.
+\graphicspath{
+  {figures/}
+  {Chapter1/Figures/source/}
+  {Chapter1/Figures/generated/}
+  {Chapter2/Figures/source/}
+  {Chapter2/Figures/generated/}
+  {Chapter3/Figures/source/}
+  {Chapter3/Figures/generated/}
+  {Chapter4/Figures/}
+  {Chapter5/Figures/}
+  {ChapterA/Figures/}
+}
+
+% --- Colors & hyperlinks -----------------------------------------------------
+\usepackage[dvipsnames]{xcolor}
+\usepackage[
+  colorlinks = true,
+  linkcolor  = NavyBlue,
+  citecolor  = OliveGreen,
+  urlcolor   = Maroon,
+  pdftitle   = {From Surface to Core},
+  pdfauthor  = {Ben Thyer},
+]{hyperref}
+\usepackage{doi}
+
+% --- Bibliography ------------------------------------------------------------
+% Name-truncation rule (discipline convention, not a Caltech requirement --
+% Caltech's thesis guidelines explicitly leave reference/citation style to
+% "the style current in the thesis writer's discipline," only requiring it be
+% used consistently throughout): 2-author works print both names; 3+-author
+% works truncate to the first author + "et al." (maxnames=2, minnames=1).
+% uniquelist=true is the standard biblatex safety net for the case where two
+% DIFFERENT works would otherwise truncate to an identical-looking citation
+% (e.g. "Smith et al., 2020" for two unrelated Smith-led 2020 papers) -- it
+% expands the printed name list just enough to tell them apart (e.g. "Smith,
+% Jones, et al." vs. "Smith, Brown, et al.") rather than appending a/b/c
+% letters. True letter disambiguation (2020a / 2020b) already happens
+% automatically -- with no extra config -- whenever two entries share the
+% exact same full author list AND year (e.g. a genuine same-author same-year
+% duplicate); it does not, by default, cover the "different authors, same
+% truncated display" case, which is what uniquelist handles instead. As of
+% this writing, a scan of references.bib found zero actual collisions under
+% the new maxnames=2 rule, so this is a forward-looking safety net, not a
+% fix for a live problem.
+%
+% maxbibnames is set high (effectively "no truncation") so the References
+% list at the end always spells out every author, regardless of how the
+% in-text citation truncates -- maxnames/minnames above only govern in-text
+% \citep/\citet, not the bibliography.
+\usepackage[
+  backend    = biber,
+  style      = authoryear,   % change to e.g. agu or geology if preferred
+  sorting    = nyt,
+  maxnames   = 2,
+  minnames   = 1,
+  maxbibnames = 99,
+  uniquelist = true,
+  giveninits = true,
+  uniquename = init,
+  natbib     = true,         % provides \citep/\citet/\citealp (natbib syntax),
+                              % which Chapter 1's shared body (reused from
+                              % TubeMethodPaper.tex) uses throughout. Without
+                              % this, biblatex only offers its own
+                              % \parencite/\textcite commands.
+]{biblatex}
+\addbibresource{references.bib}   % master .bib file — keep alongside dissertation.tex
+
+% --- Header / footer ---------------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE,RO]{\thepage}
+\fancyhead[RE]{\textit{\leftmark}}
+\fancyhead[LO]{\textit{\rightmark}}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% caltech_thesis.cls sets headsep to a very tight ~0.25in - 1em (roughly
+% 6pt), tuned for its own default page style, which puts only a bare page
+% number in the header. Since fancyhdr above instead puts the italicized
+% chapter/section title (\leftmark/\rightmark) in the header, long titles
+% that wrap to a second line collide with the body text below. Calling
+% \geometry{} again (rather than re-\usepackage-ing it) only updates the
+% keys given here and safely recomputes \textheight to match -- it does
+% NOT reload/conflict with the page-margin setup the NOTE above warns
+% about. headheight=30pt comfortably fits two lines of a 12pt header;
+% headsep=18pt keeps a clean gap below it. If a chapter title ever needs
+% a third header line, bump headheight further (e.g. to 42pt).
+\geometry{headheight=30pt, headsep=18pt}
+
+% --- Chapter / section formatting --------------------------------------------
+% NOTE: caltech_thesis.cls (memoir-based) already defines its own official
+% Caltech chapter styling -- centered, italic small-caps "Chapter I" numbering
+% in Roman numerals via \chapnamefont/\chaptitlefont/\printchapterheading -- so
+% titlesec's \titleformat{\chapter} override below has been disabled. Loading
+% titlesec's chapter redefinition on top of memoir's own chapter-heading system
+% is a known source of conflicts/incompatibility warnings. Re-enable this only
+% if compiling Chapter files under a plain `book`/`report` class instead.
+% \usepackage{titlesec}
+% \titleformat{\chapter}[display]
+%   {\normalfont\Large\bfseries}{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+% \titlespacing*{\chapter}{0pt}{40pt}{20pt}
+
+% --- Per-chapter Supplementary Information (SI) -------------------------------
+% Each chapter's SI (Chapter<N>/chapter<N>_SI.tex) is \input{} immediately
+% after that chapter's main body, inside the SAME \chapter{} -- it is not a
+% chapter of its own. Two problems that creates, and how these commands fix
+% them:
+%
+% 1. Visually, the SI used to just continue as the next plain \section{},
+%    indistinguishable from the chapter's own sections. \SItitlepage{...}
+%    gives it a proper divider/title page first (unnumbered, no header, own
+%    page), the way a book's appendix or backmatter would get one.
+%
+% 2. Numerically, its \section headings used to continue the chapter's own
+%    numbering (...7, 8, 9...), so a reader landing mid-SI from a link or a
+%    flipped-to page couldn't tell from the running header alone whether they
+%    were still in the chapter proper or in its supplement. The `ChapterSI`
+%    environment resets the section counter and switches \thesection to a
+%    "<chapter>.<n>s" format for everything between \begin{ChapterSI} and
+%    \end{ChapterSI} (e.g. the SI's first section becomes "1.1s" instead of
+%    continuing on from wherever the main text left off). \thesubsection
+%    inherits this automatically, since its default definition already
+%    builds on \thesection. \S\ref{}/running headers/the ToC all pick this
+%    up for free, because \setcounter and \renewcommand are both local by
+%    default, and LaTeX environments are always wrapped in their own group,
+%    so everything reverts automatically at \end{ChapterSI} with no matching
+%    "restore" step to maintain. (The *next* chapter's own section numbering
+%    isn't at risk even without that revert -- \chapter{} always resets
+%    \c@section to 0 globally on its own, regardless of whatever it was left
+%    at.)
+%
+%    NOTE on naming, two dead ends hit along the way, for the record:
+%     (a) This is a `\newenvironment`, not a pair of \newcommand{\beginSI}/
+%         \newcommand{\endSI} macros -- LaTeX reserves all command names of
+%         the form \end<word> for environment closers, so
+%         \newcommand{\endSI}{...} is flatly illegal ("Or name \end...
+%         illegal", LaTeX2e kernel restriction, independent of memoir/
+%         caltech_thesis.cls). Defining it as a proper environment sidesteps
+%         that and is the more idiomatic way to express "everything between
+%         these two markers" in LaTeX anyway.
+%     (b) The environment is named `ChapterSI`, not `SI` -- \newenvironment{SI}
+%         would auto-generate \SI as its begin-code control sequence, which
+%         collides with siunitx's own \SI{value}{unit} command (loaded
+%         above, e.g. \SI{4.2}{\mega\year}). `ChapterSI` generates
+%         \ChapterSI/\endChapterSI instead, which don't collide with
+%         anything.
+%    Repeat this same \SItitlepage{...}/\begin{ChapterSI}...\end{ChapterSI}
+%    pattern for Chapter 2 and beyond's SI wrappers.
+\newcommand{\SItitlepage}[1]{%
+  \clearpage
+  \thispagestyle{empty}
+  \vspace*{\fill}
+  \begin{center}
+    {\Huge\bfseries Supplementary Information}\\[1.5em]
+    {\Large for Chapter \thechapter: \itshape #1}
+  \end{center}
+  \vspace*{\fill}
+  \clearpage
+}
+\newenvironment{ChapterSI}{%
+  \setcounter{section}{0}
+  \renewcommand{\thesection}{\thechapter.\arabic{section}s}
+}{}
+
+% --- Appendix ----------------------------------------------------------------
+% NOT loaded explicitly: memoir (which caltech_thesis.cls is built on) already
+% emulates the `appendix` package internally with its own default options, so
+% an explicit `\usepackage[toc, page]{appendix}` here causes a fatal "Option
+% clash for package appendix" error. The `\begin{appendices}...\end{appendices}`
+% environment used in dissertation.tex still works via memoir's built-in
+% emulation without loading the package separately.
+
+% --- Miscellaneous -----------------------------------------------------------
+\usepackage{enumitem}
+% pdflscape already loaded above (Figures & tables section) for \chplandscape
+\usepackage{pdfpages}         % include external PDFs (field maps, etc.)
+\usepackage{soul}             % \hl{} highlighting -- used once in Chapter 2's
+                               % shared body (chapter2_body.tex)
+\usepackage{lineno}           % line numbers — comment out for final version
+% \linenumbers
+
+% --- Custom commands ---------------------------------------------------------
+\newcommand{\degC}{\ensuremath{^\circ\mathrm{C}}}
+\newcommand{\He}{\textsuperscript{4}He}
+\newcommand{\UThHe}{U--Th/He}
+\newcommand{\fO}{\ensuremath{f_{\mathrm{O_2}}}}
+\newcommand{\fS}{\ensuremath{f_{\mathrm{S_2}}}}
+\newcommand{\fH}{\ensuremath{f_{\mathrm{H_2O}}}}
+\newcommand{\Ea}{\ensuremath{E_a}}
+\newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}

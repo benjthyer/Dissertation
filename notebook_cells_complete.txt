@@ -1,0 +1,4297 @@
+==========================================================================================
+COMPLETE CELL SOURCE CODE: ALL 113 CELLS
+==========================================================================================
+
+
+CELL 1: MARKDOWN
+──────────────────────────────────────────────────────────────────────────────────────────
+## Ben Thyer ##
+## 2/28/23 ##
+
+
+CELL 2: CODE
+──────────────────────────────────────────────────────────────────────────────────────────
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+import pandas as pd
+import scipy
+import os
+from datetime import datetime
+
+
+Rcal= 1.987
+def swets(L,T):
+    """Returns Permeability, diffusivity, or solubility
+    of fused Silica in units: mol/cm/s/atm for a given T in Kelvin"""
+    if T >= 600:
+        DEa = 6613 # factor of 4 to convert from g Helium to moles
+        SEa = -1174
+        DFF = 7.40E-4
+        SFF = 1.28E17
+    else:
+        DEa = 5580
+        SEa = -680
+        DFF = 3.04E-4
+        SFF = 1.99E17
+    D = DFF*np.exp(-DEa/(Rcal*T))
+    if L.upper() == 'D':
+        return D
+    S = SFF*np.exp(-SEa/(Rcal*T)) # K units: atom/cm/s/dP atm/
+    if L.upper() == 'S':
+        return S
+    #print(f"Solubility at T = {T-273}C: {S} atoms/cm3/atm")
+    #print(f"Diffusivity at T = {T-273}C: {D} cm2/s")
+    #print(f"Permeation at T = {T-273}C in mol/cm/s/atm: {D*S}")
+    K = D*S#/6.022E23 #units: mol/cm/s/atm
+    if L.upper() == 'K':
+        return K
+    else:
+        raise Exception("function is swets(L,T) where L is one of [D,S,K] for:\nDiffusivity, Solubility, and Permeability")
+swets('K', 298)
+
+def make_grid(minors = True):
+    x_texts = ax.get_xticklabels()[1:-1]
+    y_texts = ax.get_yticklabels()[1:-1]
+    x_coords = []
+    y_coords = []
+    ylim = ax.get_ylim()
+    xlim = ax.get_xlim()
+    for xt in x_texts:
+        x_coords.append(xt.get_position()[0])
+    for yt in y_texts:
+        y_coords.append(yt.get_position()[1])
+    if minors:
+        x_minors = ax.get_xticks(minor = True)
+        y_minors = ax.get_yticks(minor = True)
+        plt.vlines(x_minors, *ylim,linestyle = '-',color='Black', alpha = 0.05)
+        plt.hlines(y_minors, *xlim,linestyle = '-',color='Black', alpha = 0.05)
+    plt.vlines(x_coords, *ylim,linestyle = '--',color='Black', alpha = 0.2)
+    plt.hlines(y_coords, *xlim,linestyle = '--',color='Black', alpha = 0.2)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    
+def InvertFrequencyFactor(t, F, Fp): 
+    """
+    Time in Seconds, F: Cumulative yield of 1, Fp: previous cumulative yield
+    EQN 5a-c from Fechtig and Kalbitzer, 1966
+    """
+    
+    if F <= 0.1:
+        D_a2 = ((F**2 - Fp**2)*np.pi) / (36*t)
+    elif F < 0.9:
+        D_a2 = (1/(np.pi**2*t)) * (   (((-(np.pi**2)/3) * (F - Fp))) + ( (-2*np.pi)* (((1-((np.pi/3)*F))**0.5) - ((1-((np.pi/3))*Fp)**0.5) )  )    ) 
+    elif F <= 1:
+        D_a2 = (1/(np.pi**2*t)) * np.log( (1-Fp)/(1-F) )
+    else:
+        raise ValueError('Let F be fractional yield, within 0-1')
+    return D_a2      
+
+def InvertFrequencyFactor1(ts, Fs): 
+    """
+    Time in Seconds, F: Cumulative yield of 1, Fp: previous cumulative yield
+    EQN 5a-c from Fechtig and Kalbitzer, 1966
+    """
+    
+    Fs = np.array(Fs)
+    
+    Fps = np.array([0] + Fs[:-1].tolist())
+    Fs = np.array(Fs)
+    D_a2L = []
+    
+    for i, F in enumerate(Fs):
+        Fp = Fps[i]
+        t = ts[i]
+        if F <= 0.1:
+            D_a2 = ((F**2 - Fp**2)*np.pi) / (36*t)
+        elif F < 0.9:
+            D_a2 = (1/(np.pi**2*t)) * (   (((-(np.pi**2)/3) * (F - Fp))) + ( (-2*np.pi)* (((1-((np.pi/3)*F))**0.5) - ((1-((np.pi/3))*Fp)**0.5) )  )    ) 
+        elif F <= 1:
+            D_a2 = (1/(np.pi**2*t)) * np.log( (1-Fp)/(1-F) )
+        else:
+            raise ValueError('Let F be fractional yield, within 0-1')
+        D_a2L.append(D_a2)
+        
+    return D_a2L
+
+def Forward_Diffuse(Dt_a2):
+    """Input is cumulative Dt_a2. 
+    Equations 4a-c Fechtig and Kalbitzer, 1966"""
+    
+    Bt = (np.pi**2) * Dt_a2
+    
+    F = (6/(np.pi**(3/2))) * (Bt**(1/2)) # Small Yield Approx
+    if F > 0.1:
+        F = 1 - ((6/(np.pi**2)) * np.exp(-Bt)) # High Yield Approx
+    if F < 0.9:
+        F =(6/(np.pi**(3/2))) * (Bt**(1/2)) - ((3/(np.pi**2)) * Bt) # Mid-Yield Approx
+        
+    return F
+
+def Simulate_Diffusion(D0_a2, Ea, T, t, R = 8.314):
+    """Let T and t be 1D arrays of equal length describing sequential time-temperature steps,
+    T in Celcius and t in minutes
+    Let D0_a2 be sec^-1
+    Default activation energy units are joules/mol, but R can be changed to match other energy units"""
+    if np.shape(T) != np.shape(t) or T.ndim != 1:
+        raise ValueError('Let T and t be 1D arrays of equal length describing sequential time-temperature steps')
+    
+    Dt_a2 = 0
+    Fcum = []
+    seconds = t*60 # minutes to seconds
+    for i, sec in enumerate(seconds):
+        K = 273+T[i]
+        Dt_a2 +=  ((D0_a2 * np.exp(-Ea/(R*K)) * sec))
+        Fcum.append(Forward_Diffuse(Dt_a2))
+
+    return Fcum
+    
+def Simulate_MDD_diffusion(D0, Ea, T, t, a, v, R = 8.314):
+    """Let T and t be 1D arrays of equal length describing sequential time-temperature steps,
+    T in Celcius and t in minutes
+    Let a and v be 1D arrays of equal length where 
+    'a' describes grain sizes (radii) in centimeters and 
+    'v' describes the relative volume of the corresponding grain sizes, forced to sum to 1 by the program
+    Let D_0 be cm^2/sec
+    Default activation energy units are joules/mol, but R can be changed to match other energy units"""
+                   
+    if np.shape(a) != np.shape(v) or a.ndim != 1:
+        raise ValueError('Let a and v be 1D arrays of equal length where a is radii in microns and v is the relative volume of the corresponding grain size')
+    if np.shape(T) != np.shape(t) or T.ndim != 1:
+        raise ValueError('Let T and t be 1D arrays of equal length describing sequential time-temperature steps')
+
+    old_sum = np.sum(v)
+    if old_sum != 1:
+        v_new = v/old_sum
+        print(f"v sums to {old_sum}, so it has been readjusted to sum to 1, now: {v_new}")
+    else:
+        v_new = v
+    Fcum_array = np.zeros((np.shape(T)[0], np.shape(a)[0]))
+    D0_a2 = D0/(a**2)
+                   
+    for column, domain in enumerate(D0_a2): # Simulate each respective domain
+        Fcum_array[:,column] = np.array(Simulate_Diffusion(domain, Ea, T, t, R))
+
+    Ftot = np.sum(Fcum_array * v_new.reshape((1,np.shape(v)[0])), axis = 1)
+    return Ftot
+
+def GaussianPDF(sigma):
+    return((1/(2*np.pi)) * np.exp( (-1/2)*(sigma**2) ))
+    
+def diffusion_reduction(HeVec, TimeSeconds, TempKelvin = None, newDiffName = 'manual_diffusion.csv'):
+
+    """Requires vector of measured diffusant in arbitrary units and equal length vector of time in seconds. 
+    If temperature given then it will be outputted and plotted in an arrhenius plot
+    """
+
+    total_yield = np.sum(HeVec)
+    fcum = []
+    Fp = 0
+    DC_indices = []
+    D_a2 = []
+    lnD_a2 = []
+    blank_corrected_yield = []
+    
+    for i, step_yield in enumerate(HeVec):
+        F = Fp + (step_yield/total_yield)
+        frequency_factor = InvertFrequencyFactor(t = TimeSeconds[i], F = F, Fp = Fp)
+        D_a2.append(frequency_factor)
+        lnD_a2.append(np.log(frequency_factor))
+        blank_corrected_yield.append(step_yield)
+        DC_indices.append(i)
+        fcum.append(F)
+        Fp = F
+
+    if np.sum(TempKelvin):
+        data = [(TempKelvin-273).tolist(), (TimeSeconds/60).tolist(), HeVec, fcum, D_a2, lnD_a2, (10000/TempKelvin).tolist()]
+        columns = ['Temp (C)', 'Time (min)', 'He Yield (nCC@STP)', 'Fcum', 'D/a^2 ', 'ln(D/a^2)', '10^4/T']
+        
+        #Plotting...
+        min_T = np.min(10000/TempKelvin[:-1])
+        max_T = np.max(10000/TempKelvin[:-1])
+        plt.plot(10000/TempKelvin[:-1], np.array(lnD_a2)[:-1], linestyle='--', marker='o', color='b', label = 'Simulated Encapsulated Apatite')
+        plt.title(f"Diffusivity Inversion for Total Yield = {total_yield} ncc's")
+
+
+        reference_D0_a2 = [(10**1.5)/((150/10000)**2), (10**1.5)/((250/10000)**2), np.exp(1.1939)] # /sec
+        reference_Ea = [33000, 33000, 14701*1.987] # cal /mol
+
+
+
+        reference_names = ['True Diffusivity of Apatite (a=150 um)', 'DApB 250 um', 'pyrite']
+        R = 1.98 #cal /mol /T(K)
+
+        first_only = True
+        if len(reference_D0_a2) > 0 and len(reference_D0_a2) == len(reference_Ea):
+            T = [min_T, max_T]
+            for i, D0_a2 in enumerate(reference_D0_a2):
+                if first_only:
+                    Ea = reference_Ea[i]
+                    min_log_frequency_factor = np.log(D0_a2*np.exp(-Ea/((10000*(min_T**-1))*R)))
+                    max_log_frequency_factor = np.log(D0_a2*np.exp(-Ea/((10000*(max_T**-1))*R)))
+                    plt.plot(T, [min_log_frequency_factor, max_log_frequency_factor], label = reference_names[i])
+                    first_only = False
+        #plt.show()
+
+    else:
+        data = [(TimeSeconds/60).tolist(), HeVec, fcum, D_a2, lnD_a2]
+        columns = ['Time (min)', 'He Yield (nCC@STP)', 'Fcum', 'D/a^2 ', 'ln(D/a^2)']
+
+    Reduced_Data = pd.DataFrame()
+    for i, column in enumerate(columns):
+        Reduced_Data[column] = data[i]
+    Reduced_Data.to_csv(newDiffName)
+    print(f"Done! Output file: {newDiffName} in {os.getcwd()}")
+    return Reduced_Data
+
+Ratoms = 1.3621E-22
+Rcal = 1.987
+
+def swets_K(T):
+    """Returns Permeability of fused Silica in units: mol/cm/s/atm for a given T in Kelvin"""
+    if T >= 600:
+        DEa = 6613 # factor of 4 to convert from g Helium to moles
+        SEa = -1174
+        DFF = 7.40E-4
+        SFF = 1.28E17
+    else:
+        DEa = 5580
+        SEa = -680
+        DFF = 3.04E-4
+        SFF = 1.99E17
+        
+    D = DFF*np.exp(-DEa/(Rcal*T))
+    S = SFF*np.exp(-SEa/(Rcal*T)) # K units: atom/cm/s/dP atm/
+    #print(f"Solubility at T = {T-273}C: {S} atoms/cm3/atm")
+    #print(f"Diffusivity at T = {T-273}C: {D} cm2/s")
+    #print(f"Permeation at T = {T-273}C in mol/cm/s/atm: {D*S}")
+    K = D*S#/6.022E23 #units: mol/cm/s/atm
+    return K
+
+def tube_permeate2(T, t, ID, OD):
+    """Lengths in cm. Inner and outer diameter. F is fraction initial He remaining. 
+    Returns n/n0, fraction of initial Helium"""
+    K = swets_K(T)
+    return(np.exp(-(K*Ratoms*T*2*t)/(np.log(OD/ID)*((ID/2)**2))))
+
+def Forward_Diffuse_deriv(t, D, a):
+    """Input is cumulative Dt_a2. 
+    Equations 4a-c Fechtig and Kalbitzer, 1966"""
+    
+    Bt = (np.pi**2) * D * t/(a**2)
+    
+    F = (6/(np.pi**(3/2))) * (Bt**(1/2)) # Small Yield Approx
+    dfdt = (6/(np.pi**(3/2))) * (1/2) * (t**(-1/2)) * (((np.pi**2) * D/(a**2))**(1/2))
+    
+    if F > 0.1:
+        F = 1 - ((6/(np.pi**2)) * np.exp(-Bt)) # High Yield Approx
+        dfdt = ((6/(np.pi**2)) * np.exp(-Bt)) # High Yield Approx
+    if F < 0.9:
+        F =(6/(np.pi**(3/2))) * (Bt**(1/2)) - ((3/(np.pi**2)) * Bt) # Mid-Yield Approx
+        dfdt = ((6/(np.pi**(3/2))) * (1/2) * (t**(-1/2)) * (((np.pi**2) * D/(a**2))**(1/2))) - ((np.pi**2) * D/(a**2))
+    return F, dfdt
+
+    
+#sigma = np.linspace(-500,500,201)/100
+#plt.plot(sigma, GaussianPDF(sigma)/len(sigma))
+
+def FirstOrdInversion(t, He, plot = False):
+    """Returns n0 and lambda for a time series of evolving gas following a first order law"""
+    cumHe = accumulate(He)
+    cumt = accumulate(t)
+    lamb = 6E-6 # order of magnitude estimation
+    
+    longt = np.linspace(0,cumt[-1],500)
+    
+    (out,covmat) = scipy.optimize.curve_fit(f = forward_permeate, xdata = cumt, ydata = cumHe, p0 = [lamb, 1])#He[0]/(1-np.exp(-lamb*t[0]))])
+    if plot:
+        plt.plot(longt, forward_permeate(longt, out[0], out[1]))
+        plt.scatter(cumt, cumHe)
+    return (out[0],out[1])
+
+def accumulate(v):
+    vnew = [v[0]]
+    for vnext in v[1:]:
+        vnew.append(vnext+vnew[-1])
+    return np.array(vnew)
+
+def forward_permeate(t, lamb, n0):
+    return(n0*(1-np.exp(-lamb*t)))
+
+def Jones(L, T):
+    if L.upper() == "K":
+        return 1.17*np.exp(-57/(1.987*T))
+    if L.upper() == "S":
+        return 1.003*np.exp(-6/(1.987*T))
+    if L.upper() == "D":
+        return 1.167*np.exp(-51/(1.987*T))
+    
+def pull_number(string):
+    """Pulls workable numbers from a string"""
+    assert isinstance(string, str), 'Only a single string accepted'
+    number_string = str('')
+    for letter in string:
+        if letter in '1234567890.':
+            number_string += letter
+    return float(number_string)
+
+def extract_times_from0(dates, form = '%m/%d/%Y  %I:%M %p'):
+    """Extracts exact times from first anaysis using timestamps on MC"""
+    times = [] # in seconds
+    first = True
+    for stri in dates: 
+        try:
+            time = datetime.strptime(stri, form)
+        except:
+            try:
+                form = '%m/%d/%Y  %H:%M:%S'
+                time = datetime.strptime(stri, form)
+            except:
+                try:
+                    form = '%m/%d/%Y  %H:%M'
+                    time = datetime.strptime(stri, form)
+                except:
+                    form = '%m/%d/%Y  %I:%M:%S %p'
+                    time = datetime.strptime(stri, form)
+        if first:
+            firsttime = time
+            first = False
+        else:
+            newtime = time
+            times.append((newtime - firsttime).total_seconds())
+    return np.array(times)
+
+class MCHeReducer:
+    """A Machine that maps signals on the MC to abundances, 
+    trained on standards which are assumed to have constant abundances
+    Time must be formatted as such:
+    '%m/%d/%Y  %I:%M %p'
+    see   https://docs.python.org/3/library/datetime.html  if confused
+    Sometimes excel changes the date-time format if you edit it. The default output for the MC is used here for analyses.
+    """
+    def __init__(self, STD_name, form = '%m/%d/%Y  %I:%M %p'):
+        self.std = pd.read_csv(STD_name, header=None).to_numpy()
+        self.STD4 = 157.50 #nccSTP
+        self.STD3 = 3.57 #pccSTP
+        print(f"Assuming all standards analyzed had {self.STD4} nCCSTP 4He and {self.STD3} pCCSTP 3He")
+        self.exist_ID = []
+        self.clean_standard_rows = [] #remove redundant analyses
+        for z, std in enumerate(self.std):
+            if std[0] not in self.exist_ID:
+                self.exist_ID.append(std[0])
+                self.clean_standard_rows.append(z)
+        #print(self.clean_standard_rows)
+        self.std = self.std[self.clean_standard_rows]
+        
+        try:
+            self.t0 = datetime.strptime(self.std[0,2], form)
+        except:
+            try:
+                form = '%m/%d/%Y  %H:%M:%S'
+                self.t0 = datetime.strptime(self.std[0,2], form)
+            except:
+                try:
+                    form = '%m/%d/%Y  %H:%M'
+                    self.t0 = datetime.strptime(self.std[0,2], form)
+                except:
+                    form = '%m/%d/%Y  %I:%M:%S %p'
+                    self.t0 = datetime.strptime(self.std[0,2], form)
+        #self.t0 = datetime.strptime(self.std[0,2], form) # save t0
+        self.Dt = np.append(0,extract_times_from0(self.std[:,2])) # map time as seconds after t0
+        self.std = self.std[np.argsort(self.Dt)]
+        self.Dt = np.sort(self.Dt)
+        self.sigma4 = []
+        self.sigma3 = []
+        #print(self.Dt)
+        self.sens4 = self.STD4/self.std[:,6]
+        self.sens3 = self.STD3/self.std[:,4]
+        self.x = np.linspace(0, self.Dt[-1], 2000)
+        self.inds = np.arange(len(self.sens4))
+        for i in self.inds:
+             self.sigma4.append(np.std(self.sens4[np.argsort(np.abs(self.inds-i))][:5])) # Uncertainty estimated as standard deviation of 5 sensitivity measurements. 2 before, 2 after. Only internal reproducibility handled here
+             self.sigma3.append(np.std(self.sens3[np.argsort(np.abs(self.inds-i))][:5])) # Uncertainty estimated as standard deviation of 5 sensitivity measurements. 2 before, 2 after. Only internal reproducibility handled here
+        self.model4 = scipy.interpolate.pchip_interpolate(self.Dt, self.sens4, self.x) 
+        self.model3 = scipy.interpolate.pchip_interpolate(self.Dt, self.sens3, self.x) 
+        self.model4sigma = scipy.interpolate.pchip_interpolate(self.Dt, np.array(self.sigma4), self.x)              
+        self.model3sigma = scipy.interpolate.pchip_interpolate(self.Dt, np.array(self.sigma3), self.x) 
+                                
+    def saveSTDs(self, name):
+        pd.DataFrame(self.std).to_csv(name)
+        
+    def plot(self):
+        fig, ax1 = plt.subplots()
+        
+        self.color = 'tab:red'
+        ax1.set_xlabel(f'time (days) after {self.t0}')
+        ax1.set_ylabel('4He Sensitivity nCCSTP/fA', color=self.color)
+        ax1.plot(self.x/(3600*24), self.model4, color=self.color)
+        ax1.plot(self.x/(3600*24), self.model4+(2*self.model4sigma), alpha = 0.4, linestyle = '--', color=self.color)
+        ax1.plot(self.x/(3600*24), self.model4-(2*self.model4sigma), alpha = 0.4, linestyle = '--', color=self.color)
+        ax1.plot(self.x/(3600*24), self.model4, color=self.color)
+        #ax1.scatter(self.Dt/(3600*24), self.sens4, color = self.color)
+        ax1.errorbar(self.Dt/(3600*24), self.sens4, yerr = 2*np.array(self.sigma4), linestyle = None, color = self.color)
+        ax1.tick_params(axis='y', labelcolor=self.color)
+
+        ax2 = ax1.twinx() 
+        self.color = 'tab:blue'
+        ax2.set_ylabel('3He Sensitivity pCCSTP/cps', color=self.color)  # we already handled the x-label with ax1
+        ax2.plot(self.x/(3600*24), self.model3, color=self.color)
+        ax2.plot(self.x/(3600*24), self.model3+(2*self.model3sigma), alpha = 0.4, linestyle = '--', color=self.color)
+        ax2.plot(self.x/(3600*24), self.model3-(2*self.model3sigma), alpha = 0.4, linestyle = '--', color=self.color)
+        #ax2.scatter(self.Dt/(3600*24), self.sens3, color = self.color)
+        ax2.errorbar(self.Dt/(3600*24), self.sens3, yerr = 2*np.array(self.sigma3), linestyle = None, color = self.color)
+        ax2.tick_params(axis='y', labelcolor=self.color)
+        
+        plt.title('Helium Sensitivities MC')
+        fig.tight_layout()  # otherwise the right y-label is slightly clipped
+        plt.savefig('SensitivitiesHeMC.jpg', dpi = 256)
+        plt.show()
+        
+    def reduce(self, DIFFCELL, form = '%m/%d/%Y  %I:%M %p', plot = False, sens_out = False, uncertainties = False):
+        #self.analyses = pd.read_csv(Anal_name, header=None).to_numpy()
+        self.analyses = DIFFCELL
+        self.AnalDT = extract_times_from0(np.append(self.t0.strftime(form), self.analyses[:,2]), form = form)
+        self.sensIND = []
+        for tim in self.AnalDT:
+            winner = np.argmin(np.abs(self.x-tim))
+            #print(winner)
+            self.sensIND.append(winner)
+        self.sensIND = np.array(self.sensIND)
+        self.Anal3He = (self.model3[self.sensIND]*self.analyses[:,4]).astype('float')
+        self.Anal4He = self.model4[self.sensIND]*self.analyses[:,6].astype('float')
+        if plot:
+            fig, ax1 = plt.subplots()
+            self.STDreltimes = (self.Dt > (min(self.AnalDT)-(3600*24))) * (self.Dt < (max(self.AnalDT)+(3600*24)))
+            self.modelreltimes = (self.x > (min(self.AnalDT)-(3600*24))) * (self.x < (max(self.AnalDT)+(3600*24)))
+            self.color = 'tab:red'
+            ax1.set_xlabel(f'time (days) after {self.t0}')
+            ax1.set_ylabel('4He Sensitivity nCCSTP/fA', color=self.color)
+            ax1.plot(self.x[self.modelreltimes]/(3600*24), self.model4[self.modelreltimes], color=self.color)
+            ax1.scatter(self.Dt[self.STDreltimes]/(3600*24), self.sens4[self.STDreltimes], color = self.color, label = 'Measured 4He Sensitivity')
+            ax1.errorbar(self.Dt[self.STDreltimes]/(3600*24), self.sens4[self.STDreltimes], yerr = 2*np.array(self.sigma4)[self.STDreltimes], color = self.color, alpha = 0.5, linestyle = '')
+            ax1.plot(self.x[self.modelreltimes]/(3600*24), self.model4[self.modelreltimes]+(2*self.model4sigma[self.modelreltimes]), alpha = 0.4, linestyle = '--', color=self.color)
+            ax1.plot(self.x[self.modelreltimes]/(3600*24), self.model4[self.modelreltimes]-(2*self.model4sigma[self.modelreltimes]), alpha = 0.4, linestyle = '--', color=self.color)
+            ax1.scatter(self.AnalDT/(3600*24), self.model4[self.sensIND], s = 20, marker = 'x', color = 'k', label = 'Interpolated In-run 4He Sensitivity')
+            ax1.errorbar(self.AnalDT/(3600*24), self.model4[self.sensIND], yerr = 2*np.array(self.model4sigma[self.sensIND]), color = 'grey', alpha = 0.4, linestyle='')
+            
+            ax1.tick_params(axis='y', labelcolor=self.color)
+            ax1.legend(loc = 'upper right', fontsize = 'small')
+            
+            ax2 = ax1.twinx() 
+            self.color = 'tab:blue'
+            ax2.set_ylabel('3He Sensitivity pCCSTP/cps', color=self.color)  # we already handled the x-label with ax1
+            ax2.plot(self.x[self.modelreltimes]/(3600*24), self.model3[self.modelreltimes], color=self.color)
+            ax2.scatter(self.Dt[self.STDreltimes]/(3600*24), self.sens3[self.STDreltimes], color = self.color, label = 'Measured 3He Sensitivity')
+            ax2.errorbar(self.Dt[self.STDreltimes]/(3600*24), self.sens3[self.STDreltimes], yerr = 2*np.array(self.sigma3)[self.STDreltimes], color = self.color, alpha = 0.5, linestyle = '')
+            ax2.plot(self.x[self.modelreltimes]/(3600*24), self.model3[self.modelreltimes]+(2*self.model3sigma[self.modelreltimes]), alpha = 0.4, linestyle = '--', color=self.color)
+            ax2.plot(self.x[self.modelreltimes]/(3600*24), self.model3[self.modelreltimes]-(2*self.model3sigma[self.modelreltimes]), alpha = 0.4, linestyle = '--', color=self.color)
+            ax2.scatter(self.AnalDT/(3600*24), self.model3[self.sensIND], s = 25, marker = '+', color = 'k', label = 'Interpolated In-run 3He Sensitivity')
+            ax2.errorbar(self.AnalDT/(3600*24), self.model3[self.sensIND], yerr = 2*np.array(self.model3sigma[self.sensIND]), color = 'grey', alpha = 0.4, linestyle = '')
+            ax2.tick_params(axis='y', labelcolor=self.color)
+            
+            #plt.xlim((min(self.AnalDT/(3600*24)) -1, max(self.AnalDT/(3600*24)) + 1))
+            ax2.legend(loc='lower right', fontsize = 'small')#
+            plt.title('Helium Sensitivities MC')
+            fig.tight_layout()  # otherwise the right y-label is slightly clipped
+            plt.savefig('interpSensitivitiesHeMC.jpg', dpi = 256)
+        
+        outlist = [self.Anal3He, self.Anal4He]
+        if uncertainties:
+            outlist += [self.Anal3He*(self.model3sigma[self.sensIND]/self.model3[self.sensIND]), self.Anal4He*(self.model4sigma[self.sensIND]/self.model4[self.sensIND])]
+        if sens_out:
+            outlist += [self.model3[self.sensIND], self.model4[self.sensIND]]
+            #return ((self.Anal3He, self.Anal4He), (self.model3[self.sensIND], self.model4[self.sensIND]))
+        return outlist
+    
+    
+reducer = MCHeReducer('STD_nov.csv')
+reducer.plot()
+
+    
+    
+reducer = MCHeReducer('2024STDsMC.csv')
+reducer.plot()
+
+
+
+CELL 3: CODE
+Execution count: 7
+──────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+CELL 4: MARKDOWN
+──────────────────────────────────────────────────────────────────────────────────────────
+1.	Look up the He diffusion parameters for quartz given by Shuster and Farley 2005. Compute the amount of He released from quartz of the grain size used in that paper for a heating schedule of one hour steps from 100 to 500 C in 25 degree steps. Be careful with units for diffusion parameters and for temperature.  Save the results.
+
+
+CELL 5: CODE
+Execution count: 4
+──────────────────────────────────────────────────────────────────────────────────────────
+"""Diffusion Parameters for 3He in a 430 micron quartz crystal, Taken from Shuster and Farley, 2005"""
+
+Ea = 84500 #J/mol
+D0_a2 = np.exp(11.1) #s^-1
+
+T = np.arange(100, 525, 25) # C
+t = np.ones_like(T)*60 #minutes
+
+Fcum_Qz430 = Simulate_Diffusion(D0_a2, Ea, T, t)
+plt.scatter(T,Fcum_Qz430);
+plt.title('Irradiated 430 Micron Quartz Prograde Step-Heat');
+plt.xlabel('Temperature (C) step held for 1 hour');
+plt.ylabel('Cumulative Fractional yield');
+
+
+CELL 6: MARKDOWN
+──────────────────────────────────────────────────────────────────────────────────────────
+2.	Recompute for a grain size 100 times larger. (i.e., scale a up by 100). save the results.
+
+
+CELL 7: CODE
+Execution count: 5
+──────────────────────────────────────────────────────────────────────────────────────────
+a = 430 #micron
+D0 = D0_a2 * ((a/1E4)**2) # cm^2/sec
+Fcum_Qz4cm = Simulate_Diffusion(D0/(((a/1E4)*100)**2), Ea, T, t)
+plt.scatter(T,Fcum_Qz430, label = '430 micron');
+plt.scatter(T,Fcum_Qz4cm, label = '4.3 centimeter');
+plt.legend();
+plt.title('Irradiated Quartz Prograde Step-Heat');
+plt.xlabel('Temperature (C) step held for 1 hour');
+plt.ylabel('Cumulative Fractional yield');
+
+
+CELL 8: MARKDOWN
+──────────────────────────────────────────────────────────────────────────────────────────
+3.	Take the saved data for each, and use the fractional yield data to compute diffusion coeffs for each step. Plot both grain size data sets on an arrhenius plot. make sure you understand why they are offset from each other by exactly the amount they are.
+
+
+CELL 9: CODE
+Execution count: 6
+──────────────────────────────────────────────────────────────────────────────────────────
+D_a2_qz430um = []
+D_a2_qz4cm = []
+Fp430 = 0
+Fp4cm = 0
+
+for i in range(len(Fcum_Qz430)):
+    F430 = Fcum_Qz430[i]
+    F4cm = Fcum_Qz4cm[i]
+    D_a2_qz430um.append(InvertFrequencyFactor(F = F430, Fp = Fp430, t = t[0]*60)) # Takes time in seconds
+    D_a2_qz4cm.append(InvertFrequencyFactor(F = F4cm, Fp = Fp4cm, t = t[0]*60))
+    Fp430 = F430
+    Fp4cm = F4cm
+
+
+Inv_Temp = 1E4/(T + 273)
+plt.plot(Inv_Temp, np.log(np.array(D_a2_qz430um)), 'r', label = '430 um');
+plt.plot(Inv_Temp, np.log(np.array(D_a2_qz4cm)), 'b', label = '4.3 cm');
+plt.xlabel('10^4/T(K)');
+plt.ylabel('ln(D/a^2)');
+plt.legend()
+plt.title('Diffusivity Inversions from Degassing of Uniform 3He in quartz');
+
+
+CELL 10: MARKDOWN
+──────────────────────────────────────────────────────────────────────────────────────────
+Diffusivity is an intensive material property and thus does not vary as a function of diffusivity domain size. 
+
+In natural log space, the diffusivity difference of two diffusion domains of the same material at constant temperature can be expressed as follows:
+
+$$ ln\left(\frac{D}{a_1^2}\right) - ln\left(\frac{D}{a_2^2}\right) = lna_2^2 -lna_1^2$$
+
+
+    
+I verify my results below. There is some amount of variable, very small errors in the approximations made by Fechtig and Kalbiter, 1966, thus I have take the mean of the difference in diffusivity inversions that were available before the 430 micron quartz runs out of gas.
+
+
+CELL 11: CODE
+Execution count: 7
+──────────────────────────────────────────────────────────────────────────────────────────
+a1 = 0.043 #430 micron
+a2 = 4.3 #cm
+print(f"Expected Diffusivity difference: {np.log(a2**2) - np.log(a1**2)} \nSimulated Diffusivity difference: {np.mean((np.log(np.array(D_a2_qz430um)) - np.log(np.array(D_a2_qz4cm)))[:6])}")
+
+
+CELL 12: MARKDOWN
+──────────────────────────────────────────────────────────────────────────────────────────
+4.	Now simulate a multidomain system that consists of 9 parts of the small grain size and one part of the large grain size by combining your computations in parts 1 and 2 above in appropraite proportions and normalizing the yield. Compute diffusion coefficients from this combined system, and plot with results in step 3. Study the resulting profile until you have a good intuitive feel for it. 
+
+
+CELL 13: CODE
+Execution count: 8
+──────────────────────────────────────────────────────────────────────────────────────────
+v = np.array([0.9,0.1]) # Parts
+a = np.array([a1, a2]) # Radii in centimeters
+
+Fcum_MDD = Simulate_MDD_diffusion(D0 = D0, Ea = Ea, v = v, a = a, T = T, t = t)
+plt.scatter(T,Fcum_Qz430, label = '430 micron');
+plt.scatter(T,Fcum_Qz4cm, label = '4.3 centimeter');
+plt.scatter(T,Fcum_MDD, label = '90% Small 10% Large');
+plt.legend();
+plt.title('Irradiated Quartz Prograde Step-Heat');
+plt.xlabel('Temperature (C) step held for 1 hour');
+plt.ylabel('Cumulative Fractional yield');
+
+
+CELL 14: CODE
+Execution count: 9
+──────────────────────────────────────────────────────────────────────────────────────────
+D_MDD = []
+FpMDD = 0
+
+v = np.array([0.9,0.1]) # Parts
+a = np.array([a1, a2]) # Radii in centimeters
+
+Fcum_MDD = Simulate_MDD_diffusion(D0 = D0, Ea = Ea, v = v, a = a, T = T, t = t)
+plt.scatter(T,Fcum_Qz430, label = '430 micron');
+plt.scatter(T,Fcum_Qz4cm, label = '4.3 centimeter');
+plt.scatter(T,Fcum_MDD, label = '90% Small 10% Large');
+plt.legend();
+plt.title('Irradiated Quartz Prograde Step-Heat');
+plt.xlabel('Temperature (C) step held for 1 hour');
+plt.ylabel('Cumulative Fractional yield');
+plt.show()
+
+for i in range(len(Fcum_MDD)):
+    FMDD = Fcum_MDD[i]
+    D_MDD.append(InvertFrequencyFactor(F = FMDD, Fp = FpMDD, t = t[0]*60)) # Takes time in seconds
+    FpMDD = FMDD
+
+plt.plot(Inv_Temp, np.log(np.array(D_a2_qz430um)), 'r', label = '430 um');
+plt.plot(Inv_Temp, np.log(np.array(D_a2_qz4cm)), 'b', label = '4.3 cm')
+plt.scatter(Inv_Temp, np.log(np.array(D_MDD)), label = '90% 430 um; 10% 4.3 cm')
+plt.xlabel('10^4/T(K)');
+plt.ylabel('ln(D/a^2)');
+plt.legend()
+plt.title('Diffusivity Inversions from Degassing of Uniform 3He in quartz');
+plt.show()
+
+
+CELL 15: MARKDOWN
+──────────────────────────────────────────────────────────────────────────────────────────
+5.	 Now repeat the entire exercise using a cycled step heat in which you include a retrograde sequence of steps (i.e., declining temperature). Study the plot until you truly understand it.
+
+
+CELL 16: CODE
+Execution count: 100
+──────────────────────────────────────────────────────────────────────────────────────────
+T = np.append(np.linspace(100,500, 10), np.linspace(500,100, 10))
+#T = np.linspace(100,500,50)
+t = np.ones_like(T*60) # 1 minutes
+a = 430 #micron
+D0 = D0_a2 * ((a/1E4)**2) # cm^2/sec
+Fcum_Qz4cm = Simulate_Diffusion(D0/(((a/1E4)*100)**2), Ea, T, t)
+Fcum_Qz430 = Simulate_Diffusion(D0_a2, Ea, T, t)
+
+v = np.array([0.7,0.3]) # Parts
+a = np.array([0.043, 4.3]) # Radii in centimeters
+Fcum_MDD = Simulate_MDD_diffusion(D0 = D0, Ea = Ea, v = v, a = a, T = T, t = t)
+
+
+D_a2_qz430um = []
+D_a2_qz4cm = []
+D_MDD = []
+Fp430 = 0
+Fp4cm = 0
+FpMDD = 0
+
+
+for i in range(len(Fcum_Qz430)):
+    F430 = Fcum_Qz430[i]
+    F4cm = Fcum_Qz4cm[i]
+    D_a2_qz430um.append(InvertFrequencyFactor(F = F430, Fp = Fp430, t = t[0]*60)) # Takes time in seconds
+    D_a2_qz4cm.append(InvertFrequencyFactor(F = F4cm, Fp = Fp4cm, t = t[0]*60))
+    Fp430 = F430
+    Fp4cm = F4cm
+    FMDD = Fcum_MDD[i]
+    D_MDD.append(InvertFrequencyFactor(F = FMDD, Fp = FpMDD, t = t[0]*60)) # Takes time in seconds
+    FpMDD = FMDD
+
+plt.plot(T,Fcum_Qz430, label = '430 micron');
+plt.plot(T,Fcum_Qz4cm, label = '4.3 centimeter');
+plt.plot(T,Fcum_MDD, label = '90% Small 10% Large');
+plt.legend();
+plt.title('Irradiated Quartz Step-Heat');
+plt.xlabel('Temperature (C) step held for 1 minute');
+plt.ylabel('Cumulative Fractional yield');
+plt.show()
+
+Delta1 = np.log(np.array(D_MDD)) - np.log(np.array(D_a2_qz430um))
+plt.plot(Fcum_MDD,Delta1); 
+plt.axhline(0, c = 'k')
+plt.title('Delta plot (MDD relative to Small Domain)')
+plt.ylabel('Delta (ln(D/a^2))');
+plt.xlabel('Cumulative Yield')
+plt.show()
+
+
+Inv_Temp = 1E4/(T+273)
+plt.plot(Inv_Temp, np.log(np.array(D_a2_qz430um)), 'r', label = '430 um');
+plt.plot(Inv_Temp, np.log(np.array(D_a2_qz4cm)), 'b', label = '4.3 cm')
+plt.scatter(Inv_Temp, np.log(np.array(D_MDD)), label = '90% 430 um; 10% 4.3 cm')
+plt.xlabel('10^4/T(K)');
+plt.ylabel('ln(D/a^2)');
+plt.legend()
+plt.title('Diffusivity Inversions from Degassing of Uniform 3He in quartz');
+plt.show()
+
+T = np.append(np.linspace(100,200, 10), np.linspace(200,100, 10))
+for i in range(3):
+    T = np.append(T, np.linspace(100,(100+(150*i)), 10))
+    T = np.append(T, np.linspace((100+(100*i)), 100, 10))
+t = np.ones_like(T) # 1 minutes
+a = 430 #micron
+D0 = D0_a2 * ((a/1E4)**2) # cm^2/sec
+Fcum_Qz4cm = Simulate_Diffusion(D0/(((a/1E4)*100)**2), Ea, T, t)
+Fcum_Qz430 = Simulate_Diffusion(D0_a2, Ea, T, t)
+
+v = np.array([0.7,0.3]) # Parts
+a = np.array([0.043, 4.3]) # Radii in centimeters
+Fcum_MDD = Simulate_MDD_diffusion(D0 = D0, Ea = Ea, v = v, a = a, T = T, t = t)
+
+
+D_a2_qz430um = []
+D_a2_qz4cm = []
+D_MDD = []
+Fp430 = 0
+Fp4cm = 0
+
+FpMDD = 0
+
+
+for i in range(len(Fcum_Qz430)):
+    F430 = Fcum_Qz430[i]
+    F4cm = Fcum_Qz4cm[i]
+    D_a2_qz430um.append(InvertFrequencyFactor(F = F430, Fp = Fp430, t = t[0]*60)) # Takes time in seconds
+    D_a2_qz4cm.append(InvertFrequencyFactor(F = F4cm, Fp = Fp4cm, t = t[0]*60))
+    Fp430 = F430
+    Fp4cm = F4cm
+    FMDD = Fcum_MDD[i]
+    D_MDD.append(InvertFrequencyFactor(F = FMDD, Fp = FpMDD, t = t[0]*60)) # Takes time in seconds
+    FpMDD = FMDD
+
+Delta2 = np.log(np.array(D_MDD)) - np.log(np.array(D_a2_qz430um))
+
+plt.plot(T,Fcum_Qz430, label = '430 micron');
+plt.plot(T,Fcum_Qz4cm, label = '4.3 centimeter');
+plt.plot(T,Fcum_MDD, label = '90% Small 10% Large');
+plt.legend();
+plt.title('Irradiated Quartz Step-Heat');
+plt.xlabel('Temperature (C) step held for 1 minute');
+plt.ylabel('Cumulative Fractional yield');
+plt.show()
+
+
+Inv_Temp = 1E4/(T+273)
+plt.plot(Inv_Temp, np.log(np.array(D_a2_qz430um)), 'r', label = '430 um');
+plt.plot(Inv_Temp, np.log(np.array(D_a2_qz4cm)), 'b', label = '4.3 cm')
+plt.scatter(Inv_Temp, np.log(np.array(D_MDD)), label = '90% 430 um; 10% 4.3 cm')
+plt.xlabel('10^4/T(K)');
+plt.ylabel('ln(D/a^2)');
+plt.legend()
+plt.title('Diffusivity Inversions from Degassing of Uniform 3He in quartz');
+plt.show()
+
+
+plt.plot(Fcum_MDD,Delta2); 
+plt.axhline(0, c = 'k');
+plt.title('Delta plot (MDD relative to Small Domain)');
+plt.ylabel('Delta (ln(D/a^2))');
+plt.xlabel('Cumulative Yield');
+
+
+
+CELL 17: CODE
+Execution count: 101
+──────────────────────────────────────────────────────────────────────────────────────────
+### T = np.append(np.linspace(100,200, 10), np.linspace(200,100, 10))
+for i in range(3):
+    T = np.append(T, np.linspace(100,(100+(150*i)), 10))
+    T = np.append(T, np.linspace((100+(150*i)), 100, 10))
+t = np.ones_like(T) # 1 minutes
+a = 430 #micron
+D0 = D0_a2 * ((a/1E4)**2) # cm^2/sec
+#Fcum_Qz4cm = Simulate_Diffusion(D0/(((a/1E4)*100)**2), Ea, T, t)
+Fcum_Qz430 = Simulate_Diffusion(D0_a2, Ea, T, t)
+
+SD = np.array([0, 40, 140])*1E-4
+v = GaussianPDF(np.linspace(-3,3,201))
+v /= np.sum(v)
+
+FMDDs = []
+DMDDs = []
+for sd in SD:
+    a = np.linspace(0.043-(sd*3), 0.043+(sd*3),201)
+    Fcum_MDD = Simulate_MDD_diffusion(D0 = D0, Ea = Ea, v = v, a = a, T = T, t = t)
+    D_MDD = []
+    for i in range(len(Fcum_MDD)):
+        FMDD = Fcum_MDD[i]
+        #print(len(Fcum_MDD[i]))
+        D_MDD.append(InvertFrequencyFactor(F = FMDD, Fp = FpMDD, t = t[i]*60)) # Takes time in seconds
+        
+        FpMDD = FMDD
+    print(len(D_MDD))
+    FMDDs.append(Fcum_MDD)
+    DMDDs.append(D_MDD)
+
+for i, sd in enumerate(SD):
+    plt.plot(T,FMDDs[i], label = f'430 micron Mean, Sigma = {sd*1E4}');
+plt.legend();
+plt.title('Irradiated Quartz Step-Heat');
+plt.xlabel('Temperature (C) step held for 1 minute');
+plt.ylabel('Cumulative Fractional yield');
+plt.show()
+
+R = 8.314
+Inv_Temp = 1E4/(T+273)
+cols = ['blue','orange','green']
+for i, sd in enumerate(SD):
+    x = Inv_Temp
+    y = np.log(np.array(DMDDs[i]))
+    u = -(np.append(np.array(x)[1:], 0) - x)
+    ve = -(np.append(np.array(y)[1:], 0) - y)      
+    #plt.quiver(x,y,u,ve, color = cols[i], label = f'430 micron Mean, Sigma = {sd*1E4}');
+    plt.scatter(x,y,label = f'430 micron Mean, Sigma = {sd*1E4}')
+real_D_a2_430 = (D0/((0.043**2))) * (np.exp(-(Ea*(Inv_Temp/1E4))/R))
+real_D_a2_4cm = (D0/((4.3**2))) * (np.exp(-(Ea*(Inv_Temp/1E4))/R))
+plt.plot(Inv_Temp, np.log(real_D_a2_430), label = '430 um')
+#plt.scatter(Inv_Temp, np.log(np.array([DMDDs[0]])))
+plt.xlabel('10^4/T(K)');
+plt.ylabel('ln(D/a^2)');
+plt.legend()
+plt.title('Diffusivity Inversions from Degassing of Uniform 3He in quartz');
+plt.show()
+
+plt.scatter(a*1E4,v);
+plt.xlabel('Diffusion Domain size for sigma = 140 microns');
+plt.ylabel('Fractional volume');
+plt.show()
+
+
+CELL 18: MARKDOWN
+──────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+CELL 19: CODE
+Execution count: 161
+──────────────────────────────────────────────────────────────────────────────────────────
+real_D_a2_430 = (D0/((0.043**2))) * (np.exp(-(Ea*(Inv_Temp/1E4))/R))
+real_D_a2_4cm = (D0/((4.3**2))) * (np.exp(-(Ea*(Inv_Temp/1E4))/R))
+
+Delta = real_D_a2_430 - 
+
+
+CELL 20: CODE
+Execution count: 191
+──────────────────────────────────────────────────────────────────────────────────────────
+def Forward_SJM(k0, Ea, T, t, R = 8.314):
+    """ Decribes first order Single Jump Model for atom migration in crystal, T in Celcius and t in seconds, k0 be sec^-1
+    """
+    if np.shape(T) != np.shape(t) or T.ndim != 1:
+        raise ValueError('Let T and t be 1D arrays of equal length describing sequential time-temperature steps')
+    F = [1]
+    for i, sec in enumerate(t):
+        K = T[i]+273
+        d = k0*np.exp(-Ea/(R*K))
+        F.append(F[-1]*np.exp(-d*sec))
+    return F
+
+Ea = 36000
+k0 = 1.9E6
+F_residual = np.array(Forward_SJM(Ea = Ea, k0 = k0, t = TimeSeconds, T = TempKelvin-273, R = 1.987))
+Fcum = (1 - F_residual)*total_yield
+released = Fcum[1:]-Fcum[:-1]
+plt.xlabel('Heating Step')
+plt.ylabel('He, ncc')
+KCPY_degas = HenCC
+plt.plot(released, label = 'Simulated SJM Degas')
+plt.plot(Fcum, label = 'Simulated SJM Cumulative Degas')
+plt.plot(np.array(fcum)*total_yield, label = 'Observed Cumulative KCPy ST05 Degas')
+plt.plot(HenCC, label = 'Observed KCPy ST05 Degas')
+plt.savefig(newDiffName+'SJM0'+'.svg')
+
+plt.legend()
+plt.show()
+KCPYres_frac = (1-np.array(fcum))/np.append(0,(1-np.array(fcum)[:-1]))
+res_frac = F_residual[1:]/F_residual[:-1]
+y = np.log(np.log(1/res_frac)) - np.log(TimeSeconds)
+y1 = np.log(np.log(1/KCPYres_frac)) - np.log(TimeSeconds)
+x = 1/TempKelvin
+plt.plot(x,y1, linestyle='--', marker='o',label = 'Observed KCPy First-Order Inversion')
+plt.plot(x,y, linestyle='--', marker='o', label = 'Simulated SJM First-Order Inversion')
+plt.legend()
+ax2.set_xlim(ax1.get_xlim())
+ax2.set_xticks(1/(Ctemps+273))
+ax1.set_ylabel('lnln(He_0/He_t) - ln(t)')
+ax2.set_xticklabels(Ctemps)
+ax2.set_xlabel('Temperature (C)')
+plt.savefig(newDiffName+'SJM'+'.svg')
+plt.show()
+
+plt.plot(10000/TempKelvin, np.array(lnD_a2), linestyle='--', marker='o', label = 'Observed KCPy')
+Fp = 0
+D_a2 = []
+lnD_a2 = []
+for i, He in enumerate(released):
+    F = Fp + (He/total_yield)
+    frequency_factor = InvertFrequencyFactor(t = TimeSeconds[i], F = F, Fp = Fp)
+    D_a2.append(frequency_factor)
+    lnD_a2.append(np.log(frequency_factor))
+    #blank_corrected_yield.append(step_yield)
+    #DC_indices.append(i)
+    fcum.append(F)
+    Fp = F
+plt.plot(10000/TempKelvin, np.array(lnD_a2), linestyle='--', marker='o', label = 'Diff. Inversion of SJM')
+plt.legend()
+plt.xlabel('10^4/T(K)')
+plt.ylabel('ln(D_a2) (sec^-1)')
+plt.savefig(newDiffName+'SJM1'+'.svg')
+plt.show()
+
+def MSJM(k0, Ea, v, T, t, R = 8.314):
+    """Let T,t,R be as above with the forward MSJM model, and there be vectors of equal lengths describing different 
+    energy positions for K0 and Ea, with v being their respective fractional yield"""
+    assert len(k0) == len(Ea)
+    assert len(k0) == len(v)
+    v /= np.sum(v) # force to sum to 1
+    
+    f_residual = np.zeros_like(k0)
+    for i, p in enumerate(v):
+        f_residual += (np.array(Forward__SJM(k0[i], Ea[i],T,t,R))*p)
+        
+    
+
+
+CELL 21: CODE
+Execution count: 5
+──────────────────────────────────────────────────────────────────────────────────────────
+Ea = 36000
+k0 = 1E3
+F_residual = np.array(Forward_SJM(Ea = Ea, k0 = k0, t = realTimeSeconds, T = realTempKelvin-273, R = 1.987))
+print(F_residual)
+Fcum = (1 - F_residual)*total_yield
+print()
+released = Fcum[1:]-Fcum[:-1]
+plt.xlabel('Heating Step')
+plt.ylabel('He, ncc')
+KCPY_degas = HenCC
+plt.plot(released, label = 'Simulated SJM Degas')
+plt.plot(Fcum, label = 'Simulated SJM Cumulative Degas')
+plt.plot(np.array(fcum)*total_yield, label = 'Observed Cumulative KCPy ST05 Degas')
+plt.plot(HenCC, label = 'Observed KCPy ST05 Degas')
+plt.savefig(newDiffName+'SJM0'+'.svg')
+
+plt.legend()
+plt.show()
+KCPYres_frac = (1-np.array(fcum))/np.append(0,(1-np.array(fcum)[:-1]))
+res_frac = F_residual[1:]/F_residual[:-1]
+y = np.log(np.log(1/res_frac)) - np.log(realTimeSeconds)
+y1 = np.log(np.log(1/KCPYres_frac)) - np.log(realTimeSeconds)
+x = 1/realTempKelvin
+plt.plot(x,y1, linestyle='--', marker='o',label = 'Observed KCPy First-Order Inversion')
+plt.plot(x,y, linestyle='--', marker='o', label = 'Simulated SJM First-Order Inversion')
+plt.legend()
+ax2.set_xlim(ax1.get_xlim())
+ax2.set_xticks(1/(Ctemps+273))
+ax1.set_ylabel('lnln(He_0/He_t) - ln(t)')
+ax2.set_xticklabels(Ctemps)
+ax2.set_xlabel('Temperature (C)')
+plt.savefig(newDiffName+'SJM'+'.svg')
+plt.show()
+
+plt.plot(10000/realTempKelvin, np.array(lnD_a2), linestyle='--', marker='o', label = 'Observed KCPy')
+Fp = 0
+D_a2 = []
+lnD_a2 = []
+for i, He in enumerate(released):
+    F = Fp + (He/total_yield)
+    frequency_factor = InvertFrequencyFactor(t = realTimeSeconds[i], F = F, Fp = Fp)
+    D_a2.append(frequency_factor)
+    lnD_a2.append(np.log(frequency_factor))
+    #blank_corrected_yield.append(step_yield)
+    #DC_indices.append(i)
+    fcum.append(F)
+    Fp = F
+plt.plot(10000/realTempKelvin, np.array(lnD_a2), linestyle='--', marker='o', label = 'Diff. Inversion of SJM')
+plt.legend()
+plt.xlabel('10^4/T(K)')
+plt.ylabel('ln(D_a2) (sec^-1)')
+plt.savefig(newDiffName+'SJM1'+'.svg')
+plt.show()
+
+
+CELL 22: CODE
+Execution count: 61
+──────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+CELL 23: CODE
+──────────────────────────────────────────────────────────────────────────────────────────
+#FIG 1!!!
+
+Ratoms = 1.3621E-22
+Rcal = 1.987
+
+Tsched = [200,100,230,100,260,100,290,160,400,200,400,200] 
+tsched = [3600,3600,3600,3600,7200,3600,3600,14400,1800,3600,1800,3600]
+
+def Simulate_Diffusion_Tube(D0, a, Ea, T, t, OD, ID, R = 1.987):
+    """Let T and t be 1D arrays of equal length describing sequential time-temperature steps,
+    T in Kelvin and t in seconds
+    Let D0_a2 be sec^-1
+    Default activation energy units are joules/mol, but R can be changed to match other energy units"""
+    #if np.shape(T) != np.shape(t) or T.ndim != 1:
+    #    raise ValueError('Let T and t be 1D arrays of equal length describing sequential time-temperature steps')
+    
+    total_seconds = np.arange(np.sum(t))
+    n0 = []
+    n0_ends = []
+    Fstep_apparent = []
+    Fcum = []
+    Fcum_apparent = []
+    Fcum_apparentP = 0
+    FP = 0
+    Dt_a2 = 0
+    n0P = 0 
+    t_out = []
+    t_outP = 0
+    outF = 0
+    temps = []
+    Fsteps = []
+    #n1HT = [0]
+    G = 2/(np.log(OD/ID)*((ID/2)**2))
+    for j, tstep in enumerate(t):
+        Tk = T[j] + 273
+        D = D0*np.exp(-Ea/(R*Tk))
+        outF = 0 # collected gas in a single step
+        denom = Tk*Ratoms*G*swets_K(Tk)
+        for s in np.arange(tstep):
+            Dt_a2 += D/(a**2) # per second
+            F_step = Forward_Diffuse(Dt_a2) - FP
+            n0.append(F_step+n0P)
+            FP += F_step
+            Fcum.append(FP)
+            n_n0 = tube_permeate2(T = Tk, t=1, ID = ID, OD = OD)
+            out = n0[-1]*(1-n_n0)
+            n0[-1] -= out
+            outF += out
+            Fsteps.append(out)
+            n0P = n0[-1]
+            #n1HT.append(((out-n1HT[-1])/denom)/(1-(1/denom)))
+            #n1HT
+            temps.append(Tk)
+        print(n_n0)
+        n0_ends.append(n0P)
+        Fstep_apparent.append(outF)
+        Fcum_apparent.append(outF+Fcum_apparentP)
+        Fcum_apparentP = Fcum_apparent[-1]
+        t_out.append(t_outP+tstep)
+        t_outP = t_out[-1]
+        
+    return Fcum, n0, Fstep_apparent, Fcum_apparent, n0_ends, t_out, temps, Fsteps
+
+time_input =  [10800,7200,7200,7200,3600, 7200, 7200,7200,7200] #seconds
+temp_input = [200,250,300,350,400,325,275,250,175] # celcius
+
+Fcum, n0, Fstep_apparent, Fcum_apparent, n0_ends, t_out, temps, Fsteps = Simulate_Diffusion_Tube(D0 = 10**1.5, a = 150/1E4, T = temp_input, t =time_input, Ea = 33000, OD = 1000/1E4, ID=600/1E4)
+#plt.figure(figsize=(2.5,3.5))
+plt.plot(np.arange(len(n0))/3600, n0, color = 'red', label = r'$^{He}F$ in tube')
+#plt.plot(np.arange(len(n0)), Fsteps, label = 'Apparent Yield (measured)')
+#plt.plot(np.arange(len(n0)), Fcum[1:]-Fcum[:-1], label = 'Fractional Yield from Apatite')
+
+plt.plot(np.arange(len(n0))/3600, Fcum, color = 'black', label = r'Apatite $\Sigma ^{He}F$')
+#plt.plot(np.array(t_out)/3600, Fcum_apparent, color = 'k', linestyle = '--', label = r'"Measured" $\Sigma ^{He}F$')
+
+cmap = mpl.cm.get_cmap('viridis')
+norm = mpl.colors.Normalize(vmin=np.min(temp_input), vmax=np.max(temp_input))
+mapped_colors = cmap(norm(temp_input))
+
+
+plt.plot([0,t_out[0]/3600], [0,Fcum_apparent[0]], color = mapped_colors[0], linestyle = '--')
+for i, ti in enumerate(t_out[:-1]):
+    plt.plot([ti/3600, t_out[i+1]/3600], [Fcum_apparent[i],Fcum_apparent[i+1]], color = mapped_colors[i+1], linestyle = '--')
+#plt.scatter(t_out, n1HT[1:], label = 'Inferred Tube Contents from High Temp')
+plt.xlabel('Time (Hours)')
+plt.ylabel(r'Fractional Helium Yield $\left(\Sigma\right) ^{He}F$')
+plt.scatter(np.array(t_out)/3600, Fcum_apparent, c = temp_input,label = r'"Measured" $\Sigma ^{He}F$')
+
+cbar = plt.colorbar()
+cbar.set_label('Temperature (°C)')
+plt.grid(True)
+plt.title('Forward Modeled Helium Step Heat Yields\nfor Encapsulated Durango Apatite')
+plt.legend()#loc='upper left', fontsize = 6)
+plt.tight_layout()
+plt.savefig('Durango_Sim.jpg', dpi=256)#, dpi = 1024)
+plt.show()
+
+
+diffdat = diffusion_reduction(Fstep_apparent+[1-Fstep_apparent[-1]], TimeSeconds=np.array(time_input+[0]), TempKelvin=np.array(temp_input+[0])+273, newDiffName='simulated_durango')
+plt.show()
+
+x = diffdat['10^4/T']
+y = diffdat['ln(D/a^2)']
+
+['Temp (C)', 'Time (min)', 'He Yield (nCC@STP)', 'Fcum', 'D/a^2 ', 'ln(D/a^2)', '10^4/T']
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+ax2 = ax1.twiny()
+Ctemps = np.array([100,150,200,250,300,350,400])
+
+xliminp = [160,420]
+
+ax1.plot(x,y,marker = 'o', linestyle = '--', label = '"Measured" Apparent Diffusivities')
+
+
+xlim = np.array([1E4/(273+xliminp[1]),1E4/(273+xliminp[0])])
+
+ax1.plot(xlim,np.log((10**1.5)/(0.0150**2)*np.exp(-33000/(1.987*10000/xlim))), color = 'red', label = 'True Diffusivity')
+
+ax1.set_xlim(xlim)
+#ax1.set_ylim([-35,-9])
+#ax1.set_ylim([-32,-17])#[-35,-9])
+ax2.set_xticks(1E4/(Ctemps+273))
+ax2.set_xlim(ax1.get_xlim())
+ax2.set_xticklabels(Ctemps)
+ax2.set_xlabel('Temperature (C)')
+ax1.set_xlabel(r'$\frac{10000}{T^{ }(K)}$')
+ax1.set_ylabel(r'Apparent Diffusivity $\left(\frac{D}{a^2}\right)$')
+#ax1.legend(loc = 'upper right', fontsize = 8)
+ax1.grid(True)
+ax1.legend()
+plt.title('Forward Modeled Apparent Helium Diffusivities\nfor Encapsulated Durango Apatite')
+fig.tight_layout()
+plt.savefig('Apatite_diff_sim.jpg', dpi=256)#dpi = 1024)
+plt.show()
+
+
+CELL 24: CODE
+Execution count: 14
+──────────────────────────────────────────────────────────────────────────────────────────
+## Steady State Simulations
+n1HT = [0]
+
+OD = 1000/1E4
+ID=600/1E4
+G = 2/(np.log(OD/ID)*((ID/2)**2))
+
+for i, step in enumerate(Fstep_apparent):
+    denom = (Tsched[i]+273)*tsched[i]*Ratoms*G*swets_K(Tsched[i]+273)
+    n1HT.append( ((((step-n1HT[-1])/denom)*(1-np.exp(-denom))) + (n1HT[-1]*np.exp(-denom)))  /  (1-((1/denom)*(1-np.exp(-denom)))))
+
+
+
+CELL 25: CODE
+Execution count: 250
+──────────────────────────────────────────────────────────────────────────────────────────
+print(n1HT[1:])
+print(Fstep_apparent)
+
+plt.plot(np.array(n0)[np.array(t_out)-1], n1HT[1:])
+
+
+CELL 26: CODE
+Execution count: 11
+──────────────────────────────────────────────────────────────────────────────────────────
+D_MDD = []
+FpMDD = 0
+
+diffDat = pd.read_csv('Batch 55_clarity.csv')
+T = diffDat['Avg Temp'].to_numpy()
+t = diffDat['Time (min)'].to_numpy()
+
+#v = np.array([0.9,0.1]) # Parts
+#a = np.array([a1, a2]) # Radii in centimeters
+
+# log normal size distribution with mode at 1 micron 
+#a = np.exp(np.linspace(-7,2,100))/1E4
+#a = max(a*1.01) - a
+a = np.linspace(10**-2, 10**0,100)/1E4
+#v = GaussianPDF(np.linspace(-3,3,100)) #sigma
+#v = np.ones_like(a)
+#v = np.append(np_ones(30)
+              
+a = np.array([0.1,1,10])
+v = np.array([0.3,0.1,0.6])
+              
+v /= np.sum(v)
+
+              
+              
+D0 = float(10**14)
+Ea = 255000
+
+Fcum_MDD = Simulate_MDD_diffusion(D0 = D0, Ea = Ea, v = v, a = a, T = T, t = t)
+#plt.scatter(T,Fcum_Qz430, label = '430 micron');
+#plt.scatter(T,Fcum_Qz4cm, label = '4.3 centimeter');
+plt.scatter(T,Fcum_MDD, label = '90% Small 10% Large');
+plt.legend();
+plt.title(f'Lognormal Distribution of diffusion domains with mode at 1 micron. \nlog10(D0) = {np.log10(D0)} cm^2/s, Ea = {Ea} J/mol');
+plt.xlabel('Temperature (C) step held for 1 hour');
+plt.ylabel('Cumulative Fractional yield');
+plt.show()
+
+for i in range(len(Fcum_MDD)):
+    FMDD = Fcum_MDD[i]
+    D_MDD.append(InvertFrequencyFactor(F = FMDD, Fp = FpMDD, t = t[0]*60)) # Takes time in seconds
+    FpMDD = FMDD
+
+#plt.plot(Inv_Temp, np.log(np.array(D_a2_qz430um)), 'r', label = '430 um');
+plt.plot(1E4/(T+273), np.log(np.array(D0/(max(a)**2)*np.exp(-Ea/((T+273)*8.3145)))))
+plt.scatter(1E4/(T+273), np.log(np.array(D_MDD)))#, label = '90% 430 um; 10% 4.3 cm')
+plt.xlabel('10^4/T(K)');
+plt.ylabel('ln(D/a^2)');
+plt.legend()
+plt.title('Diffusivity Inversions from MDD with high Ea');
+plt.show()
+
+plt.hist(a)
+plt.show()
+plt.scatter(a,v)
+plt.show()
+
+
+CELL 27: CODE
+Execution count: 39
+──────────────────────────────────────────────────────────────────────────────────────────
+tsched =  [1000,7200,7200,7200,3600, 7200, 7200,7200,7200] #seconds
+t_sched = np.array(tsched)/10
+Tsched = [250,200,300,350,400,325,275,250,420] # celcius
+Rsched = np.array([5,4,3,2,6,7,4,2,8])/3600
+
+def Simulate_Diffusion_Tube_P(P, T, t, OD, ID, R = 1.987):
+    """Let T and t be 1D arrays of equal length describing sequential time-temperature steps,
+    T in Kelvin and t in seconds
+    Let D0_a2 be sec^-1
+    Default activation energy units are joules/mol, but R can be changed to match other energy units"""
+    #if np.shape(T) != np.shape(t) or T.ndim != 1:
+    #    raise ValueError('Let T and t be 1D arrays of equal length describing sequential time-temperature steps')
+    
+    total_seconds = np.arange(np.sum(t))
+    n0 = []
+    n0_ends = []
+    Fstep_apparent = []
+    Fcum = []
+    Fcum_apparent = []
+    Fcum_apparentP = 0
+    FP = 0
+    #Dt_a2 = 0
+    n0P = 0 
+    t_out = []
+    t_outP = 0
+    outF = 0
+    temps = []
+    Fsteps = []
+    #n1HT = [0]
+    G = 2/(np.log(OD/ID)*((ID/2)**2))
+    for j, tstep in enumerate(t):
+        Tk = T[j] + 273
+        #D = D0*np.exp(-Ea/(R*Tk))
+        outF = 0 # collected gas in a single step
+        denom = Tk*Ratoms*G*swets_K(Tk)
+        F_step = P[j]
+        for s in np.arange(tstep):
+            #Dt_a2 += D/(a**2) # per second
+            #F_step = Forward_Diffuse(Dt_a2) - FP
+            n0.append(F_step+n0P)
+            FP += F_step
+            Fcum.append(FP)
+            n_n0 = tube_permeate2(T = Tk, t=1, ID = ID, OD = OD)
+            out = n0[-1]*(1-n_n0)
+            n0[-1] -= out
+            outF += out
+            Fsteps.append(out)
+            n0P = n0[-1]
+            #n1HT.append(((out-n1HT[-1])/denom)/(1-(1/denom)))
+            #n1HT
+            temps.append(Tk)
+        print(n_n0)
+        n0_ends.append(n0P)
+        Fstep_apparent.append(outF)
+        Fcum_apparent.append(outF+Fcum_apparentP)
+        Fcum_apparentP = Fcum_apparent[-1]
+        t_out.append(t_outP+tstep)
+        t_outP = t_out[-1]
+        
+    return Fcum, n0, Fstep_apparent, Fcum_apparent, n0_ends, t_out, temps, Fsteps
+
+Fcum, n0, Fstep_apparent, Fcum_apparent, n0_ends, t_out, temps, Fsteps = Simulate_Diffusion_Tube_P(P = Rsched, T = Tsched, t = tsched, OD = OD, ID = ID, R = 1.987)
+
+
+CELL 28: CODE
+Execution count: 40
+──────────────────────────────────────────────────────────────────────────────────────────
+n1HT = [0]
+
+for i, step in enumerate(Fstep_apparent):
+    denom = (Tsched[i]+273)*tsched[i]*Ratoms*G*swets_K(Tsched[i]+273)
+    n1HT.append( ((((step-n1HT[-1])/denom)*(1-np.exp(-denom))) + (n1HT[-1]*np.exp(-denom)))  /  (1-((1/denom)*(1-np.exp(-denom)))))
+
+
+
+
+CELL 29: CODE
+Execution count: 253
+──────────────────────────────────────────────────────────────────────────────────────────
+n1HT
+
+
+CELL 30: CODE
+Execution count: 20
+──────────────────────────────────────────────────────────────────────────────────────────
+Fsteps
+
+
+CELL 31: CODE
+Execution count: 43
+──────────────────────────────────────────────────────────────────────────────────────────
+plt.scatter(np.arange(len(n0)), n0, s = 1, c = np.array(temps)-273, label = 'Numerical Simulation')# c = np.array(n0)/np.array(Fsteps), s = 1, label = 'Numerical Simulation')
+plt.scatter(t_out, n1HT[1:], c = np.array(temps)[np.array(t_out)-1] - 273, label = 'Analytical Solution')#, c = (np.array(n0)/np.array(Fsteps))[np.array(t_out)-1], label = 'Analytical Solution')
+cbar = plt.colorbar()
+cbar.set_label('Temperature (C)')#'n1/Q')
+plt.xlabel('Time (s)')
+plt.ylabel('Helium in Tube (Arbitrary units)')
+plt.title('Permeation Lag Modeling for \nArbitrary, Constant Helium Offgassing Rates')
+plt.legend()
+plt.savefig('EQNtest.jpg', dpi  = 256)
+
+
+CELL 32: CODE
+Execution count: 489
+──────────────────────────────────────────────────────────────────────────────────────────
+OD = 0.1
+ID = 0.06
+G = 2/(np.log(OD/ID)*((ID/2)**2))
+
+def n_p(T, t):
+    K = swets_K(T)
+    return((1/(K*G*T*t*Ratoms))*(1-np.exp(-K*G*T*Ratoms*t)))
+
+def SS(T, t):
+    K = swets_K(T)
+    return((1/(K*G*T*t*Ratoms)))
+
+def ssN(T, Q):
+    K = swets_K(T)
+    return(Q/(K*G*T*t*Ratoms))
+
+
+
+colors = ['Blue', 'Green', 'Purple','Pink']
+temps = np.linspace(25,600,1000) + 273
+for i, sec in enumerate(np.array([4,8,24,48])*3600):
+    NP = []
+    ss = []
+    for temp in temps:
+        NP.append(n_p(T = temp, t = sec))
+        ss.append(SS(T = temp, t = sec))
+    plt.plot(temps-273, NP, label = f"{int(sec/3600)} Hour Step", color = colors[i])
+    plt.plot(temps-273, ss, linestyle = '--', color = colors[i])
+plt.xlabel('Temperature (C)')
+plt.ylabel('Portion of Yield in Tube')
+plt.ylim((0,1.25))
+plt.plot([25,600],[0.05,0.05], linestyle = '--', color = 'black', label = '5% Relative Permeation Lag ')
+plt.title('Relative Permeation Lag for Typical Silica Tube\nAssuming Constant Helium Source')
+plt.legend()
+plt.tight_layout()
+plt.savefig('LagPlot.jpg', dpi = 256)
+
+"""
+temps = np.linspace(25,500,1000) + 273
+Qs = 
+for :
+    NP = []
+    for temp in temps:
+        NP.append(n_p(T = temp, t = sec))
+    plt.scatter(temps-273, NP, label = f"{sec/3600} Hour Step")
+plt.xlabel('Temperature (C)')
+plt.ylabel('Portion of Yield in Tube')
+plt.title('Relative Permeation Lag for Typical Tube')
+plt.legend()
+#plt.savefig('LagPlot.jpg', dpi = 256)
+
+
+"""
+
+
+CELL 33: CODE
+Execution count: 232
+──────────────────────────────────────────────────────────────────────────────────────────
+Gs = [2000,3000,4000,5000,6000]
+cols = ['Blue', 'Green', 'Orange', 'Red', 'Violet']
+Ts = np.linspace(200,500,500)#Celcius
+Ks = []
+fig,ax = plt.subplots()
+for T in Ts:
+    Ks.append(swets_K(T+273))
+Ks = np.array(Ks)
+for i,G in enumerate(Gs):
+    lams = (Ts+273)*Ks*G*Ratoms
+    tao5 = (5/lams)/3600
+    plt.plot(Ts,tao5,color = cols[i],label=f"G ={G} cm^-2")
+plt.legend()
+plt.title('Equilibrium Timescales For Helium Permeation (λt = 5)')
+plt.xlabel('Temperature (°C)')
+plt.ylabel('EQM Timescale t=5/λ (hours)')
+make_grid()
+plt.savefig('EQM_Timescales_Permeation.jpg', dpi = 256)
+
+
+CELL 34: CODE
+Execution count: 177
+──────────────────────────────────────────────────────────────────────────────────────────
+lamt = np.linspace(0,7,200)
+plt.hlines(0,0,7,linestyle=':',color='red')
+plt.plot(lamt,np.exp(-lamt),color='black')
+plt.title('Timescales to Decay in First Order Processes')
+plt.xlabel('λt')
+plt.ylabel("e^(-λt)")
+plt.savefig('FirstOrderDecay.jpg', dpi = 256)
+
+
+CELL 35: CODE
+──────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+CELL 36: CODE
+Execution count: 233
+──────────────────────────────────────────────────────────────────────────────────────────
+### CALCULATE AMOUNTS IN TUBES WITH CONSTANT RATE, THEN FIND RATIO OF SMALL OMEGA AND nt
+
+OD = 0.1
+ID = 0.06
+G = 2/(np.log(OD/ID)*((ID/2)**2))
+cols = ['Blue', 'Green', 'Orange', 'Red']
+ts = np.linspace(0,2,500)*24*3600 #seconds
+omegas = ts # unitless 1 He per second
+Ts = [200,300,400,500]
+lams = []
+for i, T in enumerate(Ts):
+    K =swets_K(T+273)
+    lam = G*K*(T+273)*Ratoms
+    print(f"(Time to EQM at T = {T}°C: {(5/lam)/3600} hours")
+    lams.append(lam)
+    nss = 1/lam
+    print(f"Time worth of steady state tube concentration: {nss/60} minutes")
+    n0h = nss*5
+    n0l = 0#nss/4
+    nth = nss + ((n0h-nss)*np.exp(-lam*ts))
+    ntl = nss + ((n0l-nss)*np.exp(-lam*ts))
+    mh = n0h + omegas - nth
+    ml = n0l + omegas - ntl
+    """
+    nt = (1/(lams*ts))+(0.5/ts-(1/lams*ts)*np.exp(-lams*ts))
+    nt1 = (1/(lams*ts))+(2/ts-(1/lams*ts)*np.exp(-lams*ts))
+    nt2 = (1/(lams*ts))
+    """
+    
+    #plt.plot(ts/3600,100*nss/omegas,color = cols[i],linestyle = ":", alpha = 0.5)
+    #plt.plot(ts/3600,100*nth/omegas,color = cols[i],label = f"T: {T}C°")
+    #plt.plot(ts/3600,100*ntl/omegas,color = cols[i],linestyle = '--')
+    #plt.plot(ts/3600, 100*(mh-omegas)/omegas, linestyle = '--', color = cols[i], label = f"T: {T}°C")
+    #plt.plot(ts/3600, 100*(ml-omegas)/ml, linestyle = ':', color = cols[i], label = f"T: {T}°C")
+    plt.plot(ts/3600, 100*(ml-nss)/omegas, linestyle = '-', color = cols[i], label = f"T: {T}°C")
+    #plt.plot(ts/3600, 100*nss/mh, linestyle = ':', color = cols[i], label = f"T: {T}°C")
+    #plt.hlines(nss, np.min(ts/3600), np.max(ts/3600), color = cols[i])
+    #plt.plot(ts/3600, 100*(ml-omegas)/ml, linestyle = ':', color = cols[i])
+plt.ylim((-30,30))
+plt.legend()
+plt.xlabel("Time (hours)")
+plt.ylabel("nt/ω in % (~% Error with no lag corrections)")
+plt.show()
+plt.plot(Ts,lams)
+
+
+CELL 37: CODE
+Execution count: 234
+──────────────────────────────────────────────────────────────────────────────────────────
+### CALCULATE AMOUNTS IN TUBES WITH CONSTANT RATE, THEN FIND RATIO OF SMALL OMEGA AND nt
+def Jones(T):
+    return 1.17*np.exp(-57/(1.987*T))
+
+fig, ax = plt.subplots()
+OD = 0.083
+ID = 0.054
+G = 2/(np.log(OD/ID)*((ID/2)**2))
+cols = ['Blue','Green', 'Orange', 'Red', 'Violet']
+ts = np.linspace(0,2,500)*24*3600 #seconds
+omegas = ts # unitless 1 He per second
+Ts = [200,250,300,400,500]
+lams = []
+for i, T in enumerate(Ts):
+    K =swets_K(T+273)
+    K3 = K*Jones(T+273)
+    lam = G*K*(T+273)*Ratoms
+    print(f"(Time to EQM at T = {T}°C: {(5/lam)/3600} hours")
+    lams.append(lam)
+    nss = 1/lam
+    LT = lam*ts
+    print(f"Time worth of steady state tube concentration: {nss/60} minutes")
+    n0h = nss*5
+    n0l = 0#nss/4
+    nth = nss + ((n0h-nss)*np.exp(-lam*ts))
+    ntl = nss + ((n0l-nss)*np.exp(-lam*ts))
+    ml = omegas
+    nub = ml/(LT-1)
+    nub1 = omegas/(LT-1)
+    mh = n0l + omegas - ntl
+    """
+    nt = (1/(lams*ts))+(0.5/ts-(1/lams*ts)*np.exp(-lams*ts))
+    nt1 = (1/(lams*ts))+(2/ts-(1/lams*ts)*np.exp(-lams*ts))
+    nt2 = (1/(lams*ts))
+    """
+    
+    #plt.plot(ts/3600,100*nss/omegas,color = cols[i],linestyle = ":", alpha = 0.5)
+    #plt.plot(ts/3600,100*nth/omegas,color = cols[i],label = f"T: {T}C°")
+    #plt.plot(ts/3600,100*ntl/omegas,color = cols[i],linestyle = '--')
+    #plt.plot(ts/3600, 100*(mh-omegas)/omegas, linestyle = '--', color = cols[i], label = f"T: {T}°C")
+    #plt.plot(ts/3600, 100*(ml-omegas)/ml, linestyle = ':', color = cols[i], label = f"T: {T}°C")
+    #plt.plot(ts[LT>=5]/3600, 100*(nub/ml)[LT>=5], linestyle = '-', color = cols[i], label = f"T: {T}°C",alpha=0.1)
+    plt.plot(ts[LT>=5]/3600, 100*(1/(LT-1))[LT>=5], linestyle = '-', color = cols[i], label = f"T: {T}°C")
+    #plt.hlines(nss, np.min(ts/3600), np.max(ts/3600), color = cols[i])
+    #plt.plot(ts/3600, 100*(ml-omegas)/ml, linestyle = ':', color = cols[i])
+#plt.ylim((0,30))
+plt.legend()
+plt.xlabel("Time (hours)")
+plt.ylabel("nt/m Upper Bound (%)")
+
+make_grid()
+
+plt.title('Uncertainty Estimation for ω ≈ m Approximation')
+plt.savefig('UncertEstLongStep1.jpg', dpi = 256)
+plt.show()
+
+
+CELL 38: CODE
+Execution count: 235
+──────────────────────────────────────────────────────────────────────────────────────────
+tube_permeate2(T)
+
+
+CELL 39: CODE
+Execution count: 19
+──────────────────────────────────────────────────────────────────────────────────────────
+OD = 0.0787
+ID = 0.0505
+
+G = 2/(np.log(OD/ID)*((ID/2)**2))
+Tk = np.linspace(200,500,1000) + 273
+F = 0.1
+Ks = []
+for Ti in Tk:
+    Ks.append(swets_K(Ti))
+Ks = np.array(Ks)
+transparency_time = (1/(Ks*G*Tk*F*Ratoms))/3600
+plt.plot(Tk-273, transparency_time)
+
+print()
+
+
+CELL 40: CODE
+Execution count: 13
+──────────────────────────────────────────────────────────────────────────────────────────
+Dt_a2 = np.linspace(0,0.5,10000)
+e_folds = np.linspace(0,7,1000)
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+ax2 = ax1.twiny()
+
+col1 = 'red'
+col2 = 'blue'
+
+Fcum = [Forward_Diffuse(step) for step in Dt_a2]
+ax1.plot(Dt_a2, Fcum, label = 'Second Order', color = col1)
+ax2.plot(e_folds, 1-np.exp(-e_folds), label = 'First Order', color = col2)
+
+ax2.set_xlabel('First Order: Lamda*t (e-folds)', color = col2)
+ax1.set_xlabel('Second Order: Dt_a^2', color = col1)
+ax1.set_ylabel('Cumulative Yield')
+ax1.tick_params(axis='x', labelcolor=col1)
+ax2.tick_params(axis='x', labelcolor=col2)
+plt.tight_layout()
+plt.savefig('First_Second_Order_yields.jpg', dpi = 256)
+
+
+CELL 41: CODE
+Execution count: 56
+──────────────────────────────────────────────────────────────────────────────────────────
+
+Rcal = 1.987
+def swets_S(T):
+    """Returns Permeability of fused Silica in units: mol/cm/s/atm for a given T in Kelvin"""
+    if T >= 583:
+        DEa = 6613 # factor of 4 to convert from g Helium to moles
+        SEa = -1174
+        DFF = 7.40E-4
+        SFF = 1.28E17
+    else:
+        DEa = 5580
+        SEa = -680
+        DFF = 3.04E-4
+        SFF = 1.99E17
+       
+    D = DFF*np.exp(-DEa/(Rcal*T))
+    S = SFF*np.exp(-SEa/(Rcal*T)) # K units: atom/cm/s/dP atm/
+    #print(f"Solubility at T = {T-273}C: {S} atoms/cm3/atm")
+    #print(f"Diffusivity at T = {T-273}C: {D} cm2/s")
+    #print(f"Permeation at T = {T-273}C in mol/cm/s/atm: {D*S}")
+    K = D*S#/6.022E23 #units: mol/cm/s/atm
+    return S
+
+def swets_D(T):
+    """Returns Permeability of fused Silica in units: mol/cm/s/atm for a given T in Kelvin"""
+    if T >= 573:
+        DEa = 6613 # factor of 4 to convert from g Helium to moles
+        SEa = -1174
+        DFF = 7.40E-4
+        SFF = 1.28E17
+    else:
+        DEa = 5580
+        SEa = -680
+        DFF = 3.04E-4
+        SFF = 1.99E17
+       
+    D = DFF*np.exp(-DEa/(Rcal*T))
+    S = SFF*np.exp(-SEa/(Rcal*T)) # K units: atom/cm/s/dP atm/
+    #print(f"Solubility at T = {T-273}C: {S} atoms/cm3/atm")
+    #print(f"Diffusivity at T = {T-273}C: {D} cm2/s")
+    #print(f"Permeation at T = {T-273}C in mol/cm/s/atm: {D*S}")
+    K = D*S#/6.022E23 #units: mol/cm/s/atm
+    return D
+
+NDGas = 6.02214E23*(0.001/22.4) # Number Density of Helium Atoms per cc in gas at 1 atm
+
+NDGlass = swets_S(273)
+
+STP_Partitioning = NDGlass/NDGas
+print(STP_Partitioning)
+print(NDGlass)
+
+shackleford_data = pd.read_csv('shacklefordHeSolubility.csv', header = None).to_numpy()
+swets_data = pd.read_csv('swetsHeSolubility.csv').to_numpy()
+
+
+def S_constantND(T):
+    return((NDGlass)*(273/T))
+
+Ts = np.linspace(-50,1050,10000) + 273
+Ss = S_constantND(Ts)
+
+Sswets = np.array([swets_S(t) for t in Ts])
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+ax2 = ax1.twiny()
+#min_T = np.min(10000/TempKelvin)
+#max_T = np.max(10000/TempKelvin)
+Ctemps = np.array([-50,0,100,200,300,600])#np.linspace(200,700, 11,dtype = int)
+ax1.plot(1000/Ts, np.log(Ss), color = 'black', linewidth = 1, label = 'Constant Molar Partitioning (glass/gas = 0.026)')
+#twice the temperature; twice the pressure
+ax1.plot(1000/Ts, np.log(Sswets), color = 'pink', label = 'Swets et al., 1961 model')
+ax1.scatter(1000/(shackleford_data[:,0]), np.log(1E17*shackleford_data[:,1]), label = 'Shackelford et al., 1972 Data')
+ax1.scatter(1000/(swets_data[:,0]+273), np.log(swets_data[:,3]), color = 'pink', label = 'Swets et al., 1961 Data')
+
+S0s = np.array([1.8,1.5,1.3,1.8,2,1.9,1.9])*1E17
+SEas = np.array([599, 874,631,675,622,527,518])
+types = [1,1,2,2,3,3,4]
+colors = ['red', 'purple', 'blue', 'green']
+for i, S0 in enumerate(S0s):
+    SEa = SEas[i]
+    #ax1.plot(1000/Ts, np.log(S0*np.exp(SEa/(1.987*Ts))), color = colors[types[i]-1])
+
+ax2.set_xticks(1E3/(Ctemps+273))
+ax2.set_xlim(ax1.get_xlim())
+ax2.set_xticklabels(Ctemps)
+ax2.set_xlabel('Temperature (°C)')
+ax1.set_xlabel('10^3/T (K^-1)')
+ax1.set_ylabel('ln(S) (atoms/cc/atm)')
+ax1.legend()
+
+
+
+plt.title('Helium Solubility in Silica Glass')
+plt.savefig('glass_solubility_fig.jpg', dpi = 256, bbox_inches='tight')
+plt.show()
+
+
+
+CELL 42: CODE
+Execution count: 71
+──────────────────────────────────────────────────────────────────────────────────────────
+H = np.array([0.005,0.01, 0.02, 0.05])
+Ts = np.linspace(0,600,1000) + 273
+Ds = [swets_D(T) for T in Ts]
+
+
+for h in H:
+    plt.plot(Ts-273, ((0.5*(h**2))/Ds)/60, label = f'Glass Thickness = {h*10000} microns')
+plt.xlabel('Temperature (C)')
+plt.ylabel('Time to Diffusive EQM (minutes to Dt/a^2 = 0.5)')
+plt.title('Diffusive EQM Timescales for Fused Silica')
+plt.ylim((0,200))
+plt.legend()
+#plt.xlim((0,600))
+plt.savefig('diffusive_EQM_fused_silica.jpg', dpi = 256)
+
+
+CELL 43: CODE
+Execution count: 92
+──────────────────────────────────────────────────────────────────────────────────────────
+D0 = 10**1.5
+Ea = 33000
+a = 0.01
+
+D = D0*np.exp(-Ea/(1.987*473))
+
+Forward_Diffuse(D*50*3600/(0.01**2))
+
+
+CELL 44: CODE
+Execution count: 4
+──────────────────────────────────────────────────────────────────────────────────────────
+def wolfEQ(t, D_a2):
+    """Calculates helium age given concomitant helium production and diffusive loss
+    D_a2 in 
+    t in years, outputs t', the helium age, in years """
+    ts = t * (365.25*24*3600)
+    sumterm = 0
+    for n in (np.arange(255)+1):
+        sumterm += ((6/((np.pi**4)*(n**4))) * np.exp(-(n**2)*(np.pi**2)*ts*D_a2))
+    age = (((D_a2**-1)*((1/15)-sumterm))/(365.25*24*3600))
+    if age > t:
+        return t
+    else: 
+        return age
+
+T = 50 + 273
+D0_a2 = np.exp(17.775)
+Ea = 38852
+
+
+
+D_a2 = D0_a2*np.exp(-Ea/(1.987*T))
+
+print(f"Isothermal EQM AGE at {T-273}C: {np.round((0.0667*(1/D_a2))/(365.25*24*3600*1E6))} Ma")
+print(f"Time to EQM Age at {T-273}C: {np.round((((1/D_a2)/(np.pi**2))/(365.25*24*3600*1E6))*5,2)} Ma")
+
+t = 3E6
+
+print(f"After {t/1E6} Ma at T = {T-273}C, the helium age is: {wolfEQ(t= t, D_a2=D_a2)}")
+
+
+
+
+CELL 45: CODE
+Execution count: 524
+──────────────────────────────────────────────────────────────────────────────────────────
+# Apatite He age plot
+
+D0_a2 = (10**7.7)
+Ea = 36200
+T = 75 + 273
+
+
+
+D_a2 = (D0_a2*np.exp(-Ea/(1.987*T)))
+
+
+D0 = 10**1.5
+a = 150/1E4
+Ea = 33000
+
+
+
+ts = 10**np.linspace(4,9,100)
+Ts = np.array([25,50,75,100])+273
+fig, ax = plt.subplots()
+for T in Ts:
+    Heage = []
+    D_a2 = (D0/(a**2))*np.exp(-Ea/(1.987*T))
+    for t in ts:
+        Heage.append(wolfEQ(t=t, D_a2=D_a2))
+    plt.loglog(ts,Heage,label = f'{T-273}C')
+
+make_grid()
+plt.xlabel('Isothermal Holding Time (years)')
+plt.ylabel('He Age (years)')
+plt.title('Durango Partial Helium Retention Plot (a = 150 µm)')
+plt.legend()
+plt.savefig('PRPapatite.jpg', dpi = 256)
+
+
+CELL 46: CODE
+Execution count: 5
+──────────────────────────────────────────────────────────────────────────────────────────
+# Goethite He age plot
+
+D0_a2 = np.exp(16.685)
+Ea = 38033
+
+ts = 10**np.linspace(4,9,100)
+Ts = np.array([25,50,75,100])+273
+fig, ax = plt.subplots()
+
+for T in Ts:
+    Heage = []
+    D_a2 = D0_a2*np.exp(-Ea/(1.987*T))
+    for t in ts:
+        Heage.append(wolfEQ(t=t, D_a2=D_a2))
+    plt.loglog(ts,Heage,label = f'{T-273}C')
+
+    
+plt.xlabel('Isothermal Holding Time (years)')
+plt.ylabel('He Age (years)')
+plt.title('Winsor Goethite Helium Retention Plot')
+plt.legend()
+make_grid()
+plt.savefig('PRP_goethite.jpg', dpi = 256)
+
+T = 273+40
+D_a2 = D0_a2*np.exp(-Ea/(1.987*T))
+
+print(f"Isothermal EQM AGE at {T-273}C: {np.round((0.0667*(1/D_a2))/(365.25*24*3600*1E6))} Ma")
+print(f"Time to EQM Age at {T-273}C: {np.round((((1/D_a2)/(np.pi**2))/(365.25*24*3600*1E6))*5,2)} Ma")
+
+t = 1E8
+
+print(f"After {t/1E6} Ma at T = {T-273}C, the helium age is: {(wolfEQ(t= t, D_a2=D_a2)/t)*100}% of the holding time")
+
+
+
+D0 = 10**1.5
+Ea = 33000
+a = 0.01
+
+D_a2 = D0*np.exp(-Ea/(1.987*T))/(a**2)
+
+print(f"Isothermal EQM AGE at {T-273}C: {np.round((0.0667*(1/D_a2))/(365.25*24*3600*1E6))} Ma")
+print(f"Time to EQM Age at {T-273}C: {np.round((((1/D_a2)/(np.pi**2))/(365.25*24*3600*1E6))*5,2)} Ma")
+print(f"After {t/1E6} Ma at T = {T-273}C, the helium age is: {(wolfEQ(t= t, D_a2=D_a2)/t)*100}% of the holding time")
+
+
+CELL 47: CODE
+Execution count: 541
+──────────────────────────────────────────────────────────────────────────────────────────
+D0 = 13.4E-4 #cm^2/s
+Ea = 0.43*96485 #J
+a = 100/1E4 # cm
+
+#ts = 10**np.linspace(4,9,100)
+ts = np.linspace(1/365,1,100)
+Ts = np.array([25,50,75,100])+273
+fig, ax = plt.subplots()
+
+for T in Ts:
+    Heage = []
+    D_a2 = (D0/(a**2))*np.exp(-Ea/(8.314*T))
+    for t in ts:
+        Heage.append(wolfEQ(t=t, D_a2=D_a2))
+    plt.loglog(ts,Heage,label = f'{T-273}C')
+
+    
+plt.xlabel('Isothermal Holding Time (years)')
+plt.ylabel('He Age (years)')
+plt.title('Defect Free He Channel Diffusion in Goethite\nRetention Plot a=100µm (Bassal et al., 2022)')
+plt.legend()
+make_grid()
+plt.tight_layout()
+plt.savefig('PRP_goethite.jpg', dpi = 256)
+
+T = 298
+D_a2 = (D0/(a**2))*np.exp(-Ea/(8.314*T))
+
+print(f"Isothermal EQM AGE at {T-273}C: {np.round((0.0667*(1/D_a2))/3600)} hr")
+print(f"Time to EQM Age at {T-273}C: {np.round((((1/D_a2)/(np.pi**2))/3600)*5,2)} hrs")
+
+
+
+CELL 48: CODE
+Execution count: 537
+──────────────────────────────────────────────────────────────────────────────────────────
+(13.6E-4/np.exp(1.3))**(1/2)
+
+
+
+CELL 49: CODE
+Execution count: 139
+──────────────────────────────────────────────────────────────────────────────────────────
+D0_a2 = (10**7.7)
+Ea = 36200
+T = 75 + 273
+
+D_a2 = (D0_a2*np.exp(-Ea/(1.987*T)))
+
+print(f"Isothermal EQM AGE at {T-273}C: {np.round((0.0667*(1/D_a2))/(365.25*24*3600*1E6),2)} Ma")
+print(f"Time to EQM Age at {T-273}C: {np.round((((1/D_a2)/(np.pi**2))/(365.25*24*3600*1E6))*5,2)} Ma")
+print(wolfEQ(t=3E6, D_a2=D_a2)/1E6)
+
+
+
+CELL 50: CODE
+Execution count: 123
+──────────────────────────────────────────────────────────────────────────────────────────
+Tc = np.linspace(20,100,100)
+t = np.linspace(1,1001,200)*1E6
+PR_matrix = np.zeros((100,200))
+
+D0_a2 = np.exp(17.775)
+Ea = 38852
+
+
+for i, ti in enumerate(Tc):
+    D_a2 = D0_a2*np.exp(-Ea/(1.987*(ti+273)))
+    for j, dj in enumerate(t):
+        PR_matrix[i,j] = wolfEQ(t=dj, D_a2=D_a2)
+        
+fig, ax = plt.subplots()
+cax = ax.imshow(PR_matrix)#, extent = [1,100,20,1000], origin = 'lower', aspect = 1/10, cmap = 'RdYlGn_r')#,  norm=mpl.colors.LogNorm(vmin=15, vmax=1440))
+#ax.xticks(np.linspace(1,150,5),np.linspace(1,150,5))
+cbar = fig.colorbar(cax)#, ticks=[15, 30, 60, 120, 600, 1440])
+#cbar.ax.set_yticklabels(['15', '30', '60', '120', '600', '1440'])
+cbar.set_label('%')
+ax.set_xlabel('Glass Thickness in Microns')
+ax.set_ylabel('Temperature (Celcius)')
+#ax.set_title('Timescales to Degas 99% of Helium in a Fused Silica Tube\n')
+ax.set_title('Difference in result due to geometric factor\n')
+#plt.savefig('difference_in_geometric_form.jpg', dpi = 256)
+plt.show()
+
+
+CELL 51: CODE
+Execution count: 124
+──────────────────────────────────────────────────────────────────────────────────────────
+fig, ax = plt.subplots()
+cax = ax.imshow(PR_matrix)#, extent = [1,100,20,1000], origin = 'lower', aspect = 1/10, cmap = 'RdYlGn_r')#,  norm=mpl.colors.LogNorm(vmin=15, vmax=1440))
+#ax.xticks(np.linspace(1,150,5),np.linspace(1,150,5))
+cbar = fig.colorbar(cax)#, ticks=[15, 30, 60, 120, 600, 1440])
+#cbar.ax.set_yticklabels(['15', '30', '60', '120', '600', '1440'])
+cbar.set_label('%')
+ax.set_xlabel('Glass Thickness in Microns')
+ax.set_ylabel('Temperature (Celcius)')
+#ax.set_title('Timescales to Degas 99% of Helium in a Fused Silica Tube\n')
+ax.set_title('Difference in result due to geometric factor\n')
+#plt.savefig('difference_in_geometric_form.jpg', dpi = 256)
+plt.show()
+
+
+
+CELL 52: CODE
+Execution count: 147
+──────────────────────────────────────────────────────────────────────────────────────────
+t = np.linspace(10**0,10**6,10000) #seconds
+
+D0_a2 = (10**7.7)
+Ea = 36200
+T = 220 + 273
+
+D_a2 = (D0_a2*np.exp(-Ea/(1.987*T)))
+F = []
+for ti in t:
+    F.append(Forward_Diffuse(D_a2*ti))
+tp = [0]+t.tolist()[:-1]
+td = t-tp
+
+Fps = np.array([0] + F[:-1])
+Fd = np.array(F) - Fps
+print(F[:100])
+print(t[:100])
+plt.plot(np.log(t), F)
+
+
+CELL 53: CODE
+Execution count: 120
+──────────────────────────────────────────────────────────────────────────────────────────
+plt.plot(np.log(InvertFrequencyFactor1(td, np.array(F))))
+
+
+CELL 54: CODE
+Execution count: 3
+──────────────────────────────────────────────────────────────────────────────────────────
+def swets_S(T):
+    """Returns Permeability of fused Silica in units: mol/cm/s/atm for a given T in Kelvin"""
+    if T >= 574: #573
+        DEa = 6613 # factor of 4 to convert from g Helium to moles
+        SEa = -1174
+        DFF = 7.40E-4
+        SFF = 1.28E17
+    else:
+        DEa = 5580
+        SEa = -680
+        DFF = 3.04E-4
+        SFF = 1.99E17
+       
+    D = DFF*np.exp(-DEa/(Rcal*T))
+    S = SFF*np.exp(-SEa/(Rcal*T)) # K units: atom/cm/s/dP atm/
+    #print(f"Solubility at T = {T-273}C: {S} atoms/cm3/atm")
+    #print(f"Diffusivity at T = {T-273}C: {D} cm2/s")
+    #print(f"Permeation at T = {T-273}C in mol/cm/s/atm: {D*S}")
+    K = D*S#/6.022E23 #units: mol/cm/s/atm
+    return S
+
+Ts = np.linspace(0,500,400) + 273
+NDgas = 1/(Ratoms*Ts) # 1 atm, per cc
+Ss = []
+
+#print(NDgas)
+fig, ax = plt.subplots()
+for T in Ts:
+    Ss.append(swets_S(T))
+NDglass = np.array(Ss)
+#print(NDglass)
+plt.plot(Ts-273,NDglass/NDgas)
+plt.title('Glass/Gas Partitioning of Helium, Swets et al., 1961')
+plt.xlabel('Temperature (C)')
+plt.ylabel('He Conc. in Glass / Conc. He in Gas (atoms/mL)')
+make_grid()
+plt.savefig('Helium_Partitioning500.jpg', dpi = 256)
+
+
+CELL 55: CODE
+Execution count: 121
+──────────────────────────────────────────────────────────────────────────────────────────
+print(D_a2)
+InvertFrequencyFactor1(td, F)
+
+
+CELL 56: CODE
+Execution count: 1
+──────────────────────────────────────────────────────────────────────────────────────────
+for i in np.arange(3, 200):
+    tdi = td[:i]
+    Fdi = Fd[:i]
+    print(FirstOrdInversion(tdi,Fdi,True))
+    plt.show()
+
+
+CELL 57: CODE
+Execution count: 135
+──────────────────────────────────────────────────────────────────────────────────────────
+tg = np.array([300,300,300,10250])*60
+Heg = np.array([0.402737006,0.376896744,0.373085304,8.576210633])
+
+
+print(FirstOrdInversion(tg,Heg,True))
+plt.title("Winsor Isothermals at 250C\nExp. Fit Total Yield: 16.23 pcc 3He;   lambda = 1.368E-6 sec^-1")
+plt.xlabel("Time (seconds)")
+plt.ylabel('Cumulative Yield of 3He(pcc) out of 113.4 pcc total 3He')
+plt.tight_layout()
+plt.savefig('WinsorFirstOrderFit.jpg', dpi = 256)
+
+
+CELL 58: CODE
+Execution count: 151
+──────────────────────────────────────────────────────────────────────────────────────────
+t = np.linspace(0,700000,10000)
+first_ord_pred = 16.2258*(1-np.exp(-(1.368E-6*t)))
+plt.plot(np.log(t),first_ord_pred)
+
+
+CELL 59: CODE
+Execution count: 82
+──────────────────────────────────────────────────────────────────────────────────────────
+n0_nt=[0,
+0.888638434,
+0.313354093,
+0.548602044,
+0.371148106,
+0.308961836,
+0.273674228,
+0.430582665,
+0.5754603,
+1.197568852,
+0,
+0,
+0,
+0.466869993,
+0.403510856,
+0.272443653,
+0.284342318,
+0.120599902,
+1.618896491,
+0.414820378,
+0.635734571,
+0.780956442,
+0.703463796,
+0.519567424,
+0.559954846,
+1.066222931,
+0.060268626,
+0.195763926,
+0.89332803,
+0.892887294,
+0,
+0.411620982,
+0.467944639,
+1.02323E-07]
+plt.hist(n0_nt)
+
+
+CELL 60: CODE
+Execution count: 81
+──────────────────────────────────────────────────────────────────────────────────────────
+100*(np.max(NDglass/NDgas)-np.min(NDglass/NDgas))/np.min(NDglass/NDgas)
+
+
+CELL 61: CODE
+Execution count: 339
+──────────────────────────────────────────────────────────────────────────────────────────
+Ts[np.argmin(NDglass/NDgas)]-273
+
+
+CELL 62: CODE
+Execution count: 43
+──────────────────────────────────────────────────────────────────────────────────────────
+t = 3600 * 20 # * 365 * 
+Dwa = 10**-12
+Dhe = 10**-6
+a = 0.025
+print(Forward_Diffuse(Dhe*t/a**2))
+print(a**2/Dhe)
+print(Dhe*t/a**2)
+
+print(Forward_Diffuse(Dwa*t/a**2))
+print((a**2/Dwa)/(3600*24*365))
+Dwa*t/a**2
+
+
+CELL 63: CODE
+Execution count: 3
+──────────────────────────────────────────────────────────────────────────────────────────
+def tube_FDM(T1,T2,a,b):
+    """
+    CYLINDRICAL:
+    Simulates concentration profile with a Forward Time Centered Space 
+    Finite Difference Model for diffusion
+    Let T2 and T2 be temperatures in celcius that define the initial 
+    EQM steady state concentration profile. If T1 is a string
+    (such as 'a') then the initial concentration is 0 throughout.
+    t and x are the temporal duration and spatial extent (tube thickness) of 
+    the simulation respectively in seconds and cm. 
+    dx is 1 micron, while dt is calculated to stabilize
+    the simulation
+    """
+    
+    Fos = [0.01,0.1,1]
+    colors = ['Red', 'Orange','Green', 'Blue','Violet']
+    
+    
+    D = swets('D',T2+273) 
+    S2 = swets('S',T2+273)
+    dx = 1/1E4
+    dt = 0.5*(dx**2)/D #0.5 is upper bound for stability
+    xi = np.arange(0,x,dx)
+    
+    c_inner = (S2*(Ratoms*(T2+273))) # inner boundary condition at new temp in terms of glass/air partitioning
+    
+    t_stops = [] # times to stop and record concentration profile
+    for Fo in Fos:
+        t_stops.append((Fo*(xi[-1]**2))/D)
+    t_stops.reverse()
+    t_stop = t_stops.pop()
+    
+    print(f"For Diffusivity of {D} cm^2/s and dx = {round(dx*1E4,2)}, dt is set at {dt} seconds")
+    
+    
+    if type(T1) in [int,float]:
+        S1 = swets('S',T1+273)
+        c1 = (S1*(Ratoms*(T1+273)))
+        nglass = n0/(1+(((S*2*Ratoms*T/((a**2)*np.log(a/b))) *((0.5*a**2*(np.log(b/a)+0.5))-((b**2)/4)))**-1)) #eqn 2.46
+        ngas = n0-nglass
+        h = 3 # arbitrary, cancels
+        c = (S*ngas*Ratoms*T/(np.pi*(a**2)*h))*(np.log(r/b)/np.log(a/b)) # eqn 2.42
+        c = (xi/np.max(xi))*c1 # initial condition in terms of glass/air partitioning
+        
+    else:
+        c = np.zeros_like(xi) # 0 initial condition throughout
+        c1 = 0
+        
+    plt.plot(xi*1E4, c, linestyle = '--', color = 'Black', label = f"t = 0 minutes", alpha = 0.5)
+    c[-1] = c_inner
+    current_t = 0
+    steps = 0
+    delta_c = ((D*dt)/(dx**2)) * (c[:-2]-(2*c[1:-1])+c[2:])
+    color_count = 0
+    while t_stop:
+        steps += 1
+        current_t += dt
+        c[1:-1] += delta_c # update concentrations
+        c[0] = 0 # Enforce outer boundary condition
+        c[-1] = c_inner # Enforce inner boundry conditions
+        delta_c = ((D*dt)/(dx**2)) * (c[:-2]-(2*c[1:-1])+c[2:])
+        if current_t >= t_stop:
+            plt.plot(xi*1E4, c, color = colors[color_count], linewidth = 2, label = f"Fo = {Fos[color_count]}, t = {round(current_t/60,1)} minutes")
+            print(f"t = {t_stop/60}, atoms = {np.sum(c)}")
+            if len(t_stops):
+                t_stop = t_stops.pop()
+            else:
+                t_stop = 0
+            color_count += 1
+    print(f"Simulation finished after {steps} steps")
+    plt.plot(xi*1E4, (xi/np.max(xi))*c1, linestyle = '--', color = 'Black', alpha = 0.5)
+    plt.plot(xi*1E4, (xi/np.max(xi))*c_inner, linestyle = ':', color = 'Black', label = f"EQM for T = {T2}°C", alpha = 0.8)
+    #plt.scatter([0,xi[-1]*1E4,xi[-1]*1E4],[c[0],c[-1],c1], color = 'Black', alpha = 0.5)
+    plt.xlabel('Distance from Vacuum (microns)')
+    plt.ylabel('He Concentration Ratio (Glass/Gas, atoms/mL)')
+    plt.title(f'He Concentration Profile Evolution after {round(current_t/60,1)} minutes at {T2}°C')
+    plt.legend()
+tube_FDM(T1 = 300, T2 = 100, a=0.03, b = 0.05)
+plt.savefig('FDM_cyl1.jpg', dpi = 256)
+
+
+CELL 64: CODE
+Execution count: 417
+──────────────────────────────────────────────────────────────────────────────────────────
+def tube_FDM(T1,T2,x):
+    """
+    Simulates concentration profile with a Forward Time Centered Space 
+    Finite Difference Model for diffusion
+    Let T2 and T2 be temperatures in celcius that define the initial 
+    EQM steady state concentration profile. If T1 is a string
+    (such as 'a') then the initial concentration is 0 throughout.
+    t and x are the temporal duration and spatial extent (tube thickness) of 
+    the simulation respectively in seconds and cm. 
+    dx is 1 micron, while dt is calculated to stabilize
+    the simulation
+    """
+    
+    Fos = [0.01,0.1,1]
+    colors = ['Red', 'Orange','Green', 'Blue','Violet']
+    
+    
+    D = swets('D',T2+273) 
+    S2 = swets('S',T2+273)
+    dx = 1/1E4
+    dt = 0.5*(dx**2)/D #0.5 is upper bound for stability
+    xi = np.arange(0,x,dx)
+    
+    c_inner = (S2*(Ratoms*(T2+273))) # inner boundary condition at new temp in terms of glass/air partitioning
+    
+    t_stops = [] # times to stop and record concentration profile
+    for Fo in Fos:
+        t_stops.append((Fo*(xi[-1]**2))/D)
+    t_stops.reverse()
+    t_stop = t_stops.pop()
+    
+    print(f"For Diffusivity of {D} cm^2/s and dx = {round(dx*1E4,2)}, dt is set at {dt} seconds")
+    
+    
+    if type(T1) in [int,float]:
+        S1 = swets('S',T1+273)
+        c1 = (S1*(Ratoms*(T1+273)))
+        c = (xi/np.max(xi))*c1 # initial condition in terms of glass/air partitioning
+        
+    else:
+        c = np.zeros_like(xi) # 0 initial condition throughout
+        c1 = 0
+        
+    plt.plot(xi*1E4, c, linestyle = '--', color = 'Black', label = f"t = 0 minutes", alpha = 0.5)
+    c[-1] = c_inner
+    current_t = 0
+    steps = 0
+    delta_c = ((D*dt)/(dx**2)) * (c[:-2]-(2*c[1:-1])+c[2:])
+    color_count = 0
+    while t_stop:
+        steps += 1
+        current_t += dt
+        c[1:-1] += delta_c # update concentrations
+        c[0] = 0 # Enforce outer boundary condition
+        c[-1] = c_inner # Enforce inner boundry conditions
+        delta_c = ((D*dt)/(dx**2)) * (c[:-2]-(2*c[1:-1])+c[2:])
+        if current_t >= t_stop:
+            plt.plot(xi*1E4, c, color = colors[color_count], linewidth = 2, label = f"Fo = {Fos[color_count]}, t = {round(current_t/60,1)} minutes")
+            print(f"t = {t_stop/60}, atoms = {np.sum(c)}")
+            if len(t_stops):
+                t_stop = t_stops.pop()
+            else:
+                t_stop = 0
+            color_count += 1
+    print(f"Simulation finished after {steps} steps")
+    plt.plot(xi*1E4, (xi/np.max(xi))*c1, linestyle = '--', color = 'Black', alpha = 0.5)
+    plt.plot(xi*1E4, (xi/np.max(xi))*c_inner, linestyle = ':', color = 'Black', label = f"EQM for T = {T2}°C", alpha = 0.8)
+    #plt.scatter([0,xi[-1]*1E4,xi[-1]*1E4],[c[0],c[-1],c1], color = 'Black', alpha = 0.5)
+    plt.xlabel('Distance from Vacuum (microns)')
+    plt.ylabel('He Concentration Ratio (Glass/Gas, atoms/mL)')
+    plt.title(f'He Concentration Profile Evolution after {round(current_t/60,1)} minutes at {T2}°C')
+    plt.legend()
+tube_FDM(T1 = 300, T2 = 100, x=0.02)
+plt.savefig('FDM_diff_prof.jpg', dpi = 256)
+
+
+CELL 65: CODE
+──────────────────────────────────────────────────────────────────────────────────────────
+self.delta_c = ((self.D*self.dt)) * (((self.c[:-2]-(2*self.c[1:-1])+self.c[2:])/(self.dr**2))+((1/self.r[1:-1])*(self.firstderiv)))
+self.D*self.firstderiv*self.dt*np.pi*self.r[1:-1]*2*self.h
+self.out -= self.J[0]+((self.J[0]-self.J[1])-((2*self.J[1])-(self.J[0]+self.J[2]))/2)
+self.ngas += self.J[-1]+((self.J[-1]-self.J[-2])-((2*self.J[-2])-(self.J[-1]+self.J[-3]))/2)
+
+
+CELL 66: CODE
+Execution count: 35
+──────────────────────────────────────────────────────────────────────────────────────────
+class permeation_sim:
+    
+    def __init__(self, a, b, n0, cooling_func, T=24+273, He = 4, EQMshortcut = False):
+        """Where cooling func is a function with two arguements, T in Kelvin dt in seconds, that outputs the new T in Kelvin after dt seconds"""
+        self.a = a
+        self.b = b
+        self.n0 = n0
+        self.nt = n0
+        self.He = str(He)
+        self.cooling_func = cooling_func
+        self.dr = (self.b-self.a)/25
+        self.G = 2/(np.log(self.b/self.a)*(self.a**2))
+        self.r = np.arange(self.a,self.b,self.dr)
+        #if round(self.r[-1], len(str(self.b).split('.')[1])) != self.b:
+        if round(self.r[-1], 4) != round(self.b,4):
+            #print("ADDED END SPATIAL DOMAIN")
+            #print(f"self.b = {self.b} r[-1] = {self.r[-1]}")
+            self.r = np.append(self.r,self.b)
+            #print(self.r[1:]-self.r[:-1])
+        #print(self.r)    
+        self.T = T
+        self.S = swets('S',self.T)
+        self.D = swets('D',self.T)
+        self.K = swets('K',self.T)
+        if self.He == '3':
+            self.S *= Jones('S',self.T)
+            self.D *= Jones('D', self.T)
+            self.K *= Jones('K', self.T)
+        self.nglass = self.nt/(1+(((self.S*2*Ratoms*self.T/((self.a**2)*np.log(self.a/self.b))) *((0.5*self.a**2*(np.log(self.b/self.a)+0.5))-((self.b**2)/4)))**-1)) #eqn 2.46
+        #print(self.nglass)
+        self.ngas = self.nt-self.nglass
+        self.h = 1 # arbitrary, cancels
+        self.c = (self.S*self.ngas*Ratoms*self.T/(np.pi*(self.a**2)*self.h))*(np.log(self.r/self.b)/np.log(self.a/self.b)) # eqn 2.42
+        self.out = 0
+        self.reportmatrix = np.array([['Initial', self.T-273, 0, 0, self.n0, self.nt, 0]])
+        self.dt = 0.5*(self.dr**2)/self.D #0.5 is upper bound for stability
+        self.dout = -self.D*(((self.c[-1]-self.c[-3])/(2*self.dr))+((self.c[-1]-(2*self.c[-2])+self.c[-3])/(2*self.dr)))*self.dt*np.pi*self.b*2*self.h #7.1b * dt * cylinder surface area (no top/bottom )
+        self.dngas = -self.D*(((self.c[2]-self.c[0])/(2*self.dr))-((self.c[0]-(2*self.c[1])+self.c[2])/(2*self.dr)))*self.dt*np.pi*self.a*2*self.h #7.1a * dt * cylinder surface area (no top/bottom )
+        #print(f"Sim Out: {self.dout/self.dt}; Sim in glass: {self.dngas/self.dt}")
+        #print(f"Ideal Flux: {-self.G*self.K*self.n0*Ratoms*self.T}")
+        self.firstderiv = (self.c[2:]-self.c[:-2])/(2*self.dr)
+        self.J = -self.D*self.firstderiv*self.dt*np.pi*self.r[1:-1]*2*self.h
+        #print(f"In: {self.J[0]/self.dt}, Out: {self.J[-1]/self.dt}")
+        self.EQMshortcut = EQMshortcut
+    def record_sim(self, Type, T, t, m, n0, nt):
+        appK =  np.log(nt/n0)/(-self.G*t*Ratoms*T)
+        self.reportmatrix = np.append(self.reportmatrix, np.array([[Type, T-273, t/60, m, n0, nt, appK]]), 0)
+        
+    def hold_T(self, T, t, record = True):
+        self.T = T
+        self.t_count = 0
+        self.t_remain = t
+        self.D = swets('D', self.T)
+        self.S = swets('S', self.T)
+        self.K = swets('K', self.T)
+        if self.He == '3':
+            self.D *= Jones('D', self.T)
+            self.S *= Jones('S',self.T)
+            self.K *= Jones('K',self.T) 
+        if self.EQMshortcut:
+            self.t_EQM = 1*((self.b-self.a)**2)/self.D
+        else: 
+            self.t_EQM = t + 60 # Never go to analytical, steady state eqns
+        self.dt = 0.5*(self.dr**2)/self.D #0.5 is upper bound for stability
+        while self.t_remain > 0 and self.t_count < self.t_EQM:
+            if self.t_remain < self.dt:
+                self.dt = self.t_remain
+            self.t_count += self.dt
+            self.t_remain -= self.dt
+            self.c_inner = self.S*self.ngas*Ratoms*self.T/(np.pi*(self.a**2)*self.h)
+            self.inxs = self.c[0]-self.c_inner # Enforce inner boundry conditions
+            self.c[0] = self.c_inner
+            self.ngas += self.inxs*2*np.pi*self.a*self.dr*self.h
+            self.firstderiv = (self.c[2:]-self.c[:-2])/(2*self.dr)
+            #self.J = -self.D*self.firstderiv*self.dt*np.pi*self.r[1:-1]*2*self.h
+            self.delta_c = ((self.D*self.dt)) * (((self.c[:-2]-(2*self.c[1:-1])+self.c[2:])/(self.dr**2))+((1/self.r[1:-1])*(self.firstderiv)))
+            self.dout = -self.D*(((self.c[-1]-self.c[-3])/(2*self.dr))+((self.c[-1]-(2*self.c[-2])+self.c[-3])/(2*self.dr)))*self.dt*np.pi*self.b*2*self.h #7.1b * dt * cylinder surface area (no top/bottom )
+            self.dngas = -self.D*(((self.c[2]-self.c[0])/(2*self.dr))-((self.c[0]-(2*self.c[1])+self.c[2])/(2*self.dr)))*self.dt*np.pi*self.a*2*self.h #7.1a * dt * cylinder surface area (no top/bottom )
+            self.out += self.dout
+            #print(self.delta_c)
+            #print()
+            self.ngas -= self.dngas
+            #print(f"Out old: {self.J[-1]}; New: {self.dout}\nTo Glass Old: {self.J[0]}; New: {self.dngas}")
+            self.c[1:-1] += self.delta_c
+        total = self.out+self.ngas+np.sum(self.c*self.dr*self.h*self.r*2*np.pi) # Normalize to 
+        self.c /= (total/self.n0)
+        self.out /= (total/self.n0)
+        self.ngas /= (total/self.n0)
+        self.nt = self.n0 - self.out
+        #print(f"Sum after {round(self.t_count/60)} minutes at {self.T-273}C: {self.out+self.ngas+np.sum(self.c*self.dr*self.h*self.r*2*np.pi)}")
+        if self.t_remain > 0:
+            print(f'Is it EQM at T = {self.T-273}C after {self.t_count/60}?')
+            EQMR = np.exp(-self.G*self.T*Ratoms*self.K*self.t_remain)
+            #print(f"EQMR: {EQMR}")
+            permout = self.nt*(1-EQMR)
+            self.out += permout
+            self.nt *= EQMR
+            self.nglass = self.nt/(1+(((self.S*2*Ratoms*self.T/((self.a**2)*np.log(self.a/self.b))) *((0.5*self.a**2*(np.log(self.b/self.a)+0.5))-((self.b**2)/4)))**-1)) #eqn 2.46
+            self.ngas = self.nt-self.nglass
+            self.c = (self.S*self.ngas*Ratoms*self.T/(np.pi*(self.a**2)*self.h))*(np.log(self.r/self.b)/np.log(self.a/self.b)) # eqn 2.42
+        """        print(f"After holding at {self.T-273}C for {(self.t_count+self.t_remain)/60} minutes: Out = {self.out}\tn0 = {self.n0}\tnt = {self.nt}\tnglass = {np.sum(self.r*2*self.dr*self.h*np.pi*self.c)}\tngas = {self.ngas}")
+        self.nglass = self.nt/(1+(((self.S*2*Ratoms*self.T/((self.a**2)*np.log(self.a/self.b))) *((0.5*self.a**2*(np.log(self.b/self.a)+0.5))-((self.b**2)/4)))**-1)) #eqn 2.46
+        self.ngas_nominal = self.nt-self.nglass
+        self.c_nominal = (self.S*self.ngas_nominal*Ratoms*self.T/(np.pi*(self.a**2)*self.h))*(np.log(self.r/self.b)/np.log(self.a/self.b)) # eqn 2.42
+        plt.plot(self.r, self.c, color = 'Red', label = 'Recorded Profile')
+        plt.plot(self.r, self.c_nominal, linestyle = '--', label = 'Nominal EQM Profile')
+        plt.legend()
+        plt.show()"""
+        if record:
+            self.record_sim('Hold T', T=self.T, t = self.t_count+self.t_remain, m = self.n0-self.nt, n0 =self.n0, nt = self.nt)
+            
+    def cool(self, t, record = True):
+        self.t_count = 0
+        self.m = 0
+        self.t_remain = t
+        while self.t_remain > 0 and self.T > 273+24.5:
+            self.dt = 0.5*(self.dr**2)/self.D #0.5 is upper bound for stability
+            if self.t_remain < self.dt:
+                self.dt = self.t_remain
+            self.T = self.cooling_func(self.T, self.dt)
+            self.D = swets('D',self.T)
+            self.S = swets('S',self.T)
+            self.K = swets('K', self.T)
+            if self.He == '3':
+                self.D *= Jones('D',self.T)
+                self.S *= Jones('S',self.T)
+                self.K *= Jones('K',self.T)
+            self.t_count += self.dt
+            self.t_remain -= self.dt
+            self.c_inner = self.S*self.ngas*Ratoms*self.T/(np.pi*(self.a**2)*self.h)
+            self.inxs = self.c[0]-self.c_inner # Enforce inner boundry conditions
+            self.c[0] = self.c_inner
+            self.ngas += self.inxs*2*np.pi*self.a*self.dr*self.h
+            self.firstderiv = (self.c[2:]-self.c[:-2])/(2*self.dr)
+            #self.J = -self.D*self.firstderiv*self.dt*np.pi*self.r[1:-1]*2*self.h
+            self.delta_c = ((self.D*self.dt)) * (((self.c[:-2]-(2*self.c[1:-1])+self.c[2:])/(self.dr**2))+((1/self.r[1:-1])*(self.firstderiv)))
+            self.dout = -self.D*(((self.c[-1]-self.c[-3])/(2*self.dr))+((self.c[-1]-(2*self.c[-2])+self.c[-3])/(2*self.dr)))*self.dt*np.pi*self.b*2*self.h #7.1b * dt * cylinder surface area (no top/bottom )
+            self.dngas = -self.D*(((self.c[2]-self.c[0])/(2*self.dr))-((self.c[0]-(2*self.c[1])+self.c[2])/(2*self.dr)))*self.dt*np.pi*self.a*2*self.h #7.1a * dt * cylinder surface area (no top/bottom )
+            self.out += self.dout
+            self.m += self.dout
+            self.ngas -= self.dngas
+        total = self.out+self.ngas+np.sum(self.c*self.dr*self.h*self.r*2*np.pi) # Normalize to 
+        self.c /= (total/self.n0)
+        self.out /= (total/self.n0)
+        self.ngas /= (total/self.n0)
+        self.nt = self.n0 - self.out
+        print(f"After Cooling for {self.t_count/60} minutes: Total: {self.out+self.ngas+np.sum(self.c*self.dr*self.h*self.r*2*np.pi)}, Out = {self.out}\tn = {self.n0}\tnt = {self.nt}\tnglass = {np.sum(self.r*2*self.dr*self.h*np.pi*self.c)}\tngas = {self.ngas}")
+        
+        if self.t_remain > 0:
+            simT = self.t_count
+            recnt = self.nt
+            self.hold_T(T = 273+24, t = self.t_remain, record = False)
+            self.m += (recnt-self.nt)
+            self.t_remain += simT        
+        if record:
+            self.record_sim('Cooling', T=self.T, t = self.t_count+self.t_remain, m = self.m, n0 =self.n0, nt = self.nt)
+        
+    def generate_report(self, name = 'ampoule_permeation_out'):
+        self.columns = ['Type', 'T (K)', 't(minutes)', 'm', 'n0', 'nt', 'Apparent K']
+        self.reportDF = pd.DataFrame()
+        for i, col in enumerate(self.columns):
+            self.reportDF[col] = self.reportmatrix[:,i]
+        self.reportDF.to_csv(name+'.csv')
+        print(f"Generated report: {name+'.csv'}")
+        
+    def reset(self, n0, T):
+        self.n0 = n0
+        self.nt = n0
+        self.T = T
+        self.S = swets('S',self.T)
+        if self.He == '3':
+            self.S*=Jones('S',self.T)
+        self.nglass = self.nt/(1+(((self.S*2*Ratoms*self.T/((self.a**2)*np.log(self.a/self.b))) *((0.5*self.a**2*(np.log(self.b/self.a)+0.5))-((self.b**2)/4)))**-1)) #eqn 2.46
+        self.ngas = self.nt-self.nglass
+        self.c = (self.S*self.ngas*Ratoms*self.T/(np.pi*(self.a**2)*self.h))*(np.log(self.r/self.b)/np.log(self.a/self.b)) # eqn 2.42
+        self.out = 0
+    
+    def stabilize_profile(self):
+        self.tauD = ((self.b-self.a)**2)/self.D 
+        self.hold_T(self.T,self.tauD)
+        self.c /= (self.nt/self.n0)
+        self.nglass = np.sum(self.c*self.dr*self.h*self.r*2*np.pi)
+        self.nt = self.n0
+        self.ngas = self.nt-self.nglass
+        self.out = 0
+        
+def extract_timesMC(dates, form = '%m/%d/%Y  %I:%M %p'):
+    """Extracts exact times duration for each step using timestamps on MC"""
+    times = [] # in seconds
+    first = True
+    for stri in dates: 
+        try:
+            time = datetime.strptime(stri, form)
+        except:
+            try:
+                form = '%m/%d/%Y  %H:%M:%S'
+                time = datetime.strptime(stri, form)
+            except:
+                try:
+                    form = '%m/%d/%Y  %H:%M'
+                    time = datetime.strptime(stri, form)
+                except:
+                    form = '%m/%d/%Y  %I:%M:%S %p'
+                    time = datetime.strptime(stri, form)
+        if first:
+            oldtime = time
+            #print(oldtime)
+            first = False
+        else:
+            newtime = time
+            times.append((newtime - oldtime).total_seconds())
+            oldtime = newtime
+    return np.array(times)
+
+def sulfur_blank_cooling(T,dt):
+    x = T - (273+24)
+    dTdt = -(4.2911E-6*(x**2))-(1.8754E-3*(x))
+    return T + (dTdt*dt)
+            
+def isoTwater_blank_cooling(T,dt):
+    x = T - (273+24)
+    dTdt = -(3.6006E-5*(x**2))-(4.4616E-4*(x))
+    return T + (dTdt*dt)
+    
+def NovTube_blank_cooling(T,dt):
+    x = T - (273+24)
+    dTdt = -(2.21847E-5*(x**2))-(1.08220E-3*(x))
+    return T + (dTdt*dt)
+
+def goethite_cooling(T,dt):
+    x = T - (273+24)
+    dTdt = -(9.23081E-6*(x**2))-(7.74304E-4*(x))
+    return T + (dTdt*dt)
+
+def accumulate(v):
+    vnew = [v[0]]
+    for vnext in v[1:]:
+        vnew.append(vnext+vnew[-1])
+    return np.array(vnew)
+
+def forward_permeate(t, lamb, n0):
+    return(n0*(1-np.exp(-lamb*t)))
+
+def forward_permeate1(t, lamb, n0):
+    return((n0*(1-np.exp(-lamb*t[1])))-(n0*(1-np.exp(-lamb*t[0]))))
+
+def KenColdInversion(t, He, covout = False, plot = True):
+    """Returns n0 and lambda for a time series of cold permeations from a tube at a single temperature, requires 3 or 4 data points"""
+    cumHe = accumulate(He)
+    cumt = accumulate(t)
+    lamb = 6E-5 # order of magnitude estimation
+    print(cumHe)
+    print(cumt)
+    longt = np.linspace(0,cumt[-1],500)
+    
+    (out,covmat) = scipy.optimize.curve_fit(f = forward_permeate, xdata = cumt, ydata = cumHe, p0 = [lamb, He[0]/(1-np.exp(-lamb*t[0]))])
+    if plot:
+        plt.plot(longt, forward_permeate(longt, out[0], out[1]))
+        plt.scatter(cumt, cumHe)
+    if covout:
+        return ((out[0],out[1]), covmat)
+    return (out[0],out[1])
+
+def KenColdInversion1(t, He, sigma, covout = False, plot = True):
+    """Returns n0 and lambda for a time series of cold permeations from a tube at a single temperature, requires 3 or 4 data points"""
+    lamb = 6E-5 # order of magnitude estimation
+    cumHe = [0] + accumulate(He).tolist()
+    cumt = [0] + accumulate(t).tolist()
+    tinput = []
+    for i in range(len(cumt) - 1):
+        tinput.append([cumt[i],cumt[i+1]])
+    print(np.array(tinput).T)
+    print(len(He))
+    print(forward_permeate1(tinput[0],lamb, He[0]/(1-np.exp(-lamb*t[0]))))
+    longt = np.linspace(0,cumt[-1],500)
+    (out,covmat) = scipy.optimize.curve_fit(f = forward_permeate1, xdata = np.array(tinput).T, ydata = He, sigma = sigma, p0 = [lamb, He[0]/(1-np.exp(-lamb*t[0]))])
+    if plot:
+        plt.plot(longt, forward_permeate(longt, out[0], out[1]))
+        plt.scatter(cumt, cumHe)
+    if covout:
+        return ((out[0],out[1]), covmat)
+    return (out[0],out[1])
+
+diffname = "IrrWin0601bTube012624TC"
+DIFFCELL = pd.read_csv(diffname+'.csv', header=None).to_numpy()
+metadata = DIFFCELL[:,1]
+coldtimes = np.array([0] + list(extract_timesMC(DIFFCELL[:,2])))
+
+He = 3
+
+He3 = DIFFCELL[:,4]
+He4 = DIFFCELL[:,6]
+
+
+Reducer = MCHeReducer('2024STDsMC.csv')
+
+He3, He4, s3, s4 = Reducer.reduce(DIFFCELL, uncertainties=True, plot = True) 
+plt.show()
+if str(He) == '4':
+    m = He4
+    s = s4
+if str(He) == '3':
+    m = He3
+    s = s3
+metadata = DIFFCELL[:,1]
+TimeSeconds = np.array([60*pull_number((str(datum).split(' ')[1]).split('_')[1]) for datum in metadata])
+TempKelvin = np.array([273+pull_number(str(datum).split(' ')[2]) for datum in metadata])
+coldtimes = np.array([0] + list(extract_timesMC(DIFFCELL[:,2])))
+
+#He3[np.where(np.round(TempKelvin) == 150+273)[0][0]]*=0.9
+#He4[np.where(np.round(TempKelvin) == 150+273)[0][0]]*=0.9
+
+goeTube = permeation_sim(a = (0.0510)/2, b = (0.0800)/2, n0 = 100, cooling_func = goethite_cooling, He = He)
+last_T = 0
+ts = []
+Hes = []
+Ss = []
+coldt = []
+holdermat = np.array([[0,0,0],[0,0,0]])
+"""
+for i, T in enumerate(TempKelvin[1:]):
+    if T < (130+273):
+        if last_T >= (130 + 273):
+            print('RESET!')
+            goeTube.reset(n0 = 100, T = last_T)
+        holdtime = TimeSeconds[i+1]
+        ts.append(holdtime)
+        coolingtime = coldtimes[i+1]
+        coldt.append(coolingtime)
+        #goeTube.hold_T(T, holdtime)
+        #goeTube.cool(t = (coolingtime-holdtime)-60)
+        #Hes.append(goeTube.n0-goeTube.nt)
+        Hes.append(m[i+1])
+        Ss.append(s[i+1])
+        #goeTube.record_sim('Measurement', T=T, t = holdtime, m = m[i+1], n0 = goeTube.n0, nt = goeTube.nt)
+        last_T = T
+        goeTube.n0 = goeTube.nt
+        goeTube.out = 0
+    else:
+        if len(ts)>2 and np.std(coldt) == 0:
+            print(i)
+            print(coldt)
+            plt.scatter([0]+accumulate(ts).tolist(),[0]+accumulate(Hes).tolist())
+            plt.errorbar(accumulate(ts), accumulate(Hes), accumulate(np.array(Ss)*2), linestyle = '')
+            ((lam, n0fit), covmat) = KenColdInversion1(t = ts, He = np.array(Hes), sigma=Ss, covout = True)
+            print(covmat)
+            holdermat = np.append(holdermat, np.append(np.array([lam,n0fit]).reshape((2,1)),covmat,1), 0)
+            plt.show()
+            #goeTube.record_sim(f'AppK: {lam/(goeTube.G*Ratoms*last_T)}, n0 = {n0fit}', T=last_T, t = holdtime, m = m[i+1], n0 = goeTube.n0, nt = goeTube.nt)
+        last_T = T
+        ts = []
+        Hes = []
+        coldt = []
+        Ss = []
+pd.DataFrame(holdermat[2:]).to_csv('pythonExpFits.csv')
+T_holds = [80, 85, 90, 95, 100, 105, 110, 115]
+Hot_Hold = [120,180]
+cold_hold = [25,40,60]
+"""
+#goeTube = permeation_sim(a = (0.0510)/2, b = (0.0800)/2, n0 = 100, cooling_func = goethite_cooling, He = He)
+        
+#goeTube.generate_report(diffname+str(He)+'HeSimVaryCool')
+    
+#workingBlank = permeation_sim(a = (0.0510)/2, b = (0.800)/2, n0 = np.sum(m[1:]), cooling_func = NovTube_blank_cooling, He = He)
+
+tossed = 0
+err = []
+"""
+for i, T in enumerate(TempKelvin[1:]):
+    workingBlank.n0 = workingBlank.nt
+    workingBlank.out = 0
+    holdtime = TimeSeconds[i+1]
+    coolingtime = coldtimes[i+1]
+    workingBlank.hold_T(T, holdtime)
+    workingBlank.cool(t = (coolingtime-holdtime)-60)
+    workingBlank.record_sim('Measurement', T=T, t = holdtime, m = m[i+1], n0 = workingBlank.n0, nt = workingBlank.nt)
+    err.append(((workingBlank.n0-workingBlank.nt)-m[i+1])/m[i+1])
+    
+    #sulfurBlank.cool(60, record = False)
+    #tossed += sulfurBlank.out
+    #sulfurBlank.record_sim('Pumped Away', T=sulfurBlank.T, t = 60, m = sulfurBlank.out, n0 = sulfurBlank.n0, nt = sulfurBlank.nt)
+    #sulfurBlank.n0 = sulfurBlank.nt
+    #sulfurBlank.out = 0
+"""
+
+
+
+CELL 67: CODE
+Execution count: 38
+──────────────────────────────────────────────────────────────────────────────────────────
+DIFFCELL = pd.read_excel('MCEmptyTubeData.xlsx', 'MC Empty Tube OD1159 ID747', skiprows=1).to_numpy()[:7,1:]
+DIFFCELL[:,2]
+
+
+CELL 68: CODE
+Execution count: 48
+──────────────────────────────────────────────────────────────────────────────────────────
+def NovTube_blank_cooling(T,dt):
+    x = T - (273+24)
+    dTdt = -(2.21847E-5*(x**2))-(1.08220E-3*(x))
+    return T + (dTdt*dt)
+
+def sulfur_blank_cooling(T,dt):
+    x = T - (273+24)
+    dTdt = -(4.2911E-6*(x**2))-(1.8754E-3*(x))
+    return T + (dTdt*dt)
+            
+def isoTwater_blank_cooling(T,dt):
+    x = T - (273+24)
+    dTdt = -(3.6006E-5*(x**2))-(4.4616E-4*(x))
+    return T + (dTdt*dt)
+    
+
+
+
+#DIFFCELL = pd.read_excel('MCEmptyTubeData.xlsx', 'MC Empty Tube OD1159 ID747', skiprows=1).to_numpy()[:7,1:]
+Paramsheet = pd.read_excel('simput.xlsx', None)
+He = 4
+
+for j, (label, page) in enumerate(Paramsheet.items()):
+    sheet = page.to_numpy()
+    name, b, a = label.split(' ')
+    TempKelvin = sheet[:,0]+273
+    hottime = sheet[:,1]
+    coldtime = sheet[:,2]
+    for He in [3,4]:
+        simTube = permeation_sim(a = (float(a))/2, b = (float(b))/2, n0 = 1, cooling_func = [NovTube_blank_cooling, isoTwater_blank_cooling, sulfur_blank_cooling][j], He = He)
+        simTube.stabilize_profile()
+        for i, T in enumerate(TempKelvin):
+            simTube.hold_T(T,hottime[i])
+            if coldtime[i] > 1:
+                simTube.cool(coldtime[i])
+            simTube.record_sim('Measurement', T=T, t = hottime[i], m = simTube.out, n0 = simTube.n0, nt = simTube.nt)
+            simTube.n0 = simTube.nt
+            simTube.m = 0
+            simTube.out = 0
+        simTube.generate_report(f'{He}HeMC{name}')
+
+
+CELL 69: CODE
+Execution count: 108
+──────────────────────────────────────────────────────────────────────────────────────────
+a = 0.0850/2
+b = 0.1350/2
+L = b-a
+VR = ((b**2)-(a**2))/(a**2)
+print(VR)
+print(L)
+
+
+CELL 70: CODE
+Execution count: 49
+──────────────────────────────────────────────────────────────────────────────────────────
+Paramsheet = pd.read_excel('simput.xlsx', None)
+He = 4
+
+for j, (label, page) in enumerate(Paramsheet.items()):
+    sheet = page.to_numpy()
+    name, b, a = label.split(' ')
+    print(f"{name}: a:{float(a)/2}, b:{float(b)/2}")
+
+
+CELL 71: CODE
+Execution count: 165
+──────────────────────────────────────────────────────────────────────────────────────────
+VR = np.linspace(0.01,5,5)
+VP = (VR + 1)**0.5
+L = 0.0175
+#labelVR = np.array([0.1,1,5,10])
+#labelVP = (labelVR + 1)**0.5
+#labela = L/(-1+labelVP)
+#labelb = L + labela
+
+labelb = np.array([600,750,1000,2000])/2E4
+labela = labelb-L
+labelVR = ((labelb**2)-(labela**2))/(labela**2)
+
+
+a = L/(-1+VP)
+b = L + a
+G = 2/((a**2)*np.log(b/a))
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+ax2 = ax1.twiny()
+
+ax1.plot(VR, G)
+
+ax2.set_xticks(labelVR)
+ax2.set_xlim(ax1.get_xlim())
+ax2.set_xticklabels(np.round(labelb*2E4).astype(int))
+ax2.set_xlabel('Outer Diameter (µm)')
+#ax1.set_xlabel(r'$\frac{glass}{gas}$ Volume Ratio: $V_{glass/gas}$')
+#ax1.set_ylabel(r'Apparent Diffusivity $\left(\frac{D}{a^2}\right)$')
+
+
+
+CELL 72: CODE
+──────────────────────────────────────────────────────────────────────────────────────────
+Ts
+VR = np.linspace(0.01,20,200)
+VP = (VR + 1)**0.5
+fig, ax = plt.subplots()
+for i, T in enumerate(Ts):
+    #D = swets('D', T)
+    S = swets('S', T)
+    #K = swets('K', T)
+    #tauP = 1/(G*Ratoms*K*T)
+    #tauD = ((b-a)**2)/D
+    tauR = S*Ratoms*T*VR*((-1+VP)/(1+VP))*(2/np.log(VP))
+    
+for T in Ts:
+    D = swets('D', T)
+    t = ((b-a)**2)/D 
+    workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+    workingBlank.hold_T(T,t)
+    m_n0M.append(workingBlank.out/workingBlank.n0)
+    m_n0A.append(T*swets('K',T)*G*Ratoms*t) # Constant Pressure
+
+
+CELL 73: CODE
+──────────────────────────────────────────────────────────────────────────────────────────
+#Ts = np.linspace(24,500,20)+273
+Ts = np.array(24,120,300)+273
+#G = 6000
+aa = np.array([0.063,0.0747,0.0529,0.0487,0.085])/2 
+#bb = aa*np.exp(2/(G*aa**2))
+bb = np.array([0.096,0.1159,0.0835,0.0734,0.135])/2 
+names = ['Empty Quad', 'Empty MC', 'Sulfur MC', 'Water MC', 'DAp Quad']
+colmap = plt.cm.plasma_r
+for j, i in enumerate([3,4]):#[3,0,1,2,4]):
+    a = aa[i]
+    b = bb[i]
+    G = 2/(np.log(b/a)*(a**2))
+    print(G)
+    Vgas = 1*a**2*np.pi
+    Vglass = (1*b**2*np.pi) - Vgas 
+    
+    m_n0M = []
+    m_n0A = []
+    for T in Ts:
+        D = swets('D', T)
+        dt = (((b-a)**2)/D)/50
+        t = 60*60#((b-a)**2)/D 
+        workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+        workingBlank.hold_T(T,t)
+        m_n0M.append(workingBlank.out/workingBlank.n0)
+        #m_n0A.append(T*swets('K',T)*G*Ratoms*t) # Constant Pressure
+        m_n0A.append(1-np.exp(-T*swets('K',T)*G*Ratoms*t))
+    plt.plot(Ts-273, 100*(np.array(m_n0A)-np.array(m_n0M))/np.array(m_n0M), color = colmap(np.linspace(0, 1, 5)[j]), label = f"{names[i]}: Vglass/gas = {round(Vglass/Vgas,2)}")
+
+plt.title('Relative Error of Eqn Model\nof Silica Glass Ampoule for Fo# = 1')
+plt.xlabel('Isothermal Holding Temperature (°C)')
+plt.ylabel(r' Percent (%) Error: $100 * \left(\frac{\left(1-e^{-KGRTt}\right)-\frac{m}{n0}_{ Sim}}{\frac{m}{n0}_{ Sim}}\right)$')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('SampleVRNumericalTestExperimentTubes.jpg', dpi = 256)
+
+
+CELL 74: CODE
+Execution count: 137
+──────────────────────────────────────────────────────────────────────────────────────────
+simtau = 50
+tau = 5
+D = swets('D', 373)
+dt = (((b-a)**2)/D)/simtau
+t = np.arange(dt,dt*((simtau*tau))+1,dt)
+len(t)
+
+
+CELL 75: CODE
+Execution count: 218
+──────────────────────────────────────────────────────────────────────────────────────────
+#Ts = np.linspace(24,500,20)+273
+Ts = np.array([100])+273
+#G = 6000
+aa = np.array([0.063,0.0747,0.0529,0.0487,0.085])/2 
+#bb = aa*np.exp(2/(G*aa**2))
+bb = np.array([0.096,0.1159,0.0835,0.0734,0.135])/2 
+names = ['Empty Quad', 'Empty MC', 'Sulfur MC', 'Water MC', 'DAp Quad']
+colmap = plt.cm.plasma
+for j, i in enumerate([3,0,1,2,4]):
+    a = aa[i]
+    b = bb[i]
+    G = 2/(np.log(b/a)*(a**2))
+    print(G)
+    Vgas = 1*a**2*np.pi
+    Vglass = (1*b**2*np.pi) - Vgas 
+    
+    m_n0M = []
+    m_n0A = []
+    simtau = 150
+    ntau = 3
+    for h, T in enumerate(Ts):
+        D = swets('D', T)
+        K = swets('K', T)
+        #tau = (((b-a)**2)/D)
+        tau = 1/(K*G*Ratoms*T)
+        dt = tau/simtau
+        ts = np.arange(dt,dt*((simtau*ntau))+1,dt)#((b-a)**2)/D 
+        m_n0M = []
+        m_n0A = []
+        workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+        workingBlank.stabilize_profile()
+        for t in ts:
+            workingBlank.hold_T(T,dt)
+            m_n0M.append(workingBlank.out/workingBlank.n0)
+            #m_n0A.append(T*swets('K',T)*G*Ratoms*t) # Constant Pressure
+            m_n0A.append(1-np.exp(-T*swets('K',T)*G*Ratoms*t))
+        plt.plot(ts/tau, 100*(np.array(m_n0A)-np.array(m_n0M))/np.array(m_n0M), color = colmap(np.linspace(0, 1, 5)[j]), label = f"{names[i]}:"+r" $V_{glass}/V_{gas}$ = "+f"{round(Vglass/Vgas,2)}")
+
+plt.title('Relative Error of Eqn 3.3 for Helium Permeation\nof Experimental Silica Glass Ampoules at 100°C')
+plt.xlabel(r"Isothermal Holding Time $t/\tau_{P}$")
+plt.ylabel(r'Percent (%) Error: $100 * \left(\frac{\left(1-e^{-KGRTt}\right)-\frac{m}{n0}_{ Sim}}{\frac{m}{n0}_{ Sim}}\right)$')
+#plt.vlines()
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('NumericalEqn3.3ErrWavesSettledProfile.jpg', dpi = 256)
+
+
+CELL 76: CODE
+Execution count: 262
+──────────────────────────────────────────────────────────────────────────────────────────
+VR = np.array(np.linspace(0.01,50,25))
+VP = (VR + 1)**0.5
+#G = 3500
+L = 0.0175
+#labelVR = np.array([0.1,1,5,10])
+#labelVP = (labelVR + 1)**0.5
+#labela = L/(-1+labelVP)
+#labelb = L + labela
+
+
+#labelb = np.array([600,750,1000,2000])/2E4
+#labela = labelb-L
+#labelVR = ((labelb**2)-(labela**2))/(labela**2)
+
+
+aa = L/(-1+VP)
+bb = L + aa
+G = 2/((aa**2)*np.log(bb/aa))
+
+#aa = (2/(G*np.log(VP)))**0.5
+#bb = aa*VP
+simtau = 150
+ntau = 1
+#Ts = np.linspace(24,500,20)+273
+Ts = np.array([25,250,500])+273
+colmap = plt.cm.inferno
+
+#I = [6,30,32,85,88,92,97,98]#SUS
+
+for h, T in enumerate(Ts):
+    D = swets('D', T)
+    K = swets('K', T)
+    maxerr = []
+    #tau = (((b-a)**2)/D)
+    for i, V in enumerate(VR):
+        #V = VR[i]
+        a = aa[i]
+        b = bb[i]
+        #print(f"V:{V}, a = {a}, b ={b}")
+        G = 2/(np.log(b/a)*(a**2))
+        tau = 1/(G*K*Ratoms*T)
+        #tauD = (((b-a)**2)/D)
+        dt = tau/simtau
+        ts = np.arange(dt,dt*((simtau*ntau))+1,dt)#((b-a)**2)/D 
+        m_n0M = []
+        m_n0A = []
+        #print(G)
+        workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+        #print(workingBlank.r)
+        #print(workingBlank.r[1:]-workingBlank.r[:-1])
+        workingBlank.stabilize_profile()
+        for t in ts:
+            workingBlank.hold_T(T,dt)
+            m_n0M.append(workingBlank.out/workingBlank.n0)
+            #m_n0A.append(T*swets('K',T)*G*Ratoms*t) # Constant Pressure
+            m_n0A.append(1-np.exp(-T*swets('K',T)*G*Ratoms*t))
+        maxerr.append(np.max(np.array(100*(np.array(m_n0A)-np.array(m_n0M))/np.array(m_n0M))))
+    plt.plot(VR, maxerr, color = ['Blue', 'Yellow', 'Red'][h], label = f"T = {T-273}°C; L = 175µm")
+
+    
+G = 3500
+
+aa = (2/(G*np.log(VP)))**0.5
+bb = aa*VP
+simtau = 150
+ntau = 1
+#Ts = np.linspace(24,500,20)+273
+Ts = np.array([25,250,500])+273
+colmap = plt.cm.inferno
+
+#I = [6,30,32,85,88,92,97,98]#SUS
+
+for h, T in enumerate(Ts):
+    D = swets('D', T)
+    K = swets('K', T)
+    maxerr = []
+    #tau = (((b-a)**2)/D)
+    for i, V in enumerate(VR):
+        #V = VR[i]
+        a = aa[i]
+        b = bb[i]
+        #print(f"V:{V}, a = {a}, b ={b}")
+        G = 2/(np.log(b/a)*(a**2))
+        tau = 1/(G*K*Ratoms*T)
+        #tauD = (((b-a)**2)/D)
+        dt = tau/simtau
+        ts = np.arange(dt,dt*((simtau*ntau))+1,dt)#((b-a)**2)/D 
+        m_n0M = []
+        m_n0A = []
+        #print(G)
+        workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+        #print(workingBlank.r)
+        #print(workingBlank.r[1:]-workingBlank.r[:-1])
+        workingBlank.stabilize_profile()
+        for t in ts:
+            workingBlank.hold_T(T,dt)
+            m_n0M.append(workingBlank.out/workingBlank.n0)
+            #m_n0A.append(T*swets('K',T)*G*Ratoms*t) # Constant Pressure
+            m_n0A.append(1-np.exp(-T*swets('K',T)*G*Ratoms*t))
+        maxerr.append(np.max(np.array(100*(np.array(m_n0A)-np.array(m_n0M))/np.array(m_n0M))))
+    plt.scatter(VR, maxerr, marker = '+', color = ['Blue', 'Yellow', 'Red'][h], label = f"T = {T-273}°C;"+r" G = 3500 $cm^{-2}$")
+    
+    
+plt.title('Relative Error of Eqn 3.3 for Helium Permeation\n'+ r'of Silica Glass Ampoules')
+plt.xlabel(r"Glass/Gas Volume Ratio $V_{Glass}/V_{Gas}$")
+plt.ylabel(r'Maximum Percent (%) Error: $100 * \left(\frac{\left(1-e^{-KGRTt}\right)-\frac{m}{n0}_{ Sim}}{\frac{m}{n0}_{ Sim}}\right)$')
+#plt.vlines()
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('NumericalEqn3.3ErrConstLandG.jpg', dpi = 256)
+
+
+CELL 77: CODE
+Execution count: 266
+──────────────────────────────────────────────────────────────────────────────────────────
+G = 3500
+aa1 = (2/(G*np.log(VP)))**0.5
+bb1 = aa*VP
+L = 0.0175
+aa = L/(-1+VP)
+bb = L + aa
+#plt.ylim([100,500])
+#plt.xlim([100,400])
+plt.scatter(1E4*aa[2:],1E4*bb[2:], marker = 'x', c = VR[2:], label = r"$L = 175 µm$")
+plt.scatter(1E4*aa1[2:],1E4*bb1[2:], marker = '*',c=VR[2:], label = r"$G = 3500 cm^{-2}$" )
+cbar = plt.colorbar()
+cbar.set_label(r'$V_{Glass}/V_{Gas}$')
+plt.grid()
+plt.legend()
+plt.title('Ampoule Geometries at Constant L and G\nAs Used in Numerical Simulations')
+plt.xlabel(r'Inner Radius $a$ (µm)')
+plt.ylabel(r'Outer Radius $b$ (µm)')
+plt.tight_layout()
+plt.savefig('SimulatedTubeGeometries.jpg', dpi = 256)
+
+
+CELL 78: CODE
+Execution count: 240
+──────────────────────────────────────────────────────────────────────────────────────────
+VR = np.array(np.linspace(0.01,50,100))
+VP = (VR + 1)**0.5
+G = 3500
+#labelVR = np.array([0.1,1,5,10])
+#labelVP = (labelVR + 1)**0.5
+#labela = L/(-1+labelVP)
+#labelb = L + labela
+
+
+#labelb = np.array([600,750,1000,2000])/2E4
+#labela = labelb-L
+#labelVR = ((labelb**2)-(labela**2))/(labela**2)
+
+
+#aa = L/(-1+VP)
+#bb = L + aa
+#G = 2/((a**2)*np.log(b/a))
+
+aa = (2/(G*np.log(VP)))**0.5
+bb = aa*VP
+simtau = 150
+ntau = 1
+#Ts = np.linspace(24,500,20)+273
+Ts = np.array([25,250,500])+273
+colmap = plt.cm.inferno
+
+#I = [6,30,32,85,88,92,97,98]#SUS
+
+for h, T in enumerate(Ts):
+    D = swets('D', T)
+    K = swets('K', T)
+    maxerr = []
+    #tau = (((b-a)**2)/D)
+    for i, V in enumerate(VR):
+        #V = VR[i]
+        a = aa[i]
+        b = bb[i]
+        #print(f"V:{V}, a = {a}, b ={b}")
+        G = 2/(np.log(b/a)*(a**2))
+        tau = 1/(G*K*Ratoms*T)
+        #tauD = (((b-a)**2)/D)
+        dt = tau/simtau
+        ts = np.arange(dt,dt*((simtau*ntau))+1,dt)#((b-a)**2)/D 
+        m_n0M = []
+        m_n0A = []
+        #print(G)
+        workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+        #print(workingBlank.r)
+        #print(workingBlank.r[1:]-workingBlank.r[:-1])
+        workingBlank.stabilize_profile()
+        for t in ts:
+            workingBlank.hold_T(T,dt)
+            m_n0M.append(workingBlank.out/workingBlank.n0)
+            #m_n0A.append(T*swets('K',T)*G*Ratoms*t) # Constant Pressure
+            m_n0A.append(1-np.exp(-T*swets('K',T)*G*Ratoms*t))
+        maxerr.append(np.max(np.array(100*(np.array(m_n0A)-np.array(m_n0M))/np.array(m_n0M))))
+    plt.plot(VR, maxerr, color = ['Blue', 'Yellow', 'Red'][h], label = f"T = {T-273}°C")
+
+plt.title('Relative Error of Eqn 3.3 for Helium Permeation\n'+ r'of Silica Glass Ampoules $\left(G = 3500 cm^{-2}\right)$')
+plt.xlabel(r"Glass/Gas Volume Ratio $V_{Glass}/V_{Gas}$")
+plt.ylabel(r'Maximum Percent (%) Error: $100 * \left(\frac{\left(1-e^{-KGRTt}\right)-\frac{m}{n0}_{ Sim}}{\frac{m}{n0}_{ Sim}}\right)$')
+#plt.vlines()
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('NumericalEqn3.3ErrMain.jpg', dpi = 256)
+
+
+CELL 79: CODE
+Execution count: 241
+──────────────────────────────────────────────────────────────────────────────────────────
+for i, V in enumerate(VR): 
+    print(f"i={i}: {round(V,2)}:{round(maxerr[i],2)}")
+
+
+CELL 80: CODE
+──────────────────────────────────────────────────────────────────────────────────────────
+VR = np.array(np.linspace(0.01,50,100))
+VP = (VR + 1)**0.5
+G = 3500
+#labelVR = np.array([0.1,1,5,10])
+#labelVP = (labelVR + 1)**0.5
+#labela = L/(-1+labelVP)
+#labelb = L + labela
+
+
+#labelb = np.array([600,750,1000,2000])/2E4
+#labela = labelb-L
+#labelVR = ((labelb**2)-(labela**2))/(labela**2)
+
+
+#aa = L/(-1+VP)
+#bb = L + aa
+#G = 2/((a**2)*np.log(b/a))
+
+aa = (2/(G*np.log(VP)))**0.5
+bb = aa*VP
+simtau = 150
+ntau = 1
+#Ts = np.linspace(24,500,20)+273
+Ts = np.array([24,100,300])+273
+colmap = plt.cm.inferno
+for h, T in enumerate(Ts):
+    D = swets('D', T)
+    K = swets('K', T)
+    maxerr = []
+    #tau = (((b-a)**2)/D)
+    for i, V in enumerate(VR):
+        a = aa[i]
+        b = bb[i]
+        G = 2/(np.log(b/a)*(a**2))
+        tau = 1/(G*K*Ratoms*T)
+        #tauD = (((b-a)**2)/D)
+        dt = tau/simtau
+        ts = np.arange(dt,dt*((simtau*ntau))+1,dt)#((b-a)**2)/D 
+        m_n0M = []
+        m_n0A = []
+        print(G)
+        workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+        workingBlank.stabilize_profile()
+        for t in ts:
+            workingBlank.hold_T(T,dt)
+            m_n0M.append(workingBlank.out/workingBlank.n0)
+            #m_n0A.append(T*swets('K',T)*G*Ratoms*t) # Constant Pressure
+            m_n0A.append(1-np.exp(-T*swets('K',T)*G*Ratoms*t))
+        maxerr.append(np.max(np.array(100*(np.array(m_n0A)-np.array(m_n0M))/np.array(m_n0M))))
+    plt.plot(VR, maxerr, color = colmap(np.linspace(0, 1, 3)[h]), label = f"T = {T-273}°C")
+
+plt.title('Relative Error of Eqn 3.3 for Helium Permeation\n'+ r'of Silica Glass Ampoules (L = 175)')
+plt.xlabel(r"Glass/Gas Volume Ratio $V_{Glass}/V_{Gas}$")
+plt.ylabel(r'Maximum Percent (%) Error: $100 * \left(\frac{\left(1-e^{-KGRTt}\right)-\frac{m}{n0}_{ Sim}}{\frac{m}{n0}_{ Sim}}\right)$')
+#plt.vlines()
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('NumericalEqn3.3ErrMain.jpg', dpi = 256)
+
+
+CELL 81: CODE
+Execution count: 223
+──────────────────────────────────────────────────────────────────────────────────────────
+VR = np.array([0.1,1.5,2.5,5,10,20])
+VP = (VR + 1)**0.5
+G = 3500
+#labelVR = np.array([0.1,1,5,10])
+#labelVP = (labelVR + 1)**0.5
+#labela = L/(-1+labelVP)
+#labelb = L + labela
+
+
+#labelb = np.array([600,750,1000,2000])/2E4
+#labela = labelb-L
+#labelVR = ((labelb**2)-(labela**2))/(labela**2)
+
+
+#aa = L/(-1+VP)
+#bb = L + aa
+#G = 2/((a**2)*np.log(b/a))
+
+aa = (2/(G*np.log(VP)))**0.5
+bb = aa*VP
+
+#Ts = np.linspace(24,500,20)+273
+Ts = np.array([100])+273
+colmap = plt.cm.viridis
+for i, V in enumerate(VR):
+    a = aa[i]
+    b = bb[i]
+    G = 2/(np.log(b/a)*(a**2))
+    print(G)
+    m_n0M = []
+    m_n0A = []
+    simtau = 150
+    ntau = 3
+    for h, T in enumerate(Ts):
+        D = swets('D', T)
+        K = swets('K', T)
+        #tau = (((b-a)**2)/D)
+        tau = 1/(G*K*Ratoms*T)
+        tauD = (((b-a)**2)/D)
+        dt = tau/simtau
+        ts = np.arange(dt,dt*((simtau*ntau))+1,dt)#((b-a)**2)/D 
+        m_n0M = []
+        m_n0A = []
+        workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+        workingBlank.stabilize_profile()
+        for t in ts:
+            workingBlank.hold_T(T,dt)
+            m_n0M.append(workingBlank.out/workingBlank.n0)
+            #m_n0A.append(T*swets('K',T)*G*Ratoms*t) # Constant Pressure
+            m_n0A.append(1-np.exp(-T*swets('K',T)*G*Ratoms*t))
+        plt.plot(ts/tau, 100*(np.array(m_n0A)-np.array(m_n0M))/np.array(m_n0M), color = colmap(np.linspace(0, 1, 6)[i]), label = r"$V_{glass}/V_{gas}$ = "+f"{V}; OD = {round(b*2E1, 2)}mm")
+
+plt.title('Relative Error of Eqn 3.3 for Helium Permeation\n'+ r'of Silica Glass Ampoules $\left(G = 3500 cm^{-2}\right)$ at 100°C')
+plt.xlabel(r"Isothermal Holding Time $t/\tau_{P}$")
+plt.ylabel(r'Percent (%) Error: $100 * \left(\frac{\left(1-e^{-KGRTt}\right)-\frac{m}{n0}_{ Sim}}{\frac{m}{n0}_{ Sim}}\right)$')
+#plt.vlines()
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('NumericalEqn3.3ErrVrVarySettledProfilet10.jpg', dpi = 256)
+
+
+CELL 82: CODE
+──────────────────────────────────────────────────────────────────────────────────────────
+VR = np.array([0.1,5,10,20,50])
+VP = (VR + 1)**0.5
+L = 0.0175
+#labelVR = np.array([0.1,1,5,10])
+#labelVP = (labelVR + 1)**0.5
+#labela = L/(-1+labelVP)
+#labelb = L + labela
+
+
+labelb = np.array([600,750,1000,2000])/2E4
+labela = labelb-L
+labelVR = ((labelb**2)-(labela**2))/(labela**2)
+
+
+a = L/(-1+VP)
+b = L + a
+G = 2/((a**2)*np.log(b/a))
+
+fig = plt.figure()
+ax1 = fig.add_subplot(111)
+ax2 = ax1.twinx()
+
+ax1.plot(VR, G)
+
+ax2.set_xticks(labelVR)
+ax2.set_xlim(ax1.get_xlim())
+ax2.set_xticklabels(np.round(labelb*2E4).astype(int))
+ax2.set_xlabel('Outer Diameter (µm)')
+#ax1.set_xlabel(r'$\frac{glass}{gas}$ Volume Ratio: $V_{glass/gas}$')
+#ax1.set_ylabel(r'Apparent Diffusivity $\left(\frac{D}{a^2}\right)$')
+
+#Ts = np.linspace(24,500,20)+273
+Ts = np.array([24,100,300])+273
+#G = 6000
+aa = np.array([0.063,0.0747,0.0529,0.0487,0.085])/2 
+#bb = aa*np.exp(2/(G*aa**2))
+bb = np.array([0.096,0.1159,0.0835,0.0734,0.135])/2 
+names = ['Empty Quad', 'Empty MC', 'Sulfur MC', 'Water MC', 'DAp Quad']
+colmap = plt.cm.plasma
+for j, i in enumerate([3,0,1,2,4]):
+    a = aa[i]
+    b = bb[i]
+    G = 2/(np.log(b/a)*(a**2))
+    print(G)
+    Vgas = 1*a**2*np.pi
+    Vglass = (1*b**2*np.pi) - Vgas 
+    
+    m_n0M = []
+    m_n0A = []
+    simtau = 50
+    ntau = 200
+    for h, T in enumerate(Ts):
+        D = swets('D', T)
+        tau = (((b-a)**2)/D)
+        dt = tau/50
+        ts = np.arange(dt,dt*((simtau*ntau))+1,dt)#((b-a)**2)/D 
+        m_n0M = []
+        m_n0A = []
+        workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+        for t in ts:
+            workingBlank.hold_T(T,dt)
+            m_n0M.append(workingBlank.out/workingBlank.n0)
+            #m_n0A.append(T*swets('K',T)*G*Ratoms*t) # Constant Pressure
+            m_n0A.append(1-np.exp(-T*swets('K',T)*G*Ratoms*t))
+        plt.plot(ts/tau, 100*(np.array(m_n0A)-np.array(m_n0M))/np.array(m_n0M), color = colmap(np.linspace(0, 1, 5)[j]), label = f"{names[i]}: T = {T-273}°C: Vglass/gas = {round(Vglass/Vgas,2)}")
+
+plt.title('Relative Error of Eqn 3.3 for Helium Permeation\nof Experimental Silica Glass Ampoules')
+plt.xlabel(r"Isothermal Holding Time $\frac{t}{\tau_{D}^{}}$")
+plt.ylabel(r'Percent (%) Error: $100 * \left(\frac{\left(1-e^{-KGRTt}\right)-\frac{m}{n0}_{ Sim}}{\frac{m}{n0}_{ Sim}}\right)$')
+#plt.vlines()
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.savefig('NumericalEqn3.3ErrVrVary.jpg', dpi = 256)
+
+
+CELL 83: CODE
+Execution count: 212
+──────────────────────────────────────────────────────────────────────────────────────────
+
+def ideal_c(self):
+    return (self.S*self.ngas*Ratoms*self.T/(np.pi*(self.a**2)*self.h))*(np.log(self.r/self.b)/np.log(self.a/self.b))
+
+VR = np.array([0.1,1.5,10,100])
+VP = (VR + 1)**0.5
+L = 0.0175
+T = 273+100
+
+aa = L/(-1+VP)
+bb = L + aa
+
+colmap = plt.cm.plasma
+
+for i, V in enumerate(VR):
+    a = aa[i]
+    b = bb[i]
+    G = 2/((a**2)*np.log(b/a))
+    workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+    plt.scatter(1E4*(workingBlank.r-workingBlank.a), workingBlank.c/(workingBlank.ngas/(workingBlank.h*np.pi*workingBlank.a**2)), color = colmap(np.linspace(0,1,6)[i]), alpha = 0.7, marker = '+')
+    workingBlank.stabilize_profile()
+    plt.plot(1E4*(workingBlank.r-workingBlank.a), workingBlank.c/(workingBlank.ngas/(workingBlank.h*np.pi*workingBlank.a**2)), color = colmap(np.linspace(0,1,6)[i]), alpha = 0.7, label = r"$V_{glass}/V_{gas}$"+f" = {V}; OD = {round(20*b,1)} mm; G = {round(G)}"+r" $cm^{-2}$")
+
+workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+#labelVR = np.array([0.1,1,5,10])
+#labelVP = (labelVR + 1)**0.5
+#labela = L/(-1+labelVP)
+#labelb = L + labela
+
+
+labelb = np.array([600,750,1000,2000])/2E4
+labela = labelb-L
+labelVR = ((labelb**2)-(labela**2))/(labela**2)
+
+
+plt.legend(fontsize = 8.4)
+plt.title('Ideal and True Steady State Helium Concentration Profiles\nFor 175 µm Thick Silica Glass Ampoules at 100°C')
+plt.ylabel(r'$C/C_{gas}$')
+plt.xlabel('Distance (µm) from Inner Wall (r-a)')
+plt.tight_layout()
+plt.grid()
+plt.savefig('SteadyStateProfileDeviation.jpg', dpi = 256)
+
+
+CELL 84: CODE
+Execution count: 8
+──────────────────────────────────────────────────────────────────────────────────────────
+G = 6000
+aa = np.array([0.03,0.04,0.05,0.06])/2 
+bb = aa*np.exp(2/(G*aa**2))
+Ts = np.linspace(24,500,5)+273
+for i, a in enumerate(aa):
+    b = bb[i]
+    for T in Ts:
+        D = swets('D', T)
+        S = swets('S', T)
+        K = swets('K', T)
+        VR = ((b**2)-(a**2))/a**2
+        VP = (VR + 1)**0.5
+        tauP = 1/(G*Ratoms*K*T)
+        tauD = ((b-a)**2)/D
+        print(f"VR = {VR}; T = {T-273}C")
+        print(tauD/tauP)
+        print(S*Ratoms*T*VR*((-1+VP)/(1+VP))*(2/np.log(VP)))
+
+
+CELL 85: CODE
+Execution count: 278
+──────────────────────────────────────────────────────────────────────────────────────────
+VR = 100
+VP = (VR + 1)**0.5
+L = 0.0175
+T = 273+100
+
+a = L/(-1+VP)
+b = L + a
+workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+D = swets('D', T)
+K = swets('K', T)
+G = 2/(np.log(b/a)*(a**2))
+tauD = (((b-a)**2)/D)
+simtau = 
+ntau = 10
+dt = tauD/simtau
+ts = np.arange(dt,dt*((simtau*ntau))+1,dt)#((b-a)**2)/D 
+plt.plot(workingBlank.r,workingBlank.c/workingBlank.ngas)
+for t in ts:
+    workingBlank.hold_T(T,dt)
+    plt.plot(workingBlank.r,workingBlank.c/workingBlank.ngas)
+
+
+CELL 86: CODE
+Execution count: 281
+──────────────────────────────────────────────────────────────────────────────────────────
+(500**2-300**2)/300**2
+
+
+CELL 87: CODE
+Execution count: 280
+──────────────────────────────────────────────────────────────────────────────────────────
+Ts = np.array([25,250,500])+273
+colors = ['blue', 'yellow', 'red']
+VR = np.linspace(0.01,200,200)
+VP = (VR + 1)**0.5
+fig, ax = plt.subplots()
+for i, T in enumerate(Ts):
+    #D = swets('D', T)
+    S = swets('S', T)
+    #K = swets('K', T)
+    #tauP = 1/(G*Ratoms*K*T)
+    #tauD = ((b-a)**2)/D
+    tauR = S*Ratoms*T*VR*((-1+VP)/(1+VP))*(2/np.log(VP))
+    plt.loglog(VR, tauR, label = f'T = {T-273}°C', color = colors[i])
+plt.legend()
+make_grid()
+plt.xlabel(r'$\frac{glass}{gas}$ Volume Ratio: $V_{glass/gas}$')
+plt.ylabel(r'$\frac{Diffusion}{Permeation}$ Timescale Ratio: $\tau_D/\tau_P$')
+plt.title('Relative Timescales of Helium Diffusion and Permeation\nfor Silica Glass Ampoules')
+plt.savefig('VRvsRtau.jpg', dpi = 256)
+
+
+CELL 88: CODE
+──────────────────────────────────────────────────────────────────────────────────────────
+#b=a(e^(2/(Ga^2) )
+
+m_n0A1 = []
+m_n0M1c = []
+Ts = np.linspace(24,500,50)+273
+ts1 = []
+a = (0.0747)/2 
+b = (0.1159)/2
+for T in Ts:
+    D = swets('D', T)
+    t = ((b-a)**2)/D 
+    ts1.append(t)
+    G = 2/(np.log(b/a)*(a**2))
+    workingBlank = permeation_sim(a = a, b = b, n0 = 1, T = T, cooling_func = NovTube_blank_cooling, He = 4)
+    workingBlank.hold_T(T,t)
+    m_n0M1c.append(workingBlank.out/workingBlank.n0)
+    m_n0A1.append(1-np.exp(-T*swets('K',T)*G*Ratoms*t))
+#workingBlank.generate_report(diffname+str(He)+'HeSim')
+
+plt.plot(Ts-273, 100*(np.array(m_n0M)-np.array(m_n0A))/np.array(m_n0A))
+
+
+CELL 89: CODE
+Execution count: 68
+──────────────────────────────────────────────────────────────────────────────────────────
+print(workingBlank.K)
+print(swets('K',workingBlank.T))
+print(workingBlank.S*workingBlank.D)
+workingBlank.b-workingBlank.a
+print(len(ts1))
+print(len(ts0))
+
+
+CELL 90: CODE
+Execution count: 85
+──────────────────────────────────────────────────────────────────────────────────────────
+cmap = mpl.cm.get_cmap('viridis')
+norm = mpl.colors.Normalize(vmin=np.min(ts+ts0)/60, vmax=np.max(ts+ts0)/60)
+plt.scatter(Ts-273, 100*(np.array(m_n0M1c)-np.array(m_n0A1))/np.array(m_n0A1), color = cmap(norm(np.array(ts1)/60)), marker = '+', label = 'Large c')
+plt.scatter(Ts-273, 100*(np.array(m_n0M0b)-np.array(m_n0A0))/np.array(m_n0A0), color = cmap(norm(np.array(ts0)/60)), marker = 'x', label = 'Small b')
+#plt.scatter(Ts-273, 100*(np.array(m_n0M1)-np.array(m_n0A1))/np.array(m_n0A1), color = cmap(norm(np.array(ts1)/60)), label = 'Large')
+plt.scatter(Ts-273, 100*(np.array(m_n0M0)-np.array(m_n0A0))/np.array(m_n0A0), color = cmap(norm(np.array(ts0)/60)), marker = 's', label = 'Small')
+plt.title('Relative Error of Numerical Permeation Model\nof Silica Glass Ampoule for Fo# = 1')
+plt.xlabel('Isothermal Holding Temperature (°C)')
+plt.ylabel(r' Percent (%) Error: $100 * \left(\frac{\frac{m}{n0}_{model}-\left(1-e^{-KGRTt}\right)}{\left(1-e^{-KGRTt}\right)}\right)$')
+cbar = plt.colorbar()
+cbar.set_label('time (min)')
+plt.legend()
+#plt.savefig('Model_Error.jpg', dpi = 256)
+
+
+CELL 91: CODE
+Execution count: 329
+──────────────────────────────────────────────────────────────────────────────────────────
+diffname = "IrrWin0601bTube012624TC"
+NovReducer = MCHeReducer('2024STDsMC.csv')
+
+DIFFCELL = pd.read_csv(diffname+'.csv', header=None).to_numpy()
+He3, He4, He3sig, He4sig, sens3, sens4 = NovReducer.reduce(DIFFCELL, plot = True, sens_out= True, uncertainties=True) 
+plt.savefig(diffname+'_Standardization.jpg', dpi = 254)
+plt.show()
+columns = ['3He (pcccSTP)', '3He 2sigma (pccSTP)', '4He (nccSTP)', '4He 2sigma (nccSTP)']
+reportDF = pd.DataFrame()
+reportDF['Sens3 (pccSTP/cps)'] = sens3
+reportDF['Sens4 (nccSTP/fA)'] = sens4
+reportDF['3He (pcccSTP)'] = He3
+reportDF['3He 2sigma (pccSTP)'] = He3sig*2
+reportDF['4He (nccSTP)'] = He4
+reportDF['4He 2sigma (nccSTP)'] = He4sig*2
+reportDF.to_csv(diffname+'_reducedMC.csv')
+
+
+CELL 92: CODE
+Execution count: 73
+──────────────────────────────────────────────────────────────────────────────────────────
+
+n0 = 100 
+t_remain = 180 * 60 # Seconds
+T = 50 + 273 # Kelvin
+b = 0.0734/2
+a = 0.0488/2
+
+t_full = t_remain
+G = 2/(np.log(b/a)*(a**2))
+D = swets('D',T) 
+S = swets('S',T)
+K = swets('K', T)
+dr = (b-a)/100
+dt = 0.5*(dr**2)/D #0.5 is upper bound for stability
+r = np.arange(b,a,-dr)
+#r = np.arange(b+dr,a,-dr)
+#b +=dr
+#a -= dr
+nglass = n0/(1+(((S*2*Ratoms*T/((a**2)*np.log(a/b))) *((0.5*a**2*(np.log(b/a)+0.5))-((b**2)/4)))**-1)) #eqn 2.46
+ngas = n0-nglass
+h = 3 # arbitrary, cancels
+c = (S*ngas*Ratoms*T/(np.pi*(a**2)*h))*(np.log(r/b)/np.log(a/b)) # eqn 2.42
+#c[0]=0
+out = 0
+predicted_out = n0*(1-np.exp(-Ratoms*T*G*K*t_remain))
+#plt.plot(r, c, label = "Initial")
+print(f"ngas = {ngas}")
+print(f"For Diffusivity of {D} cm^2/s and dx = {round(dr*1E4,2)}, dt is set at {dt} seconds")
+
+current_t = 0
+steps = 0
+firstderiv = -(c[2:]-c[:-2])/(2*dr)
+secondderiv = -(firstderiv[2:]-firstderiv[:-2])/(2*dr)
+thirdderiv = -(secondderiv[2:]-secondderiv[:-2])/(2*dr)
+delta_c = ((D*dt)) * (((c[:-2]-(2*c[1:-1])+c[2:])/(dr**2))+((1/r[1:-1])*(firstderiv)))
+J = D*firstderiv*dt*np.pi*r[1:-1]*2*h
+print(f"outflux = {D*(firstderiv[0]+(secondderiv[0]*dr))*dt*np.pi*r[0]*2*h}, influx = {D*(firstderiv[-1]-(secondderiv[-1]*dr))*dt*np.pi*r[-1]*2*h}")
+print(J)
+print(delta_c)
+flux_difference = []
+c_inner = S*ngas*Ratoms*T/(np.pi*(a**2)*h)
+print(c)
+print(c_inner)
+print(np.sum([np.sum(r*2*dr*h*np.pi*c),ngas,out]))
+flux_difference = []
+while t_remain > 0:
+    steps += 1
+    t_remain -= dt
+    current_t += dt
+    c[1:-1] += delta_c # update concentrations
+    #nglass = n0/(1+(((S*2*Ratoms*T/((a**2)*np.log(a/b))) *((0.5*a**2*(np.log(b/a)+0.5))-((b**2)/4)))**-1)) #eqn 2.46
+    #ngas = n0-nglass
+    #c = (S*ngas*Ratoms*T/(np.pi*(a**2)*h))*(np.log(r/b)/np.log(a/b)) # eqn 2.42
+
+    #out -= D*((c[0]-c[1])/dr)*dt*np.pi*r[0]*2*h
+    #ngas += D*((c[-2]-c[-1])/dr)*dt*np.pi*r[-1]*2*h
+    #ngas += D*((firstderiv[-1]+(-secondderiv[-1]*dr)))*dt*np.pi*r[-1]*2*h
+    #out -= D*(firstderiv[0]+((secondderiv[0]*dr)))*dt*np.pi*r[0]*2*h
+    #ngas += D*(firstderiv[-1]-((secondderiv[-1]-thirdderiv[-1]*dr)*dr))*dt*np.pi*r[-1]*2*h
+    #out -= D*(firstderiv[0]+((secondderiv[0]+thirdderiv[0]*dr)*dr))*dt*np.pi*r[0]*2*h
+    #ngas += J[-1]-((J[-2]-J[-1])-((2*J[-2])-(J[-1]+J[-3]))/2)#J[-1]-((J[-1]-J[-2]))
+    #out -= J[0]+((J[0]-J[1])-((2*J[1])-(J[0]+J[2]))/2)#J[0]+((J[0]-J[1]))#+((J[0]-J[1])-(J[1]-J[2])))#((2*J[1])-(J[0]+J[2])))
+    
+    #ngas += J[-1]-(J[-2]-J[-1])#-((J[-3]-J[-2])-(J[-2]-J[-1])))
+    #out -= J[0]+(J[0]-J[1])
+    out -= J[0]+((J[0]-J[1])-((2*J[1])-(J[0]+J[2]))/2)
+    ngas += J[-1]+((J[-1]-J[-2])-((2*J[-2])-(J[-1]+J[-3]))/2)
+    #n0 = 100-out
+    #nglass = n0/(1+(((S*2*Ratoms*T/((a**2)*np.log(a/b))) *((0.5*a**2*(np.log(b/a)+0.5))-((b**2)/4)))**-1)) #eqn 2.46
+    #ngas = n0-nglass
+    #c = (S*ngas*Ratoms*T/(np.pi*(a**2)*h))*(np.log(r/b)/np.log(a/b)) # eqn 2.42
+    if (steps%100 == 0):# or (steps <= 10):
+        #flux_difference.append(((D*(firstderiv[-1]-(secondderiv[-1]*dr))*dt*np.pi*r[-1]*2*h)-(D*(firstderiv[0]+(secondderiv[0]*dr))*dt*np.pi*r[0]*2*h))*(t_full/dt))
+        flux_difference.append((J[-1]+((J[-1]-J[-2])-((2*J[-2])-(J[-1]+J[-3]))/2))-(J[0]+((J[0]-J[1])-((2*J[1])-(J[0]+J[2]))/2)))
+    #ngas += D*firstderiv[-1]*dt*np.pi*r[-1]*2*h
+    c_inner = S*ngas*Ratoms*T/(np.pi*(a**2)*h)
+    inxs = c[-1]-c_inner # Enforce inner boundry conditions
+    c[-1] = c_inner
+    ngas += inxs*2*np.pi*r[-1]*dr*h
+    firstderiv = -(c[2:]-c[:-2])/(dr*2)
+    secondderiv = -(firstderiv[2:]-firstderiv[:-2])/(2*dr)
+    thirdderiv = -(secondderiv[2:]-secondderiv[:-2])/(2*dr)
+    delta_c = ((D*dt)) * (((c[:-2]-(2*c[1:-1])+c[2:])/(dr**2))+((1/r[1:-1])*(firstderiv)))
+    J = D*firstderiv*dt*np.pi*r[1:-1]*2*h
+    
+    """
+    if (steps%10000 == 0) or (steps <= 10):
+        Flux_Difference.append((D*((c[-2]-c[-1])/dr)*dt*np.pi*r[-1]*2*h)-(D*((c[0]-c[1])/dr)*dt*np.pi*r[0]*2*h))
+        print(f"Step {steps}")
+        print(f"outflux = {J[0]}, influx = {J[-1]}")
+        print(f"Excess from Boundary Condition:{inxs*2*np.pi*r[-1]*dr*h}")
+        predicted_out = n0*(1-np.exp(-Ratoms*T*G*K*current_t))
+        print(f"Sim out: {out} Calc_out: {predicted_out}")
+        print(f"In Glass: {np.sum(r*2*dr*h*np.pi*c)}, in gas: {np.sum(ngas)}")
+        print(delta_c)
+        #print(delta_c)
+    """
+    if (steps <= 10): #steps%25000 == 0:
+        c_ideal = (S*ngas*Ratoms*T/(np.pi*(a**2)*h))*(np.log(r/b)/np.log(a/b)) # eqn 2.42
+        #plt.plot(r, (c-c_ideal)/c_ideal, label = f"t = {np.round(current_t/60)} minutes")
+        #plt.plot(r,c,label = f"t = {np.round(current_t/60)} minutes")
+print(f"Simulation finished after {steps} steps")
+#plt.plot(r, c, label = 'Final')
+plt.legend()
+print(f"Sim out: {out} Calc_out: {predicted_out}")
+print(f"In Glass: {np.sum(r*2*dr*h*np.pi*c)}, in gas: {np.sum(ngas)}")
+print(np.sum([np.sum(r*2*dr*h*np.pi*c),ngas,out]))
+plt.show()
+plt.plot(flux_difference)
+
+
+CELL 93: CODE
+Execution count: 6
+──────────────────────────────────────────────────────────────────────────────────────────
+
+n0 = 100 
+t_remain = 180 * 60 # Seconds
+T = 50 + 273 # Kelvin
+b = 0.0734/2
+a = 0.0488/2
+
+t_full = t_remain
+G = 2/(np.log(b/a)*(a**2))
+D = swets('D',T) 
+S = swets('S',T)
+K = swets('K', T)
+dr = (b-a)/100
+dt = 0.5*(dr**2)/D #0.5 is upper bound for stability
+r = np.arange(b,a,-dr)
+print(r)
+
+
+CELL 94: CODE
+Execution count: 345
+──────────────────────────────────────────────────────────────────────────────────────────
+print(f"Sim out: {out} Calc_out: {predicted_out}")
+#print(r)
+print(f"In Glass: {np.sum(r*2*dr*h*np.pi*c)}, in gas: {ngas} ")
+print(np.sum([np.sum(r*2*dr*h*np.pi*c),ngas,out]))
+print(f"Simulation n0: {np.sum([np.sum(r*2*dr*h*np.pi*c),ngas])}, Model: = {100*np.exp(-Ratoms*T*G*K*current_t)}")
+
+
+
+CELL 95: CODE
+Execution count: 320
+──────────────────────────────────────────────────────────────────────────────────────────
+firstderiv = -(c[2:]-c[:-2])/(2*dr)
+secondderiv = -(firstderiv[2:]-firstderiv[:-2])/(2*dr)
+thirdderiv = -(secondderiv[2:]-secondderiv[:-2])/(2*dr)
+plt.plot(r[1:-1],firstderiv)
+plt.scatter([r[0],r[-1]], [firstderiv[0]+((secondderiv[0]+thirdderiv[0]*dr)*dr), firstderiv[-1]-((secondderiv[-1]-thirdderiv[-1]*dr)*dr)])
+plt.show()
+plt.plot(r[2:-2],secondderiv)
+plt.scatter([r[1],r[-2]],[secondderiv[0]+thirdderiv[0]*dr,secondderiv[-1]-thirdderiv[-1]*dr])
+
+
+CELL 96: CODE
+Execution count: 85
+──────────────────────────────────────────────────────────────────────────────────────────
+
+print(a)
+print(b)
+dr = (a-b)/100
+print(dr)
+print(np.arange(a,b,-dr))
+len(r)
+
+
+CELL 97: CODE
+Execution count: 378
+──────────────────────────────────────────────────────────────────────────────────────────
+#newJ = (D*(firstderiv[0]-(secondderiv[0]*dr))*dt*np.pi*r[0]*2*h) + J + (D*(firstderiv[-1]-(secondderiv[-1]*dr))*dt*np.pi*r[-1]*2*h)
+
+Jrev = J.tolist()
+Jrev.reverse()
+
+plt.plot(r[1:11],J[:10])
+#plt.scatter([r[0],r[-1]], [(D*(firstderiv[0])*dt*np.pi*r[0]*2*h),(D*(firstderiv[-1])*dt*np.pi*r[-1]*2*h)])
+#plt.scatter([r[0],r[-1]], [J[0]+((J[0]-J[1])-((2*J[1])-(J[0]+J[2]))/2), J[-1]+((J[-1]-J[-2])+((2*J[-2])-(J[-1]+J[-3]))/2)])
+#plt.scatter([r[0],r[-1]], [J[0]+(J[0]-J[1]), J[-1]+(J[-1]-J[-2])])
+plt.scatter(r[0], J[0]+((J[0]-J[1])-((2*J[1])-(J[0]+J[2]))/2))
+
+plt.show()
+plt.plot(r[-11:-1],Jrev[-10:])
+plt.scatter(r[-1], Jrev[-1]+((Jrev[-1]-Jrev[-2])-((2*Jrev[-2])-(Jrev[-1]+Jrev[-3]))/2))
+plt.show()
+
+J_deriv = (J[2:]-J[:-2])/(2*dr)
+plt.plot(r[2:-2], J_deriv)
+plt.scatter([r[2],r[-2]],[J_deriv[0]+((J_deriv[0]-J_deriv[1])*dr), J_deriv[-1]+((J_deriv[-2]-J_deriv[-1])*dr)])
+
+
+CELL 98: CODE
+Execution count: 311
+──────────────────────────────────────────────────────────────────────────────────────────
+c_ideal = (S*ngas*Ratoms*T/(np.pi*(a**2)*h))*(np.log(r/b)/np.log(a/b)) # eqn 2.42
+plt.plot(r,c-c_ideal)
+
+
+CELL 99: CODE
+Execution count: 279
+──────────────────────────────────────────────────────────────────────────────────────────
+c
+
+
+CELL 100: CODE
+──────────────────────────────────────────────────────────────────────────────────────────
+def extract_cooling_rate(ID, T_hot=0, step = 3):
+    if T_hot < 30:
+        return [], []
+    with open(f'NGL Watlow Heat Log/DC{ID} Watlow.txt') as lines:
+        t = []
+        T = []
+        for line in lines.readlines():
+            [lt,lT] = line.split('\t')
+            t.append(float(lt))
+            T.append(float(lT))
+        if T_hot:
+            try:
+                startpoint = np.where(np.array(T)==T_hot)[0][-1]
+            except:
+                return [], []
+        if not T_hot: 
+            startpoint = -40
+            T_hot = np.max(T[-startpoint:])
+        DTdtquik = np.array(T)[startpoint:-1]-np.array(T)[(startpoint+1):] #test for new T
+        if len(np.where(DTdtquik<0)[0]) > 0:
+            endpoint = np.where(DTdtquik<0)[0][0]+len(T[:startpoint])
+        else: 
+            endpoint = len(np.array(T))
+        cool_ind = (np.array(T[startpoint:endpoint]) < T_hot) * (np.array(T[startpoint:endpoint]) != 0)
+        T_interest = np.array(T[startpoint:endpoint])[cool_ind][2:]
+        t_interest = np.array(t[startpoint:endpoint])[cool_ind][2:]
+        #print(T_interest)
+        #print(t_interest)
+        dTdt = (T_interest[step:]-T_interest[:-step])/((t_interest[step:]-t_interest[:-step]))
+        Ts = (T_interest[step:]+T_interest[:-step])/2
+        #print(dTdt)
+        #print(Ts)
+        return Ts.tolist(), dTdt.tolist()
+
+"""def extract_cooling_rate(ID):
+    with open(f'NGL Watlow Heat Log/DC{ID} Watlow.txt') as lines:
+        t = []
+        T = []
+        for line in lines.readlines():
+            [lt,lT] = line.split('\t')
+            t.append(float(lt))
+            T.append(float(lT))
+        T_hot = np.max(T[-20:])
+        cool_ind = (np.array(T[-20:]) < T_hot) * (np.array(T[-20:]) != 0)
+        T_interest = np.array(T[-20:])[cool_ind]
+        t_interest = np.array(t[-20:])[cool_ind]
+        print(T_interest)
+        print(t_interest)
+        #dTdt = (T_interest[6:]-T_interest[:-6])/((t_interest[6:]-t_interest[:-6]))
+        #Ts = T_interest[3:-3]
+        #print(dTdt)
+        #print(Ts)
+        try:
+            dTdt = (T_interest[-6]-T_interest[-1])/((t_interest[-6]-t_interest[-1]))
+            Ts = np.mean((T_interest[-6:-1]))
+        except:
+            return [], []
+        return [Ts], [dTdt]"""
+    
+T = []
+dTdt = []
+
+DIFFCELL = pd.read_csv('IrrWin0601bTube012624TC.csv').to_numpy()
+metadata = DIFFCELL[:,1]
+for datum in metadata:
+    print(datum)
+    Ti, dTdti = extract_cooling_rate((str(datum).split(' ')[1]).split('_')[0], T_hot = float((str(datum).split(' ')[1]).split('_')[2]), step = 3) 
+    T = T + Ti
+    dTdt = dTdt + dTdti
+    if len(Ti): 
+        plt.plot(Ti, dTdti, label = datum.split(' ')[1].split('_')[0]+' : '+datum.split(' ')[2])
+plt.legend()
+DF = pd.DataFrame()
+DF['T'] = T
+DF['dTdt'] = dTdt
+DF.to_csv('goethiteCoolingRate.csv')
+
+
+CELL 101: CODE
+Execution count: 8
+──────────────────────────────────────────────────────────────────────────────────────────
+def tube_cylinder_FDM(T1,T2,a,b):
+    """
+    Simulates concentration profile with a Forward Time Centered Space 
+    Finite Difference Model for diffusion
+    Let T2 and T2 be temperatures in celcius that define the initial 
+    EQM steady state concentration profile. If T1 is a string
+    (such as 'a') then the initial concentration is 0 throughout.
+    t and x are the temporal duration and spatial extent (tube thickness) of 
+    the simulation respectively in seconds and cm. 
+    dx is 1 micron, while dt is calculated to stabilize
+    the simulation
+    """
+    
+    Fos = [0.01,0.1,1]
+    colors = ['Red', 'Orange','Green', 'Blue','Violet']
+    
+    D = swets('D',T2+273) 
+    S2 = swets('S',T2+273)
+    dr = (b-a)/100
+    dt = 0.5*(dr**2)/D
+    G = 2/(np.log(b/a)*(a**2))
+    r = np.arange(a,b+dr,dr)
+    
+    
+    ngas = 100
+    h = 1 # arbitrary, cancels
+    c2 = (S2*ngas*Ratoms*(T2+273)/(np.pi*(a**2)*h))*(np.log(r/b)/np.log(a/b))
+    #c_inner = ngas*(S2*(Ratoms*(T2+273))) # inner boundary condition at new temp in terms of glass/air partitioning
+    c_inner = S2*ngas*Ratoms*(T2+273)/(np.pi*(a**2)*h)
+    t_stops = [] # times to stop and record concentration profile
+    for Fo in Fos:
+        t_stops.append((Fo*((b-a)**2))/D)
+    t_stops.reverse()
+    t_stop = t_stops.pop()
+    
+    print(f"For Diffusivity of {D} cm^2/s and dx = {round(dr*1E4,2)}, dt is set at {dt} seconds")
+    
+    
+    if type(T1) in [int,float]:
+        S1 = swets('S',T1+273)
+        c1 = (S1*ngas*Ratoms*(T1+273)/(np.pi*(a**2)*h))*(np.log(r/b)/np.log(a/b))
+        c = (S1*ngas*Ratoms*(T1+273)/(np.pi*(a**2)*h))*(np.log(r/b)/np.log(a/b)) # eqn 2.42
+        
+    else:
+        c = np.zeros_like(r) # 0 initial condition throughout
+        c1 = np.zeros_like(r)
+        
+    print(c)
+    plt.plot(r*1E4, c/(ngas/(np.pi*(a**2)*h)), linestyle = '--', color = 'Black', label = f"EQM for T = {T1}°C", alpha = 0.5)
+    c[0] = c_inner
+    current_t = 0
+    steps = 0
+    firstderiv = (c[2:]-c[:-2])/(2*dr)
+    delta_c = ((D*dt)) * (((c[:-2]-(2*c[1:-1])+c[2:])/(dr**2))+((1/r[1:-1])*(firstderiv)))
+    print(c)
+    color_count = 0
+    while t_stop:
+        steps += 1
+        current_t += dt
+        c[1:-1] += delta_c # update concentrations
+        c[0] = c_inner # Enforce outer boundary condition
+        c[-1] = 0 # Enforce inner boundry conditions
+        firstderiv = (c[2:]-c[:-2])/(2*dr)
+        delta_c = ((D*dt)) * (((c[:-2]-(2*c[1:-1])+c[2:])/(dr**2))+((1/r[1:-1])*(firstderiv)))
+        if current_t >= t_stop:
+            plt.plot(r*1E4, c/(ngas/(np.pi*(a**2)*h)), color = colors[color_count], linewidth = 2, label = f"Fo = {Fos[color_count]}, t = {round(current_t/60,1)} minutes")
+            print(f"t = {t_stop/60}, atoms = {np.sum(c)}")
+            if len(t_stops):
+                t_stop = t_stops.pop()
+            else:
+                t_stop = 0
+            color_count += 1
+    print(f"Simulation finished after {steps} steps")
+    print(r)
+    print(c)
+    print(c2)
+    print(c_inner)
+    plt.plot(r*1E4, c2/(ngas/(np.pi*(a**2)*h)), linestyle = ':', color = 'Black', label = f"EQM for T = {T2}°C", alpha = 0.8)
+    #plt.scatter([0,xi[-1]*1E4,xi[-1]*1E4],[c[0],c[-1],c1], color = 'Black', alpha = 0.5)
+    plt.xlabel('r (microns)')
+    plt.ylabel('He Concentration Ratio (Glass/Gas, atoms/mL)')
+    plt.title(f'He Concentration Profile Evolution after {round(current_t/60,1)} minutes at {T2}°C')
+    plt.legend()
+tube_cylinder_FDM(T1 = 300, T2 = 100, a = 0.03, b = 0.05)
+#plt.savefig('FDM_cylinder1.jpg', dpi = 256)
+
+
+CELL 102: CODE
+Execution count: 15
+──────────────────────────────────────────────────────────────────────────────────────────
+Ts = np.linspace(80,120,200)
+Ls = np.array([0.015,0.02,0.025,0.03])
+Ds = []
+for T in Ts:
+    Ds.append(swets('D',T+273))
+Ds = np.array(Ds)
+fig, ax = plt.subplots()
+colors = ['Red','Orange','Green','Blue']
+
+for j, L in enumerate(Ls):
+    ts = (L**2)/(Ds)
+    plt.plot(Ts, ts/60, color = colors[j], label = f'L = {int(L*1E4)} microns')
+    
+make_grid()
+plt.title('Timescales to Establish EQM Helium Concentration Profile in Glass')
+plt.xlabel('Temperature (°C)')
+plt.ylabel('Time (minutes)')
+plt.tight_layout()
+plt.legend()
+plt.savefig('EQM_timescales.jpg', dpi = 256)
+
+
+CELL 103: CODE
+Execution count: 2
+──────────────────────────────────────────────────────────────────────────────────────────
+a = 0.03
+b = 0.05
+#ts = np.linspace([60,45,30][j],180,500)*60 # min to seconds
+G = 2/((a**2)*(np.log(b/a)))
+#D = (2*Ratoms/(a**2))*(((b**3)-(3*(a**2)*b)+(2*(a**3)))/(6*(b-a)))
+H = -G*Ratoms*((0.5*(a**2)*(np.log(b/a)+0.5))-((b**2)/4))
+T1s = np.array([200,300]) + 273
+T2s = np.array([80,100,120]) + 273
+#lam = T2*Ratoms*G*swets('K',T2)
+#expterm = np.exp(-lam*ts)
+fig, ax = plt.subplots()
+colors = ['Green','Orange','Red']
+lines = [':','--','-']
+lines.reverse()
+for i, T1 in enumerate(T1s):
+    S1 = swets('S',T1)
+    for j, T2 in enumerate(T2s):
+        ts = np.linspace([60,45,30][j],180,500)*60 # min to seconds
+        S2 = swets('S',T2)
+        lam = T2*Ratoms*G*swets('K',T2)
+        expterm = np.exp(-lam*ts)
+        Err = 100*((1/((1/(H*T1*S1))+1))-(1/((1/(H*T2*S2))+1)))/(1-expterm)
+        plt.plot(ts/60,Err,color=colors[i],label = f'T1 = {T1-273}°C; T2 = {T2-273}°C', linestyle = lines[j])
+plt.legend()
+plt.xlabel('Time (minutes)')
+plt.ylabel('Relative Error in Percent (%)')
+plt.title('Relative Error of Eqn. 3.3 After Thermal Perturbation')
+make_grid()
+plt.savefig('Thermal_Perturbation_Error.jpg',dpi = 256)
+
+
+CELL 104: CODE
+Execution count: 38
+──────────────────────────────────────────────────────────────────────────────────────────
+#chat gpt attempt to make table legend, not working
+
+fig, ax = plt.subplots(figsize=(10, 6))
+colors = ['Green', 'Orange', 'Red']
+line_styles = [':', '--', '-']
+
+# Loop over T1 and T2 to compute and plot
+for i, T1 in enumerate(T1s):
+    S1 = swets('S', T1)
+    for j, T2 in enumerate(T2s):
+        ts = np.linspace([60, 45, 30][j], 180, 500) * 60  # Convert minutes to seconds
+        S2 = swets('S', T2)
+        lam = T2 * Ratoms * G * swets('K', T2)
+        expterm = np.exp(-lam * ts)
+        Err = 100 * ((1 / ((1 / (H * T1 * S1)) + 1)) - (1 / ((1 / (H * T2 * S2)) + 1))) / (1 - expterm)
+        ax.plot(ts / 60, Err, color=colors[i], linestyle=line_styles[j],
+                label=f'T1 = {T1 - 273}°C; T2 = {T2 - 273}°C')
+
+# Legend in table format
+handles, labels = ax.get_legend_handles_labels()
+by_row = len(T2s)  # Columns correspond to T2 values
+legend_table = [handles[i:i + by_row] for i in range(0, len(handles), by_row)]
+labels_table = [labels[i:i + by_row] for i in range(0, len(labels), by_row)]
+
+# Create legend as a table
+from matplotlib.legend import Legend
+legend = Legend(ax, [tuple(row) for row in legend_table], loc='upper right',
+                ncol=len(T2s), handletextpad=0.5, columnspacing=1.5, fontsize='small',
+                title="Legend (T1 rows, T2 columns)")
+ax.add_artist(legend)
+
+# Axis labels and title
+ax.set_xlabel("Time (minutes)")
+ax.set_ylabel("Error (%)")
+ax.set_title("Thermal Perturbation Plot")
+ax.grid(True)
+
+# Save the figure
+plt.savefig('thermal_perturbation_plot.jpg', dpi=300)
+plt.show()
+
+
+
+CELL 105: CODE
+Execution count: 414
+──────────────────────────────────────────────────────────────────────────────────────────
+a = 0.03
+b = 0.05
+G = 2/((a**2)*(np.log(b/a)))
+D = (2*Ratoms/(a**2))*(((b**3)-(3*(a**2)*b)+(2*(a**3)))/(6*(b-a)))
+
+T1s = np.array([200,300]) + 273
+T2s = np.array([80,100,120]) + 273
+lam = T2*Ratoms*G*swets('K',T2)
+expterm = np.exp(-lam*ts)
+fig, ax = plt.subplots()
+colors = ['Green','Orange','Red']
+lines = [':','--','-']
+lines.reverse()
+for i, T1 in enumerate(T1s):
+    S1 = swets('S',T1)
+    for j, T2 in enumerate(T2s):
+        ts = np.linspace([60,45,30][j],180,500)*60 # min to seconds
+        S2 = swets('S',T2)
+        lam = T2*Ratoms*G*swets('K',T2)
+        expterm = np.exp(-lam*ts)
+        #Err = 100*((1/((1/(D*T1*S1))+1))-(1/((1/(D*T2*S2))+1)))/(1-expterm) #Linear profile
+        nglass = 100/(1+(((S*2*Ratoms*T/((a**2)*np.log(a/b))) *((0.5*a**2*(np.log(b/a)+0.5))-((b**2)/4)))**-1)) #eqn 2.46
+        
+        plt.plot(ts/60,Err,color=colors[i],label = f'T1 = {T1-273}°C; T2 = {T2-273}°C', linestyle = lines[j])
+plt.legend()
+plt.xlabel('Time (minutes)')
+plt.ylabel('Relative Error in Percent (%)')
+plt.title('Relative Error of Eqn. 3.6 After Thermal Perturbation')
+make_grid()
+plt.savefig('Thermal_Perturbation_Error.jpg',dpi = 256)
+
+
+CELL 106: CODE
+Execution count: 392
+──────────────────────────────────────────────────────────────────────────────────────────
+Ts = np.linspace(0,300,500)+273
+Ss = []
+for T in Ts:
+    Ss.append(swets('S',T))
+Ss = np.array(Ss)
+
+colors = ['Red', 'Black', 'Green', 'Blue','Violet']
+
+a = 0.03
+b = 0.05
+G = 2/((a**2)*(np.log(b/a)))
+aa = np.array([0.027,0.03,0.04,0.05])
+bb = aa*np.exp(2/(G*(aa**2)))
+Vglass_Vgas = ((bb**2)-(aa**2))/(aa**2)
+
+Ds = (2*Ratoms/(aa**2))*(((bb**3)-(3*(aa**2)*bb)+(2*(aa**3)))/(6*(bb-aa)))
+fig, ax = plt.subplots()
+for i, D in enumerate(Ds):
+    plt.plot(Ts-273,100*(1/((1/(D*Ts*Ss))+1)), color = colors[i], label =f"Glass/Gas Volume = {round(Vglass_Vgas[i],1)}")
+    
+plt.legend(title=f'For All Tubes: G = {round(G,1)} cm^-2', loc='best', bbox_to_anchor=(0.5, 0.25))    
+plt.xlabel('Temperature (°C)')
+plt.ylabel('Ampoule Helium within Glass (%)') 
+plt.title('Portion of Ampoule Helium Within Glass at EQM\nSolved for Several Tubes at Constant G')
+make_grid()
+plt.tight_layout()
+plt.savefig('PercentHeInGlass.jpg', dpi = 256)
+
+
+CELL 107: CODE
+Execution count: 333
+──────────────────────────────────────────────────────────────────────────────────────────
+a = 0.03
+b = 0.05
+G = 2/((a**2)*(np.log(b/a)))
+D = (2*Ratoms/(a**2))*(((b**3)-(3*(a**2)*b)+(2*(a**3)))/(6*(b-a)))
+T1s = np.array([200,300]) + 273
+T2s = np.array([80,100,120]) + 273
+lam = T2*Ratoms*G*swets('K',T2)
+expterm = np.exp(-lam*ts)
+fig, ax = plt.subplots()
+colors = ['Green','Orange','Red']
+lines = [':','--','-']
+lines.reverse()
+for i, T1 in enumerate(T1s):
+    S1 = swets('S',T1)
+    for j, T2 in enumerate(T2s):
+        ts = np.linspace([60,45,30][j],180,500)*60 # min to seconds
+        S2 = swets('S',T2)
+        lam = T2*Ratoms*G*swets('K',T2)
+        expterm = np.exp(-lam*ts)
+        Err = 100*((1/((1/(D*T1*S1))+1))-(1/((1/(D*T2*S2))+1)))/(1-expterm)
+        plt.plot(ts/60,Err,color=colors[i],label = f'T1 = {T1-273}°C; T2 = {T2-273}°C', linestyle = lines[j])
+plt.legend()
+plt.xlabel('Time (minutes)')
+plt.ylabel('Relative Error in Percent (%)')
+plt.title('Relative Error of Eqn. 3.6 After Thermal Perturbation')
+make_grid()
+plt.savefig('Thermal_Perturbation_Error.jpg',dpi = 256)
+
+
+CELL 108: CODE
+Execution count: 526
+──────────────────────────────────────────────────────────────────────────────────────────
+#Demo Arrhenius Plots for size comparison
+DiffPar = {
+'Channel':(13.4E-4,0.43*96485),
+'Isotropic':(327.7,162556),
+'Decomp':(10000000,136000)#(17375,148950.4)
+}
+R = 8.314
+lines = [':','--','-']
+colors = ['Red','Green','Blue']
+A = [0.025]
+Tr = np.array([25,280])+273
+
+for j, (name, (D0,Ea)) in enumerate(DiffPar.items()):
+    for i, a in enumerate(A):
+        plt.plot(1E4/Tr, np.log((D0/(a**2))*np.exp(-Ea/(R*Tr))), color = colors[i], linestyle = lines[j], label = f'{name}, a = {a*1E4} um')
+plt.legend()
+
+
+CELL 109: CODE
+Execution count: 469
+──────────────────────────────────────────────────────────────────────────────────────────
+gtEa = pd.read_csv('farley24dat.csv')
+Tstart = gtEa['Tstart']
+Tmin = gtEa['Tmin']
+Tend = gtEa['Tend']
+Eas = gtEa['Ea (kJ/mol)']
+
+
+param = 'S1 Delta Initial'
+
+
+plt.scatter(Eas, Tstart,c = gtEa[param])
+for i, Ea in enumerate(Eas):
+    plt.plot([Ea,Ea],[Tmin[i],Tend[i]], color = 'Black')
+cbar = plt.colorbar()
+cbar.set_label(param)
+plt.xlabel('Ea kJ/mol')
+plt.ylabel('Temperature C')
+plt.show()
+
+param = '4He nmol/g'
+
+plt.scatter(Eas, Tstart,c = gtEa[param])
+for i, Ea in enumerate(Eas):
+    plt.plot([Ea,Ea],[Tmin[i],Tend[i]], color = 'Black')
+cbar = plt.colorbar()
+cbar.set_label(param)
+plt.xlabel('Ea kJ/mol')
+plt.ylabel('Temperature C')
+plt.show()
+
+param = 'Av Size'
+
+plt.scatter(Eas, Tstart,c = gtEa[param])
+for i, Ea in enumerate(Eas):
+    plt.plot([Ea,Ea],[Tmin[i],Tend[i]], color = 'Black')
+cbar = plt.colorbar()
+cbar.set_label(param)
+plt.xlabel('Ea kJ/mol')
+plt.ylabel('Temperature C')
+plt.show()
+
+param = 'S2 Delta Initial'
+
+plt.scatter(Eas, Tstart,c = gtEa[param])
+for i, Ea in enumerate(Eas):
+    plt.plot([Ea,Ea],[Tmin[i],Tend[i]], color = 'Black')
+cbar = plt.colorbar()
+cbar.set_label(param)
+plt.xlabel('Ea kJ/mol')
+plt.ylabel('Temperature C')
+plt.show()
+
+param = 'Onset F3Hec'
+
+plt.scatter(Eas, Tstart,c = gtEa[param])
+for i, Ea in enumerate(Eas):
+    plt.plot([Ea,Ea],[Tmin[i],Tend[i]], color = 'Black')
+cbar = plt.colorbar()
+cbar.set_label(param)
+plt.xlabel('Ea kJ/mol')
+plt.ylabel('Temperature C')
+plt.show()
+
+
+CELL 110: CODE
+Execution count: 478
+──────────────────────────────────────────────────────────────────────────────────────────
+plt.scatter(gtEa['S2 Delta Initial'],gtEa['Onset F3Hec'], c = gtEa['S1 Delta Initial'])#(1/gtEa['4He nmol/g'])*(gtEa['Av Size']))
+
+
+CELL 111: CODE
+Execution count: 15
+──────────────────────────────────────────────────────────────────────────────────────────
+def tube_permeate2(T, t, ID, OD):
+    """Lengths in cm. Inner and outer diameter. F is fraction initial He remaining. 
+    Returns n/n0, fraction of initial Helium"""
+    K = swets_K(T)
+    return(np.exp(-(K*Ratoms*T*2*t)/(np.log(OD/ID)*((ID/2)**2))))
+
+tube_permeate2(70+273,4*24*3600,ID = 0.054, OD=0.0832)
+
+
+CELL 112: CODE
+Execution count: 16
+──────────────────────────────────────────────────────────────────────────────────────────
+(swets('D', 293))
+
+
+CELL 113: CODE
+Execution count: 41
+──────────────────────────────────────────────────────────────────────────────────────────
+Ts = np.array([25,250,500])+273
+colors = ['blue', 'yellow', 'red']
+VR = np.linspace(0.01,20,200)
+VP = (VR + 1)**0.5
+fig, ax = plt.subplots()
+for i, T in enumerate(Ts):
+    #D = swets('D', T)
+    S = swets('S', T)
+    #K = swets('K', T)
+    #tauP = 1/(G*Ratoms*K*T)
+    #tauD = ((b-a)**2)/D
+    tauR = S*Ratoms*T*VR*((-1+VP)/(1+VP))*(2/np.log(VP))
+    plt.loglog(VR, tauR, label = f'T = {T-273}°C', color = colors[i], zorder = 1+i)
+plt.legend()
+plt.xlabel(r'$\frac{glass}{gas}$ Volume Ratio: $V_{glass/gas}$')
+plt.ylabel(r'$\frac{Diffusion}{Permeation}$ Timescale Ratio: $\tau_D/\tau_P$')
+plt.title('Relative Timescales of Helium Diffusion and Permeation\nfor Silica Glass Ampoules')
+make_grid()
+plt.savefig('VRvsRtau.jpg', dpi = 256)
+

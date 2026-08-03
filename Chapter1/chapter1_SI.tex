@@ -1,0 +1,46 @@
+% =============================================================
+%  Chapter 1 Supplementary Information (dissertation-chapter version)
+%
+%  This is the dissertation-formatted version of Chapter1/Writing/SI.tex
+%  (the standalone Copernicus-journal supplement). Both wrappers
+%  \input{} the SAME shared content file -- chapter1_SI_body.tex --
+%  so the science is written and edited in exactly one place. Edit
+%  that file, not this one or SI.tex, to change text/equations/
+%  figures/citations.
+%
+%  Citations use \citep/\citet against the master references.bib, same
+%  as chapter1.tex -- resolved by the single \printbibliography at the
+%  end of dissertation.tex, so no local bibliography is needed here.
+%
+%  Placement: appended at the end of Chapter 1, per Caltech's thesis
+%  guidelines, which allow "material to follow text, such as
+%  references... included at the end of each chapter, making each
+%  chapter a complete and self-contained paper." Move this \input{}
+%  line in dissertation.tex (or promote to its own \chapter) if a
+%  different placement is preferred.
+%
+%  Gets its own title/divider page (\SItitlepage) and its own
+%  "1.Ns"-style section numbering (the `ChapterSI` environment), both
+%  defined in dissertation_preamble.tex -- see the comment there for the
+%  full rationale and how this is meant to repeat for Chapter 2 onward.
+%
+%  NOTE: Do NOT include \documentclass or \begin{document} here.
+%        This file is \input{} into dissertation.tex.
+% =============================================================
+
+% \chplandscape is normally defined by Chapter1/chapter1.tex (input before
+% this file in dissertation.tex) -- see the comment there for what it
+% does and why. Guarded redefinition here only matters if this file is
+% ever \input{} before chapter1.tex.
+\makeatletter
+\@ifundefined{chplandscape}{%
+  \newenvironment{chplandscape}{\begin{landscape}}{\end{landscape}}
+}{}
+\makeatother
+
+\SItitlepage{A Simple Method for Helium Step Heat Experiments at High Water or Sulfur Fugacity}
+
+\begin{ChapterSI}
+\label{sec:ch1-SI}
+\input{Chapter1/Writing/chapter1_SI_body}
+\end{ChapterSI}

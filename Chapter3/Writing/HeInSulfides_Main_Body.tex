@@ -1,0 +1,988 @@
+% =============================================================
+%  HeInSulfides_Main_Body.tex
+%  Shared, class-agnostic body of Chapter 3 (Introduction through
+%  Conclusions -- everything after the abstract). \input{} by
+%  Chapter3/chapter3.tex. The abstract text lives separately in
+%  HeInSulfides_abstract.tex, same convention as Chapters 1 and 2 --
+%  see the comment there for why.
+%
+%  Citations use \citep/\citet against the master references.bib
+%  (dissertation_preamble.tex), same as Chapters 1 and 2.
+% =============================================================
+
+\section{Introduction}\label{sec:ch3-introduction}
+
+Sulfide minerals are the primary repositories of base and precious
+metals in the crust, and the question of when and how they formed is
+central to understanding ore-forming processes, crustal fluid
+circulation, and the tectonic contexts in which economic deposits
+develop. Despite decades of study, the timing of sulfide mineralization
+remains contested or poorly resolved across a wide range of deposit
+types, from shallow epithermal systems to deep, high temperature
+magmatic deposits in mafic intrusions. This uncertainty reflects both
+the genuine complexity of ore-forming systems --- which are frequently
+multistage, hydrothermal, and overprinted --- and the limitations of the
+geochronological tools available for dating sulfide phases directly.
+
+\subsection{An Alternative and Compliment to Re-Os Dates in Sulfide
+Geochronology}
+
+The rhenium-osmium isotope system is the most widely applied method for
+direct radiometric dating of sulfide minerals, exploiting the relatively
+high Re concentrations that pyrite, molybdenite, arsenopyrite, and
+pyrrhotite can accommodate. Re-Os geochronology has produced
+geologically meaningful ages across a wide range of sulfide-bearing
+deposit types, and remains indispensable for directly dating ore-forming
+events \citep{chen2015,hnatyshin2026,schoenberg1999,ostendorf2019,selby2002}. Nevertheless, the
+Re-Os system is vulnerable to a set of well-documented failure modes,
+and a growing number of published ages exhibit scatter, implausible
+geologic interpretations, or internal inconsistencies that motivate the
+development of independent dating methods \citep{stein2003,suzuki2001,li2025,lyu2020}.
+
+More practically, the highly specialized and costly n-TIMS method for
+Re-Os dating restricts its application to a select few labs, limiting
+the scale of its application \citep{ackerman2025}. Furthermore, Re-Os dating
+of sulfides (other than the rare mineral molybdenite) requires
+gram-quantities \citep{qi2010} and is therefore poorly suited to
+resolve distinct mineralization episodes in multistage systems.
+
+For multistage systems in particular, the co-application of independent
+radiochronometers is often useful to distinguish the timings for
+hydrothermal alteration from uplift, cooling, exhumation, and
+potentially earlier emplacement of host rocks. For example, \citet{selby2002}
+demonstrate that Re-Os molybdenite is more likely to accurately
+record the age of sulfide mineralization in the Tintina Gold Belt,
+Alaska, relative to the comparatively thermally-sensitive Ar-Ar mica
+ages. However, molybdenite is far from a ubiquitous phase in
+sulfide-bearing ores, unlike pyrite. A pyrite U-Th/He geochronometer
+would expand such opportunities to co-apply radiochronometers that
+interrogate processes operating at different times and temperatures to a
+much more diverse and expansive array of locales that experienced
+complex histories. Similar geochronometers developed for other sulfide
+phases such as arsenopyrite, galena, and sphalerite may offer the
+opportunity to disentangle multiple episodes of sulfide mineralization
+and alteration within an ore body, allowing geologists to better
+understand the sequence of events that lead to economic ore formation.
+
+One such example of an opportunity for applying U-Th/He sulfide
+geochronology is in the world\textquotesingle s largest known
+platinum-group element deposit, the Bushveld Complex of South Africa,
+which hosts the sulfide-bearing Merensky Reef and Platreef PGE deposits in the sulfide-bearing
+upper critical zone, which for which geochronometers yield a surprising diversity of ages:
+zircon U/Ph ages vary from $\approx$2057-2060 Ma, while rutile ages are significantly younger at $\approx$2053 Ma 
+\citep{scoates2021}, yet Re-Os systematics show evidence for
+multiple sulfide mineralization events within the same horizon
+\citep{schoenberg1999}. The Re/Os and Rb/Sr isochron ages they report
+are unable to resolve these distinct mineralization events from the
+zircon U/Pb emplacement age. Unlike Re/Os dating, the U-Th/He system
+produces distinct ages for every dated aliquot, potentially offering the
+opportunity to resolve the timings of prolonged volatile activity or
+late hydrothermal Re-Os disturbance.
+
+Similarly, at the Norilsk-Talnakh deposits of the Siberian Traps, the
+ore-bearing intrusions can be correlated with a specific transition in
+flood basalt source and eruptive style \citep{yao2021}, yet only
+three of many differentiated intrusions in the region are economic, and
+the precise timing and mechanism of sulfide saturation relative to trap
+emplacement is not fully understood. In the 1.1 Ga Sonju Lake Intrusion
+of Minnesota, USA, stable isotopic evidence suggests that
+meso/epithermal fluids reacted with primary magmatic sulfides raising
+questions about when redistribution occurred and how much metal was
+moved \citep{park2004}. These are deposits where independent
+thermochronometric constraints capable of distinguishing primary
+crystallization from later hydrothermal reworking are needed.
+
+\subsection{The Single-Jump Migration Model and Its Application to Sperrylite
+and Pyrite}
+
+The Russian school of noble gas geothermochronology, developed by
+Shukolyukov and Yakubovich, approaches the problem of helium migration
+in minerals through a theoretical framework that differs fundamentally
+from the volume diffusion model used for to describe noble gas migration
+dominant in the Western thermochronological literature \citep{dodson1973,
+harrison1985,fortiergiletti1989,lovera1991,wolf1996,farley2000,lee1997}. In the Shukolyukov
+"single-jump model," helium atoms occupy discrete energy minima within
+the crystal structure, and migration proceeds through thermally
+activated jumps between these sites \citep{shukolyukov2009,yakubovich2010}.
+
+Within this framework, \citet{shukolyukov2012} developed the \textsuperscript{190}Pt-\textsuperscript{4}He
+system as a new geochronometer for native platinum minerals,
+demonstrating through thermal desorption analysis that radiogenic \He\ in
+isoferroplatinum is stable to temperatures approaching the melting point
+of platinum, and obtaining \textsuperscript{190}Pt-\textsuperscript{4}He ages from the Galmoenan and Kondyor
+massifs consistent with independent Sm-Nd and Rb-Sr estimates. He
+storage in native platinum was attributed to accumulation in vesicles
+and clusters at dislocation cores and grain boundaries --- a
+mechanistically distinct mode of retention from interstitial lattice
+diffusion that explains the extreme retentivity of a material with an
+otherwise geometrically open FCC metal structure. Western scientists
+similarly model helium migration in metals with single-jump mechanistic
+single-jumps, although these single jumps are not typically modeled to
+instantaneously liberate helium, instead the modeled single-jump allows
+the atom to spontaneously travel a distance of some angstroms with some
+frequency, introducing a spatial scale from which a diffusivity can be
+evaluated \citep{ratzke1992,costhickman1975,wilson1973}.
+
+\citet{yakubovich2015} extends this method to sperrylite (PtAs\textsubscript{2}) a
+rare mineral found in magmatic PGE deposits that is isostructural with
+pyrite. \textsuperscript{190}Pt-\textsuperscript{4}He ages from sperrylite at the Kondyor and
+Norilsk-Oktyabrsky deposits were geologically consistent, and the high
+He retentivity demonstrated in this arsenide prophesies similar behavior
+in pyrite.
+
+Without providing any sulfur buffer, \citet{yakubovich2019}
+interpreted ramped-heating experiments for a variety of silica glass
+encapsulated sulfides under the single-jump step-heating method. Pyrite,
+in particular, was found to be anomalously high retentivity of helium.
+The first application of U-Th/He pyrite geochronometry to a natural ore
+deposit was reported by \citet{yakubovich2019,yakubovich2020} for the Uzelga
+Cu-Zn VMS deposit of the South Urals, yielding a consistent weighted
+mean age of 382 ± 12 Ma that is older than regional prehnite-pumpellyite
+metamorphism, demonstrating that pyrite can survive a metamorphic
+overprint without complete isotopic resetting. While these results
+establish the viability of pyrite as a U-Th/He geochronometer, their
+analytical approach employs a simple, monotonic heating schedule without
+grain-size scaling experiments, sulfur buffers, and proton-implanted \textsuperscript{3}He
+domain mapping, leaves the diffusion physics of sulfides
+undercharacterized. Translating these initial observations into a
+robust, predictive thermochronometric framework requires the more
+rigorous experimental and theoretical treatment that is the subject of
+the present study.
+
+\subsection{Geologic Setting}
+\label{sec:ch3-geologic-setting}
+
+Pyrite for this study was collected from two deposits that sit at opposite
+ends of both the geologic time scale and the spectrum of sulfide-forming
+environments: the Archean Kidd Creek volcanogenic massive sulfide (VMS)
+deposit, Ontario, Canada, and the Permo-Triassic orogenic gold system at
+Gympie, Queensland, Australia. Pairing a $\sim$2.7 Ga Cu-Zn-Ag VMS sulfide
+with a $\sim$235 Ma Au-bearing pyrite provides two independently
+well-constrained age brackets against which to test He retentivity and
+closure behavior in pyrite across very different formation temperatures,
+host lithologies, and post-depositional thermal histories.
+
+\subsubsection{Kidd Creek, Ontario, Canada}
+
+Kidd Creek is among the largest and most profitable VMS deposits in the
+world, with past production and reserves exceeding 138.5 Mt at average
+grades of 2.4 percent Cu, 6.5 percent Zn, 0.23 percent Pb, and 90 g/t Ag
+\citep{hannington1999}. The deposit occurs within the Late Archean
+Kidd-Munro assemblage of the Abitibi subprovince, Superior Province, hosted
+at the top of a thickened pile of massive rhyolite flows, felsic
+volcaniclastics, and coarse epiclastic rocks that attain a maximum
+thickness of $\sim$300 m beneath the mine \citep{hannington1999}. The three
+main stratiform orebodies (North, Central, and South) formed largely by
+subseafloor infilling and replacement of permeable volcaniclastic rocks
+within a subsiding, rift-related graben, rather than by high-temperature
+venting at the seafloor \citep{hannington1999}. U-Pb zircon geochronology
+brackets the ore-forming interval tightly: the oldest footwall rhyolite is
+dated at 2716.1 $\pm$ 0.6 Ma, the onset of bimodal komatiite-rhyolite
+volcanism at 2717 $\pm$ 1.1 Ma, and the youngest, uppermost quartz porphyry
+unit at 2711.5 $\pm$ 1.2 Ma, indicating that mineralization took place
+during at least one and possibly several million years of intermittent
+volcanic activity \citep{hannington1999}. Oxygen isotope studies of the
+host rhyolites show that, while primary igneous zircon retains magmatic
+$\delta^{18}$O values (5.4\textperthousand{} $\pm$ 0.3\textperthousand{}), coexisting quartz
+phenocrysts are pervasively shifted to much higher and more heterogeneous
+values (14.2\textperthousand{} to 16.1\textperthousand{}), recording extensive subsolidus
+recrystallization during the same long-lived hydrothermal convection that
+deposited the sulfides \citep{king1997}.
+
+The same 2.7 Ga host rocks that hosted this ancient hydrothermal system
+now host the Kidd Creek Deep Fluid and Deep Life Observatory, 2.4 km below
+surface, where fracture waters with mean residence times of 0.9-1.5 billion
+years -- among the oldest groundwaters yet documented on Earth -- sustain a
+low-biomass but metabolically active community of sulfate-reducing and
+alkane-oxidizing microorganisms \citep{lollar2019}. The persistence of a
+thermal regime compatible with life for roughly the past two billion years
+in these fracture networks is a striking, if incidental, testament to how
+long a deep, once-hydrothermally-active sulfide system can remain
+hydrologically and chemically distinct from the surface -- a timescale of
+isolation that dwarfs anything accessible to direct observation, but that
+resonates with the closure and retentivity questions this chapter poses for
+pyrite as a He geochronometer.
+
+\subsubsection{Gympie, Queensland, Australia}
+
+The Gympie pyrite comes from a very different setting: an accreted,
+Early Permian bimodal (basalt-dacite) submarine volcanic sequence, the
+Gympie Group, interpreted as a fragment of an intra-oceanic island arc that
+rifted from the Gondwana margin before docking against the New England
+Orogen of eastern Australia \citep{sivellwaterhouse1988}. Drillcore near
+the Gympie Eldorado Gold Mine resolves at least nine sequentially emplaced
+magmatic suites and a $>$2 km thick volcano-sedimentary succession, from the
+basal tholeiitic Highbury Volcanics (Alma, Tozer, and Mary members, $>$700
+m) upward through the more felsic andesite-dacite Rammutt Formation
+($\sim$360 m), the alkaline Langton Dolerite, the South Curra Limestone, and
+the carbonaceous, pyritic Tamaree Formation turbidites, capped by Early
+Triassic Kin Kin beds \citep{sivellmcculloch2001}. This arc terrane is
+inferred to have accreted to the Gondwana margin by about 220 Ma (Early to
+Middle Triassic), based on cross-cutting granitoid relationships with
+adjacent New England Orogen terranes \citep{sivellmcculloch2001}.
+
+Gold-bearing pyrite-quartz mineralization at Gympie -- the ``Gympie vein
+set'' -- occurs in fibrous extensional veins developed within sheared,
+carbonaceous black slates, syntectonic with the cleavage-forming
+deformation associated with the regional Hunter-Bowen orogeny
+\citep{holcombe1997}. Alteration associated with this vein set has yielded
+a K/Ar age of about 235 Ma, indistinguishable within the reported
+$\sim$245-235 Ma range of K/Ar alteration ages obtained from the other
+major gold deposits of the northern New England Fold Belt, including
+Cracow \citep{holcombe1997}. Refractory dolerite dykes and later
+microdiorite-shoshonite dykes cross-cut the mineralized structures and
+bracket the timing of the auriferous quartz veining from below and above,
+respectively, giving an independent field constraint on the age of
+mineralization that is broadly consistent with the K/Ar alteration ages
+\citep{sivellmcculloch2001}.
+
+\section{Encapsulated Sulfide Step Heat
+Experiments}\label{sec:ch3-encapsulated-sulfide-step-heat-experiments}
+
+BREAK INTO COMMON ENCAPSULATION SAMPLE PREP, THEN SEPARATE GEOCRHONOLOGY
+AND HELIUM STEP HEAT PROTOCOLS. ABRIDGE BOTH IN THE MAIN TEXT, MAYBE
+ALUDE TO CHAPTERS 1 AND 2 FOR STEP HEATS.
+
+\subsection{Experimental Methods}\label{sec:ch3-experimental-methods}
+
+\textbf{Samples}
+
+Nine helium step heat experiments of sulfides (pyrite, arsenopyrite,
+chalcopyrite, galena, chalcocite, and sphalerite) sealed in silica glass
+ampoules performed at the Noble Gas Laboratory at Caltech are discussed
+here. Table 1 shows the dimensions, geometric factors, and encapsulated
+materials of this work. All sulfides of this study were sourced from the
+Caltech Mineral Collection from visually pure, well-formed euhedral
+crystals with half prism widths greater than 200 microns, often larger
+than a centimeter. Samples were broken into smaller pieces under ethanol
+to avoid irreversible trapping of atmosphere \citep{cox2022}. Except
+for the Rustenburg pyrite, all step heats measured 3He evolution from an
+initially homogeneous distribution of spallogenic 3He. To produce a
+homogeneous distribution of 3He, the samples were irradiated with 220
+MeV protons for 24 hours at the Francis H. Burr Proton Therapy Center,
+Massachusetts General Hospital, following standard procedures \citep{shuster2005}\textbf{.}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1951}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1431}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1198}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1219}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.0741}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1942}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 12\tabcolsep) * \real{0.1123}}@{}}
+\caption{Table 1: Silica Glass encapsulated sulfides that were the
+subject of helium step heat experiments in this work. The Rustenburg
+Pyrite experiment had evolved radiogenic 4He quantified by isotope
+dilution using a Pfeiffer Prisma QMS 200 quadrupole mass spectrometer,
+whereas evolved spallogenic 3He was quantified using a
+Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer for
+the remainder of the samples, which were proton-irradiated. Experiments
+Spal230707 and CCT230707 contained no steps for which the uncertainty
+due to helium permeation through the silica glass capsule could be
+estimated, and therefore are discussed in a limited, qualitative
+capacity only.}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Experiment Name and Phase
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Sample Locality
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tube Inner x Outer Diameters
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Geometric factor \emph{G} (\emph{eqn 2.2, Ch.1)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+VR (\emph{eqn 5.4, Ch.1)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Encapsulated ``Buffer'' Materials
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mineral Half-prism Width (a)
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Experiment Name and Phase
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Sample Locality
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Tube Inner x Outer Diameters
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Geometric factor \emph{G} (\emph{eqn 2.2, Ch.1)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+VR (\emph{eqn 5.4, Ch.1)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Encapsulated ``Buffer'' Materials
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Mineral Half-prism Width (a)
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+LVCOPy230630
+
+Pyrite & Leadville, Colorado & \emph{Not Measured} & \emph{3000
+cm\textsuperscript{-2}} & - & \textasciitilde0.2 mg Fused Sulfur &
+\textasciitilde200 µm \\
+BigLVCOPy230707 Pyrite & Leadville, Colorado & \emph{\hl{Not Measured}}
+& \emph{\hl{3000 cm\textsuperscript{-2}}} & \hl{-} & \textasciitilde0.2
+mg Fused Sulfur & \hl{\textasciitilde400 µm} \\
+112123LVCOPyIrr Pyrite & Leadville, Colorado & 830 x 1550 µm & 1859
+cm\textsuperscript{-2} & 2.5 & \textasciitilde{} 0.2 mg Fused Sulfur
+\emph{(and \textgreater5 mg silica glass shards to separate sulfur melt
+from pyrite)} & \textasciitilde300 µm \\
+Rustenburg Pyrite
+
+Pyrite (4He on Quad) & Rustenburg, South Africa & 520 x 810 µm & 6675
+cm\textsuperscript{-2} & 1.4 & \textasciitilde0.2 mg Fused Sulfur & 106
+µm \\
+112123SalAspIrr
+
+Arsenopyrite & Mitterberg, Austria & 530 x 970 µm & 4711
+cm\textsuperscript{-2} & 2.3 & \textasciitilde0.5 mg Crystalline Realgar
+(AsS) & \textasciitilde175 µm \\
+GalTS230630
+
+Galena & Tri-State District, Missouri & 620 x 920 µm & 5273
+cm\textsuperscript{-2} & 1.2 & \textasciitilde0.2 mg Fused Sulfur &
+\hl{\textasciitilde100 µm} \\
+CCpTS230630
+
+Chalcopyrite & Baxter Springs, Kansas & 540 x 1010 µm & 4382
+cm\textsuperscript{-2} & 2.5 & \textasciitilde0.2 mg Fused Sulfur &
+\textasciitilde200 µm \\
+Spal230707*
+
+Sphalerite & Chitwood, Missouri & 1110 x 1490 µm & 2205
+cm\textsuperscript{-2} & 0.8 & \textasciitilde0.2 mg Fused Sulfur &
+\textasciitilde200 µm \\
+CCT230707*
+
+Chalcocite & Messina, South Africa & 1100 x 1520 µm & 2044
+cm\textsuperscript{-2} & 0.9 & \textasciitilde0.2 mg Fused Sulfur &
+\textasciitilde200 µm \\
+\end{longtable}
+
+\textbf{Encapsulation}
+
+Before encapsulating the sulfide samples, glass tubes were cleaned and
+pulled into pipettes. 10 cm long segments of pure silica glass tubes
+with an outer diameter of 4 mm and an inner diameter of 3 mm were
+submerged and sonicated within acetone, ethanol, then MilliQ water baths
+in sequence, and then were dried overnight in a 100°C oven. The glass
+tubes were hand-pulled into thinner pipettes using a natural gas and
+oxygen welding torch and the thin ends were fused closed.
+
+Aliquots of sulfides were weighed and loaded into room temperature glass
+tubes along with fused sulfur in the presence of an ionizing fan to
+mitigate static. The arsenopyrite ampoule was loaded with crystalline
+realgar (arsenic sulfide) instead of fused sulfur, and one pyrite
+ampoule was loaded with silica glass pieces above and below the pyrite
+aliquot to separate the pyrite from the sulfur liquid during the
+experiment. To seal, the top of each pipette was interfaced with a
+vacuum line and the tube was pumped to a pressure of \textless60
+millitorr, which greatly aided the ease and quality of the final seal.
+After attaining rough vacuum, a fine-flamed welding torch was used to
+seal the top of each ampoule. To determine the geometric factors for
+permeation of the ampoules, the inner and outer diameters of most
+ampoules were measured using the measurement function of the Amscope
+stereo microscope software, which was calibrated and tested during early
+development of this method. \hl{Two experiments (LVCOpy230630 and
+BigLVCOPy230707) were completed without these geometric measurements.
+For these experiments, a geometric factor of 3000 cm\textsuperscript{-2}
+was arbitrarily assigned to estimate uncertainties of the measurements
+due to the convolution of the process of helium permeation through
+silica glass. This assumption is unlikely to affect the interpretation
+of the results}.
+
+The sealed ampoules were placed in copper foil packets and mounted to a
+K-type thermocouple within an ultra-high vacuum projector lamp heating
+cell described in detail by \citet{farley1999}. Before the experiment
+began, each ampoule was washed with ethanol, air-dried, loaded in the
+lamp cell, pumped to high vacuum, and was held at 100°C for at least 30
+minutes under dynamic vacuum to desorb ethanol, water, and other
+atmospheric species on the ampoule, copper packet, and lamp cell.
+
+\textbf{Helium Mass Spectrometry}
+
+Heating steps and 3He measurements for all samples were automated using
+custom LabView routines on a Helix-MC-Plus\textsuperscript{10K}
+multi-collector mass spectrometer, or a Pfeiffer Prisma QMS 200
+quadrupole mass spectrometer for the Rustenburg Pyrite ampoule. For all
+ampoules, a Watlow temperature controller held the ampoule at the
+temperature set point for a pre-programmed duration, after which the
+ampoule was allowed to cool while the evolved gas was prepared for
+measurement for about 25 minutes.
+
+For the irradiated samples, Helium was purified by exposing evolved
+gasses to a charcoal trap held in liquid nitrogen, a titanium sponge
+getter, then a SAES NP10 getter before freely expanding into the
+Helix-MC-Plus\textsuperscript{10K}. 3He was measured with a
+pulse-counting electron multiplier, while 4He was detected on a Faraday
+detector. the Helix-MC-Plus\textsuperscript{10K} mass spectrometer was
+operating in peak hopping mode and the majority of the analysis time was
+spent measuring 3He. Every few hours, the background was mass-scanned to
+set the 3He and 4He measure points; each was taken to be a constant mass
+offset from the background HD\textsuperscript{+} peak. These mass
+offsets are precisely measured when tuning the
+Helix-MC-Plus\textsuperscript{10K} for helium isotope analysis. Months
+of helium measurements with the Helix-MC-Plus\textsuperscript{10K} at
+Caltech has shown this approach to be reliable, reproducible, and
+accurate for helium isotope analysis. Additionally, an electron
+multiplier monitored atomic mass 3.5 to detect 4He overspray. 4He
+signals were near-blank for all experiments of irradiated samples, and
+no attempt is made here to interpret those data. 4He overspray likewise
+did not affect 3He signals. Measurements of high 3He MM gas standard
+were analyzed every 8 hours to track instrumental drift of 3He and 4He
+sensitivities and to quantify internal reproducibility. These standards
+show 3He was generally internally reproducible to within 1\% (2$\sigma$) for
+rolling sets of 5 consecutive standards, except for the latest
+measurements on the 112123SalAspIrr Arsenopyrite, during which the ion
+source began to fail. Those measurements are excluded from further
+analysis, and any helium evolved during those steps is likely to be a
+very small proportion of the total helium contents of the sample
+(\textless0.2\%) and thus would not significantly affect the calculation
+of the total helium content of the sample.
+
+Radiogenic 4He evolved during step heats of the encapsulated Rustenburg
+Pyrite was quantified using isotope dilution with a high purity 3He
+spike on a Pfeiffer Prisma QMS 200 quadrupole mass spectrometer. A
+standard gas with a known amount of 4He was measured before and after
+the experiment, to monitor drift in the relative sensitivities of 3He
+and 4He and to estimate reproducibility, which was about 6\% (2$\sigma$). After
+each step, evolved gas from the ampoule in the lamp heating cell was
+allowed to mix with the 3He spike and the mixture was frozen on charcoal
+held at 14°K within a cryostat, then helium was selectively released to
+the mass spectrometer by raising the temperature to 36°K.
+
+\textbf{Scanning Electron Microscope Study \hl{(USED IN CHAPTER 1)}}
+
+Samples of pyrite, arsenopyrite, and marcasite were crushed under
+ethanol, and grains larger than \textasciitilde100 µm were dried for
+each mineral and subdivided into four populations: one control, and
+three for heat treatment in atmosphere, ultra-high vacuum, or
+encapsulated within a glass ampoule along with an excess of fused sulfur
+(or realgar: As\textsubscript{3}S\textsubscript{3} for arsenopyrite).
+The encapsulated populations were loaded into 3 mm inner diameter, 4 mm
+outer diameter silica glass tubes with fused bottoms and open tops,
+along with sufficient fused sulfur or crystalline realgar to guarantee
+vapor saturation at 400°C. These tubes were interfaced with a vacuum
+line and were pumped to 60 millitorr before the tops of the tubes were
+sealed.
+
+The open-air populations for each mineral were carefully placed on glass
+microscope slides within borosilicate petri dishes and the encapsulated
+populations were submerged in pure quartz sand within capped, deep petri
+dishes. These petri dishes containing the encapsulated and open-air
+populations of sulfides were placed on a temperature controlling hot
+plate under a fume hood and were held at 400°C for 8-11 hours, at which
+point the hot plate was turned off and the samples were left to cool.
+
+The ultra-high vacuum population for pyrite and marcasite were loaded
+into copper packets and mounted to a type K thermocouple within a high
+vacuum line. A silver wool based sulfur trap was installed between the
+samples and the turbo pump. The high-vacuum line was closed and pumped
+to \textless10\textsuperscript{-5} torr. A Watlow temperature controller
+held the samples at 400°C for 4.5 hours with a projector lamp
+illuminating the sample through a sapphire window. This procedure was
+repeated for each mineral sample of pyrite and marcasite. The
+arsenopyrite sample was not heated in vacuum to avoid contaminating the
+line with arsenic. To simulate thermal decomposition in an anoxic
+environment, a population of arsenopyrites was thermally treated in a
+large glass capsule similarly to the encapsulated populations, but
+without a realgar ``buffer''.
+
+The control and thermally treated samples were mounted to carbon tape
+and carbon coated, then were loaded in the Zeiss 1550 Scanning Electron
+Microscope (SEM) at Caltech. Images of the surface topography of each
+population were taken using the secondary electron detector and an
+Electron High Tension (EHT) of 10 kV at a working distance of 10-15 mm.
+
+\subsection{Analytical Methods}\label{sec:ch3-analytical-methods}
+
+These helium step heat experiments were designed according to the
+frequently incorrect assumption that the silica glass ampoule was
+effectively ``helium transparent'', or in other words that helium
+permeation through the silica glass ampoule was nearly instantaneous
+with respect to the rate of helium evolution from the encapsulated
+sulfides. Thus, permeation steps (as discussed in chapter 1 and 2), were
+rarely used, and the evolved helium produced during high temperature
+steps for many of these experiments was so low that observed 3He signals
+during attempted permeation steps were almost always similar to blank
+levels.
+
+Because of the lack of usable permeation steps in these experiments,
+upper bound constraints on the helium content remaining within the
+ampoules following long, high temperature experimental steps are made
+using eqn. 4.9 from chapter 1. This equation requires no permeation
+steps or knowledge of the helium content within ampoule from previous
+steps, instead calculating the maximum helium content remaining within
+the ampoule for a given measurement, provided the step was long and hot
+enough for the tube to have reached a steady state concentration and
+assuming that the rate of helium evolution from the encapsulated mineral
+is constant. The steady state assumption is taken to be effectively
+valid once the ampoule loses memory of the helium content remaining from
+the previous step. According to eqn. 4.8 in chapter 1, only 1.8\% of the
+difference between the previous step's remaining helium content and the
+current step's steady state helium content remains when
+\(\lambda t = 4\). In this work, the steady state assumption is only
+applied for steps long and hot enough for \(\lambda t \geq 4,\ \)where
+\(\lambda = KGRT\), \emph{K} is the temperature-dependent permeation
+coefficient for 4He or 3He through silica glass, \emph{G} is the ampoule
+geometric factor, \emph{R} is the gas constant, \emph{T} is the
+temperature in Kelvin, and \emph{t} is the time in seconds. The 4He
+permeation coefficient \emph{K} is taken from \citet{swets1961}; and
+these coefficients are multiplied by the permeation coefficient ratio
+from \citet{jones1953} to yield the 3He permeation coefficient.
+
+If the rate of helium evolution is decreasing over time (which is
+expected for any diffusive process except for complications due to
+inhomogeneous helium distributions due to alpha ejection or partial loss
+in nature that are quickly smoothed over at the beginning of
+experiments), then the steady state constraint will be an
+overestimation, which is allowed for an upper bound constraint. This
+constrain is only violated when the rate of helium evolution increases
+over time within an isothermal step, which is unexpected for a diffusive
+helium loss mechanism (at least after initial inhomogeneities in the
+concentration profile are smoothed).
+
+The evolved amount from the encapsulated phase for the \emph{i}th step,
+\(\omega_{i}\), is bounded in this method by the application of the
+steady state assumption (eqn. 4.9) to the measured values for the
+\emph{i}th step and the previous step. Assuming we only have upper bound
+constrains for \(n_{t,\ \ \ i}\) and \(n_{t,\ \ \ i - 1}\), then:
+
+\[m_{i} - n_{t,\ \ \ i - 1}^{UB} \leq \omega_{i} \leq m_{i} + \ n_{t,\ \ \ i}^{UB}\]
+
+Substituting in eqn. 4.9:
+
+\[\begin{array}{r}
+m_{i} - \frac{m_{i - 1}}{\left( \lambda_{i - 1}t_{i - 1} \right) - 1} \leq \omega_{i} \leq m_{i} + \ \frac{m_{i}}{\lambda_{i}t_{i} - 1}\quad\text{(4.9a)}
+\end{array}\]
+
+Many heating steps, especially near the beginning of the experiments
+where lower temperature steps were used, are not interpreted or plotted
+in this work because \(\lambda t < 4\); however, some steps with
+\(\lambda t < 4\) are used when eqn. 4.9 is used to place upper bound
+constraints on preceding steps, so that eqn. 4.8 can in turn be used to
+place upper bound constraints on the step that has not reached steady
+state. Assuming \(n_{t,\ \ \ i - 1}^{UB}\) is known, then a similar
+inequality derived from eqn. 4.8 can still be used when
+\(\lambda_{i}t_{i} > 1\).
+
+\[\begin{array}{r}
+\omega_{i} \leq m_{i} + \ \frac{m_{i}}{\lambda_{i}t_{i} - 1} + \left( n_{t,\ \ \ i - 1}^{UB} \bullet e^{- \lambda_{i}t_{i}} \right)\quad\text{(4.8a)}
+\end{array}\]
+
+Steps with \(1 < \lambda t < 4\) that are included in the plots and
+interpreted in this work using the above equation are shaded light grey
+in the data tables, whereas steps with \(\lambda t < 4\) that are not
+plotted or interpreted are shaded dark grey. All helium measured from
+experimental steps is counted in the cumulative yield, even when the
+diffusivity cannot be calculated for a step.
+
+This method of calculating uncertainties produces an asymmetric upper
+and lower uncertainty for each step. To propagate these asymmetric
+uncertainties into apparent diffusivities within an Arrhenius plot, the
+measurement and it's lower and upper bound are all three converted to
+diffusivities using the equations of \citet{fechtigkalbitzer1966}, and
+the error bars stretch from the lower and upper bound diffusivities.
+
+In general, the 2$\sigma$ analytical uncertainties as calculated using the
+reproducibility of standards is greatly exceeded by the uncertainties
+due to the permeation lag of the ampoule as calculated above. For the
+Rustenburg pyrite experiment and LVCOpy230630, the uncertainty due to
+the permeation lag is less than a factor of 10 greater than the
+analytical uncertainty, and so the 2$\sigma$ analytical uncertainty for a given
+measurement is added to the uncertainty by adding it to the upper bound
+helium content of the tube, \(n_{t\ \ }^{UB}\), for that step. For the
+remainder of the experiments, the analytical uncertainty is less than
+the uncertainty from the permeation lag by a factor of 10-100, and so
+the analytical uncertainty is neglected. No uncertainty in the total
+yields in incorporated.
+
+For some measurements, the previous step's upper bound helium contents
+are greater than the entire measured value for that step. In principle,
+the measured value for those steps could be entirely explained by
+permeating helium lagged from the previous step. For these steps, the
+lower bound for the diffusivity measurement is infinitely low, but here
+they are instead plotted with an arbitrary lower bound uncertainty of 5
+log units, much greater than typical lower bound uncertainties presented
+here. These steps are colored pink in the data tables. Excluding them
+entirely from the plots would not affect any conclusion of this work.
+
+Some of these experiments include attempted permeation steps at cool
+temperatures and did not produce appreciable helium; they are colored
+navy blue. These steps are treated within the reduction as if they did
+not occur and did not change the upper bound helium content within the
+ampoule determined at the previous high temperature step. Excluding the
+high temperature steps immediately following these attempted permeation
+steps would not affect any of the conclusions of this work.
+
+Two of the experiments contained no steps for which
+\(\lambda t \geq 4\): Spal230707 and CCT230707 for sphalerite (ZnS) and
+chalcocite (Cu\textsubscript{2}S) respectively. No diffusivities are
+reported here for those experiments, but they are discussed
+qualitatively.
+
+\subsection{Results}\label{sec:ch3-results}
+
+SEM imagery reveals deformed, variably raised, \textasciitilde10 µm
+cracked surfaces on pyrite and marcasite that are heated in open
+\hl{air, and for arsenopyrite heated in a closed capsule without a
+realgar buffer (Figures 3.2\ldots)}. Pyrite and marcasite samples that
+are heated in ultra-high vacuum developed recessive \textasciitilde1 µm
+rounded craters. Contrarily, images of thermally treated, encapsulated
+pyrite and arsenopyrite with added fused sulfur or realgar show no
+obvious distinction from the control group: both of which showcase
+conchoidal fracture \hl{(Figures 3.2\ldots)}. The Rustenburg pyrite
+sample represents a potential exception; its pervasive fractures appear
+to have partially annealed after thermal treatment at high sulfur
+fugacity \hl{(Figures 3.2\ldots)}. The buffered, encapsulated marcasite
+sample shows a raised layer of $\leq$2 µm angular (presumably pyrite)
+crystals growing atop its surface; evidence of phase transformation is
+present in all three heat-treated marcasite populations, demonstrating
+that the encapsulation method is not effective in preventing phase
+breakdown at elevated temperatures for marcasite. While these
+experiments are not conclusive evidence that thermal phase
+transformation is prevented for pyrite or arsenopyrite, they do produce
+the consistent and expected result if thermal phase transformation is
+averted, encouraging its application for helium step heat experiments.
+
+All apparent diffusivities calculated from the helium step heat data are
+plotted together in figure 3.3 along with a reference line for helium
+diffusion within Durango apatite with a half-prism width of 150µm
+\citep{farley2000}. Figure 3.3 qualitatively shows remarkably high helium
+retentivity at high temperatures for pyrite and arsenopyrite. For no
+pyrite or arsenopyrite helium step heat experiment did the final
+cumulative fractional helium yield exceed 5\%.
+
+The irradiated Leadville pyrite was the most retentive sample of the
+sulfide suite. Three separate helium step heat experiments were
+conducted on this sample, two with varying grain size and a third that
+attempted to isolate the pyrite from the sulfur liquid by packing glass
+shards above and below the pyrite grains within the ampoule \hl{(figs.
+3.0xx)}. The Arrhenius plots for the two experiments with varying size
+fractions and no attempt to isolate the pyrite from the liquid sulfur
+were similar to one another but distinct from the third in which the
+pyrite was isolated from the sulfur, which was the experiment that
+showed the highest helium retentivity of the sulfide sample suite
+(figure 3.3; figure 3.4a). The three experiments shared a similar slope,
+and a regression was fit to a linear region of 9 measurements of the
+LVCOpy230630 experiment with an R\textsuperscript{2} of 0.998, yielding
+an apparent activation energy of 47.6 Kcal/mol (figure 3.4a). The delta
+plot constructed with this activation energy showed a monotonic decrease
+in delta values for the experiments that did not attempt to separate the
+pyrite from the sulfur liquid. The more retentive ampoule that held the
+pyrite in the middle of the tube away from the majority of the sulfur
+liquid also preserved this general trend, but showed a slight increase
+in delta values midway through the experiment (figure 3.4b).
+
+The octahedral Rustenburg pyrite is less retentive of helium than the
+pyritohedral Leadville pyrite. On the down-temperature retrogrades of
+heating cycles, the Rustenburg pyrite shows clearly developed
+reproducible lines with the unusually high implied activation energy of
+71.8 Kcal/mol (figure 3.5a: R\textsuperscript{2} of 0.998 on 5
+measurements). This feature is completely absent from the three
+experiments of proton-irradiated Leadville pyrite (figure 3.4a). The
+delta plot constructed using this activation energy shows a monotonic
+decrease in delta values throughout the duration of the experiment
+(figure 3.5b).
+
+The encapsulated arsenopyrite helium step heat experiment produced an
+apparent diffusivity Arrhenius plot that showed generally high helium
+retentivity, but less so than the Leadville pyrites (figure 3.3). There
+were no representative linear regions produced by this experiment that
+were suitable for linear regression, although the general slope was
+similar to the Leadville pyrites' and so it was also used as a reference
+for this experiment (figure 3.6a). The delta plot using this reference
+showed complex behavior, where high delta values (far beyond the
+uncertainty related to the permeation lag of the ampoule itself) were
+observed for low temperature steps following high temperature steps
+(figure 3.6b).
+
+The majority of the helium total yield was evolved during the step heat
+experiment of the encapsulated galena, in stark contrast to the
+comparatively retentive pyrites and arsenopyrite. The reference line
+from the chalcopyrite experiment showed a similar activation energy to
+the activation energy implied by curved retrogrades of the galena
+experiment (figure 3.7a), so it was used as the reference for the delta
+plot of galena. This delta plot shows a monotonic decrease in delta
+values as the experiment proceeds (figure 3.7b).
+
+Step heat data step heat experiments for chalcopyrite (CCpTS230630) and
+chalcocite (CCT230707) produced macroscopic evidence of phase
+transformation, including the development of an iridescent blue sulfide
+or oxide layer on both specimens and dramatic crystal growth on the
+ampoule walls for the chalcocite experiment \hl{(figs. 3.0xx).} Although
+permeation lag was not sufficiently constrained to calculate apparent
+diffusivities for the chalcocite experiment, the data for CCT230707 are
+consistent with a primary phase-breakdown control of helium migration at
+temperatures $\leq$300°C.
+
+A linear regression is fit to 9 measurements defining a linear region of
+the Arrhenius plot of chalcopyrite sample CCpTS230630 for use as a
+reference for the delta plot (figure 3.8a). This regression has an
+R\textsuperscript{2} value of 0.9811, an implied activation energy of
+41.8 kcal, and an implied closure temperature of 128°C assuming a
+cooling rate of 10 °C/Ma. The delta plot generated using this reference
+line for chalcopyrite clearly shows a dramatic mid-experiment increase
+in diffusivity following steps above 400°C, followed by a continuous
+decrease in delta values (figure 3.8b), similarly to that observed for
+the dehydrating goethite sample Win-06-01b \citep{farley2024}.
+
+\subsection{Discussion}\label{sec:ch3-discussion}
+
+\textbf{Inferring Bulk Helium Migration Behavior from Low Fractional
+Yields}
+
+Many of the step heats on encapsulated sulfides presented here show very
+high helium retentivity, and for those experiments only a very small
+fraction of the total yield evolved (\textless5\% for the arsenopyrite
+and Rustenburg pyrite; \textless2\% for the Leadville pyrite), similarly
+to previous work on highly helium retentive phases such as baddeleyite
+\citep{baughmanflowers2018}. For these sulfides, a
+mechanism responsible for bulk helium loss besides desulfurization
+cannot be identified. For some well-studied phases like zircon and
+titanite, Arrhenius plots of the earliest fractions of evolved helium
+often reflect processes or conditions that are accessory to the bulk
+mechanism for helium migration through the mineral, such as radiation
+damage annealing or surface roughness \citep{reinersfarley1999,
+guenthner2013}, where the primary mechanism for helium
+migration through the pristine mineral is volume diffusion. These
+apparent departures from the bulk helium migration behavior can be
+caused by properties of natural samples, like surface roughness or
+fine-scale cracks and fractures \citep{reinersfarley1999} that produce
+complex grain size distributions even in carefully sieved, (apparently)
+single grains. Contrastingly, some other complexities in the helium loss
+behavior at early loss fractions can be ephemeral and altered during
+experimental heating, such as the annealing of radiation damage \citep{shusterfarley2009}. For radiation damaged samples, understanding the
+migration behavior of helium before and during annealing is essential to
+understand the sample's retentively in nature (\hl{citations}) and
+therefore the earliest fraction of helium evolved in step heats is the
+focus of many studies (\hl{citations}).
+
+The fraction of total helium evolved before the predominant migration
+mechanism's behavior can be characterized in helium step heats varies:
+\citet{guenthner2013} show that significantly non-zero delta or
+ln(r/r0) values persist in zircon until about 2\% of the total helium is
+degassed for typical natural samples; \citet{reinersfarley1999} observe
+apparent diffusivities of helium in titanite converging to linearity in
+titanite after 5\% of the total helium is evolved. Similar experiments
+on proton-irradiated synthetic samples seem not to be marred by the same
+complexities: helium step heat data for synthetic monazite converge
+nearly immediately to a linear array at very loss cumulative helium loss
+fractions \citep{farley2007}.
+
+The step heat experiments on pyrite and arsenopyrite in this study would
+have benefitted from longer steps at high temperature to degas more
+helium to better understand the bulk behavior of helium, but even at
+small loss fractions some key observations about helium loss in sulfides
+can be made.
+
+\textbf{Comparison of Helium Step Heat Experiments of Natural Pyrites}
+
+In this work, four encapsulated, sulfur-buffered aliquots of pyrite
+taken from two localities are subjected to helium step heat experiments.
+Step heats for the three irradiated pyrites from Leavldville, CO are
+broadly similar, but contrast markedly from step heats of non-irradiated
+pyrite from Rustenburg, South Africa, therefore differences between
+pyrites of different localities is discussed before the variation within
+the aliquots from Leadville, CO.
+
+Radiogenic helium evolution in step heats of octahedral pyrite from
+Rustenburg, South Africa show that this sample is less retentive than
+the pyritohedral pyrite from Leadville, Colorado \hl{(fig citation}).
+Apparent diffusivities of these samples also have fundamentally distinct
+geometries when plotted in an arrhenius plot. The Rustenburg pyrite
+shows a striking feature of very steep slopes (corresponding to an
+activation en\hl{ergy of \_\_} ) on retrograde-prograde heating cycles
+at temperatures lower than the previous maximum temperature step heat,
+whereas the maximum apparent diffusivity for a given temperature seemed
+to follow a much shallower slope (lower activation \hl{energy of )},
+which was broadly similar to the slope and activation energy of the
+Leadville, CO pyrite. The geometry of the step heats in an arrhenius
+plot for the irradiated Leadville, CO pyrite is generally simpler:
+generally slowly decreasing in a delta plot, or for isothermal steps
+(fig \hl{citation}) as would be expected for helium release governed by
+MDD systematics (\hl{citation}).
+
+Natural pyrite is known to develop fractures and crystalline
+dislocations in metamorphic and experimental conditions \citep{gill1969,
+mcclayellis1983,barrie2011}. Abundant fractures of
+micron-scale widths were clearly visible in the Rustenburg pyrite of
+this study (fig 3.0a). Those pyrites were surprisingly easy to crush,
+presumably breaking easily along fine reexisting fractures. Although
+pyrites from Leadville are known to be associated with faulted
+dolomites, especially along deformation planes which likely served as
+pathways for mineralizing hydrothermal fluids \citep{nash1979}, the samples
+used here were exceptionally sturdy and visually homogeneous under SEM.
+Rare veins and coatings of dolomite within and around the pyrites were
+present but were avoided when preparing the sample for irradiation.
+
+Within this work, a pipe/short circuit diffusion mechanism is favored to
+explain the helium loss behavior of the Rustenburg pyrite, where helium
+populates the sample's fine fractures at increasing temperatures due to
+the primary helium migration mechanism for a system of encapsulated
+pyrite and sulfur fluid: volume diffusion or fine-scaled
+dissolution/reprecipitation of pyrite within sulfur fluid. This primary
+mechanism is interpreted to be the same for all pyrite samples
+regardless of locality. On retrograde heating steps, short circuit
+diffusion of helium out of fine fractures in the Rustenburg pyrite is
+hypothesized to become the rate-limiting process.
+
+\textbf{Leadville, CO Pyrite: Evidence for a Sulfur Liquid Control for
+Helium Loss in Step Heat Experiments}
+
+Three helium step heat experiments for the irradiated Leadville, CO
+pyrite are discussed here. Grain size was varied by a factor of 2
+between a half-prism width of 200 microns for LVCOPy230630 and 400
+microns for LVCOPy230707 to investigate the dependence of grain size on
+helium migration in pyrite. The aim of the third experiment,
+112123LVCOPy, was to test the effect of isolating the pyrite from the
+liquid sulfur during the experiment to investigate the role of
+dissolution and (re)crystallization of pyrite by the ampoule's sulfur
+fluid. Silica glass shards were added to this ampoule below and above
+the pyrite aliquot, forcing the pyrite grains to remain in the middle of
+the ampoule, and not at the edges/bottom, where sulfur liquid is
+presumed to accumulate. Despite the similarities of the size fraction of
+the glass-filled 112123LVCOPy (300 micron half-prism width) to the other
+two aliquots of pyrite, it yielded apparent diffusities that were
+\hl{markedly more retentive}. This suggests that reaction between the
+sulfur liquid and pyrite was the primary control for helium release from
+the Leadville samples. This effect is likely to be important for helium
+release in the Rustenburg pyrite as well.
+
+Although iron solubility in sulfur liquids has only been sparsely
+studied, ferrous iron is known to be only modestly soluble in sulfur
+liquids. \citet{clark1960} reported that sulfur liquid can be up to 0.12\%
+iron. Later, \citet{barton1969} reproduced this measurement and reported iron
+contents in pyrite-arsenopyrite saturated S-As liquids ``less than 0.5,
+and probably less than 0.2, wt.\%''. In the step heat experiments of
+this work, the mass of the added sulfur was not recorded but was always
+small: less than or equal to the mass of the pyrite aliquot. By simple
+mass balance, only a maximum of 1.5\% of the pyrite would be dissolved
+in an equal mass of sulfur fluid, however, if iron solubility in sulfur
+liquid is highly temperature dependent within the range of temperatures
+used in these experiments (24-500°C), then this effect could be
+multiplicative with each thermal cycle: the sulfur liquid could
+cyclically dissolve and recrystallize pyrite during thermal cycling. How
+this dissolution-recrystallization cycle might affect step heat results
+is unclear, but intuitively it would likely libertate helium near the
+grain surface early in the experiment, producing artificially high
+apparent diffusivities for 3He cumulative fractional yields less than
+1.5\%. This effect could potentially have been a primary control on the
+degassing behavior of all the irradiated pyrite within this work, but it
+is unlikely to be significant for the majority of the 4He step heat data
+of the Rustenberg pyrite, which proceeded to beyond 4\% total cumulative
+fractional yield.
+
+The apparent diffusivities calculated for the two helium step heat
+experiments of Leadville pyrite with varying half-prism width,
+LVCOPy230630 and LVCOPy230707, both exhibit the same slope with
+monotonically decreasing delta values (fig \hl{citation}). Intuitively,
+the smaller aliquot contains higher delta values at early helium
+fractional yields. These observations can be explained with MDD
+systematics \citep[e.g.][]{farley2018} but they are also consistent with a
+fluid moderated dissolution-recrystallization mechanism discussed above,
+which would also proceed faster for smaller grains which expose more
+surface area for the same mass of material. Similarly to volume
+diffusion, for which irregular surfaces are degassed first \citep{reinersfarley1999}, dissolution-recrystallization would affect irregular
+surfaces first, leading to the intuition that smaller grains will
+contain more helium in less-retentive domains (at the grains' surfaces)
+than larger grains with less surface area for the same mass.
+
+\textbf{Relevance of Helium Step Heat Data of Encapsulated,
+Sulfur-Buffered Sulfides in Nature}
+
+The intention of these sulfur-buffered helium step heats was to
+stabilize sulfides against thermal decomposition in the harsh vacuum
+conditions typical in helium step heat experiments \citep{farley2024,
+farley1999}. The data reported here for pyrite suggest that
+sulfur-fluid moderated dissolution and recrystallization are governing
+helium loss from highly crystalline, irradiated encapsulated pyrite in
+the laboratory. These data therefore are not applicable to thermally
+activated helium migration from pyrite (which is most often assumed to
+be the cause of helium loss in nature and indeed is the basis for
+thermochronometry: \citealp{ketcham2005}; \citealp{farley2002}). These data are still
+useful, as they represent upper bound limits for rates of thermal helium
+loss by volume diffusion or whatever thermally activated helium loss
+mechanism is most important for pyrite in nature. In order for the
+relatively small effect of liquid-pyrite dissolution-recrystallization
+to be the primary driver of thermal helium loss for pyrite in the
+laboratory, it must be a faster process than thermal helium migration
+through crystalline pyrite.
+
+For encapsulated sulfide step heat experiments in which high fractions
+of helium (\textgreater10\%) are evolved, a sulfur liquid mediated
+dissolution-recrystallization mechanism for helium loss is implausible
+if the studied phase is not significantly visually altered. For example,
+all of the 3He of Spal230707 (sphalerite), and most 3He of GalTS230630
+(galena) were evolved during the step heats, but the grains remained
+visually unchanged. For these experiments, helium was clearly lost by
+thermally-activated processes from stable sulfides.
+
+Given the high helium retention of pyrite and arsenopyrite shown in this
+work, the predominant helium loss mechanism for these common sulfides in
+nature may indeed be recrystallization. For example, pyrite metamorphic
+conditions commonly recrystallize and may either shrink or grow \citep{craig1998,mcclayellis1983}. Until more work has characterized helium
+loss (or gain) for recrystallizing pyrite or arsenopyrite in metamorphic
+conditions, helium should cautiously be considered to have behaved as an
+open or partially open system in sulfides during metamorphic events.
+
+\textbf{Thermal Helium Migration Systematics for Other Sulfides}
+
+\emph{Chalcopyrite and Chalcocite}
+
+Neither copper-bearing sulfide mineral studied here was successfully
+stabilized by encapsulation with sulfur, so these results do not provide
+insight into helium migration within copper sulfides in nature. Still,
+they are unlikely to be promising targets for U-Th/He geochronology or
+helium isotope studies as there exists many copper-bearing sulfide
+phases stable at temperatures between 200-500°C, for which phase
+stability and Cu/Fe ratios are sensitive functions of temperature,
+composition, and sulfur fugacity \citep{zhao2014,chenharvey1975,yundkullerud1966} and therefore are highly likely to have
+reacted during cooling, reheating, or metasomatic/diagenetic events
+after crystallization.
+
+\emph{Galena}
+
+Results from encapsulated Galena subjected to helium step heat
+experiments were consistent with a multiple diffusion domain helium loss
+mechanism. As expected for an MDD system, the delta plot for galena
+monotonically decreases as the fractional yield increases (fig
+\hl{citation}). Although no closure temperature can be inferred from
+this data (because the domain size is variable), it qualitatively is
+more retentive than (\hl{grain size)} apatite, suggesting that galena
+that crystallized on the surface and experienced little heating due to
+burial may be suitable for U-Th/He geochronology, similar to how
+goethite and hematite are suitable for dating surface processes despite
+the complexities associated with helium migration systematics in MDD
+systems.
+
+\textbf{Rustenburg: Pipe/short circuit diffusion mode}
+
+\textbf{(JKW Lee: K2/K1 correlated with temperature, retrogrades see
+grain size increase by annealing. (}
+
+\textbf{Arsenopyrite}
+
+No helium step heat data for sulfides plotted in figure 3.3 provide
+evidence for a simple single domain volume-diffusion model, except
+perhaps for the lone translucent sulfide of this study: sphalerite. The
+sphalerite experiment (Spal230707) may allow a simple single domain
+volume diffusion model. Unfortunately, the heating schedule of this
+study was insufficient to deconvolve the process of helium permeation
+through fused silica from helium evolution of sphalerite
+
+Helium step heat experiments for galena (GalTS230630) and pyrite
+(LVCOPy230630, BigLVCOPy230707, 112123LVCOPyIrr, Rustenburg Pyrite) are
+all consistent with a multi-diffusion domain
+
+Arsenopyrite: Arsenic degrades symmetry, moves from monoclinic to
+triclinic with more arsenic, increases unit cell volume. \citep{morimotoclark1961}
+
+Arsenopyrite becomes more arsenic rich at higher temperatures \citep{barton1969,morimotoclark1961}
+
+\section{Conclusions}\label{sec:ch3-conclusions}
+\todo{Summarize He retentivity findings and geochronologic implications.}

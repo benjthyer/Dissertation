@@ -1,0 +1,106 @@
+% =============================================================
+%  dissertation.tex
+%  Top-level container for the full dissertation.
+%  Title: "From Surface to Core, Opening New Windows into the
+%          Chemistry of Planets through Novel Methods in
+%          Mass Spectrometry and Machine Learning"
+%  Author: Ben Thyer
+%
+%  Compile with: pdflatex > biber > pdflatex > pdflatex
+%  (or latexmk -pdf -biber dissertation.tex)
+% =============================================================
+
+\documentclass{caltech_thesis}
+
+% Shared preamble (packages, commands, settings)
+\input{dissertation_preamble}
+
+% --- Title-page metadata (caltech_thesis.cls macros) --------------------------
+
+\title{From Surface to Core: Opening New Windows into the Chemistry of Rocky
+  Planets through Novel Methods in Mass Spectrometry and Machine Learning}
+\author{Ben J. Thyer}
+\copyyear{2026}
+\defenddate{9/28/2026} % This is a plausible date but is a placeholder.
+\orcid{0000-0002-5341-0316}
+
+% =============================================================
+\begin{document}
+% =============================================================
+
+% ---- Front matter -----------------------------------------------------------
+\frontmatter
+
+% --- Title page + copyright page ----------------------------------------------
+% \maketitle (defined by caltech_thesis.cls) typesets the Caltech title page
+
+\maketitle
+
+% --- Abstract ----------------------------------------------------------------
+% The `abstract` environment is redefined by caltech_thesis.cls to render as
+% an unnumbered, TOC-listed chapter (\extrachapter{Abstract}).
+\begin{abstract}
+\todo{Write abstract.}
+\end{abstract}
+
+% --- Acknowledgements --------------------------------------------------------
+% caltech_thesis.cls provides both `acknowledgments` and `acknowledgements`
+% (plural preferred) as unnumbered, TOC-listed chapters, same mechanism as
+% `abstract` above.
+\begin{acknowledgements}
+\todo{Write acknowledgements.}
+
+I am deeply grateful... 
+
+The fieldwork at Draaikraal would not have been possible... 
+
+Finally, I thank family/friends for their unwavering support...
+\end{acknowledgements}
+
+% --- Table of contents -------------------------------------------------------
+\tableofcontents
+% \listoffigures % Temproarily commented out to save space in the draft. Uncomment for final version.
+% \listoftables
+
+% ---- Main matter ------------------------------------------------------------
+\mainmatter
+
+% --- Introduction (unnumbered) -----------------------------------------------
+\extrachapter{Introduction}
+\markboth{Introduction}{Introduction}
+
+\todo{Write short dissertation introduction, longer than abstract, detail each chapter.}
+
+% --- Chapters ----------------------------------------------------------------
+\input{Chapter1/chapter1}
+\input{Chapter1/chapter1_SI}
+\input{Chapter2/chapter2}
+\input{Chapter2/chapter2_SI}
+\input{Chapter3/chapter3}
+\input{Chapter4/chapter4}
+\input{Chapter5/chapter5}
+
+% --- Conclusion (unnumbered) -------------------------------------------------
+\extrachapter{Conclusion}
+\markboth{Conclusion}{Conclusion}
+
+\todo{Write short dissertation conclusion. No data, few or no figures.
+Synthesize contributions. Allude to the Bushveld Complex fieldwork
+(Appendix~\ref{app:bushveld}) as motivating nGibbs work and sulfide/goethite geochronology. Mention the laterite geomorphology
+at Draaikraal as an unexpected and compelling target for goethite
+geochronology.}
+
+% ---- Back matter ------------------------------------------------------------
+\backmatter
+
+% --- References --------------------------------------------------------------
+\printbibliography[heading=bibintoc, title={References}]
+
+% --- Appendices --------------------------------------------------------------
+\begin{appendices}
+  \input{ChapterA/chapterA}
+\end{appendices}
+
+% =============================================================
+\end{document}
+% =============================================================

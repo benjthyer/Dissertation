@@ -1,0 +1,66 @@
+# LaTeX cache/auxiliary/intermediate files (produced by compilation, not
+# hand-authored -- safe to regenerate, never worth tracking)
+*.aux
+*.log
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.bbl
+*.bbl-SAVE-ERROR
+*.bcf
+*.blg
+*.out
+*.toc
+*.lof
+*.lot
+*.idx
+*.ilg
+*.ind
+*.ist
+*.glo
+*.gls
+*.glg
+*.acn
+*.acr
+*.alg
+*.nav
+*.snm
+*.vrb
+*.run.xml
+*.xdv
+*.dvi
+*.thm
+*.loe
+*.nlo
+*.nls
+*.figlist
+*.makefile
+*.bak
+
+# Word files (figures/captions currently drafted in Word before being
+# ported into LaTeX; the .tex body files are the tracked source of truth)
+*.doc
+*.docx
+*.dotx
+~$*.doc
+~$*.docx
+~$*.dotx
+
+# Excel Caches
+~$*.xls
+~$*.xlsx
+~$*.xlsm
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Per-chapter scratch/working area -- not tracked. Only Writing/, Tables/,
+# and Figures/{source,generated,data}/ (via the rule below) are tracked.
+Workspace/
+**/Workspace/
+
+# Script-generated figures/caches -- reproducible from Figures/*.py via the
+# run_all_figures.py pipeline in each chapter, so not tracked. Figures/source/
+# and Figures/data/ (hand-provided/curated) remain tracked.
+**/Figures/generated/

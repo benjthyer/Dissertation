@@ -1,0 +1,1672 @@
+% =============================================================
+%  chapter1_SI_body.tex
+%  Shared, class-agnostic body of Chapter 1's Supplementary
+%  Information (Fick's Law derivation through the supplementary
+%  data tables). Citations use \citep/\citet against the master
+%  references.bib, same convention as chapter1_body.tex.
+%
+%  \input{} by BOTH:
+%    - Chapter1/Writing/SI.tex        (standalone Copernicus-journal
+%      supplement -- keeps its own \bibitem/thebibliography list so
+%      \citep/\citet resolve locally via natbib, matching the
+%      journal's required house style; see that file's own
+%      bibliography for details)
+%    - Chapter1/chapter1_SI.tex     (dissertation-chapter version --
+%      relies on the single \printbibliography at the end of
+%      dissertation.tex; no local bibliography needed)
+%  Edit this file, not the two wrappers, to change the text,
+%  equations, figures, or citations.
+%
+%  Cross-references to the main text (e.g. "main text Fig.~\ref{...}",
+%  "main text Eq.~\eqref{...}") use real \ref{}/\eqref{} against labels
+%  defined in chapter1_body.tex. These resolve correctly in the
+%  dissertation (chapter1.tex + chapter1_SI.tex share one document/.aux)
+%  but will render as "??" in the standalone SI.tex compile, since
+%  TubeMethodPaper.tex and SI.tex are separate documents there -- to be
+%  addressed separately when preparing that standalone submission.
+% =============================================================
+
+\section{A Fick's Law Formulation Describing Helium Migration Across
+Semi-Permeable Membranes}\label{a-ficks-law-formulation}
+
+We derive the relevant equations describing helium permeation through
+glass by beginning with Fick's Law, similarly to previous works
+\citep{rogers1954,altemose1961}.
+
+\begin{equation}
+J = \  - D\frac{d\varphi}{dx}
+\label{eq:s1-1}
+\end{equation}
+
+Where \emph{J} is the area-normalized Fickian diffusive flux in units of
+\(\frac{atoms}{s \times cm^{2}}\), \emph{D} is the diffusivity (of
+helium in glass) in units of \(\frac{cm^{2}}{s}\), and
+\(\frac{d\varphi}{dx}\) is the concentration gradient, in units of
+\(\frac{\left( \frac{atoms}{cm^{3}} \right)}{cm}\) or
+\(\frac{atoms}{cm^{4}}\).
+
+For steady state permeation across a planar membrane, the concentration
+gradient is constant. If we take \emph{l} to be the glass thickness and we
+rewrite the Fickian flux \emph{J} as \(\frac{F}{A}\), where F is the
+absolute atom flux in units of \(\frac{atoms}{s}\), and A is simply the
+membrane area, we can rewrite Fick's law as:
+
+\begin{equation}
+F = \  - DA\frac{\mathrm{\Delta}\varphi}{l}
+\label{eq:s1-2}
+\end{equation}
+
+Finally, we assume that the concentration of helium within the glass
+membrane is Henrian, i.e. proportional to the gas pressure in contact
+with the membrane. Experimental work has shown that helium permeation
+through silica glass is Henrian at pressures of several hundred bars and
+lower \citep{shelby1976}, well above the experimental helium partial
+pressures for this work. We define this proportionality factor as the
+solubility, \emph{S}, in units of \(\frac{atoms}{atm \times cm^{3}}\).
+Now we may write the expression in terms of the gas pressure gradient,
+or the difference of helium partial pressures on each side of the
+membrane.
+
+\begin{equation}
+F = \  - DA\frac{S\mathrm{\Delta}P}{l}
+\label{eq:s1-3}
+\end{equation}
+
+Diffusivity and solubility are material properties that are functions of
+temperature following the Arrhenius equation, and therefore their
+mathematical product (permeability, \emph{K}) also follows an Arrhenius
+relation with temperature \citep{rogers1954,swets1961}.
+Now, recognizing that K = DS, we may express the equation in terms of
+permeability \(\frac{atoms}{s \times cm \times atm}\).
+\begin{equation}
+F = \  - \frac{KA\mathrm{\Delta}P}{l}
+\label{eq:s1-4}
+\end{equation}
+
+\citet{studt1962} and \citet{masaryk1968} also use this equation to describe helium
+permeation through silica glass, taken from Darcy's Law for gas flow
+through semi-permeable membranes \citep{carman1956}. This ordinary,
+first-order differential equation is well suited for describing
+permeation through a silica membrane when the permeate pressures on each
+side of the membrane are constant \citep{norton1953,altemose1961,swets1961}. Cases where permeate partial pressure changes
+during the experiment (such as this work) require solving the first
+order ODE above to relate the abundance of an analyzed permeate to the
+abundance of unanalyzed permeate remaining in the depleting reservoir.
+
+Recalling that F is an atomic flux in units of \(\frac{atoms}{s}\) that
+could be notated as \(\frac{dn}{dt}\):
+
+\begin{equation}
+\frac{dn}{dt} = \  - \frac{KA\mathrm{\Delta}P}{l}
+\label{eq:s1-5}
+\end{equation}
+
+We assume that the helium partial pressure in the ultra-high vacuum (UHV)
+heating cell surrounding the ampoule is 0, so that the pressure gradient
+equals the partial pressure within the ampoule
+(\(\mathrm{\Delta}P = P\)). This is a valid assumption for this work
+because the heating cell is 4-5 orders of magnitude more voluminous than
+the glass ampoule. The assumption therefore is only appreciably violated
+for the trivial case in which effectively all the helium present within
+the tube is permeated out and the helium partial pressures within and
+outside of the ampoule are equal. In this case, net helium flux goes to
+zero even though the ampoule is not entirely evacuated. Relative to the
+amount of helium within the ampoule at time 0 (\(n_{0})\), the amount of
+helium remaining in the ampoule after infinite time
+\emph{(}\(n_{eqm}\)\emph{)} will be set by the volume ratio of the
+ampoule and the lamp cell.
+
+\[\ \frac{n_{eqm}}{n_{0} - n_{eqm}} \approx \frac{n_{eqm}}{n_{0}} = \frac{V_{ampoule}}{V_{lamp\ cell}} \approx 10^{- 4}\]
+
+For this experimental setup, only 1 part in 10000 helium atoms will
+remain in the ampoule after infinite time in the closed heating cell.
+
+Before integrating Eq.~\eqref{eq:s1-5}, it is useful to experimentalists working
+with mass spectrometry to express the pressure term \emph{P} in terms of
+atoms \emph{n}, the atomic abundance of helium within the ampoule.
+Helium is well-approximated as an ideal gas at experimental conditions,
+so the ideal gas law (PV = nRT) relates the pressure, \emph{P}, to the
+atomic abundance, \emph{n}, yielding Eq.~\eqref{eq:s1-6}:
+
+\begin{equation}
+\frac{dn}{dt} = \  - \frac{AKnRT}{lV}
+\label{eq:s1-6}
+\end{equation}
+
+Where \emph{R} is the gas constant
+\(\left( 1.36 \times 10^{- 22}\frac{cm^{3}atm}{K\ atoms} \right)\),
+\emph{T} is the temperature in Kelvin, and \emph{V} is the volume in
+cm\textsuperscript{3}. It is now obvious that the helium atoms in the
+gas phase (\emph{n}) decrease over time. Because Eq.~\eqref{eq:s1-6} assumes a
+steady state helium concentration profile in the glass walls of the
+ampoule in equilibrium with the helium partial pressure inside the
+ampoule, one must make another essential assumption to continue: that
+the permeation timescale be small with respect to the diffusive
+timescale so that the helium concentration profile of the glass
+effectively remains in an equilibrium with the helium atoms in the gas
+phase (\emph{n}). If the inner gas volume is small relative to the
+volume of the ampoule glass, then \(\frac{dn}{dt}\) will be relatively
+large and the helium atoms in the gas phase (\emph{n}) will decrease
+faster than diffusion's ability to maintain an equilibrium concentration
+profile in the glass, violating the assumption of a steady state
+concentration profile in equilibrium with the inner gas phase. Then,
+Eq.~\eqref{eq:s1-6} and all equations derived from it will be invalid. In other words, the
+timescale of diffusion must be much smaller than the timescale of
+permeation (\(\tau_{D} \ll \tau_{P}\)) for Eq.~\eqref{eq:s1-6} and all derived
+equations to apply. A more thorough analysis of this assumption is
+presented in \emph{Diffusive Steady State Assumption for Permeation.}
+
+Eq.~\eqref{eq:s1-6} can be simplified by defining a geometric factor (\emph{G}) in
+units of cm\textsuperscript{-2} that incorporates the spatial parameters
+for area, volume, and length of the experimental glass ampoule:
+
+\begin{equation}
+\frac{dn}{dt} = \  - GKnRT
+\label{eq:eqn1}
+\end{equation}
+
+Eq.~\eqref{eq:eqn1} can be integrated using a straightforward separation of variables
+to get a useful general equation describing helium reservoirs depleting
+via permeation.
+
+\begin{equation}
+n_{t} = n_{0}e^{- KGRTt}
+\label{eq:eqn2}
+\end{equation}
+
+Where \emph{n\textsubscript{t}} is the amount of helium atoms within the
+reservoir after time \emph{t} in seconds, and \emph{n\textsubscript{0}}
+is the amount of helium atoms within the reservoir at time t = 0.
+
+Eq.~\eqref{eq:eqn2} can equivalently be expressed in terms of the
+fraction of the initial helium reservoir that has permeated during time
+\emph{t}, which is often a more intuitive quantity when relating this
+equation to a measured amount of helium. Defining the fractional
+permeation yield \(^{He}F \equiv \frac{m}{n_{0}}\), where
+\(m \equiv n_{0} - n_{t}\) is the amount of helium permeated and available to be measured
+during time \emph{t}, Eq.~\eqref{eq:eqn2} can be recast as:
+
+\begin{equation}
+^{He}F = \frac{m}{n_{0}} = 1 - e^{- KGRTt}
+\label{eq:fracyield}
+\end{equation}
+
+Eq.~\eqref{eq:eqn2} can be solved for permeability (\emph{K}) for use in
+experimentally determining permeability for experiments in which the
+permeating helium source is significantly depleted during the
+experiment, yielding Eq.~\eqref{eq:s1-7}:
+
+\begin{equation}
+K = - \frac{\ln\left( n_{t} \right) - \ln\left( n_{0} \right)}{GRTt}
+\label{eq:s1-7}
+\end{equation}
+
+In typical experimental measurements of helium permeability through
+glass, permeation rates are measured in real time, and the pressure
+gradient is constant throughout the measurement, so an equation like
+Eq.~\eqref{eq:s1-4} is used to solve for permeability instead \citep{norton1953,swets1961,altemose1961}.
+
+\subsection{Permeation Through Cylindrical Membranes}\label{permeation-through-cylindrical-membranes}
+
+For non-planar membranes, the effective area of permeation, \emph{A}, is
+not straightforward to evaluate because the surface area on each side of
+the membrane differs. \citet{masaryk1968} gives the effective area of
+permeation for a cylinder (such as for this experiment) as:
+
+\begin{equation}
+A = \frac{2\pi hl}{\ln\left( \frac{b}{a} \right)}
+\label{eq:s2-1}
+\end{equation}
+
+Where \emph{a} is the cylinder's internal radius, \emph{b} is the
+cylinder's external radius, and \emph{h} is its length. This effective area of
+permeation (Eq.~\eqref{eq:s2-1}) can be used with the equation for the internal
+volume of the cylinder: \(V = h\pi a^{2}\) to evaluate the geometric
+factor \emph{G} (Eq.~\eqref{eq:eqn1}) for a cylinder in terms of the ampoule
+geometry. Reducing yields Eq.~\eqref{eq:3}:
+
+\begin{equation}
+G = \frac{2}{a^{2}\ln\left( \frac{b}{a} \right)}
+\label{eq:3}
+\end{equation}
+
+Interestingly, \emph{h} cancels so that the permeation rate has no
+dependence on the ampoule length when permeation through the top and
+bottom are negligible. Eq.~\eqref{eq:3} displays the intuitive behavior that
+thinner walls and narrower tubes lead to more efficient permeation.
+Where \emph{G} is used elsewhere in this work, it refers to the
+cylindrical geometric factor given in Eq.~\eqref{eq:3}. Most silica ampoules
+sealed at Caltech for helium step heat experiments were 0.6-1.2 mm wide
+with 150-300 µm thick glass, translating to values of \emph{G} between
+2000-7000 cm\textsuperscript{-2}. In this work, if no value of \emph{G}
+is specified, then a typical 200 µm thick ampoule with an outer diameter
+of 1 mm is assumed, corresponding to \emph{a} = 0.03 cm, \emph{b} = 0.05
+cm and \emph{G} = 4350.26 cm\textsuperscript{-2}.
+
+\section{Diffusive Steady State Concentration Profiles in Cylindrical
+Membranes}\label{diffusive-steady-state-concentration-profiles-in-cylindrical-membranes}
+
+To establish a steady state concentration profile, the diffusive timescale must be much faster than the permeation timescale, otherwise the helium concentration profile within the glass will respond too slowly to maintain equilibrium with the rapidly depleting internal gas phase (Fig.~\ref{fig:steady-state-profile-deviation}). The ratio of the permeation timescale and diffusive timescale is a strong function of the ratio of the ampoule's glass and internal gas volumes with a very minor dependence on temperature (Fig.~\ref{fig:diffusive-permeation-timescale-ratio} below). An ampoule with a glass/gas volume ratio of 2 has a diffusive timescale that is \textasciitilde5.6\% of the permeation timescale (Eq.~\eqref{eq:s3-4} below). Numerical diffusion-permeation simulations show that Eq.~\eqref{eq:s1-7} accrues less than 1\% error due to deviation from the idealized helium concentration profile (Figs.~\ref{fig:numerical-error-vs-step-duration} and \ref{fig:numerical-error-accuracy-bounds} below). Smaller glass/gas volume ratios are better: the ampoules in the main text have glass/gas volume ratios \textasciitilde1.25-1.5. Numerical simulations show that this error is determined nearly entirely by the volume ratio of the ampoule glass and gas and is otherwise insensitive to ampoule geometry (Figs.~\ref{fig:numerical-error-volume-ratio-control} and \ref{fig:simulated-ampoule-geometries} below).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{SteadyStateProfileDeviation.pdf}
+\caption{A visualization of ideal diffusive steady state concentration profiles (demarcated by the `+' symbols) are contrasted with the numerically calculated ``effective'' steady state concentration profile, represented by the solid lines. These effective concentration profiles are not strictly in steady state, but they are effectively in equilibrium with a rapidly decreasing internal helium reservoir. These profiles are retrieved by numerically simulating a model ampoule permeating helium for at least one diffusive timescale. At low glass/gas volume ratios, the idealized and true concentration profiles are indistinguishable. Ideal steady state concentration profiles for cylindrical membranes are strongly curved at high glass/gas volume ratios and become linear as the glass/gas volume ratio approaches 0. For closed ampoules where internal pressure is not constant, but instead decreases due to permeation, the internal pressure decreases faster than the glass concentration profile can respond to the new internal helium pressure, so the concentrations are higher (and less curved) than the ideal profile, because of memory of higher internal helium pressures. 4He diffusivities and solubilities are taken from \citet{swets1961}.}
+\label{fig:steady-state-profile-deviation}
+\end{figure}
+
+The derivation for Eq.~\eqref{eq:s1-7} always assumes an equilibrium steady
+state helium concentration profile across the ampoule. The most
+important corollary of this assumption is that the timescale of
+permeation must be much larger than the diffusive timescale
+(\(\tau_{D} \ll \tau_{P}\)) for Eq.~\eqref{eq:s1-7} and all derived equations to
+apply. An analysis is presented here exploring the ampoule geometries
+that permit the use of the analytical solutions for helium permeation
+through silica glass.
+
+The diffusive timescale is the timescale at which diffusion is generally
+expected to establish a steady state concentration profile between two
+(effectively) constant reservoirs. For a diffusive domain size \emph{L},
+the timescale is given as:
+
+\begin{equation}
+\tau_{D} = \frac{L^{2}}{D}
+\label{eq:s3-1}
+\end{equation}
+
+The permeation timescale is analogous to an ``e-folding time'' or ``mean
+life'' in radioactive decay, the time after which point the original
+abundance of something decaying by a first order process following the
+form \(\frac{dn}{dt} = - \lambda n\) would have decreased by a factor of
+Euler's number (1/\emph{e}). After one permeation timescale has passed,
+more than half of the original helium has permeated through the ampoule
+walls, leading to the intuition that the dimensionless timescale ratio
+\(\frac{\tau_{D}}{\tau_{P}} \ll 1\) in order for Eq.~\eqref{eq:s1-7} and Eq.~\eqref{eq:eqn2} to
+apply, because only vanishingly small changes in the total helium are
+allowed within one diffusive timescale in order for an equilibrium
+helium concentration profile to be stabilized and maintained.
+
+\begin{equation}
+\tau_{P} = \frac{1}{\lambda} = \frac{1}{GRTK}
+\label{eq:s3-2}
+\end{equation}
+
+The ratio of these two timescales is a weak function of temperature and
+a strong function of the ratio of ampoule glass and internal gas volumes
+\(\left( \frac{V_{glass}}{V_{gas}} \right)\) (Fig.~\ref{fig:diffusive-permeation-timescale-ratio}). By the
+equation for the volume of cylinders:
+
+\begin{equation}
+V_{\frac{glass}{gas}} = \frac{h\pi\left( b^{2} - a^{2} \right)}{h\pi a^{2}} = \frac{\left( b^{2} - a^{2} \right)}{a^{2}}
+\label{eq:s3-3}
+\end{equation}
+
+\(\frac{\tau_{D}}{\tau_{P}}\) can be expanded and recast to be a
+function of only temperature and \(V_{\frac{glass}{gas}}\). Recalling
+that L = b-a and K = SD, and the identity of \emph{G} for cylinders from
+Eq.~\eqref{eq:3}.
+
+\[\frac{\tau_{D}}{\tau_{P}} = \frac{L^{2}}{D}GRTK = \frac{(b - a)^{2}}{D}\frac{2}{a^{2}\ln\left( \frac{b}{a} \right)}RTSD\]
+
+Factoring \(\left( b^{2} - a^{2} \right) = (b - a)(b + a)\),
+substituting, and simplifying:
+
+\[\frac{\tau_{D}}{\tau_{P}} = V_{\frac{glass}{gas}} \bullet \frac{(b - a)}{(b + a)}\frac{2}{\ln\left( \frac{b}{a} \right)}RTS\]
+
+Now using Eq.~\eqref{eq:s3-3} to relate the terms containing \emph{a} and \emph{b}
+to \(V_{glass/gas}\), all spatial terms can be expressed in terms of
+this ratio.
+
+\[\left( \frac{b}{a} \right) = \sqrt{V_{\frac{glass}{gas}} + 1}\]
+
+For example:
+
+\[b = a\sqrt{V_{\frac{glass}{gas}} + 1}\]
+
+\[(b - a) = a\left( - 1 + \sqrt{V_{\frac{glass}{gas}} + 1}\  \right)\]
+
+\[(b + a) = a\left( 1 + \sqrt{V_{\frac{glass}{gas}} + 1}\  \right)\]
+
+\begin{equation}
+\frac{\tau_{D}}{\tau_{P}} = S(T){\bullet \ RT\  \bullet V}_{\frac{glass}{gas}} \bullet \ \frac{- 1 + \sqrt{V_{\frac{glass}{gas}} + 1}\ }{1 + \sqrt{V_{\frac{glass}{gas}} + 1}\ }\  \bullet \ \frac{2}{\ln\left( \sqrt{V_{\frac{glass}{gas}} + 1} \right)}
+\label{eq:s3-4}
+\end{equation}
+
+Eq.~\eqref{eq:s3-4} is plotted for three temperatures as a function of
+glass/gas volume ratio in Fig.~\ref{fig:diffusive-permeation-timescale-ratio}. \(\frac{\tau_{D}}{\tau_{P}}\)
+increases monotonically and nearly linearly in log-log space with the
+glass/gas volume ratio of ampoules, whereas temperature plays only a
+minor role. Ampoules with high glass/gas volume ratios and
+\(\frac{\tau_{D}}{\tau_{P}}\ \)ratios can be considered ``glass
+dominated''. For these glass-dominated ampoules, the relative difference
+in surface area between the inner and outer surfaces is large; resulting
+in a more profoundly curved ideal concentration profile (Fig.~\ref{fig:steady-state-profile-deviation} above, Eq.~\eqref{eq:s4-4}). For glass dominated ampoules, this ideal curved concentration
+profile is only realized if the internal pressure is held constant,
+otherwise, this internal helium partial pressure decays rapidly due to
+permeation relative to the rate of diffusion within the glass, thereby
+stabilizing a helium concentration profile in the glass that will be
+less curved and higher than the idealized steady state of Eq.~\eqref{eq:s4-4} (Fig.~\ref{fig:steady-state-profile-deviation} above). When normalized to the concentration, quantity, or pressure of
+helium within the gas phase of the ampoule, this quasi-steady state
+concentration profile is reached within one diffusive timescale and
+remains constant as diffusion and permeation proceeds, regardless of the
+ratio of glass and gas volumes (this property was tested by varying the
+permeation time between one and ten diffusive timescales, which had no
+effect of the concentration profile normalized to the concentration,
+abundance, or partial pressure of helium in the gas phase). Indeed, all
+model ampoule calculations from Figs.~\ref{fig:numerical-error-vs-step-duration}--\ref{fig:numerical-error-volume-ratio-control} were initialized to
+have this effective steady state concentration profile, which is done by
+allowing the model ampoule to permeate and diffuse for one diffusive
+timescale, after which the concentration profile is multiplied by the
+simulated \(\frac{n_{0}}{n_{t}}\) to renormalize it to the original
+helium contents of the ampoule. The helium content of the gas is then
+recalculated using the relation \(n_{gas} = n_{0} - n_{glass}\), and the
+permeated helium outside of the ampoule is reset to 0. Numerical
+simulations of model ampoules with glass/gas volume ratios above
+\textasciitilde{} 0.1 that were initialized to the ideal steady state of
+Eq.~\eqref{eq:s4-4} recorded an early spike in relative error with Eq.~\eqref{eq:s1-7}
+that was maximized before one diffusive timescale
+because of an incorrect initial steady state assumption. This artifact
+vanished completely when the true steady state profile was used.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{VRvsRtau.pdf}
+\caption{The accuracy of Eq.~\eqref{eq:eqn2} and equations derived from it is dependent on a steady state concentration profile in equilibrium with the helium gas concentration inside the ampoule. If the timescale of permeation is comparable to or lower than the timescale of diffusion for the ampoule, then the gas concentration inside the ampoule will change faster than the response of the concentration profile within the glass, and these equations will become inaccurate. In other words, these equations are only accurate when \(\tau_{D}/\tau_{P} \ll 1\). For helium permeation in silica glass ampoules, the ratio of the diffusive and permeation timescales is a strong function of the ratio of glass and gas volume, and a weak function of temperature. \(\tau_{D}/\tau_{P}\) is nearly linear with \(V_{glass}/V_{gas}\) in log-log space, forming subtly-offset parallel arrays at different temperatures. 4He solubilities are taken from \citet{swets1961}.}
+\label{fig:diffusive-permeation-timescale-ratio}
+\end{figure}
+
+Numerical simulations of model ampoules of varying dimensions,
+thicknesses, and geometric factors show that the only geometric
+parameter that directly affects the accuracy of the analytical
+solutions, e.g. Eq.~\eqref{eq:s1-7}, is the glass/gas volume ratio of the
+ampoules (Figs.~\ref{fig:numerical-error-vs-step-duration}--\ref{fig:numerical-error-volume-ratio-control}). This geometric dependence is much more
+important than subtle effects of temperature (Figs.~\ref{fig:diffusive-permeation-timescale-ratio}; \ref{fig:numerical-error-volume-ratio-control}). Ampoules
+from this work have glass/gas volume ratios between 1.2 and 1.6; for
+which Eq.~\eqref{eq:s1-7} is accurate to within 1\% for temperatures
+less than 500°C (Fig.~\ref{fig:numerical-error-accuracy-bounds}). For more precise handling, odd thermal
+schedules, or for ampoules with higher glass/gas volume ratios,
+permeation fractions would need to be numerically solved to achieve
+sufficient accuracy to use a permeation measurement to constrain the
+helium contents of an ampoule.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{NumericalEqn3.3ErrVrVarySettledProfile.pdf}
+\caption{Numerical simulations confirm that Eq.~\eqref{eq:s1-7} is accurate for ampoules with low glass/gas volume ratios. For ampoules with higher glass/gas volume ratios, the relative error is not constant but depends on the duration of the step. The relative error reaches a maximum at a step shorter than the permeation timescale (\(\tau_{P}\)) for ampoules with glass/gas volume ratios higher than 1, then decreases as steps continue and most of the original gas within the ampoule has been permeated. 4He diffusivities, solubilities, and permeabilities are taken from \citet{swets1961}.}
+\label{fig:numerical-error-vs-step-duration}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{NumericalEqn3.3ErrWavesSettledProfile.pdf}
+\caption{Numerical experiments of this work show that these equations will be accurate to within 1\% for ampoule glass/gas volume ratios less than 2 for temperatures less than 500\textdegree{}C, which corresponds to \(\tau_{D}/\tau_{P} < 0.056\). Experimental ampoules at Caltech have glass/gas volume ratios generally between 1.25 and 1.5, and thus Eq.~\eqref{eq:s1-7} is accurate to within 1\% for ampoules with concentration profiles in steady state. 4He diffusivities, solubilities, and permeabilities are taken from \citet{swets1961}.}
+\label{fig:numerical-error-accuracy-bounds}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{NumericalEqn3.3ErrConstLandG.pdf}
+\caption{Numerical simulations of two suites of model ampoules with varying glass/gas volume ratios and a constant thickness (\emph{L}) or permeation geometric factor (\emph{G}) show that the only factors that determine the applicability of Eq.~\eqref{eq:s1-7} for helium permeation of closed ampoules are glass/gas volume ratio (primarily) and temperature (secondarily). These two suites have different geometries and permeation rates, yet the deviation of the numerical model from Eq.~\eqref{eq:s1-7} is the same for different ampoules with the same glass/gas volume ratio at the same temperature. This is clear evidence that the ratio of diffusive and permeation timescales is the primary control on the accuracy of Eq.~\eqref{eq:s1-7}. 4He diffusivities, solubilities, and permeabilities are taken from \citet{swets1961}.}
+\label{fig:numerical-error-volume-ratio-control}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{SimulatedTubeGeometries.pdf}
+\caption{Model ampoules with uniformly distributed glass/gas volume ratios between 0.01 and 50 and one other constraint (either constant thickness or constant geometric permeation factor \emph{G}, Eq.~\eqref{eq:3}) have defined inner and outer radii. These are the same suites of ampoules for which helium permeation was numerically simulated in Fig.~\ref{fig:numerical-error-volume-ratio-control}.}
+\label{fig:simulated-ampoule-geometries}
+\end{figure}
+
+To understand the steady state helium concentration profile in the
+glass, it is necessary to model the radial diffusion through a
+symmetrical, hollow cylinder. \citet{carslawjaeger1959} give the equation
+for the change in concentration by diffusion in a cylinder (eqn. 5, page
+17, second edition), expressed here in terms of concentration and
+diffusivity.
+
+\begin{equation}
+\frac{dC}{dt} = D\left\lbrack \frac{\partial^{2}C}{\partial r^{2}} + \frac{1}{r}\frac{\partial C}{\partial r} + \frac{1}{r^{2}}\frac{\partial^{2}C}{\partial\theta^{2}} + \frac{\partial^{2}C}{\partial z^{2}} \right\rbrack
+\label{eq:s4-1}
+\end{equation}
+
+For typical ampoules used in this work, the surface area of the top and
+bottom together is about 5-10\% of the surface area of the walls, but
+they are neglected here for simplicity. Assuming that the concentration
+profiles are radially symmetrical and uniform with height (z), Eq.~\eqref{eq:s4-1}
+is reduced to:
+
+\begin{equation}
+\frac{dC}{dt} = D\left\lbrack \frac{\partial^{2}C}{\partial r^{2}} + \frac{1}{r}\frac{\partial C}{\partial r} \right\rbrack
+\label{eq:s4-2}
+\end{equation}
+
+At steady state, \(\frac{dC}{dt} = 0\), so
+
+\[
+\frac{\partial^{2}C}{\partial r^{2}} + \frac{1}{r}\frac{\partial C}{\partial r} = 0
+\]
+
+Which, by the product rule, can be expressed as:
+
+\[
+\frac{1}{r}\frac{\partial}{\partial r}\left( r\frac{\partial C}{\partial r} \right) = 0
+\]
+
+Now, the \(\frac{1}{r}\) term can be dropped, and both sides can be
+integrated with respect to r to yield:
+
+\[
+r\frac{\partial C}{\partial r} = A
+\]
+
+Where \emph{A} is a constant of integration. Now both sides are
+integrated again with respect to r, leaving the equation describing the
+geometry of the diffusive steady state concentration profile of a
+cylinder (Eq.~\eqref{eq:s4-2-2}):
+
+\[\frac{\partial C}{\partial r} = \frac{A}{r}\]
+
+\[C(r) = \int_{}^{}\frac{A}{r}dr\]
+
+\begin{equation}
+C(r) = Aln(r) + B
+\label{eq:s4-2-2}
+\end{equation}
+
+Where B is another constant of integration. Constants \emph{A} and
+\emph{B} can be solved for once the boundary conditions are defined,
+that is, the helium concentrations at the inner and outer walls of the
+glass ampoule. The concentration of helium at the outer wall is
+effectively 0 because the high vacuum heating cell is essentially an
+infinite volume compared to the glass ampoule. At the inner wall, the
+concentration is governed by the solubility and helium partial pressure
+of the encapsulated volume. Letting \emph{a} be the radius of the
+ampoule inner wall, \emph{b} be the radius of the outer wall, and
+\(P_{He}^{gas}\) be the partial pressure of helium in the encapsulated
+gas of the ampoule, the following boundary conditions are enforced:
+
+\[C(r = b) = 0\]
+
+\[C(r = a) = S(T) \bullet P_{He}^{gas}\ \]
+
+Now a system of equations can be formulated so that \emph{A} can be
+solved first, then \emph{B}.
+
+\[0 = Aln(b) + B\]
+
+\[S(T) \bullet P_{He}^{gas} = Aln(a) + B\]
+
+\[S(T) \bullet P_{He}^{gas} = Aln(a) - Aln(b)\]
+
+\[S(T) \bullet P_{He}^{gas} = A\ ln\left( \frac{a}{b} \right)\]
+
+\[A = \frac{S(T) \bullet P_{He}^{gas}}{ln\left( \frac{a}{b} \right)}\]
+
+\[B = - \frac{S(T) \bullet P_{He}^{gas}}{\ln\left( \frac{a}{b} \right)}ln(b)\]
+
+Substituting \emph{A} and \emph{B} back into Eq.~\eqref{eq:s4-2-2}:
+
+\[C(r) = \ \frac{S(T) \bullet P_{He}^{gas}}{\ln\left( \frac{a}{b} \right)}\ln(r) - \frac{S(T) \bullet P_{He}^{gas}}{\ln\left( \frac{a}{b} \right)}\ln(b)\]
+
+\begin{equation}
+C(r) = \ S(T) \bullet P_{He}^{gas} \bullet \frac{\ln\left( \frac{r}{b} \right)}{\ln\left( \frac{a}{b} \right)}
+\label{eq:s4-3}
+\end{equation}
+
+Using the ideal gas law and the volume for the cylinder, the partial
+pressure of helium within the ampoule can be related to the geometry of
+the ampoule and the abundance of helium atoms within the ampoule:
+
+\[P_{He}^{gas} = \frac{n_{He}^{gas}RT}{V_{gas}}\]
+
+\[V_{gas} = \pi a^{2}h\]
+
+\[P_{He}^{gas} = \frac{n_{He}^{gas}RT}{\pi a^{2}h}\]
+
+\begin{equation}
+C(r) = \ S(T) \bullet \frac{n_{He}^{gas}RT}{\pi a^{2}h} \bullet \frac{\ln\left( \frac{r}{b} \right)}{\ln\left( \frac{a}{b} \right)}
+\label{eq:s4-4}
+\end{equation}
+
+Where \emph{h} is the length of the ampoule.
+
+Because the concentration profile of the ampoule is radially
+symmetrical, Eq.~\eqref{eq:s4-4} can be expressed as a radial density of helium
+atoms instead to eliminate the dependence on \emph{h.} The concentration
+(\(C(r)\frac{atoms}{cm^{3}})\ \)can be converted into a radial density
+(\(\epsilon(r)\frac{atoms}{cm})\) by multiplying by the circumference of
+a circle with radius \emph{r} and the cylinder height \emph{h}.
+
+\begin{equation}
+\epsilon(r) = C(r)*2\pi rh
+\label{eq:s4-5}
+\end{equation}
+
+Substituting in \(C(r)\) from Eq.~\eqref{eq:s4-4} and the geometric constant of
+permeation \emph{G} from Eq.~\eqref{eq:3}
+\(\left( G = \frac{2}{a^{2}\ln\left( \frac{b}{a} \right)} = - \frac{2}{a^{2}\ln\left( \frac{a}{b} \right)} \right)\):
+
+\[
+\epsilon(r) = \ S(T) \bullet \frac{2n_{He}^{gas}rRT}{a^{2}} \bullet \frac{\ln\left( \frac{r}{b} \right)}{\ln\left( \frac{a}{b} \right)}
+\]
+
+\begin{equation}
+\epsilon(r) = \  - S(T) \bullet n_{He}^{gas}GRTr\ln\left( \frac{r}{b} \right)
+\label{eq:4}
+\end{equation}
+
+To find the proportion of helium within the glass at steady state, the
+radial density is integrated from \emph{r = a} to \emph{r = b}.
+
+\[n_{He}^{glass} = \int_{a}^{b}{\epsilon(r)dr} = \int_{a}^{b}{- S(T) \bullet n_{He}^{gas}GRTr\ln\left( \frac{r}{b} \right)}dr\]
+
+\[n_{He}^{glass} = - S(T) \bullet n_{He}^{gas}GRT \bullet \int_{a}^{b}\left\lbrack rln(r) - rln(b) \right\rbrack dr\]
+
+Applying the sum rule, then integration by parts to one term yields the
+indefinite integral:
+
+\[\int_{}^{}\left\lbrack rln(r) - rln(b) \right\rbrack dr = \frac{1}{2}r^{2}\ln(r) - \frac{r^{2}}{4} - \frac{1}{2}r^{2}\ln(b) + C\]
+
+Evaluating the definite integral from the bounds of \emph{r = a} to
+\emph{r = b} yields:
+
+\[\int_{a}^{b}\left\lbrack rln(r) - rln(b) \right\rbrack dr = \frac{1}{2}b^{2}\ln(b) - \frac{b^{2}}{4} - \frac{1}{2}b^{2}\ln{(b) -}\frac{1}{2}a^{2}\ln(a) + \frac{a^{2}}{4} + \frac{1}{2}a^{2}\ln(b)\]
+
+Reducing and simplifying:
+
+\[\int_{a}^{b}\left\lbrack rln(r) - rln(b) \right\rbrack dr = \frac{1}{2}a^{2}\left( \ln\left( \frac{b}{a} \right) + \frac{1}{2} \right) - \frac{b^{2}}{4}\]
+
+\begin{equation}
+n_{He}^{glass} = - S(T) \bullet n_{He}^{gas}GRT \bullet \left( \frac{1}{2}a^{2}\left( \ln\left( \frac{b}{a} \right) + \frac{1}{2} \right) - \frac{b^{2}}{4} \right)
+\label{eq:s4-6}
+\end{equation}
+
+Eq.~\eqref{eq:s4-6} can be easily expressed in terms of total helium in the ampoule
+by substituting for the relationship
+\(n_{He}^{gas} = n_{0} - n_{He}^{glass}\)
+
+\[n_{He}^{glass} = - S(T) \bullet \left( n_{0} - n_{He}^{glass} \right)GRT \bullet \left( \frac{1}{2}a^{2}\left( \ln\left( \frac{b}{a} \right) + \frac{1}{2} \right) - \frac{b^{2}}{4} \right)\]
+
+\[\frac{\left( n_{0} - n_{He}^{glass} \right)}{n_{He}^{glass}} = \left\lbrack - S(T) \bullet GRT \bullet \left( \frac{1}{2}a^{2}\left( \ln\left( \frac{b}{a} \right) + \frac{1}{2} \right) - \frac{b^{2}}{4} \right) \right\rbrack^{- 1}\]
+
+\begin{equation}
+\frac{n_{0}}{n_{He}^{glass}} = 1 + \left\lbrack - S(T) \bullet GRT \bullet \left( \frac{1}{2}a^{2}\left( \ln\left( \frac{b}{a} \right) + \frac{1}{2} \right) - \frac{b^{2}}{4} \right) \right\rbrack^{- 1}
+\label{eq:s4-7}
+\end{equation}
+
+\subsection{A Numerical Model for Diffusive Permeation of Helium Through
+Silica Glass
+Ampoules}\label{a-numerical-model-for-diffusive-permeation-of-helium-through-silica-glass-ampoules}
+
+A numerical model to estimate diffusive permeation is invaluable, as it
+provides a flexible way to estimate the permeation fraction
+\(\left( \frac{m}{n_{0}} \right)\) even when the required assumptions
+for the analytical solutions are not met. For example, a numerical
+approach can calculate the expected permeation fraction for a
+non-isothermal time-temperature history, and it needn't obey the
+assumption that the helium concentration profile in the glass is in
+diffusive equilibrium with the partial pressure of helium in the
+encapsulated gas phase. As will be investigated below, the equilibrium
+concentration profile assumption is ephemerally broken when temperatures
+are changed, and for ampoules with high glass/gas ratios it is never
+true.
+
+We numerically solve the radial diffusion equation for cylinders (Eq.~\eqref{eq:s4-2}) using the Forward-Time Central-Space (FTCS) Finite Difference
+Method (FDM) along a radial transect of a model ampoule of arbitrary
+geometry for small, discrete time intervals. The system is spatially
+discretized into 100 cells along a radial transect, and numerical
+stability was insured by solving for the time interval of a single step,
+$\Delta t$, such that \(\frac{D\Delta t}{\Delta x^{2}} = 0.5\), satisfying the
+Courant-Friedrichs-Lewy (CFL) condition.
+
+Helium concentrations along the transect (except for the boundaries,
+where r = a and r = b) are updated according to the following equation,
+an FTCS discretization of the radially symmetric diffusion equation for
+a cylinder (Eq.~\eqref{eq:s4-2}):
+
+\[\frac{dC_{r}}{dt} = D\left\lbrack \frac{\partial^{2}C}{\partial r^{2}} + \frac{1}{r}\frac{\partial C}{\partial r} \right\rbrack\]
+
+\begin{equation}
+\Delta C_{r} \approx \Delta t\  \bullet D\left\lbrack \frac{C_{r - \Delta r} - 2C_{r} + C_{r + \Delta r}}{\Delta r^{2}} + \frac{1}{r}\frac{C_{r + \Delta r} - C_{r - \Delta r}}{2\Delta r}\  \right\rbrack
+\label{eq:s5-0}
+\end{equation}
+
+Dirichlet boundary conditions were enforced at the inner and outer
+boundaries. The concentration at the model ampoule's outer boundary
+(where r = b) was held at 0, while the concentration at the inner
+boundary (where r = a) was calculated at each discrete step by
+multiplying the solubility (in units of
+\(\frac{atoms}{atm \times cm^{3}}\)) by the helium partial pressure
+within the ampoule, according to Eq.~\eqref{eq:s5-1} or \eqref{eq:s5-1a}.
+
+\begin{equation}
+C_{He}^{glass} = S(T) \bullet P_{He}^{gas}
+\label{eq:s5-1}
+\end{equation}
+
+Eq.~\eqref{eq:s5-1} can be related to the atomic abundance of helium in the gas
+phase using the ideal gas law and the formula for the volume of a
+cylinder:
+
+\[P_{He}^{gas} = \frac{n_{gas}RT}{V_{gas}}\]
+
+\[V_{gas} = \pi a^{2}h\]
+
+\begin{equation}
+C_{He}^{glass} = S(T) \bullet \frac{n_{gas}RT}{\pi a^{2}h}
+\label{eq:s5-1a}
+\end{equation}
+
+For simulations where the internal pressure is not constant, \(n_{gas}\)
+changes after every step and Eq.~\eqref{eq:s5-1} is reapplied to the inner
+boundary cell where r = a. While the helium concentrations in the glass
+and in the encapsulated gas phase are both dependent on the length of
+the ampoule (\emph{h}), they compensate for one another such that the
+absolute atom flux into and out of the ampoule is not a function of
+\emph{h}. Within the numerical model, \emph{h} was varied by orders of
+magnitude and the results of the simulations did not change, confirming
+this property.
+
+It is sometimes useful to normalize the helium concentration of the
+glass to the concentration of helium in the gas. To do this, the
+internal helium partial pressure is related to an atomic or molar
+concentration using the ideal gas law:
+
+\[
+C_{He}^{gas} = \frac{n}{V} = \frac{P_{He}^{gas}}{RT}
+\]
+
+The pressure term vanishes in the ratio of the two concentrations and
+depends only on temperature:
+
+\begin{equation}
+C_{He}^{glass/gas} = \frac{C_{He}^{glass}}{C_{He}^{gas}} = S(T)\  \bullet RT
+\label{eq:s5-2}
+\end{equation}
+
+Eq.~\eqref{eq:s5-2} is plotted in Fig.~\ref{fig:helium-glass-gas-partitioning}. It shows that this partitioning ratio
+strongly favors the gas and is only a weak function of temperature,
+varying between 2.5 and 2.8\% between 0 and 300°C. This implies that
+departures from the equilibrium steady state assumption due to
+temperature changes will be small and perhaps negligible, which is
+confirmed in Fig.~\ref{fig:thermal-perturbation-error}.
+
+In order to simulate permeation, the atomic abundances of helium within
+the gas phases both outside the ampoule (at high vacuum) and inside the
+ampoule must be tracked, as do the fluxes between the glass and these
+two gas phases. These fluxes were calculated simply as the diffusive
+flux in \(\frac{atoms}{s \bullet cm^{2}}\) as is given by Fick's law
+(Eq.~\eqref{eq:s1-1}). For spatially discrete cells throughout the ampoule at any
+radius except for the boundaries, the diffusive flux can be approximated
+with the finite difference:
+
+\begin{equation}
+J_{r} = - D\frac{\partial C_{r}}{\partial r} \approx \  - D\frac{C_{r + \Delta r} - C_{r - \Delta r}}{2\Delta r}
+\label{eq:s5-3}
+\end{equation}
+
+However, Eq.~\eqref{eq:s5-3} cannot be applied at the ampoule's inner wall when r
+= a or outer wall when r = b because there is no remaining glass on one
+side of the cell. In that case, second order terms from Taylor
+expansions centered at \(a + \Delta r\ \)and \(b - \Delta r\) can be
+used to better approximate the \(\frac{\partial C_{a}}{\partial r}\) and
+\(\frac{\partial C_{b}}{\partial r}\) terms. Letting
+\(f(r) = \ \frac{\partial C_{r}}{\partial r}\) and
+\(f'(r) = \ \frac{\partial^{2}C_{r}}{\partial r^{2}}\):
+
+% These two equations are wider than the 5.5in Caltech text width in
+% their native size; \resizebox around the math content (rather than
+% column-width tricks, which don't apply to equations) scales each down
+% to fit exactly, same rationale as the table fixes elsewhere in this
+% chapter.
+\begin{equation}
+\resizebox{0.98\linewidth}{!}{$\displaystyle
+J_{a} = - D\frac{\partial C_{a}}{\partial r} \approx \  - D\left( \frac{\partial C_{a + \Delta r}}{\partial r} + \frac{\partial^{2}C_{a + \Delta r}}{\partial r^{2}}\Delta r \right) \approx - D\left( \ \frac{C_{a + 2\Delta r} - C_{a}}{2\Delta r} + \frac{C_{a} - {2C_{a + \Delta r} + C}_{a + 2\Delta r}}{2\Delta r^{2}}\Delta r \right)\
+$}
+\label{eq:s5-3a}
+\end{equation}
+
+\begin{equation}
+\resizebox{0.98\linewidth}{!}{$\displaystyle
+J_{b} = - D\frac{\partial C_{b}}{\partial r} \approx \  - D\left( \frac{\partial C_{b - \Delta r}}{\partial r} - \frac{\partial^{2}C_{b - \Delta r}}{\partial r^{2}}\Delta r \right) \approx - D\left( \frac{C_{b} - C_{b - 2\Delta r}}{2\Delta r} - \frac{C_{b} - {2C_{b - \Delta r} + C}_{b - 2\Delta r}}{2\Delta r^{2}}\Delta r\  \right)\
+$}
+\label{eq:s5-3b}
+\end{equation}
+
+The helium contents in the measurable (external, high vacuum) reservoir
+and the inner encapsulated gas phase are updated every step using fluxes
+determined from Eq.~\eqref{eq:s5-3b} and \eqref{eq:s5-3a} respectively. To convert these
+area-normalized fluxes into absolute atomic abundances, these fluxes are
+multiplied by the time increment ($\Delta t$) and the surface area of the
+cylinder at the outer and inner walls respectively.
+
+\subsubsection{Modeling permeation for ampoules that experienced complex
+thermal
+histories}\label{modeling-permeation-for-ampoules-that-experienced-complex-thermal-histories}
+
+In order to compare the experimental results for ampoules that
+experienced complex cooling histories with the expectations of the first
+order permeation model developed in this work, the numerical model
+developed above was used. The model predicts the relative helium
+permeation for the three experiments on the
+Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer for
+both 4He and 3He by simulating helium permeation of a model ampoule with
+the same dimensions and thermal history of the real experiment. For
+ampoules with multiple measurements of the geometric dimensions, the
+smaller set of measurements is used for the numerical model.
+
+To simulate permeation during cooling of an ampoule, the temperature is
+decreased at every step following a parabolic rate law determined using
+the Watlow temperature records of the cooling ampoule. A parabolic
+function is fit to cooling rates evaluated as a function of temperature.
+Cooling rates were algorithmically calculated for discrete time
+intervals using the Watlow temperature files of the relevant ampoule
+in Python. Temperatures were taken to be the mid-point between the
+maximum and minimum temperatures of the interval over which the
+temperature change was evaluated. The quadratic functions fit to these
+data were forced to have a single root at T = 24°C so that the
+simulated ampoules would cool to a final temperature of 24°C, a common
+room temperature of the Noble Gas Laboratory at Caltech.
+
+The model ampoules were initially assigned an arbitrary and unitless
+amount of helium, and the permeation predictions were output as step
+fractional yields \(\left( \frac{n_{t}}{n_{0}} \right)\), where
+\(n_{0}\) was the amount of helium in the ampoule at the beginning of
+the step. Before the first heating step was simulated, the ampoule was
+assumed to be in diffusive steady state at 24°C. Afterwards, the ampoule
+was not assumed to be in diffusive equilibrium except for isothermal
+steps at times longer than the diffusive timescale at that temperature,
+so that the concentration profile of the model ampoule was tracked
+throughout the entire heating history. For steps above room temperature,
+the ampoule was simulated to immediately transition to the target
+temperature, then the helium concentration profile, influx, and outflux
+of the glass was tracked for the nominal (programmed) heating times for
+times smaller than the diffusive timescale at that temperature. After a
+heated step, an equilibrium concentration profile was reinitialized at
+that temperature only if the equilibrium equation (Eq.~\eqref{eq:s1-7}) was used
+for permeation timescales longer than the diffusive timescale, then the
+temperature of the ampoule was cooled continuously according to the
+quadratic rate law determined from the experimental ampoule's thermal
+history while helium diffusion and permeation was continuously
+simulated.
+
+\subsection{Errors related to violation of the steady state concentration
+profile assumption due to temperature change}\label{errors-related-to-violation-of-the-steady-state-concentration-profile-assumption}
+
+The equilibrium concentration profile is always a function of
+temperature because the partitioning of helium between the gas phase and
+the glass at the ampoule's inner boundary is temperature dependent
+\citep{shackelford1972}. A new steady-state helium concentration
+profile must be established every time the temperature is changed.
+Because of this behavior, it is advantageous to characterize the
+timescales necessary to achieve a steady state diffusive profile at
+different temperatures, as well as the magnitude of the uncertainties
+that result from applying Eq.~\eqref{eq:s1-7} immediately after a temperature
+change, when the diffusive steady state concentration profile is
+violated.
+
+A new steady state concentration profile must first be established when
+the temperature is changed for Eq.~\eqref{eq:s1-7} to strictly apply. It is
+possible to design experiments where permeation measurements are taken
+only after a diffusive steady state concentration profile is established
+within the ampoule, which is further discussed below.
+
+It may unduly inconvenience the experimentalist to experimentally
+enforce the diffusive steady state condition when the uncertainties
+introduced by violating the assumption are small. In Fig.~\ref{fig:helium-glass-gas-partitioning}, Eq.~\eqref{eq:s5-2}
+is plotted for relevant experimental temperatures using the solubilities
+reported by \citet{swets1961}. Fig.~\ref{fig:helium-glass-gas-partitioning} shows that the helium volume
+density of glass at the ampoule's inner boundary will be between 2.5 and
+3\% of the volume density of equilibrated gaseous helium. The overall
+variation in helium partitioning is small ($\leq$12\%) across temperatures
+relevant to step heat experiments on encapsulated goethite (0-300°C).
+There will be excess helium within the glass when changing from a higher
+temperature experimental step ($\geq$175°C) to a lower temperature permeation
+step ($\leq$120°C) that would result in a slightly higher measured value than
+what would be predicted by Eq.~\eqref{eq:eqn2}. Other temperature shifts could also
+result in a deficit of dissolved helium instead of an excess (e.g. when
+shifting temperatures from 70°C to 25°C: Figs.~\ref{fig:glass-gas-helium-distribution}, \ref{fig:thermal-perturbation-error}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{Helium_Partitioning.pdf}
+\caption{Helium preferentially partitions into the gas phase over silica glass. Eq.~\eqref{eq:s5-2} is plotted here: \(\frac{C_{He}^{glass}}{C_{He}^{gas}} = S \cdot RT\). It is the ratio of concentrations (in units of atoms/mL) for helium in silica glass over gas at equilibrium using solubility values of 4He from \citet{swets1961}. This partitioning is only a weak function of temperature, so the concentration ratio is between 2.5\% and 2.9\% for temperatures between 0 and 300°C.}
+\label{fig:helium-glass-gas-partitioning}
+\end{figure}
+
+\begin{equation}
+Disequilibrium\ Excess = \ n_{He}^{glass\ }\left( T_{1} \right) - n_{He}^{glass}\left( T_{2} \right)
+\label{eq:s7-1a}
+\end{equation}
+
+The disequilibrium excess of Eq.~\eqref{eq:s7-1a} can be made into a relative
+error by dividing by the ideal amount of permeated helium measured in a
+permeation step from Eq.~\eqref{eq:eqn2}.
+
+\begin{equation}
+Relative\ Disequilibrium\ Error\  = \frac{n_{He}^{glass\ }\left( T_{1} \right) - n_{He}^{glass}\left( T_{2} \right)}{n_{0}{(1 - e}^{- \lambda(T_{2})t})}
+\label{eq:s7-1b}
+\end{equation}
+
+To evaluate Eq.~\eqref{eq:s7-1a} and \eqref{eq:s7-1b}, \(n_{He}^{glass\ }\) must be
+calculated. An upper bound can be done by assuming a steady state
+diffusion profile and an ideal open tube geometry (with small tops and
+bottoms neglected for simplicity). Assuming that the helium partial
+pressure outside of the ampoule is 0 and defining the abundance of
+helium within the gas phase as \(n_{He}^{gas\ }.\) The radial
+concentration profile at diffusive steady state as a function of radius
+and temperature is given in Eq.~\eqref{eq:4}. Radially integrated, the total
+amount of helium dissolved within the glass is given in
+Eq.~\eqref{eq:s4-7}, which
+can be solved for \(n_{He}^{glass\ }\), yielding Eq.~\eqref{eq:s4-7a}.
+
+\begin{equation}
+n_{He}^{glass} = \frac{n_{0}}{1 + \left\lbrack - S(T) \bullet GRT \bullet \left( \frac{1}{2}a^{2}\left( \ln\left( \frac{b}{a} \right) + \frac{1}{2} \right) - \frac{b^{2}}{4} \right) \right\rbrack^{- 1}}
+\label{eq:s4-7a}
+\end{equation}
+
+Where \emph{a} is the radius of the ampoule's inner wall and \emph{b} is
+the radius of the ampoule's outer wall. For legibility, the terms that
+are not a function of temperature are grouped as the parameter \emph{H.}
+
+\[H = \  - GR \bullet \left( \frac{1}{2}a^{2}\left( \ln\left( \frac{b}{a} \right) + \frac{1}{2} \right) - \frac{b^{2}}{4} \right)\]
+
+Now Eq.~\eqref{eq:s4-7a} can be expressed as:
+
+\[
+n_{He}^{glass} = \frac{n_{0}}{\left( \frac{1}{HTS} + 1 \right)}
+\]
+
+\(\frac{n_{He}^{glass}}{n_{0}\ },\) the fraction of helium atoms within
+the ampoule dissolved within glass, is a function only of temperature
+for a given ampoule. This quantity is evaluated using Eq.~\eqref{eq:s4-7a} for
+several tubes of varying glass/gas volume ratios that share a geometric
+factor for permeation of \emph{G} = 4350 cm\textsuperscript{-2} and
+plotted in Fig.~\ref{fig:glass-gas-helium-distribution}. Although these model tubes would all permeate helium
+at the same rate in diffusive steady state, they have different sizes,
+thicknesses, and relative internal (gas) and glass volumes, which affect
+how long they would need to achieve a steady state diffusive
+concentration profile after thermal perturbation and how severely
+diffusive disequilibrium would cause the amount of permeated helium to
+vary from the predicted amount from Eq.~\eqref{eq:eqn1}. Fig.~\ref{fig:glass-gas-helium-distribution} gives the
+intuitive result that ampoules containing more glass relative to gas
+will produce larger helium excesses/deficits when permeating immediately
+after thermal perturbation.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{PercentHeInGlass.pdf}
+\caption{Most helium trapped within the ampoules of this work resides in the gas phase. Permeation from ampoules with more glass relative to gas will deviate more strongly from the expected permeation at diffusive steady state (Eq.~\eqref{eq:eqn2}) after thermal perturbation. At diffusive equilibrium, the concentration of helium at the ampoule's inner wall is defined by the equilibrium concentration ratio with the gas phase plotted in Fig.~\ref{fig:helium-glass-gas-partitioning}. The concentration at the outer wall is effectively 0. The concentration profile at any point along a transect through the tube is defined by Eq.~\eqref{eq:4}. Eq.~\eqref{eq:s4-6} integrates this concentration profile along the radius to calculate the total amount of helium within the glass, and this value is divided by the total amount of helium within the gas to show the relative distribution of helium between glass and gas for ampoules as a function of inner and outer radii and temperature. It is solved here using solubilities of 4He from \citet{swets1961} for several tubes with varying glass/gas volume ratios that share the same geometric constant of permeation \emph{G}. Red, black, green, and blue lines correspond to inner radii \emph{a} of 270, 300, 400, and 500 microns and outer radii of 507, 500, 533, and 601 microns respectively. The black line follows the ``standard ampoule'' of this work.}
+\label{fig:glass-gas-helium-distribution}
+\end{figure}
+
+Now that the amount of helium atoms dissolved in the glass is defined as
+a function of temperature, Eq.~\eqref{eq:s4-7a} evaluated at the old and new
+temperatures (\emph{T\textsubscript{1}} and \emph{T\textsubscript{2}}
+respectively) can be substituted into Eq.~\eqref{eq:s7-1b} to estimate the
+relative measured helium excess caused by thermal perturbation as a
+function of time. Considering that the predicted value of
+\emph{n\textsubscript{0}} is proportional to the measured amount of
+helium in a permeation step according to Eq.~\eqref{eq:eqn1}, the \emph{Relative
+Disequilibrium Excess} defined below applies to both the measured value
+of helium atoms \emph{m} and to the calculated value of helium within
+the ampoule at the beginning of the permeation step
+\emph{n\textsubscript{0}}.
+
+\[
+Relative\ Disequilibrium\ Excess = \frac{\left( \frac{n_{0}}{\left( \frac{1}{HT_{1}S_{1}} + 1 \right)} - \ \frac{n_{0}}{\left( \frac{1}{HT_{2}S_{2}} + 1 \right)} \right)}{n_{0}{(1 - e}^{- KGRT_{2}t})}
+\]
+
+Upon factoring and simplifying, \emph{n\textsubscript{0}} cancels out,
+removing the dependence of this error estimation on knowledge of the
+true initial helium content of the ampoule.
+
+\begin{equation}
+Relative\ Disequilibrium\ Excess = \frac{\left( \frac{1}{\left( \frac{1}{HT_{1}S_{1}} + 1 \right)} - \ \frac{1}{\left( \frac{1}{HT_{2}S_{2}} + 1 \right)} \right)}{{1 - e}^{- KGRT_{2}t}}
+\label{eq:s7-2}
+\end{equation}
+
+The relative excess helium that would be measured in a permeation step
+following a high-temperature experimental step is plotted in percent in
+Fig.~\ref{fig:thermal-perturbation-error} as a function of permeation time according to Eq.~\eqref{eq:s7-2} for
+several initial experimental temperatures and permeation temperatures.
+This relative error decreases as the new equilibrium concentration
+profile is established, approaching the permeation behavior expected
+from Eq.~\eqref{eq:eqn1}. These excesses assume an instantaneous transition from
+experimental step to permeation step and therefore are upper bounds.
+These excesses are dependent also on the ampoule dimension; in Fig.~\ref{fig:thermal-perturbation-error}, a
+standard ampoule (\emph{a} = 0.03 cm, \emph{b} = 0.05 cm) is assumed.
+Thicker ampoules will produce higher magnitudes of excesses (or
+deficits) for the same heating schedules. Within the temperature range
+0-300°C the maximum excess helium that could be introduced into a
+permeation step measurement due to diffusive disequilibrium would be for
+an 80°C permeation step following an experimental step at 300°C. Even
+for those circumstances, the maximum relative error would be $\leq$2\% for a
+3-hour permeation step (Fig.~\ref{fig:thermal-perturbation-error}). It is important to recognize, however,
+that this error estimation does not account for non-instantaneous
+cooling, although fast thermal response for similar experiments and the
+exponential temperature dependence of diffusion and permeation typically
+permit experimentalists to neglect fast but non-instantaneous heating
+and cooling \citep{farley1999}. These calculations show that, at least for
+ampoules of similar dimensions to those sealed at Caltech, the error in
+Eq.~\eqref{eq:eqn2} resulting from violating the diffusive steady state
+assumption of Eq.~\eqref{eq:s1-7} is small.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{Thermal_Perturbation_Error.pdf}
+\caption{When changing temperatures, the inner boundary condition and diffusive steady state concentration profile of helium within a silica glass ampoule change, so the amount permeated will be different from the expected permeate amount of Eq.~\eqref{eq:eqn2} that assumes a diffusive steady state profile has already been established at the new temperature. This difference is calculated here as the difference of helium dissolved within the tube at the starting and final temperature (neglecting the change in helium abundance in the gas phase) and is normalized to the expected permeation amount at the final temperature as a function of time for several temperature jumps, using Eq.~\eqref{eq:s4-6} and solubilities of 4He from \citet{swets1961} for a standard ampoule (with inner and outer radii of \emph{a} = 300 microns and \emph{b} = 500 microns respectively). Generally, larger temperature jumps produce larger relative errors. For a standard ampoule, the error of Eq.~\eqref{eq:eqn2} will be less than 2\% for any permeation step 3 hours or longer following a 300°C experimental step.}
+\label{fig:thermal-perturbation-error}
+\end{figure}
+
+For cases where more precise determinations of \(n_{0}\) and \(n_{t}\)
+from the application of Eq.~\eqref{eq:eqn2} on a permeation step are desired, it is
+possible to experimentally ensure compliance with the diffusive steady
+state concentration assumption. For example, the ampoule could be
+programmed to be held at the target permeation temperature (for example,
+80°C) immediately after a high temperature experimental step instead of
+completely cooling (to \textasciitilde25°C) while evolved gasses are
+processed and helium is purified from the high temperature experimental
+step. To do this, one must be aware of the timescale necessary to reach
+diffusive equilibrium at a given temperature. At Caltech, helium
+purification after heating steps typically takes 30 minutes, which is
+only enough time to establish steady state concentration profiles for
+ampoules \textless175 µm thick at 100°C (main text Fig.~\ref{fig:diffusive-profile-reequilibration-time}). For larger ampoules
+or cooler permeation step temperatures, an additional delay may need to
+be programmed in order to experimentally enforce the diffusive steady
+state assumption. Alternatively, expected permeation fractions for any
+arbitrary thermal schedule can be numerically solved, provided that the
+solubility and diffusivity are each known for the experimental
+temperature range.
+
+The Fourier number can be used to determine the time necessary to
+establish diffusive equilibrium of the helium concentration profile
+within the ampoule. The Fourier number is a dimensionless number that
+describes the extent of diffusive equilibration or homogenization of a
+system by heat or mass transfer given a characteristic length scale and
+time \citep{ostrogorskyglicksman2015}. It is the time divided by the
+diffusive timescale:
+
+\begin{equation}
+Fo = \frac{Dt}{L^{2}} = \frac{t}{\tau}
+\label{eq:s7-3}
+\end{equation}
+
+Where \emph{t} is time and \emph{L} is the diffusive length scale. For
+the purposes of helium permeation through silica glass ampoules,
+\emph{L} is the glass thickness of the ampoule. When \emph{Fo
+\textgreater{} 1}, a system is generally said to be effectively
+homogenized or at equilibrium with respect to diffusion, but it is
+somewhat arbitrary to define a specific Fourier number at which one can
+confidently say that diffusion has effectively re-established an
+equilibrium concentration profile \citep{ostrogorskyglicksman2015}. To
+test the value of \emph{Fo = 1} as the relevant minimum value, we use the
+numerical diffusive permeation model described above for a
+characteristic ampoule where a = 300 µm and b = 500 µm. Dirichlet
+boundary conditions are imposed at the ampoule's inner and outer
+boundaries, where r = a and r = b, holding \(C_{r = b}^{Glass} = 0\) and
+\(C_{r = a}^{Glass} = {\ C_{He}^{Gas} \bullet \ \frac{C_{He}^{Glass}}{C_{He}^{Gas}}}_{EQM}\)as
+calculated in Eq.~\eqref{eq:s5-2} and plotted in Fig.~\ref{fig:helium-glass-gas-partitioning}. For the analysis of the
+Fourier number during the approach to the diffusive equilibrium
+concentration profile in Figs.~\ref{fig:fdm-profile-evolution-300-to-100c} and \ref{fig:fdm-profile-evolution-zero-initial-condition}, \(C_{He}^{Gas}\ \)is
+arbitrary and held constant, so plotted concentrations are normalized to
+\(C_{He}^{Gas}.\ \)A steady state concentration profile (Eq.~\eqref{eq:s4-4}) is
+taken as the initial condition. The absolute concentration is
+technically dependent on the ampoule height, but this dependence on
+\emph{h} vanishes when normalizing the glass concentration to the gas
+concentration. The results of these calculations are plotted in Figs.~\ref{fig:fdm-profile-evolution-300-to-100c}
+and \ref{fig:fdm-profile-evolution-zero-initial-condition}, where Fig.~\ref{fig:fdm-profile-evolution-300-to-100c} shows the transition from an equilibrium
+concentration profile at 300°C to 100°C, and Fig.~\ref{fig:fdm-profile-evolution-zero-initial-condition} shows the more
+dramatic establishment of an equilibrium concentration profile at 100°C
+from an initial helium concentration of 0 throughout, such as could be
+expected after suddenly introducing helium into an ampoule that
+previously contained no helium. Both figures show that an equilibrium
+concentration profile is well-established for Fourier number \emph{Fo =
+1,} and Fig.~\ref{fig:fdm-profile-evolution-300-to-100c} in particular shows that the difference in concentration
+profiles is small and nearly reestablished even when the Fourier number
+\emph{Fo = 0.1.} We conclude that the timescale associated with \emph{Fo
+= 1} is the relevant time needed to hold the ampoule to ensure that Eq.~\eqref{eq:eqn2}
+strictly applies without errors due to thermally-forced disequilibrium
+in the helium concentration profile. The diffusive timescales associated
+with \emph{Fo = 1} for permeability values taken from \citet{swets1961}
+are plotted in main text Fig.~\ref{fig:diffusive-profile-reequilibration-time} for a few different thickness values (\emph{L}) as a
+function of temperature for typical permeation step temperatures used in
+this study.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{FDM_diff_prof_300C_IC.pdf}
+\caption{A numerical simulation of the evolution of 4He concentration profiles in silica glass ampoules from steady state at 300°C to steady state at 100°C. The steady state concentration profile is only subtly different for different temperatures. The diffusive timescale \(\tau = L^{2}/D\) corresponding to a Fourier number of 1 is effectively sufficient to reestablish a steady state concentration profile at the new temperature. The concentration is arbitrary and is normalized to the concentration of helium in the gas phase of the ampoule, which is held constant for this simulation (therefore the ideal steady state of Eq.~\eqref{eq:4} applies regardless of the glass/gas volume ratio). The inner boundary condition is determined as a function of temperature using the values of Eq.~\eqref{eq:s5-2}, plotted in Fig.~\ref{fig:helium-glass-gas-partitioning}. The ampoule simulated here is a standard ampoule with an outer radius of 500 microns and inner radius of 300 microns.}
+\label{fig:fdm-profile-evolution-300-to-100c}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{FDM_diff_prof_zero_IC.pdf}
+\caption{Similar to Fig.~\ref{fig:fdm-profile-evolution-300-to-100c}, but starting from a helium concentration of 0 throughout the ampoule. This is most useful to visualize the incomplete establishment of a steady state concentration profile for timescales corresponding to Fourier numbers up to 0.25. When the Fourier number is 1, the concentration profile is in diffusive steady state.}
+\label{fig:fdm-profile-evolution-zero-initial-condition}
+\end{figure}
+
+\section{Estimating permeation lag uncertainty for uncorrected, long
+heating
+steps}\label{estimate-permeation-lag-uncertainty-for-uncorrected-long-heating-steps}
+
+The uncertainty of the helium evolution of the encapsulated natural
+material during a heating step (\(\omega\)) due to permeation lag
+correction can be estimated by calculating the maximum possible helium
+residing in the tube between steps, i.e. for the values for
+\emph{n\textsubscript{0, }}and \emph{n\textsubscript{t}}: \(n_{0}^{UB}\)
+and \(n_{t}^{UB}.\ \)From the permeation lag equation (main text Eq.~\eqref{eq:permlag}), upper bound estimates for
+\emph{n\textsubscript{0, }}and \emph{n\textsubscript{t}} bound the
+encapsulated material contribution \(\omega\) within:
+
+\begin{equation}
+m - n_{0}^{UB} \leq \omega \leq m + n_{t}^{UB}
+\label{eq:s6-1}
+\end{equation}
+
+Upper bounds for \emph{n\textsubscript{t}} for a given high temperature
+experimental step can be calculated if step heats are long enough to
+assume steady state permeation, assuming G and K are known or can be
+conservatively estimated. To proceed, one must make the generally
+conservative assumption that the production rate of helium within the
+ampoule due to degassing of the encapsulated natural sample
+(\(\Omega = \frac{\omega}{t}\)) is constant over time at a given
+temperature. In reality, \(\Omega\) will decrease over time for helium
+loss governed by first order processes \citep{yakubovich2010,wilson1973} or diffusion (except for the case of initially
+inhomogeneous distributions, the memory of which is often erased early
+in any diffusion experiment: \citealp{shuster2004}). Eq.~\eqref{eq:s6-3}, given
+below, shows that the amount of helium trapped in the tube (\(n_{t}\))
+is proportional to the rate of helium outgassing from the natural
+encapsulated sample (\(\Omega\)), so the approximation that this rate is
+constant will overestimate the amount of unanalyzed helium remaining in
+the ampoule after a high temperature experimental step. The rate of
+helium degassing over time will decrease for degassing controlled by
+second-order volume diffusion \emph{except} for the minor case of the
+alpha-ejection effect at low He-release fractions \citep{farley1996,ketcham2011} or for the more serious effects of radiation
+damage annealing \citep{goldsmith2020} and mineral decomposition
+\citep{farley2024}. In any case, sequential isothermal steps
+immediately reveal when \(\frac{\omega}{t}\) increases over time.
+
+A new first order differential equation like Eq.~\eqref{eq:eqn1} is formulated, now
+incorporating a constant source term (\(\Omega\)) to conservatively
+approximate the helium influx into the ampoule from the degassing
+natural sample.
+
+\begin{equation}
+\frac{dn}{dt} = \Omega - \lambda n
+\label{eq:s6-2}
+\end{equation}
+
+Where \(\Omega = \frac{\omega}{t}\) and \(\lambda = KGRT\). Immediately,
+the steady state quantity of helium atoms (\(n_{ss}\)) present in the
+ampoule can be found by solving Eq.~\eqref{eq:s6-2} for the steady state condition
+where \(\frac{dn}{dt} = 0\).
+
+\begin{equation}
+n_{ss} = \frac{\Omega}{\lambda} = \frac{\omega}{\lambda t}
+\label{eq:s6-3}
+\end{equation}
+
+Additionally, the helium concentration within the ampoule during the
+approach to the steady state concentration can be solved for by
+integrating Eq.~\eqref{eq:s6-2} with respect to \emph{t}. First, the integrating
+factor for Eq.~\eqref{eq:s6-2} is identified: \(I = e^{\lambda t}\), which is
+multiplied to both sides to yield Eq.~\eqref{eq:s6-4}.
+
+\begin{equation}
+e^{\lambda t}\frac{dn}{dt} + e^{\lambda t}\lambda n = e^{\lambda t}\Omega\
+\label{eq:s6-4}
+\end{equation}
+
+Then both sides are integrated with respect to \emph{t:}
+
+\[\int_{}^{}\left( e^{\lambda t}\frac{dn}{dt} + e^{\lambda t}\lambda n \right)dt = \int_{}^{}{e^{\lambda t}\Omega}dt\]
+
+Because
+\({\frac{d}{dt}(ne^{\lambda t}) = e}^{\lambda t}\frac{dn}{dt} + e^{\lambda t}\lambda n\)
+by the product rule Eq.~\eqref{eq:s6-4} reduces to:
+
+\begin{equation}
+n_{t}e^{\lambda t} = \frac{\Omega}{\lambda}e^{\lambda t} + C
+\label{eq:s6-5}
+\end{equation}
+
+Where \emph{C} is an unknown constant introduced by indefinite
+integration. This expression becomes more intuitive when both sides are
+divided by the integration factor and by substituting the steady state
+concentration from Eq.~\eqref{eq:s6-3}.
+
+\begin{equation}
+n_{t} = n_{ss} + Ce^{- \lambda t}
+\label{eq:s6-6}
+\end{equation}
+
+The integration constant \emph{C} can be solved by enforcing the
+condition that \(n_{t}(t = 0) = n_{0}\), leading to:
+
+\begin{equation}
+n_{0} = n_{ss} + C
+\label{eq:s6-7}
+\end{equation}
+
+Solving Eq.~\eqref{eq:s6-7} for \emph{C} and substituting into Eq.~\eqref{eq:s6-6} yields
+Eq.~\eqref{eq:s6-8}. Now an inequality is assigned to the equation to reflect the
+initial assumption that the isothermal helium outgassing rate
+(\(\Omega\)) is constant \emph{or decreasing}.
+
+\begin{equation}
+n_{t} \leq \ n_{ss} + \left( n_{0} - n_{ss} \right)e^{- \lambda t}
+\label{eq:s6-8}
+\end{equation}
+
+For long timescales (i.e. when \(e^{- \lambda t} \approx 0\)), Eq.~\eqref{eq:s6-8}
+reduces to \(n_{t} \leq \ n_{ss}\). This is effectively true for steps
+long enough such that \(t \geq \frac{5}{\lambda}\), for which
+\(e^{- \lambda t} \leq 0.007.\) It is advisable to only consider the
+Approximation with Uncertainty method for steps of sufficiently long duration such that
+\(t \geq \frac{5}{\lambda}\) so that the estimation for \(n_{t}\) can be
+reduced to simply the steady state value and not be dependent upon the
+estimation for \(n_{0}\) or its uncertainties. The timescales required
+to reach permeation equilibrium are plotted as a function of temperature
+in Fig.~\ref{fig:permeative-steady-state-onset-time} below for some select values of \emph{G}, the geometric factor.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{EQM_Timescales_Permeation.pdf}
+\caption{The upper limit of helium contents within the ampoule between high temperature experimental steps can be reasonably estimated without further measurement, provided permeative equilibrium has been reached. For typical ampoules with geometric factors between 3000 and 4000 cm\textsuperscript{-2}, this criterion is generally met for steps longer than 24 hours, or within 5 hours at 350\textdegree C or higher.}
+\label{fig:permeative-steady-state-onset-time}
+\end{figure}
+
+To estimate the upper bound on the permeation lag (\(n_{t}^{UB}\)), one
+must consider the circumstances that would produce the highest possible
+value for \(n_{t}\). In addition, the constraint that
+\(t \geq \frac{5}{\lambda}\) is enforced so that previous heating steps
+are not significant, simplifying the problem significantly. Because
+\(n_{t}\) scales with $\omega$ by Eq.~\eqref{eq:s6-3}, the upper bound estimate
+\(n_{t}^{UB}\) must assume the upper bound estimate for $\omega$, which is
+given in Eq.~\eqref{eq:s6-1} as \({m + n}_{t}^{UB}\). Substituting
+\(\omega^{UB} = {m + n}_{t}^{UB}\) into Eq.~\eqref{eq:s6-3} to express
+\(n_{t}^{UB}\) in terms of the measured value \emph{m}:
+
+\[
+n_{t}^{UB} = n_{ss}(\omega^{UB} = m + n_{t}^{UB}) = \frac{m + n_{t}^{UB}}{\lambda t}
+\]
+
+Solving for \(n_{t}^{UB}\) yields Eq.~\eqref{eq:6}:
+
+\begin{equation}
+n_{t}^{UB} = \frac{m}{\lambda t - 1}
+\label{eq:6}
+\end{equation}
+
+The upper bound amount of helium-4 within the ampoule normalized to the
+measured value in percent at steady state permeation is plotted in
+main text Fig.~\ref{fig:long-step-relative-uncertainty} using Eq.~\eqref{eq:6}
+\(\left( \frac{n_{t}^{UB}}{m} = \frac{1}{\lambda t - 1} \right)\),
+assuming a standard tube where G = 4350.26 cm\textsuperscript{-2} and
+the permeability values given in \citet{swets1961}. Main text Fig.~\ref{fig:long-step-relative-uncertainty} shows
+that, in order to push this uncertainty to be less than 5\%, even very
+hot steps require long step durations. For a 5\% uncertainty using this
+method, a 10-hour step duration is required even at 400°C. Much longer
+durations are required for the same precision at lower temperatures: at
+250°C, a step duration of 35 hours is required to push the uncertainty
+beneath 5\%.
+
+\section{Comparison to Literature Permeability Values}\label{comparison-to-literature-permeability-values}
+
+Predicted and measured fractional yields for all permeation steps in ampoules besides the encapsulated water experiment agree well (within 1$\sigma$: Figs.~\ref{fig:he4-error-histogram}, \ref{fig:he3-error-histogram}) with the predictive equations presented in this work and with the permeabilities reported by \citet{swets1961} and \citet{jones1953} for all studied temperatures (24-300°C; Fig.~\ref{fig:permeability-literature-comparison}) and step fractional yields (up to \textasciitilde80\%). One outlier measurement on the empty tube experiment on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer was excluded from Figs.~\ref{fig:he4-error-histogram} and \ref{fig:he3-error-histogram}.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{PermeabilityMeasurements.pdf}
+\caption{Helium permeabilities measured in silica glass ampoules at Caltech on a quadrupole mass spectrometer (4He only) and on a Helix-MC-Plus\textsuperscript{10K} (both 3He and 4He) multi-collector mass spectrometer are compared to literature values. Permeabilities of 3He and 4He are very similar, but 3He permeates slightly faster. The final measurement on the Helix-MC-Plus\textsuperscript{10K} mass spectrometer is an outlier and is excluded from the plot, as it is most sensitive to the value of the total yield remaining in the ampoule. These experiments on empty tubes at Caltech show excellent agreement with the literature values with allowance for some scatter. This result shows that existing understanding of helium permeability in glass can be reasonably leveraged for use in helium step heats of silica glass encapsulated geological samples. Literature 4He permeabilities are taken from \citet{swets1961}; whereas 3He permeabilities from the literature are calculated by multiplying the 3He/4He permeability ratios of \citet{jones1953} with the 4He permeabilities of \citet{swets1961}.}
+\label{fig:permeability-literature-comparison}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{Histograms3He.pdf}
+\caption{Similar to Fig.~\ref{fig:he4-error-histogram}, but with 3He permeabilities taken from \citet{jones1953} and \citet{swets1961}. Shaded regions behind the histograms correspond to 1 and 2 sigma ($\sigma$) from the average relative difference between the predicted and measured values. The 3He permeation model and literature permeability values apply well to empty and sulfur-filled ampoules, and such models can be used to reliably recover 3He contents of permeating ampoules for use in permeation lag corrections. On the other hand, measured and predicted values of 3He $n_0$ for water-filled ampoules are well resolved beyond 2$\sigma$, suggesting that their permeability differs strongly from the literature values. Internal reproducibilities (1$\sigma$) of a gas standard repeatedly analyzed during these experiments were better than 3\% for 3He, requiring that much of the scatter in these data be related to factors outside of analytical precision such as long/inconsistent ramp times during heating or uncertainties or rounding of heating times.}
+\label{fig:he3-error-histogram}
+\end{figure}
+
+Permeation ratios for 3He and 4He measured in the empty tube experiment on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer are plotted in Fig.~\ref{fig:relative-permeability-3he-4he}. These data present significant scatter, but generally agree with the reported results of \citet{jones1953}, except for measurements at room temperature, which cluster tightly at a permeation ratio of 1:1 for the two isotopes. Additionally, fields corresponding to the ratios of apparent permeabilities for the water-filled and sulfur-filled experiments are plotted for the temperature ranges of those experiments. Results for those experiments are plotted as fields because each step integrated permeation behavior over a complex (non-isothermal) cooling history. These experiments also agree with the results of \citet{jones1953} and the empty ampoule experiment. The qualitative result of \citet{jones1953} that silica glass is only slightly more permeable for 3He than 4He is supported by these data, which are in marked contrast to the reported extreme differences in 3He and 4He diffusivity in silica glass of \citet{mcmurtry2019}, who report instantaneous isotopic fractionations up to a factor of 1000.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{Relative_Permeabilities.pdf}
+\caption{Ratios of calculated permeabilities from step heat experiments on silica glass ampoules on the Helix-MC-Plus\textsuperscript{10K} mass spectrometer at Caltech. The last measurement on the empty tube experiment is an outlier and was excluded from the plot. Experiments on encapsulated water and encapsulated sulfur were allowed to cool before isotopic measurements. Because of slow cooling rates, simple corrections could not be applied to these two experiments, which effectively queried permeabilities at a range of temperatures within a single step. Therefore, the ratios of their apparent permeabilities are plotted as a field with 2$\sigma$ standard deviation across the experimental temperature range. These three experiments show general, albeit imprecise, agreement to the results of \citet{jones1953}, except for the measurements at room temperature. \citet{jones1953} was likely able to measure the relative permeabilities of 4He and 3He with much higher precision because his experimental vessel was charged with 3He at a partial pressure of around 0.5 atmospheres, over one billion times higher than the 3He partial pressure within the fused silica ampoule used in this work. Interestingly, three room-temperature measurements of helium permeation of an empty tube at Caltech yielded essentially identical permeability of 3He and 4He.}
+\label{fig:relative-permeability-3he-4he}
+\end{figure}
+
+\section{Additional Analytical Corrections for the Empty Ampoule Calibration Experiments}\label{additional-analytical-corrections}
+
+\subsection{Pump-Out and Gas-Preparation Corrections for the Atmosphere-Equilibrated Empty Ampoule}\label{pump-out-and-gas-preparation-corrections}
+
+Using the helium permeability values of \citet{swets1961} for silica glass, an ampoule with a geometric factor (\emph{G}) of 6000 cm\textsuperscript{-2} would permeate 0.2‰ of its helium in 1 minute at 26°C (Eq.~\eqref{eq:permsol}), which is negligible for the scope of this work. The atmosphere-equilibrated empty ampoule with a geometric factor (\emph{G}) of \textasciitilde4785 cm\textsuperscript{-2} would permeate 2.8‰ of its helium in its 15-minute pumping time between steps. For that experiment only, helium loss during pumping is accounted for by applying the permeation relationship of Eq.~\eqref{eq:permsol} (\(n_{0} = n_{t}/(1 - \,^{He}F)\)) to solve for \emph{n\textsubscript{0}}, the amount of helium in the ampoule before pump-out, from \emph{n\textsubscript{t}}, the amount remaining after pumping with T = 25°C and t = 15 minutes. A permeability coefficient (\emph{K}) for helium in silica glass had to be assumed in order to apply this correction, so the value of \(1.54 \times 10^{10}\) \(\frac{atoms}{s \times cm \times atm}\) at 25°C given by the Arrhenius law reported by \citet{swets1961} was used. The validity of this choice is supported by the data; the average calculated permeability at room temperature for this experiment after correcting for helium lost during the 15-minute pump out is also \(1.54 \times 10^{10}\) \(\frac{atoms}{s \times cm \times atm}\).
+
+For that experiment only, a correction was also applied to the high temperature steps because they were heated for short durations (45 minutes for all but one heated step), so that the permeation of the ampoule at room temperature during gas cryofocusing represented a significant portion of the step's yield. This was similarly corrected by calculating the expected fractional yield at room temperature during the gas preparation time, which is the step's total time minus the pump out time and the heated time, (29-31 minutes for all heated steps). For that correction, the permeation relationship of Eq.~\eqref{eq:permsol} (\(n_{0} = n_{t}/(1 - \,^{He}F)\)) is applied again to solve for the unknown \emph{n\textsubscript{0}}, the amount of helium within the ampoule immediately after the completion of the heated step, from \emph{n\textsubscript{t}}, the amount of helium within the ampoule when the gas is inlet into the mass spectrometer about 30 minutes later after spiking and helium purification. This cooling and gas preparation correction is not applied to the room temperature measurements for which the temperature remained constant during gas preparation.
+
+\subsection{Anomalous Signal Recalculation for the Tank Helium-Soaked Empty Ampoule}\label{anomalous-signal-recalculation}
+
+The last high temperature step of the empty ampoule experiment on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer had an unusual and non-linear signal evolution at the beginning of the measurement for both 3He and 4He. For this measurement, 4He was recalculated using a linear regression on the last three of six measurement cycles with an R\textsuperscript{2} of 0.985 to regress to the 4He content at time 0. Typically, the signal evolution for a measurement like this would have a negative slope because the helium in the mass spectrometer is consumed as it is ionized and measured, but the slope for this measurement was positive. 3He from this measurement was calculated based on the recalculated 4He and an assumed isotope ratio for the measurement of 0.07 Ra. Three more measurements were taken over the next few days to ensure complete degassing of the ampoule. Two of these measurements yielded helium above blank, but were small compared to the final high temperature step. The yields of these steps were all considered in the calculation of the experiment's total yield.
+
+\subsection{Independent Verification of the Encapsulated Durango Apatite Mass}\label{durango-mass-verification}
+
+The total yield for the encapsulated Durango apatite experiment (main text, \S\ref{analytical-methods}) is estimated from the precisely-measured mass of the encapsulated apatite (3.18 mg) and a helium concentration of 194.2 nccSTP/mg \citep{farley2000}. This concentration is independently supported by the measurement of 8 different \textgreater0.5 mg aliquots of the same Durango apatite sample in-lab, which yield a concentration of 194 ± 9 nccSTP/mg.
+
+\section{Sample Preparation and SEM Imaging of Buffered and Decomposed Sulfides}\label{sem-imaging-of-buffered-and-decomposed-sulfides}
+
+Samples of pyrite, arsenopyrite, and marcasite were crushed under ethanol, and grains larger than ~100 µm were dried for each mineral and subdivided into four populations: one control, and three for heat treatment in atmosphere, ultra-high vacuum, or encapsulated within a glass ampoule along with an excess of fused sulfur (or realgar: As3S3 for arsenopyrite). The encapsulated populations were loaded into 3 mm inner diameter, 4 mm outer diameter silica glass tubes with fused bottoms and open tops, along with sufficient fused sulfur or crystalline realgar to guarantee vapor saturation at 400°C. These tubes were interfaced with a vacuum line and were pumped to 60 millitorr before the tops of the tubes were sealed. 
+
+The open-air populations for each mineral were carefully placed on glass microscope slides within borosilicate petri dishes and the encapsulated populations were submerged in pure quartz sand within capped, deep petri dishes. These petri dishes containing the encapsulated and open-air populations of sulfides were placed on a temperature controlling hot plate under a fume hood and were held at 400°C for 8-11 hours, at which point the hot plate was turned off and the samples were left to cool. 
+
+The ultra-high vacuum population for pyrite and marcasite were loaded into copper packets and mounted to a type K thermocouple within a high vacuum line. A silver wool based sulfur trap was installed between the samples and the turbo pump. The high-vacuum line was closed and pumped to <10-5 torr. A Watlow temperature controller held the samples at 400°C for 4.5 hours with a projector lamp illuminating the sample through a sapphire window. This procedure was repeated for each mineral sample of pyrite and marcasite. The arsenopyrite sample was not heated in vacuum to avoid contaminating the line with arsenic. To simulate thermal decomposition in an anoxic environment, a population of arsenopyrites was thermally treated in a large glass capsule similarly to the encapsulated populations, but without a realgar “buffer”.
+
+The control and thermally treated samples were mounted to carbon tape and carbon coated, then were loaded in the Zeiss 1550 Scanning Electron Microscope (SEM) at Caltech. Images of the surface topography of each population were taken using the secondary electron detector and an Electron High Tension (EHT) of 10 kV at a working distance of 10-15 mm. 
+
+\section{Supplementary Data Tables}\label{supplementary-data-tables}
+
+The following tables present the reduced step-by-step helium permeation data underlying the empty-tube, encapsulated-water, and encapsulated-sulfur calibration experiments summarized in the ampoule dimensions table of the main text, Table~\ref{tab:ampoule-dimensions} and the permeability/isotope-ratio comparison figures above. \emph{m} is the measured helium abundance of the step; \(n_{0}\) and \(n_{t}\) are the helium contents of the ampoule at the beginning and end of the step (Eq.~\eqref{eq:eqn2}); \(n_t/n_0\) predicted and measured are the fractional yields expected from the permeability of \citet{swets1961} (and, for 3He, the isotope ratios of \citet{jones1953}) and as measured, respectively.
+
+% [t] (not [H]): an earlier version of this used [H] (float package) to
+% keep this figure from floating past the following table's \tablecaption
+% (non-floating, typeset inline) -- with a plain floating placement like
+% [t], LaTeX is free to delay the figure past that caption, which had
+% visually separated the caption from its table. But [H] only guarantees
+% *position*, not that the figure *fits* the remaining space on the
+% current page -- it forced this figure onto an already-crowded page and
+% ran it ~4.2in off the bottom margin (confirmed via an "Overfull \vbox
+% (303.37463pt too high)" warning in the dissertation compile log).
+% \FloatBarrier (placeins package, loaded in dissertation_preamble.tex /
+% Chapter1/Writing/SI.tex) gets the same "don't drift past this point"
+% guarantee as [H] without that fitting problem: LaTeX's normal placement
+% algorithm still checks whether the float fits before placing it (and
+% pushes it to a fresh page if not), while the barrier immediately after
+% still forces it to resolve before the table below.
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{PredictingPermeation_error_vs_fraction.pdf}
+\caption{Helium measurements (\emph{m}) of a permeating ampoule are related to the initial helium contents of the ampoule (\(n_{0}\)) by Eq.~\eqref{eq:s1-7}, using permeability values taken from \citet{swets1961} and \citet{jones1953} (for 3He only). The \(n_{0}^{P}\) variable is the predicted value of \(n_{0}\), the true value. For the empty ampoules, except for 3 measurements on the Helix-MC-Plus\textsuperscript{10K}, predicted values (\(n_{0}^{P}\)) are calculated using Eq.~\eqref{eq:eqn2} (with some corrections applied to the quadrupole experiment: see main text for details). For the encapsulated sulfur and water ampoules, as well as 3 measurements of the blank ampoule on the Helix-MC-Plus\textsuperscript{10K}, predicted values (\(n_{0}^{P}\)) were determined by forward modeling diffusion and permeation on ampoules as they were held at high temperature and subsequently allowed to cool (see main text for details). This plot shows that the predicted values are correct to within \textasciitilde10\% for empty and sulfur-filled ampoules regardless of temperature or extent of permeation, whereas \(n_{0}^{P}\) values for water-filled ampoules are systematically high. The final Helix-MC-Plus\textsuperscript{10K} measurement on the empty ampoule yields an outlier \(n_{0}^{P}\) that was \textasciitilde80\% high --- this measurement is not plotted here.}
+\label{fig:predicted-vs-measured-permeation}
+\end{figure}
+\FloatBarrier
+
+% Kept in portrait (no \chplandscape) -- per feedback, the SI tables
+% should all fit vertically like the paper version, not be rotated to
+% landscape. The "$n_t/n_0$ predicted" column is dropped here (on top of
+% the already-removed "ln(K) predicted") at the user's request, since it
+% is trivial to derive for this specific ampoule/experiment but not for
+% the others -- this table only. Combined with the standard
+% \AtBeginEnvironment{supertabular}{...\scriptsize} hook (dissertation_
+% preamble.tex), the resulting 9 columns fit the portrait 5.5in width
+% without needing the Z{...}-column/tiny-font treatment used on the
+% wider tables below.
+\begin{small}
+\setlength{\tabcolsep}{2pt}
+\tablecaption{Distilled helium permeation data for the empty silica glass ampoule equilibrated with atmosphere, measured by isotope dilution on the Pfeiffer Prisma QMS 200 quadrupole mass spectrometer (``Empty Tube, Pfeiffer Quad'' in the ampoule dimensions table of the main text, Table~\ref{tab:ampoule-dimensions}). $n_0$ and $n_t$ are the initial and final helium contents of the ampoule for each step (Eq.~\eqref{eq:eqn2}); $n_t$ ``before cooling'' is only populated for high-temperature experimental steps, for which the room-temperature pump-out/cool-down correction discussed in the main text is applied to obtain the ``after cooling'' value used to calculate permeability. ln($K$) values are the natural log of the permeability coefficient in $\frac{atoms}{s \times cm \times atm}$.}
+\label{tab:s-emptytube-quad}
+\tablefirsthead{\tophline
+Temp & Time & \emph{m} 4He & $n_{0}$ 4He & $n_{t}$ 4He\newline (before cooling) & $n_{t}$ 4He\newline (after cooling) & $n_t/n_0$\newline measured & 10000/\emph{T} & ln(\emph{K})\newline measured \\
+(\textdegree{}C) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) &  & (K$^{-1}$) &  \\
+\middlehline}
+% This table previously had no \tablehead of its own -- \tablehead is a
+% single GLOBAL macro in the supertabular package, not scoped per table,
+% so without a local redefinition here, any page break within this table
+% was silently reusing whichever OTHER table's \tablehead happened to be
+% defined most recently (in this case, the apatite step-heat table's
+% "...Uncorrected ln(D/a^2)" header from chapter1_body.tex) instead of
+% this table's own column headers. This is a real correctness bug fixed
+% here, not just the width/overflow issue the surrounding edits address.
+\tablehead{\tophline
+Temp & Time & \emph{m} 4He & $n_{0}$ 4He & $n_{t}$ 4He\newline (before cooling) & $n_{t}$ 4He\newline (after cooling) & $n_t/n_0$\newline measured & 10000/\emph{T} & ln(\emph{K})\newline measured \\
+(\textdegree{}C) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) &  & (K$^{-1}$) &  \\
+\middlehline}
+\tabletail{\bottomhline}
+\tablelasttail{\bottomhline}
+\begin{supertabular}{p{1.1cm}p{1.1cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}}
+25 & 77 & 0.1877 & 12.87 &  & 12.68 & 0.9854 & 33.56 & 23.52 \\
+25 & 77 & 0.1793 & 12.64 &  & 12.47 & 0.9858 & 33.56 & 23.49 \\
+50 & 45 & 0.2902 & 12.43 & 12.21 & 12.14 & 0.9819 & 30.96 & 24.19 \\
+24.8 & 74 & 0.1593 & 12.11 &  & 11.95 & 0.9868 & 33.58 & 23.46 \\
+100 & 45 & 0.7129 & 11.92 & 11.26 & 11.2 & 0.9452 & 26.81 & 25.18 \\
+24.7 & 74 & 0.145 & 11.17 &  & 11.03 & 0.9870 & 33.59 & 23.44 \\
+60 & 45 & 0.3094 & 11 & 10.75 & 10.69 & 0.9771 & 30.03 & 24.40 \\
+70 & 45 & 0.3619 & 10.66 & 10.35 & 10.3 & 0.9712 & 29.15 & 24.60 \\
+80 & 45 & 0.4225 & 10.27 & 9.902 & 9.849 & 0.9640 & 28.33 & 24.80 \\
+24.7 & 74 & 0.1272 & 9.823 &  & 9.696 & 0.9870 & 33.59 & 23.44 \\
+24.8 & 74 & 0.1252 & 9.67 &  & 9.545 & 0.9871 & 33.58 & 23.44 \\
+24.8 & 75 & 0.1238 & 9.519 &  & 9.395 & 0.9870 & 33.58 & 23.43 \\
+70 & 45 & 0.3209 & 9.37 & 9.098 & 9.049 & 0.9709 & 29.15 & 24.61 \\
+60 & 45 & 0.2534 & 9.025 & 8.82 & 8.771 & 0.9773 & 30.03 & 24.39 \\
+24.8 & 74 & 0.113 & 8.748 &  & 8.635 & 0.9871 & 33.58 & 23.44 \\
+90 & 45 & 0.4231 & 8.611 & 8.231 & 8.188 & 0.9558 & 27.55 & 24.98 \\
+119.8 & 45 & 0.6625 & 8.166 & 7.543 & 7.504 & 0.9236 & 25.46 & 25.47 \\
+24.8 & 74 & 0.09578 & 7.484 &  & 7.388 & 0.9872 & 33.58 & 23.43 \\
+150 & 45 & 0.9371 & 7.368 & 6.465 & 6.431 & 0.8775 & 23.64 & 25.89 \\
+25 & 581 & 0.6179 & 6.414 &  & 5.796 & 0.9037 & 33.56 & 23.43 \\
+300 & 90 & 4.549 & 5.78 & 1.238 & 1.231 & 0.2141 & 17.45 & 27.36 \\
+24.7 & 74 & 0.01673 & 1.228 &  & 1.211 & 0.9864 & 33.59 & 23.49 \\
+400 & 90 & 1.178 & 1.208 &  & 0.03073 &  &  & \\
+24.7 & 74 & 0.00117 & 0.03065 &  &  &  &  & \\
+\end{supertabular}
+\end{small}
+
+\clearpage
+
+\begin{small}
+\setlength{\tabcolsep}{2pt}
+\tablecaption{Distilled 3He permeation data for the empty silica glass ampoule equilibrated with high-purity tank helium, measured on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer (``Empty Tube, Helix MC'' in the ampoule dimensions table of the main text, Table~\ref{tab:ampoule-dimensions}). Rows marked `--' in the predicted and measured $n_t/n_0$ and permeability columns are cooling-only intervals for which no isothermal permeability was calculated (see main text).}
+\label{tab:s-mc-emptytube-3he}
+\tablefirsthead{\tophline
+Temp & Time & \emph{m} 3He & $\pm2\sigma$ & $n_{0}$ 3He & $n_{t}$ 3He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured & 3He \emph{K} \newline measured \\
+(\textdegree{}C) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) &  &  & ($\frac{atoms}{s\,cm\,atm}$) \\
+\middlehline}
+\tablehead{\tophline
+Temp & Time & \emph{m} 3He & $\pm2\sigma$ & $n_{0}$ 3He & $n_{t}$ 3He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured & 3He \emph{K} \newline measured \\
+(\textdegree{}C) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) &  &  & ($\frac{atoms}{s\,cm\,atm}$) \\
+\middlehline}
+\tabletail{\bottomhline}
+\tablelasttail{\bottomhline}
+\begin{supertabular}{p{1.1cm}p{1.1cm}p{1.2cm}p{1.5cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.5cm}}
+26 & 73.6 & 0.0516 & \(6.16\!\times\!10^{-4}\) & 5.787 & 5.736 & 0.9902 & 0.9911 & \(1.53\!\times\!10^{10}\) \\
+-- & 113.3 & 0.269 & \(3.89\!\times\!10^{-3}\) & 5.736 & 5.467 &  &  &  \\
+26 & 73.7 & 0.048 & \(8.51\!\times\!10^{-4}\) & 5.467 & 5.419 & 0.9902 & 0.9912 & \(1.50\!\times\!10^{10}\) \\
+26 & 75.3 & 0.0485 & \(9.92\!\times\!10^{-4}\) & 5.419 & 5.37 & 0.9900 & 0.9910 & \(1.50\!\times\!10^{10}\) \\
+-- & 112.9 & 0.271 & \(5.67\!\times\!10^{-3}\) & 5.37 & 5.099 &  &  &  \\
+-- & 126.6 & 0.418 & \(8.80\!\times\!10^{-3}\) & 5.099 & 4.682 &  &  &  \\
+125 & 52.9 & 0.299 & \(6.31\!\times\!10^{-3}\) & 4.682 & 4.382 & 0.9275 & 0.9361 & \(1.18\!\times\!10^{11}\) \\
+125 & 53.1 & 0.311 & \(6.57\!\times\!10^{-3}\) & 4.382 & 4.071 & 0.9273 & 0.9290 & \(1.31\!\times\!10^{11}\) \\
+125 & 53.1 & 0.291 & \(6.15\!\times\!10^{-3}\) & 4.071 & 3.78 & 0.9273 & 0.9285 & \(1.32\!\times\!10^{11}\) \\
+-- & 73.6 & 0.422 & \(8.67\!\times\!10^{-3}\) & 3.78 & 3.358 &  &  &  \\
+150 & 73.6 & 0.502 & \(8.56\!\times\!10^{-3}\) & 3.358 & 2.856 & 0.8512 & 0.8506 & \(1.95\!\times\!10^{11}\) \\
+150 & 52.9 & 0.299 & \(4.47\!\times\!10^{-3}\) & 2.856 & 2.557 & 0.8907 & 0.8952 & \(1.86\!\times\!10^{11}\) \\
+150 & 88.4 & 0.45 & \(6.28\!\times\!10^{-3}\) & 2.557 & 2.107 & 0.8240 & 0.8240 & \(1.94\!\times\!10^{11}\) \\
+175 & 53.1 & 0.318 & \(4.55\!\times\!10^{-3}\) & 2.107 & 1.788 & 0.8427 & 0.8489 & \(2.59\!\times\!10^{11}\) \\
+175 & 53.1 & 0.272 & \(4.00\!\times\!10^{-3}\) & 1.788 & 1.516 & 0.8427 & 0.8478 & \(2.61\!\times\!10^{11}\) \\
+175 & 53.1 & 0.228 & \(3.54\!\times\!10^{-3}\) & 1.516 & 1.288 & 0.8427 & 0.8498 & \(2.57\!\times\!10^{11}\) \\
+175 & 53.1 & 0.193 & \(3.15\!\times\!10^{-3}\) & 1.288 & 1.095 & 0.8427 & 0.8504 & \(2.56\!\times\!10^{11}\) \\
+-- & 53.1 & 0.164 & \(2.82\!\times\!10^{-3}\) & 1.095 & 0.9317 &  &  &  \\
+200 & 53.2 & 0.174 & \(3.23\!\times\!10^{-3}\) & 0.9317 & 0.7582 & 0.7843 & 0.8139 & \(3.07\!\times\!10^{11}\) \\
+200 & 53.1 & 0.16 & \(3.16\!\times\!10^{-3}\) & 0.7582 & 0.5978 & 0.7847 & 0.7887 & \(3.55\!\times\!10^{11}\) \\
+200 & 73.6 & 0.175 & \(3.80\!\times\!10^{-3}\) & 0.5978 & 0.4224 & 0.7146 & 0.7070 & \(3.75\!\times\!10^{11}\) \\
+250 & 53.2 & 0.152 & \(3.93\!\times\!10^{-3}\) & 0.4224 & 0.2704 & 0.6410 & 0.6406 & \(6.02\!\times\!10^{11}\) \\
+250 & 53.1 & 0.0977 & \(2.95\!\times\!10^{-3}\) & 0.2704 & 0.1727 & 0.6413 & 0.6396 & \(6.06\!\times\!10^{11}\) \\
+250 & 53.1 & 0.0607 & \(2.12\!\times\!10^{-3}\) & 0.1727 & 0.1119 & 0.6413 & 0.6499 & \(5.85\!\times\!10^{11}\) \\
+250 & 53.1 & 0.0379 & \(1.56\!\times\!10^{-3}\) & 0.1119 & 0.07407 & 0.6414 & 0.6639 & \(5.58\!\times\!10^{11}\) \\
+250 & 52.9 & 0.0249 & \(1.13\!\times\!10^{-3}\) & 0.07407 & 0.04914 & 0.6427 & 0.6634 & \(5.57\!\times\!10^{11}\) \\
+250 & 53.1 & 0.016 & \(7.70\!\times\!10^{-4}\) & 0.04914 & 0.03315 & 0.6415 & 0.6746 & \(5.32\!\times\!10^{11}\) \\
+250 & 159.9 & 0.026 & \(1.31\!\times\!10^{-3}\) & 0.03315 & 0.007191 & 0.2625 & 0.2169 & \(6.86\!\times\!10^{11}\) \\
+250 & 52.9 & 0.00494 & \(2.52\!\times\!10^{-4}\) & 0.007191 & 0.00225 & 0.6424 & 0.3129 & \(1.58\!\times\!10^{12}\) \\
+High T & 52.2 & 0.00225 &  & 0.00225 & 0 &  &  &  \\
+\end{supertabular}
+\end{small}
+
+\clearpage
+
+% Per feedback, this table's text should match the size of the other
+% tables rather than be shrunk to fit portrait -- since its columns don't
+% fit the dissertation's portrait text width at that size, it's rotated
+% to landscape via \chplandscape (a no-op in the standalone paper, which
+% already fits fine in portrait as-is; see the \chplandscape comment in
+% Chapter1/chapter1.tex). This is a `longtable`, not `supertabular` --
+% `longtable` centers every page of itself automatically (\LTleft=
+% \LTright=\fill, baked into longtable.sty), independent of any
+% surrounding \centering/\begin{center}, so it renders correctly on
+% every page whether or not that page carries the \caption. The
+% previous supertabular+\begin{center} version of this table looked
+% fine on its first page (where the long caption paragraph happened to
+% independently justify to the full landscape width) but left a large
+% (~1in) uncentered gap on every later page, which lacks a caption to
+% do that -- supertabular's own per-page box has no width-forcing/
+% centering of its own and just depends on the surrounding context,
+% which does not reliably reach continuation pages here. See the fuller
+% explanation at the equivalent table in chapter1_body.tex
+% (tab:apatite-stepheat).
+\begin{chplandscape}
+\begin{small}
+\setlength{\tabcolsep}{2pt}
+\begin{longtable}{p{1.1cm}p{1.1cm}p{1.3cm}p{1.5cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.5cm}p{1.0cm}p{1.3cm}}
+\caption{Distilled 4He permeation data for the same empty silica glass ampoule experiment as Table~\ref{tab:s-mc-emptytube-3he}. \emph{K}(3/4) is the ratio of the measured 4He to 3He permeability coefficients for each step; 3/4 He measured (Ra) is the measured 3He/4He ratio of the step, normalized to the atmospheric ratio.}
+\label{tab:s-mc-emptytube-4he}\\
+\tophline
+Temp & Time & \emph{m} 4He & $\pm2\sigma$ & $n_{0}$ 4He & $n_{t}$ 4He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured & 4He \emph{K} \newline measured & \emph{K}$_{3}/$\emph{K}$_{4}$ & 3He/4He \newline measured (Ra) \\
+(\textdegree{}C) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) &  &  & ($\frac{atoms}{s\,cm\,atm}$) &  &  \\
+\middlehline
+\endfirsthead
+\multicolumn{11}{l}{\textit{(continued)}} \\
+\tophline
+Temp & Time & \emph{m} 4He & $\pm2\sigma$ & $n_{0}$ 4He & $n_{t}$ 4He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured & 4He \emph{K} \newline measured & \emph{K}$_{3}/$\emph{K}$_{4}$ & 3He/4He \newline measured (Ra) \\
+(\textdegree{}C) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) &  &  & ($\frac{atoms}{s\,cm\,atm}$) &  &  \\
+\middlehline
+\endhead
+\middlehline
+\multicolumn{11}{r}{\textit{continued on next page}} \\
+\endfoot
+\bottomhline
+\endlastfoot
+26 & 73.6 & 263.7 & 1.33 & 29670 & 29410 & 0.9908 & 0.9911 & \(1.52\!\times\!10^{10}\) & 1.0031 & 0.1408 \\
+-- & 113.3 & 1282 & 7.99 & 29410 & 28130 &  &  &  &  & 0.1509 \\
+26 & 73.7 & 247.4 & 1.95 & 28130 & 27880 & 0.9908 & 0.9912 & \(1.51\!\times\!10^{10}\) & 0.9984 & 0.1396 \\
+26 & 75.3 & 250 & 2.34 & 27880 & 27630 & 0.9905 & 0.9910 & \(1.50\!\times\!10^{10}\) & 0.9990 & 0.1397 \\
+-- & 112.9 & 1322 & 13.1 & 27630 & 26310 &  &  &  &  & 0.1475 \\
+-- & 126.6 & 1971 & 20 & 26310 & 24340 &  &  &  &  & 0.1524 \\
+125 & 52.9 & 1446 & 14.9 & 24340 & 22890 & 0.9332 & 0.9406 & \(1.09\!\times\!10^{11}\) & 1.0786 & 0.1489 \\
+125 & 53.1 & 1509 & 15.6 & 22890 & 21380 & 0.9330 & 0.9341 & \(1.21\!\times\!10^{11}\) & 1.0795 & 0.1483 \\
+125 & 53.1 & 1413 & 14.6 & 21380 & 19970 & 0.9330 & 0.9339 & \(1.21\!\times\!10^{11}\) & 1.0856 & 0.1483 \\
+-- & 73.6 & 2032 & 20.8 & 19970 & 17940 &  &  &  &  & 0.1495 \\
+150 & 73.6 & 2399 & 22.2 & 17940 & 15540 & 0.8630 & 0.8663 & \(1.73\!\times\!10^{11}\) & 1.1271 & 0.1505 \\
+150 & 52.9 & 1498 & 12.7 & 15540 & 14040 & 0.8996 & 0.9036 & \(1.70\!\times\!10^{11}\) & 1.0922 & 0.1438 \\
+150 & 88.4 & 2238 & 16.7 & 14040 & 11800 & 0.8377 & 0.8406 & \(1.74\!\times\!10^{11}\) & 1.1155 & 0.1447 \\
+175 & 53.1 & 1626 & 10.8 & 11800 & 10170 & 0.8556 & 0.8622 & \(2.34\!\times\!10^{11}\) & 1.1053 & 0.1409 \\
+175 & 53.1 & 1404 & 8.46 & 10170 & 8771 & 0.8556 & 0.8620 & \(2.34\!\times\!10^{11}\) & 1.1121 & 0.1395 \\
+175 & 53.1 & 1211 & 6.28 & 8771 & 7560 & 0.8556 & 0.8619 & \(2.34\!\times\!10^{11}\) & 1.0959 & 0.1353 \\
+175 & 53.1 & 1042 & 4.8 & 7560 & 6518 & 0.8556 & 0.8622 & \(2.34\!\times\!10^{11}\) & 1.0939 & 0.1332 \\
+-- & 53.1 & 895.4 & 3.67 & 6518 & 5623 &  &  &  &  & 0.1314 \\
+200 & 53.2 & 952.2 & 3.41 & 5623 & 4670 & 0.8020 & 0.8306 & \(2.77\!\times\!10^{11}\) & 1.1107 & 0.1311 \\
+200 & 53.1 & 887.5 & 2.99 & 4670 & 3783 & 0.8023 & 0.8100 & \(3.15\!\times\!10^{11}\) & 1.1275 & 0.1300 \\
+200 & 73.6 & 987.1 & 3.27 & 3783 & 2796 & 0.7370 & 0.7391 & \(3.26\!\times\!10^{11}\) & 1.1485 & 0.1278 \\
+250 & 53.2 & 898 & 3.01 & 2796 & 1898 & 0.6693 & 0.6788 & \(5.23\!\times\!10^{11}\) & 1.1520 & 0.1218 \\
+250 & 53.1 & 609.8 & 2.07 & 1898 & 1288 & 0.6696 & 0.6787 & \(5.24\!\times\!10^{11}\) & 1.1569 & 0.1153 \\
+250 & 53.1 & 412.2 & 1.42 & 1288 & 875.7 & 0.6696 & 0.6799 & \(5.21\!\times\!10^{11}\) & 1.1231 & 0.1059 \\
+250 & 53.1 & 278.8 & 0.995 & 875.7 & 596.9 & 0.6697 & 0.6817 & \(5.18\!\times\!10^{11}\) & 1.0778 & 0.0978 \\
+250 & 52.9 & 187.7 & 0.689 & 596.9 & 409.2 & 0.6709 & 0.6855 & \(5.13\!\times\!10^{11}\) & 1.0868 & 0.0955 \\
+250 & 53.1 & 128.8 & 0.486 & 409.2 & 280.4 & 0.6697 & 0.6852 & \(5.11\!\times\!10^{11}\) & 1.0411 & 0.0893 \\
+250 & 159.9 & 215.4 & 0.953 & 280.4 & 64.98 & 0.2990 & 0.2318 & \(6.56\!\times\!10^{11}\) & 1.0452 & 0.0867 \\
+250 & 52.9 & 41.86 & 0.205 & 64.98 & 23.12 & 0.6706 & 0.3558 & \(1.40\!\times\!10^{12}\) & 1.1246 & 0.0849 \\
+High T & 52.2 & 23.12 &  & 23.12 & 0 &  &  &  &  & 0.0700 \\
+\end{longtable}
+\end{small}
+\end{chplandscape}
+
+\clearpage
+
+\begin{small}
+\setlength{\tabcolsep}{2pt}
+\tablecaption{Distilled 3He isothermal permeation data for the silica glass ampoule containing distilled water, equilibrated with high-purity tank helium, measured on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer (``Encapsulated Water, Helix MC'' in the ampoule dimensions table of the main text, Table~\ref{tab:ampoule-dimensions}). Predicted $n_t/n_0$ values marked `--' correspond to steps for which the ampoule had not yet reached a diffusive steady state concentration profile (see main text).}
+\label{tab:s-h2o-3he}
+\tablefirsthead{\tophline
+Temp & Hot\newline Time & Cold\newline Time & \emph{m} 3He & $\pm2\sigma$ & $n_{0}$ 3He & $n_{t}$ 3He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured \\
+(\textdegree{}C) & (min) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) &  &  \\
+\middlehline}
+\tablehead{\tophline
+Temp & Hot\newline Time & Cold\newline Time & \emph{m} 3He & $\pm2\sigma$ & $n_{0}$ 3He & $n_{t}$ 3He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured \\
+(\textdegree{}C) & (min) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) &  &  \\
+\middlehline}
+\tabletail{\bottomhline}
+\tablelasttail{\bottomhline}
+\begin{supertabular}{p{1.5cm}p{1.1cm}p{1.1cm}p{1.3cm}p{1.5cm}p{1.3cm}p{1.3cm}p{1.5cm}p{1.5cm}}
+100 & 60 & 26 & 0.116 & \(1.22\!\times\!10^{-3}\) & 0.6447 & 0.5289 & -- & 0.8204 \\
+100 & 60 & 25.1 & 0.0942 & \(1.00\!\times\!10^{-3}\) & 0.5289 & 0.4347 & 0.8677 & 0.8219 \\
+100 & 60 & 25 & 0.0757 & \(8.06\!\times\!10^{-4}\) & 0.4347 & 0.359 & 0.8678 & 0.8259 \\
+100 & 60 & 25.1 & 0.0578 & \(6.18\!\times\!10^{-4}\) & 0.359 & 0.3012 & 0.8678 & 0.8389 \\
+100 & 60 & 53.5 & 0.053 & \(5.72\!\times\!10^{-4}\) & 0.3012 & 0.2482 & 0.8589 & 0.8241 \\
+100 & 60 & 25.2 & 0.0382 & \(4.34\!\times\!10^{-4}\) & 0.2482 & 0.21 & 0.8678 & 0.8459 \\
+100 & 60 & 25.1 & 0.0337 & \(4.06\!\times\!10^{-4}\) & 0.21 & 0.1763 & 0.8678 & 0.8396 \\
+100 & 60 & 795.6 & 0.0493 & \(2.52\!\times\!10^{-4}\) & 0.1763 & 0.127 & 0.7741 & 0.7201 \\
+100 & 60 & 28.1 & 0.0197 & \(9.42\!\times\!10^{-5}\) & 0.127 & 0.1072 & 0.8666 & 0.8446 \\
+100 & 60 & 43.7 & 0.0173 & \(8.39\!\times\!10^{-5}\) & 0.1072 & 0.08988 & 0.8622 & 0.8382 \\
+100 & 60 & 24.9 & 0.0138 & \(6.99\!\times\!10^{-5}\) & 0.08988 & 0.0761 & 0.8673 & 0.8467 \\
+100 & 60 & 24.9 & 0.0132 & \(7.60\!\times\!10^{-5}\) & 0.0761 & 0.06295 & 0.8678 & 0.8272 \\
+100 & 60 & 25 & 0.00977 & \(6.32\!\times\!10^{-5}\) & 0.06295 & 0.05318 & 0.8678 & 0.8448 \\
+100 & 60 & 25.1 & 0.00952 & \(6.36\!\times\!10^{-5}\) & 0.05318 & 0.04366 & 0.8679 & 0.8210 \\
+100 & 60 & 25.1 & 0.00764 & \(5.16\!\times\!10^{-5}\) & 0.04366 & 0.03602 & 0.8678 & 0.8250 \\
+100 & 60 & 25 & 0.00572 & \(3.86\!\times\!10^{-5}\) & 0.03602 & 0.0303 & 0.8678 & 0.8413 \\
+100 & 60 & 25 & 0.00578 & \(3.90\!\times\!10^{-5}\) & 0.0303 & 0.02451 & 0.8678 & 0.8091 \\
+100 & 60 & 25.1 & 0.00363 & \(2.45\!\times\!10^{-5}\) & 0.02451 & 0.02089 & 0.8679 & 0.8520 \\
+REST &  &  & 0.0209 & \(1.39\!\times\!10^{-4}\) & 0.02089 & 0 &  &  \\
+\end{supertabular}
+\end{small}
+
+\clearpage
+
+% Per feedback, this table's text should match the size of the other
+% tables rather than be shrunk to fit portrait -- rotated to landscape
+% via \chplandscape (no-op in the standalone paper). This is a
+% `longtable`, not `supertabular` -- see the fuller comment on
+% tab:s-mc-emptytube-4he above for why that matters (longtable centers
+% every page of itself automatically; supertabular does not).
+\begin{chplandscape}
+\begin{small}
+\setlength{\tabcolsep}{2pt}
+\begin{longtable}{p{1.5cm}p{1.1cm}p{1.1cm}p{1.3cm}p{1.5cm}p{1.3cm}p{1.3cm}p{1.5cm}p{1.5cm}p{1.3cm}}
+\caption{Distilled 4He isothermal permeation data for the same encapsulated-water ampoule experiment as Table~\ref{tab:s-h2o-3he}.}
+\label{tab:s-h2o-4he}\\
+\tophline
+Temp & Hot\newline Time & Cold\newline Time & \emph{m} 4He & $\pm2\sigma$ & $n_{0}$ 4He & $n_{t}$ 4He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured & 3He/4He \newline measured (Ra) \\
+(\textdegree{}C) & (min) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) &  &  &  \\
+\middlehline
+\endfirsthead
+\multicolumn{10}{l}{\textit{(continued)}} \\
+\tophline
+Temp & Hot\newline Time & Cold\newline Time & \emph{m} 4He & $\pm2\sigma$ & $n_{0}$ 4He & $n_{t}$ 4He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured & 3He/4He \newline measured (Ra) \\
+(\textdegree{}C) & (min) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) &  &  &  \\
+\middlehline
+\endhead
+\middlehline
+\multicolumn{10}{r}{\textit{continued on next page}} \\
+\endfoot
+\bottomhline
+\endlastfoot
+100 & 60 & 26 & 604 & 1.77 & 3871 & 3267 & -- & 0.8440 & 0.1379 \\
+100 & 60 & 25.1 & 515.5 & 1.52 & 3267 & 2751 & 0.8772 & 0.8422 & 0.1315 \\
+100 & 60 & 25 & 434.8 & 1.29 & 2751 & 2317 & 0.8772 & 0.8420 & 0.1252 \\
+100 & 60 & 25.1 & 361.9 & 1.07 & 2317 & 1955 & 0.8772 & 0.8438 & 0.1150 \\
+100 & 60 & 53.5 & 325.4 & 0.965 & 1955 & 1629 & 0.8688 & 0.8335 & 0.1171 \\
+100 & 60 & 25.2 & 251.3 & 0.745 & 1629 & 1378 & 0.8772 & 0.8458 & 0.1095 \\
+100 & 60 & 25.1 & 212.6 & 0.63 & 1378 & 1165 & 0.8772 & 0.8457 & 0.1140 \\
+100 & 60 & 795.6 & 344.8 & 0.802 & 1165 & 820.7 & 0.7858 & 0.7042 & 0.1029 \\
+100 & 60 & 28.1 & 127.2 & 0.276 & 820.7 & 693.5 & 0.8761 & 0.8450 & 0.1116 \\
+100 & 60 & 43.7 & 111.3 & 0.222 & 693.5 & 582.2 & 0.8719 & 0.8395 & 0.1122 \\
+100 & 60 & 24.9 & 88.54 & 0.166 & 582.2 & 493.7 & 0.8768 & 0.8479 & 0.1120 \\
+100 & 60 & 24.9 & 74.96 & 0.121 & 493.7 & 418.7 & 0.8773 & 0.8481 & 0.1262 \\
+100 & 60 & 25 & 62.69 & \(8.84\!\times\!10^{-2}\) & 418.7 & 356 & 0.8772 & 0.8503 & 0.1121 \\
+100 & 60 & 25.1 & 53.28 & \(7.18\!\times\!10^{-2}\) & 356 & 302.7 & 0.8773 & 0.8503 & 0.1285 \\
+100 & 60 & 25.1 & 45.45 & \(6.11\!\times\!10^{-2}\) & 302.7 & 257.3 & 0.8772 & 0.8499 & 0.1209 \\
+100 & 60 & 25 & 38.41 & \(5.30\!\times\!10^{-2}\) & 257.3 & 218.9 & 0.8773 & 0.8507 & 0.1071 \\
+100 & 60 & 25 & 32.42 & \(4.81\!\times\!10^{-2}\) & 218.9 & 186.4 & 0.8772 & 0.8519 & 0.1284 \\
+100 & 60 & 25.1 & 27.46 & \(4.35\!\times\!10^{-2}\) & 186.4 & 159 & 0.8773 & 0.8527 & 0.0950 \\
+REST &  &  & 159 & 0.258 & 159 & 0 &  &  & 0.0945 \\
+\end{longtable}
+\end{small}
+\end{chplandscape}
+
+\clearpage
+
+\begin{small}
+\setlength{\tabcolsep}{2pt}
+\tablecaption{Distilled 3He isothermal permeation data for the silica glass ampoule containing fused sulfur, equilibrated with high-purity tank helium, measured on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer (``Encapsulated Sulfur, Pfeiffer Quad'' in the ampoule dimensions table of the main text, Table~\ref{tab:ampoule-dimensions}; note this isothermal calibration series was run on the Helix-MC-Plus\textsuperscript{10K}).}
+\label{tab:s-sulfur-3he}
+\tablefirsthead{\tophline
+Temp & Hot\newline Time & Cold\newline Time & \emph{m} 3He & $\pm2\sigma$ & $n_{0}$ 3He & $n_{t}$ 3He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured \\
+(\textdegree{}C) & (min) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) &  &  \\
+\middlehline}
+\tablehead{\tophline
+Temp & Hot\newline Time & Cold\newline Time & \emph{m} 3He & $\pm2\sigma$ & $n_{0}$ 3He & $n_{t}$ 3He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured \\
+(\textdegree{}C) & (min) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) &  &  \\
+\middlehline}
+\tabletail{\bottomhline}
+\tablelasttail{\bottomhline}
+\begin{supertabular}{p{1.5cm}p{1.1cm}p{1.1cm}p{1.3cm}p{1.5cm}p{1.3cm}p{1.3cm}p{1.5cm}p{1.5cm}}
+80 & 60 & 25.6 & 0.699 & \(2.78\!\times\!10^{-2}\) & 9.569 & 8.87 & 0.9299 & 0.9270 \\
+80 & 60 & 61.3 & 0.736 & \(2.89\!\times\!10^{-2}\) & 8.87 & 8.134 & 0.9222 & 0.9170 \\
+80 & 60 & 25.1 & 0.591 & \(2.17\!\times\!10^{-2}\) & 8.134 & 7.543 & 0.9300 & 0.9274 \\
+80 & 60 & 25 & 0.544 & \(1.83\!\times\!10^{-2}\) & 7.543 & 6.999 & 0.9301 & 0.9279 \\
+80 & 60 & 25 & 0.494 & \(1.60\!\times\!10^{-2}\) & 6.999 & 6.505 & 0.9301 & 0.9294 \\
+100 & 60 & 91.8 & 0.759 & \(2.42\!\times\!10^{-2}\) & 6.505 & 5.746 & 0.8831 & 0.8834 \\
+100 & 60 & 25.9 & 0.601 & \(2.01\!\times\!10^{-2}\) & 5.746 & 5.145 & 0.8966 & 0.8955 \\
+100 & 60 & 52.0 & 0.575 & \(2.06\!\times\!10^{-2}\) & 5.145 & 4.57 & 0.8912 & 0.8882 \\
+100 & 60 & 26 & 0.463 & \(1.72\!\times\!10^{-2}\) & 4.57 & 4.108 & 0.8966 & 0.8988 \\
+100 & 60 & 89.9 & 0.498 & \(2.04\!\times\!10^{-2}\) & 4.108 & 3.609 & 0.8834 & 0.8787 \\
+120 & 60 & 24.8 & 0.51 & \(2.27\!\times\!10^{-2}\) & 3.609 & 3.099 & 0.8537 & 0.8586 \\
+120 & 60 & 52.8 & 0.457 & \(2.18\!\times\!10^{-2}\) & 3.099 & 2.641 & 0.8481 & 0.8524 \\
+120 & 60 & 24.9 & 0.356 & \(1.76\!\times\!10^{-2}\) & 2.641 & 2.286 & 0.8537 & 0.8653 \\
+120 & 60 & 61.3 & 0.318 & \(1.56\!\times\!10^{-2}\) & 2.286 & 1.967 & 0.8460 & 0.8607 \\
+120 & 60 & 25.1 & 0.243 & \(1.17\!\times\!10^{-2}\) & 1.967 & 1.724 & 0.8537 & 0.8766 \\
+150 & 60 & 25.0 & 0.42 & \(2.00\!\times\!10^{-2}\) & 1.724 & 1.304 & 0.7695 & 0.7562 \\
+150 & 60 & 25.0 & 0.283 & \(1.32\!\times\!10^{-2}\) & 1.304 & 1.021 & 0.7696 & 0.7828 \\
+150 & 60 & 690.8 & 0.351 & \(1.03\!\times\!10^{-2}\) & 1.021 & 0.6699 & 0.6598 & 0.6563 \\
+150 & 60 & 25 & 0.147 & \(3.98\!\times\!10^{-3}\) & 0.6699 & 0.5226 & 0.7696 & 0.7802 \\
+150 & 60 & 53.3 & 0.125 & \(3.33\!\times\!10^{-3}\) & 0.5226 & 0.3972 & 0.7643 & 0.7601 \\
+150 & 60 & 25.0 & 0.0893 & \(2.40\!\times\!10^{-3}\) & 0.3972 & 0.308 & 0.7695 & 0.7752 \\
+remainder &  &  & 0.308 & \(8.48\!\times\!10^{-3}\) &  &  &  &  \\
+\end{supertabular}
+\end{small}
+
+\clearpage
+
+% Per feedback, this table's text should match the size of the other
+% tables rather than be shrunk to fit portrait -- rotated to landscape
+% via \chplandscape (no-op in the standalone paper). This is a
+% `longtable`, not `supertabular` -- see the fuller comment on
+% tab:s-mc-emptytube-4he above for why that matters (longtable centers
+% every page of itself automatically; supertabular does not).
+\begin{chplandscape}
+\begin{small}
+\setlength{\tabcolsep}{2pt}
+\begin{longtable}{p{1.5cm}p{1.1cm}p{1.1cm}p{1.3cm}p{1.5cm}p{1.3cm}p{1.3cm}p{1.5cm}p{1.5cm}p{1.3cm}}
+\caption{Distilled 4He isothermal permeation data for the same encapsulated-sulfur ampoule experiment as Table~\ref{tab:s-sulfur-3he}.}
+\label{tab:s-sulfur-4he}\\
+\tophline
+Temp & Hot\newline Time & Cold\newline Time & \emph{m} 4He & $\pm2\sigma$ & $n_{0}$ 4He & $n_{t}$ 4He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured & 3He/4He \newline measured (Ra) \\
+(\textdegree{}C) & (min) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) &  &  &  \\
+\middlehline
+\endfirsthead
+\multicolumn{10}{l}{\textit{(continued)}} \\
+\tophline
+Temp & Hot\newline Time & Cold\newline Time & \emph{m} 4He & $\pm2\sigma$ & $n_{0}$ 4He & $n_{t}$ 4He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured & 3He/4He \newline measured (Ra) \\
+(\textdegree{}C) & (min) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) &  &  &  \\
+\middlehline
+\endhead
+\middlehline
+\multicolumn{10}{r}{\textit{continued on next page}} \\
+\endfoot
+\bottomhline
+\endlastfoot
+80 & 60 & 25.6 & 3354 & 10.8 & 52330 & 48980 & 0.9348 & 0.9359 & 0.1499 \\
+80 & 60 & 61.3 & 3617 & 12 & 48980 & 45360 & 0.9276 & 0.9262 & 0.1464 \\
+80 & 60 & 25.1 & 2949 & 10 & 45360 & 42410 & 0.9349 & 0.9350 & 0.1441 \\
+80 & 60 & 25 & 2760 & 9.6 & 42410 & 39650 & 0.9350 & 0.9349 & 0.1419 \\
+80 & 60 & 25 & 2587 & 9.13 & 39650 & 37060 & 0.9350 & 0.9348 & 0.1373 \\
+100 & 60 & 91.8 & 3980 & 15.3 & 37060 & 33080 & 0.8913 & 0.8926 & 0.1371 \\
+100 & 60 & 25.9 & 3088 & 13.5 & 33080 & 30000 & 0.9041 & 0.9066 & 0.1399 \\
+100 & 60 & 52.0 & 2978 & 14.7 & 30000 & 27020 & 0.8990 & 0.9007 & 0.1389 \\
+100 & 60 & 26 & 2517 & 13.1 & 27020 & 24500 & 0.9041 & 0.9068 & 0.1322 \\
+100 & 60 & 89.9 & 2687 & 14.4 & 24500 & 21810 & 0.8916 & 0.8903 & 0.1334 \\
+120 & 60 & 24.8 & 2769 & 14.6 & 21810 & 19040 & 0.8646 & 0.8731 & 0.1327 \\
+120 & 60 & 52.8 & 2551 & 13 & 19040 & 16490 & 0.8592 & 0.8661 & 0.1290 \\
+120 & 60 & 24.9 & 2097 & 10.4 & 16490 & 14400 & 0.8646 & 0.8728 & 0.1221 \\
+120 & 60 & 61.3 & 1948 & 9.38 & 14400 & 12450 & 0.8572 & 0.8647 & 0.1176 \\
+120 & 60 & 25.1 & 1573 & 7.36 & 12450 & 10870 & 0.8645 & 0.8736 & 0.1110 \\
+150 & 60 & 25.0 & 2435 & 11.3 & 10870 & 8439 & 0.7868 & 0.7761 & 0.1242 \\
+150 & 60 & 25.0 & 1806 & 8.2 & 8439 & 6633 & 0.7868 & 0.7859 & 0.1128 \\
+150 & 60 & 690.8 & 2151 & 8.5 & 6633 & 4481 & 0.6807 & 0.6756 & 0.1173 \\
+150 & 60 & 25 & 924.6 & 3.42 & 4481 & 3557 & 0.7868 & 0.7937 & 0.1146 \\
+150 & 60 & 53.3 & 753.9 & 2.75 & 3557 & 2803 & 0.7818 & 0.7880 & 0.1197 \\
+150 & 60 & 25.0 & 560.4 & 2.08 & 2803 & 2242 & 0.7868 & 0.8001 & 0.1146 \\
+remainder &  &  & 2242 & 8.72 &  &  &  &  & 0.0988 \\
+\end{longtable}
+\end{small}
+\end{chplandscape}
+

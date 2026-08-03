@@ -1,0 +1,48 @@
+% =============================================================
+%  Chapter 1 — A Simple Method for Helium Step Heat Experiments
+%  at High Water or Sulfur Fugacity
+%
+%  This chapter is the dissertation-formatted version of
+%  Chapter1/Writing/TubeMethodPaper.tex (the Copernicus/Geochronology
+%  journal submission). Both wrappers \input{} the SAME shared
+%  content files -- Chapter1/Writing/chapter1_abstract.tex and
+%  Chapter1/Writing/chapter1_body.tex -- so the science is written
+%  and edited in exactly one place. If you need to change the
+%  text, equations, figures, or tables, edit those two files, not
+%  this one or TubeMethodPaper.tex.
+%
+%  NOTE: Do NOT include \documentclass or \begin{document} here.
+%        This file is \input{} into dissertation.tex.
+% =============================================================
+
+\chapter{A Simple Method for Helium Step Heat Experiments at High Water or Sulfur Fugacity}
+\label{ch:apparatus}
+
+% --- Chapter abstract / summary -----------------------------------------------
+\begin{quote}
+  \itshape
+  \input{Chapter1/Writing/chapter1_abstract}
+\end{quote}
+
+% --- Landscape environment for oversized tables --------------------------------
+% chapter1_body.tex (shared with the standalone Copernicus paper,
+% TubeMethodPaper.tex) wraps its widest tables in \chplandscape instead of
+% pdflscape's \landscape directly, so the SAME shared file can behave
+% differently per wrapper: here (the thesis), it rotates the page and
+% gives the table the full ~8in landscape text width, so the table can
+% run at normal/legible font size instead of being shrunk to fit a
+% portrait 5.5in column. TubeMethodPaper.tex/Paper/SI.tex instead define
+% \chplandscape as a no-op, keeping the journal manuscript in its
+% original compact portrait form. Guarded so defining it here doesn't
+% clash if chapter1_SI.tex (which needs the same environment for its own
+% oversized tables) happens to load first in some future reordering.
+\makeatletter
+\@ifundefined{chplandscape}{%
+  \newenvironment{chplandscape}{\begin{landscape}}{\end{landscape}}
+}{}
+\makeatother
+
+% --- Shared body (Introduction through Conclusions) ---------------------------
+% Figures for this chapter live in Chapter1/Figures/{source,generated}/ (see
+% the \graphicspath entry in dissertation_preamble.tex).
+\input{Chapter1/Writing/chapter1_body}

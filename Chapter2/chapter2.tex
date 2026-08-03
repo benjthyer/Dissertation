@@ -1,0 +1,51 @@
+% =============================================================
+%  Chapter 2 — Helium Step Heat Experiment on Goethite in
+%  Hydrothermal Conditions Indicates High Retentivity at Surface
+%  Temperature and is Consistent with Multiple Diffusion Domain
+%  Systematics
+%
+%  This chapter is the dissertation-formatted version of
+%  Chapter2/Writing/chapter2goethite.tex (the standalone draft).
+%  Both wrappers \input{} the SAME shared content files --
+%  Chapter2/Writing/chapter2_abstract.tex and chapter2_body.tex --
+%  so the science is written and edited in exactly one place. If you
+%  need to change the text, equations, figures, or citations, edit
+%  those two files, not this one or chapter2goethite.tex.
+%
+%  Citations use \citep/\citet against the master references.bib, same
+%  as Chapter 1 -- resolved by the single \printbibliography at the end
+%  of dissertation.tex, so no local bibliography/Works Cited section is
+%  needed here.
+%
+%  NOTE: Do NOT include \documentclass or \begin{document} here.
+%        This file is \input{} into dissertation.tex.
+% =============================================================
+
+\chapter{Helium Step Heat Experiments on Goethite in Hydrothermal Conditions Indicate High Retentivity at Surface Temperature and Consistency with Multiple Diffusion Domain Systematics}
+\label{ch:goethite}
+
+% Auto-generated Stage 1 regression macros (\ChTwoEa, \ChTwoEaErr,
+% \ChTwoTc, \ChTwoTcErr, \ChTwoRtwo, \ChTwoN) -- see
+% Chapter2/Figures/write_chapter2_macros.py. Defined here,
+% before the abstract and chapter2_SI (input later by dissertation.tex),
+% so both can use them. Do not edit the generated file by hand.
+\input{Chapter2/Writing/chapter2_derived_values}
+
+% Auto-generated \ChTwoNaiveRawTable/\ChTwoNaiveFitTable macros (the raw
+% isothermal-permeation dataset and its per-sequence lambda/n0 fits) -- see
+% Chapter2/Figures/fig_naive_isothermal_fits.py. Defined here for
+% the same reason as chapter2_derived_values above: chapter2_SI.tex (input
+% later by dissertation.tex) needs these macros too. Do not edit the
+% generated file by hand.
+\input{Chapter2/Writing/chapter2_naive_isothermal_tables}
+
+% --- Chapter abstract / summary -----------------------------------------------
+\begin{quote}
+  \itshape
+  \input{Chapter2/Writing/chapter2_abstract}
+\end{quote}
+
+% --- Shared body (Introduction through Conclusions) ---------------------------
+% Figures for this chapter live in Chapter2/Figures/{source,generated}/ (see
+% the \graphicspath entry in dissertation_preamble.tex).
+\input{Chapter2/Writing/chapter2_body}

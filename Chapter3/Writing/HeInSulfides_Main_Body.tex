@@ -243,29 +243,26 @@ Durango, Mexico \citep{farley2000} were weighed, then encapsulated in silica gla
 but without any additionaly buffer materials. An empty tube was also encapsulated to serve as a procedural blank. Photos and masses of the
 prepared ampoules were recorded so that the helium and trace metal analyses could be correctly matched.
 
-\subsubsection{Helium Analysis}
+\subsubsection{Helium Analysis}\label{ch3-geochron-helium-methods}
 
-Encapsulated samples were wrapped in Ni-foil and loaded into a custom-built autosampler with the procedural blank loaded first. The autosampler was wrapped in heating tape, and was made
+Encapsulated samples were wrapped in Ni-foil and loaded into a custom-built autosampler with the procedural blank loaded first. The autosampler was wrapped in heating tape, which was made
 to warm the samples to 80-100°C for at least 12 hours in ultra-high vacuum before the first step heat to allow for atmospheric helium to escape. Initial 
-efforts in method development showed that atmospheric helium contamination was significant (Fig.~\ref{fig:ch3-durango-age-vs-ra}). This atmospheric contamination is of the order of 10s of nccSTP helium per ampoule \citep{thyer2026}.
-and is difficult to mathmatically correct for even when 3He can be accurately measured, because helium diffusion and permeation through silica glass fractionates 3He/4He ratios \citep{shelby1971,jones1953}, and the 
-ampoules were each geometrically unique and therefore had different permeation rates. Still, we found the best results when we applied a simple correction to the helium data, wherein we subtract 4He proportionally to measured 3He by
+efforts in method development showed that atmospheric helium contamination was significant (Fig.~\ref{fig:ch3-durango-age-vs-ra}). This atmospheric helium payload of an ampoule equilibrated with air is on the order of 10s of nccSTP helium per ampoule \citep{thyer2026}.
+It is difficult to mathmatically correct for even when 3He can be accurately measured, because helium diffusion and permeation through silica glass fractionates 3He/4He ratios \citep{shelby1971,jones1953}, and the 
+ampoules were each geometrically unique and therefore had different permeation rates. Still, we found the best results when we applied a simple correction to the helium data after substantially mitigating the contamination with this warm-degassing step. To correct for the much smaller remaining atmospheric contamination, we subtract 4He proportionally to measured 3He by
 the atmospheric 3He/4He isotope ratio: 1.39 \multiply 10\textsuperscript{-6}. The procedural blanks showed that atmospheric helium contamination was reduced by a factor of 5-10, which was sufficient for these helium-rich samples with 100s of nccSTP helium (Fig.~\ref{fig:ch3-durango-age-vs-ra}). Future work may develop a more rigorous
 approach to experimentally remove atmospheric helium contamination or to mathematically correct for it using the first order framework of \citet{thyer2026}.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{Durango_Age_vs_Ra.pdf}
-  \caption{Atmospherically corrected age vs. measured $^3$He/$^4$He (Ra)
-  for the Durango apatite standard aliquots run alongside the Kidd Creek
-  and Gympie pyrite (Table~\ref{tab:ch3-main-geochron}), illustrating the
-  atmospheric-contamination problem motivating the correction protocol
-  described above: aliquots with low measured Ra (i.e. a large
-  atmospheric 4He contribution relative to radiogenic 4He) trend toward
-  older apparent ages, while aliquots trend back toward Durango's
-  accepted age of 32.1 Ma \citep{farley2000} as Ra increases (less
-  atmospheric contribution). The weighted average age of the aliquots
-  with mass $>$0.5 mg, 32.1 $\pm$ 0.2 Ma, agrees with the accepted age.}
+  \caption{The atmosphere-corrrected age is plotted $^3$He/$^4$He (Ra)
+  for the Durango apatite standard aliquots, illustrating the
+  atmospheric-contamination problem motivating the experimental correction protocol
+  described in \ref{ch3-geochron-helium-methods}: aliquots with low measured Ra (i.e. a large
+  atmospheric 4He contribution relative to radiogenic 4He) require insignificant mathmatical correction, preserving the accuracy of the ages and agreeing with the 32.1Ma accepted age \citep{farley2000}. Aliquots measured before implementing the experimental atmosphere-degassing step contain more 3He and require stronger corrections that are unaware of the true isotopic composition of fractionated atmosphere in the ampoule, yielding inaccurate ages. 
+The weighted average age of the aliquots
+  with mass $>$0.5 mg, 32.1 $\pm$ 0.2 Ma, agrees well with the accepted age, affirming the fundamental accuracy of the measurements.}
   \label{fig:ch3-durango-age-vs-ra}
 \end{figure}
 
@@ -573,6 +570,7 @@ qualitatively.
 
 \section{Results}\label{sec:ch3-results}
 
+\todo{Move SEM results to SI: Show marcasite pictures: the others have already been shared in chapter 1}
 \subsection{Effectiveness of the Ampoule Method in Stabilizing Sulfides}\label{ch3-sem-imaging-tube-buffered-sulfides}
 The methodology for the heating treatments and SEM imagery of pyrite and arsenopyrite 
 surfaces following thermal treatments in different conditions is discussed in \ref{sem-imaging-of-buffered-and-decomposed-sulfides}.
@@ -598,7 +596,7 @@ transformation is prevented for pyrite or arsenopyrite, they consistent with tha
 interpretation, encouraging its application for helium step heat experiments.
 
 \subsection{Sulfide Step Heat Experiments}\label{ch3-sulfide-step-heat-experiments}
-
+\todo{Include arrhenius and delta plots and in-text references thereof}
 All apparent diffusivities calculated from the helium step heat data are
 plotted together in figure 3.3 along with a reference line for helium
 diffusion within Durango apatite with a half-prism width of 150µm
@@ -612,24 +610,16 @@ sulfide suite. Three separate helium step heat experiments were
 conducted on this sample, two with varying grain size and a third that
 attempted to isolate the pyrite from the sulfur liquid by packing glass
 shards above and below the pyrite grains within the ampoule \hl{(figs.
-3.0xx)}. The Arrhenius plots for the two experiments with varying size
-fractions and no attempt to isolate the pyrite from the liquid sulfur
-were similar to one another but distinct from the third in which the
-pyrite was isolated from the sulfur, which was the experiment that
-showed the highest helium retentivity of the sulfide sample suite
-(figure 3.3; figure 3.4a). The three experiments shared a similar slope,
-and a regression was fit to a linear region of \ChThreeLVCON\ measurements
+3.0xx)}. The Arrhenius plots for all three experiments yielded similar diffusivities.
+The three experiments shared a similar slope,
+and a regression was fit to the most linear region of \ChThreeLVCON\ measurements
 of the LVCOpy230630 experiment with an R\textsuperscript{2} of \ChThreeLVCORtwo,
 yielding an apparent activation energy of \ChThreeLVCOEaKcal\ $\pm$
 \ChThreeLVCOEaKcalErr\ Kcal/mol (\ChThreeLVCOEa\ $\pm$ \ChThreeLVCOEaErr\
 kJ/mol; figure 3.4a), implying a closure temperature of \ChThreeLVCOTc\ $\pm$
 \ChThreeLVCOTcErr°C assuming a cooling rate of 10°C/Ma. The delta
-plot constructed with this activation energy showed a monotonic decrease
-in delta values for the experiments that did not attempt to separate the
-pyrite from the sulfur liquid. The more retentive ampoule that held the
-pyrite in the middle of the tube away from the majority of the sulfur
-liquid also preserved this general trend, but showed a slight increase
-in delta values midway through the experiment (figure 3.4b).
+plot constructed with this activation energy showed a general agreement between the 
+smaller grain-size experiments, seemingly unaffected by the direct contact with sulfur liquid or lack thereof. The more retentive, larger ampoule yielded lower delta values at the same cumulative fractional yield, revealing that a smaller proportion of its helium resided in these least retentive domains  that produce the common diffusivity trend on the arrhenius plot for the three experiments.
 
 The octahedral Rustenburg pyrite is less retentive of helium than the
 pyritohedral Leadville pyrite. On the down-temperature retrogrades of

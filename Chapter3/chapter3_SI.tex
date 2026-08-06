@@ -1,0 +1,33 @@
+% =============================================================
+%  Chapter 3 Supplementary Information (dissertation-chapter version)
+%
+%  Same wrapper/body split as Chapter1/chapter1_SI.tex and
+%  Chapter2/chapter2_SI.tex (see either for the full rationale): this
+%  file just gives the SI its own title/divider page (\SItitlepage) and
+%  its own "3.Ns"-style section numbering (\ChapterSI environment, both
+%  defined in dissertation_preamble.tex), then \input{}s the shared
+%  content file Chapter3/Writing/HeInSulfides_SI_body.tex. Edit that
+%  file, not this one, to change the text, figures, tables, or citations.
+%
+%  Citations use \citep/\citet against the master references.bib, same
+%  as chapter3.tex -- resolved by the single \printbibliography at the
+%  end of dissertation.tex, so no local bibliography is needed here.
+%
+%  Placement: appended at the end of Chapter 3, same convention as
+%  Chapter1/chapter1_SI.tex and Chapter2/chapter2_SI.tex.
+%
+%  Relies on \ChThreeGeochronSITable (and the other Chapter 3 macros),
+%  which are defined by Chapter3/Writing/chapter3_geochron_tables.tex,
+%  \input{} once already from Chapter3/chapter3.tex (\newcommand
+%  definitions are global, so no need to \input it again here).
+%
+%  NOTE: Do NOT include \documentclass or \begin{document} here.
+%        This file is \input{} into dissertation.tex.
+% =============================================================
+
+\SItitlepage{Sulfur-Buffered Helium Step Heat Experiments of Sulfides Reveal Remarkable Helium Retentivity and Complex Behavior: Implications for Sulfide Geochronology}
+
+\begin{ChapterSI}
+\label{sec:ch3-SI}
+\input{Chapter3/Writing/HeInSulfides_SI_body}
+\end{ChapterSI}

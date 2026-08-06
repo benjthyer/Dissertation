@@ -29,18 +29,18 @@ Scenarios:
 Per scenario x schedule, five plots. Steps with cumulative fractional yield
 > 0.98 are excluded from all of them -- too close to fully degassed for
 either per-step inversion to be numerically meaningful:
-    <schedule>_diffusivity_arrhenius.png -- ln(D/a^2) vs 10^4/T
-    <schedule>_lambda_arrhenius.png      -- ln(lambda) vs 10^4/T
-    <schedule>_diff_vs_lambda.png        -- ln(D/a^2) vs ln(lambda), colored
+    <schedule>_diffusivity_arrhenius.pdf -- ln(D/a^2) vs 10^4/T
+    <schedule>_lambda_arrhenius.pdf      -- ln(lambda) vs 10^4/T
+    <schedule>_diff_vs_lambda.pdf        -- ln(D/a^2) vs ln(lambda), colored
                                              by cumulative yield, w/ regression
-    <schedule>_lambda_diff_ratio.png     -- ln(lambda)/ln(D/a^2) vs cumulative
+    <schedule>_lambda_diff_ratio.pdf     -- ln(lambda)/ln(D/a^2) vs cumulative
                                              yield, colored by temperature
-    <schedule>_dRdT_vs_yield.png         -- d/dT of the above ratio vs
+    <schedule>_dRdT_vs_yield.pdf         -- d/dT of the above ratio vs
                                              cumulative yield
 
 For the two monotonic-ramp schedules only (a release spectrum against
 temperature isn't meaningful for a schedule that revisits temperatures):
-    <schedule>_release_spectrum.png -- per-step (incremental) He release
+    <schedule>_release_spectrum.pdf -- per-step (incremental) He release
                                         fraction vs Temperature, with the
                                         (constant) step duration in the title.
 
@@ -48,7 +48,7 @@ For every run of >=3 consecutive same-temperature steps found in a schedule
 (by construction, all 12 four-step groups of the isothermal_sequences
 schedule; incidentally, also any such runs that happen to occur elsewhere,
 e.g. Rustenburg's occasional back-to-back repeat steps):
-    <schedule>_isothermal_seq##_<T>C.png -- F-F0 vs t-t0 (t0/F0 = time/yield
+    <schedule>_isothermal_seq##_<T>C.pdf -- F-F0 vs t-t0 (t0/F0 = time/yield
                                         at the start of the run) with a
                                         bias-free (through-origin) quadratic
                                         fit F-F0 = a(t-t0)^2 + b(t-t0), t in
@@ -64,7 +64,7 @@ e.g. Rustenburg's occasional back-to-back repeat steps):
                                         eyeball whether a given isothermal
                                         run behaves as first-order.
 
-Outputs -> Chapter3/Figures/generated/<scenario>/<schedule>_*.png
+Outputs -> Chapter3/Figures/generated/<scenario>/<schedule>_*.pdf
 """
 import os
 import sys
@@ -267,7 +267,7 @@ def plot_diffusivity_arrhenius(tk, d_a2, plotable, fcum, label, outdir):
     ax1.grid(alpha=0.3)
     ax1.set_title(f'{label}: Simulated Diffusivity\n(2nd-order reduction)')
     fig.tight_layout()
-    fig.savefig(os.path.join(outdir, f'{label}_diffusivity_arrhenius.png'),
+    fig.savefig(os.path.join(outdir, f'{label}_diffusivity_arrhenius.pdf'),
                 dpi=300, bbox_inches='tight')
     plt.close(fig)
 
@@ -283,7 +283,7 @@ def plot_lambda_arrhenius(tk, lam, plotable, fcum, label, outdir):
     ax1.grid(alpha=0.3)
     ax1.set_title(f'{label}: Simulated Rate Constant\n(1st-order reduction)')
     fig.tight_layout()
-    fig.savefig(os.path.join(outdir, f'{label}_lambda_arrhenius.png'),
+    fig.savefig(os.path.join(outdir, f'{label}_lambda_arrhenius.pdf'),
                 dpi=300, bbox_inches='tight')
     plt.close(fig)
 
@@ -316,7 +316,7 @@ def plot_diff_vs_lambda(d_a2, lam, fcum, plotable, label, outdir):
     ax.legend(fontsize=9)
     ax.set_title(f'{label}: Diffusivity vs. Rate Constant')
     fig.tight_layout()
-    fig.savefig(os.path.join(outdir, f'{label}_diff_vs_lambda.png'),
+    fig.savefig(os.path.join(outdir, f'{label}_diff_vs_lambda.pdf'),
                 dpi=300, bbox_inches='tight')
     plt.close(fig)
 
@@ -349,7 +349,7 @@ def plot_lambda_diff_ratio(d_a2, lam, fcum, temps_C, plotable, label, outdir):
     ax.grid(alpha=0.3)
     ax.set_title(f'{label}: Rate Constant / Diffusivity Log-Ratio')
     fig.tight_layout()
-    fig.savefig(os.path.join(outdir, f'{label}_lambda_diff_ratio.png'),
+    fig.savefig(os.path.join(outdir, f'{label}_lambda_diff_ratio.pdf'),
                 dpi=300, bbox_inches='tight')
     plt.close(fig)
 
@@ -391,7 +391,7 @@ def plot_dRdT_vs_yield(d_a2, lam, fcum, temps_C, plotable, label, outdir):
     ax.grid(alpha=0.3)
     ax.set_title(f'{label}: d(λ/D Log-Ratio)/dT vs. Cumulative Yield')
     fig.tight_layout()
-    fig.savefig(os.path.join(outdir, f'{label}_dRdT_vs_yield.png'),
+    fig.savefig(os.path.join(outdir, f'{label}_dRdT_vs_yield.pdf'),
                 dpi=300, bbox_inches='tight')
     plt.close(fig)
 
@@ -410,7 +410,7 @@ def plot_release_spectrum(temps_C, times_min, fcum, plotable, label, outdir):
     ax.grid(alpha=0.3)
     ax.set_title(f'{label}: Helium Release Spectrum\n({times_min[0]:.1f} min per step)')
     fig.tight_layout()
-    fig.savefig(os.path.join(outdir, f'{label}_release_spectrum.png'),
+    fig.savefig(os.path.join(outdir, f'{label}_release_spectrum.pdf'),
                 dpi=300, bbox_inches='tight')
     plt.close(fig)
 
@@ -491,7 +491,7 @@ def plot_isothermal_quadratic_fits(temps_C, times_min, fcum, plotable, label, ou
         # y-axis -- reserve extra headroom so it doesn't collide with the
         # two-line title above.
         fig.subplots_adjust(top=0.82)
-        fname = f'{label}_isothermal_seq{seq_i:02d}_{T:.0f}C.png'
+        fname = f'{label}_isothermal_seq{seq_i:02d}_{T:.0f}C.pdf'
         fig.savefig(os.path.join(outdir, fname), dpi=300, bbox_inches='tight')
         plt.close(fig)
 

@@ -35,6 +35,7 @@ is only needed for `fig_predicting_permeation.py`'s two multi-panel
 histogram figures (figsize=(8,10) and (8,8), i.e. scale ~1.25).
 """
 import matplotlib as mpl
+import numpy as np
 
 BASE_FIGWIDTH_IN = 6.4  # matplotlib default figure width, used as the
                          # reference scale=1.0 point for this style.
@@ -69,3 +70,65 @@ def apply_style(scale: float = 1.0) -> None:
         'legend.fontsize': LEGEND_SIZE * scale,
         'figure.titlesize': SUPTITLE_SIZE * scale,
     })
+
+
+# Chapter 3 only: the sulfide step-heat "treatment as uncertainty" reduction
+# (Chapter3/Tables/build_plotable_cache.py, from the Reduced01_*.xlsx
+# workbooks) sometimes can't compute a real lower bound on ln(D/a^2) -- the
+# permeation-lag correction leaves the diffusivity consistent with zero --
+# and the workbook stands in an arbitrary LB_dln(d/a^2) = 5 sentinel for
+# "unconstrained" rather than a real 5-natural-log-unit uncertainty. Plotted
+# literally, that produces a giant, physically meaningless whisker. The
+# upper bound never hits this sentinel (checked across the whole cache), so
+# only the lower side needs this treatment.
+LB_SENTINEL_THRESHOLD = 4.9  # matches the workbook's literal 5 (one point at 5.09), safely above any real uncertainty seen in this dataset
+
+
+def diffusivity_errorbar(ax, x, y, lb, ub, color, marker, label=None,
+                          ghost_alpha=0.25, normal_alpha=0.7, capsize=4,
+                          markersize=5, arrow_length=1.3, linestyle='none',
+                          zorder=2, **kwargs):
+    """Plot ln(D/a^2) (or a delta of it) with asymmetric LB/UB error bars,
+    routing points whose LB_dln(d/a^2) hits the workbook's unconstrained-
+    lower-bound sentinel (see LB_SENTINEL_THRESHOLD above) to a distinct
+    low-alpha "ghost" style instead of either a giant -5 whisker or
+    silently dropping the point -- some of these are real regression-
+    window steps (e.g. step 31 of the CCp chalcopyrite fit), so dropping
+    them would make a "point used in regression" vanish from its own
+    Arrhenius plot even though the fit itself (which only uses the
+    central value) is unaffected either way.
+
+    Normal points get a standard two-sided errorbar at normal_alpha.
+    Ghost points get a low-alpha marker, a normal (upper-only) whisker if
+    UB is itself finite, and a short low-alpha downward arrow standing in
+    for the open-ended lower bound.
+
+    Returns the number of ghost points plotted (for a caller that wants
+    to e.g. add a "n unconstrained" note).
+    """
+    x = np.asarray(x, dtype=float)
+    y = np.asarray(y, dtype=float)
+    lb = np.asarray(lb, dtype=float)
+    ub = np.asarray(ub, dtype=float)
+    ghost = lb >= LB_SENTINEL_THRESHOLD
+    normal = ~ghost
+
+    if normal.any():
+        yerr = np.clip(np.vstack([lb[normal], ub[normal]]), 0, None)
+        ax.errorbar(x[normal], y[normal], yerr=yerr, fmt=marker, color=color,
+                    ecolor=color, capsize=capsize, alpha=normal_alpha,
+                    markersize=markersize, markeredgecolor='black', markeredgewidth=0.4,
+                    linestyle=linestyle, zorder=zorder, label=label, **kwargs)
+
+    if ghost.any():
+        ub_ghost = np.clip(ub[ghost], 0, None)
+        ax.errorbar(x[ghost], y[ghost], yerr=np.vstack([np.zeros(int(ghost.sum())), ub_ghost]),
+                    fmt=marker, color=color, ecolor=color, capsize=capsize,
+                    alpha=ghost_alpha, markersize=markersize, linestyle=linestyle,
+                    zorder=zorder, label=(None if normal.any() else label), **kwargs)
+        for xi, yi in zip(x[ghost], y[ghost]):
+            ax.annotate('', xy=(xi, yi - arrow_length), xytext=(xi, yi),
+                        arrowprops=dict(arrowstyle='-|>', color=color, alpha=ghost_alpha, lw=1.2),
+                        zorder=zorder)
+
+    return int(ghost.sum())

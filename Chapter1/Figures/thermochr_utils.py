@@ -107,6 +107,22 @@ def InvertFrequencyFactor(t, F, Fp):
 # He production and age functions
 # ---------------------------------------------------------------------------
 
+def isotope_fraction(symbol, mass_number):
+    """Natural abundance fraction of one isotope, via
+    molmass.Formula(symbol).spectrum()[mass_number] -- wrapped because
+    molmass's return type for that changed across versions in a way
+    that silently breaks either direct access style depending which is
+    installed: older molmass (e.g. 2021.6.18) returns a plain
+    [mass, fraction] list (fraction at index 1), while newer molmass
+    returns a SpectrumEntry object with a .fraction attribute that is
+    NOT subscriptable (indexing it raises TypeError). Different
+    environments used on this project pin different molmass versions,
+    so hardcoding either form breaks the other -- this checks which one
+    it got at call time instead of assuming."""
+    entry = Formula(symbol).spectrum()[mass_number]
+    return entry.fraction if hasattr(entry, 'fraction') else entry[1]
+
+
 def He_forward(U_mol, Th_mol, Sm_mol, t):
     """He produced (nccSTP) from U/Th/Sm in moles after time t in years."""
     U_at = U_mol * Av
@@ -116,7 +132,7 @@ def He_forward(U_mol, Th_mol, Sm_mol, t):
         8 * (1 - 1 / 137.88) * U_at * (np.exp(lam_U238 * t) - 1)
         + 7 * (U_at / 137.88) * (np.exp(lam_U235 * t) - 1)
         + 6 * Th_at * (np.exp(lam_Th232 * t) - 1)
-        + Sm_at * Formula('Sm').spectrum()[147][1] * (np.exp(lam_Sm147 * t) - 1)
+        + Sm_at * isotope_fraction('Sm', 147) * (np.exp(lam_Sm147 * t) - 1)
     )
     return (He_at / 6.0221E23) * 22.71 * 1E12
 
@@ -133,7 +149,7 @@ def He_derivative(t, U_mol, Th_mol, Sm_mol):
         8 * (1 - 1 / 137.88) * U_at * lam_U238 * np.exp(lam_U238 * t)
         + 7 * (U_at / 137.88) * lam_U235 * np.exp(lam_U235 * t)
         + 6 * Th_at * lam_Th232 * np.exp(lam_Th232 * t)
-        + Sm_at * Formula('Sm').spectrum()[147][1] * lam_Sm147 * np.exp(lam_Sm147 * t)
+        + Sm_at * isotope_fraction('Sm', 147) * lam_Sm147 * np.exp(lam_Sm147 * t)
     )
     return -(val / 6.0221E23) * 22.71 * 1E12
 
@@ -222,13 +238,55 @@ def MC_Age(inputArray, n=1000, verbose=False):
 
 def Ft(R, S, X):
     """Alpha recoil retention factor (Farley et al. 1996, Eqn 3).
-    R: grain radius (µm), S: stopping distances array (µm, length 4),
-    X: [U, Th, Sm] abundances (atoms or moles)."""
-    total = 8 * X[0] + 7 * X[0] / 137.88 + 6 * X[1] + X[2]
-    weights = np.array([8 * X[0], 7 * X[0] / 137.88, 6 * X[1],
-                        Formula('Sm').spectrum()[147][1] * X[2]]) / total
-    fts = 1 - (3 / 4) * (S / R) + (1 / 16) * (S / R) ** 3
-    return np.sum(fts * weights)
+    R: grain radius (µm, scalar or array), S: stopping distances array
+    (µm, length 4: 238U/235U/232Th/147Sm), X: [U, Th, Sm] elemental
+    abundances (atoms or moles).
+
+    Two corrections vs. the original version of this function (fixed
+    2026 -- see Chapter3/Figures/fig_alpha_stopping_distances.py, which
+    first surfaced both while modeling sub-stopping-distance apatite
+    inclusions):
+
+    1. The alpha-weight normalization now sums the SAME four terms used
+       in the numerator (previously the normalizing "total" used the
+       full elemental Sm abundance X[2], while the Sm term actually
+       being weighted used only the 147Sm-decaying fraction of it --
+       two different quantities for what should be the same term, so
+       the weights didn't sum to 1). Harmless wherever Sm's contribution
+       is small relative to U/Th, which is why this went unnoticed --
+       every existing caller (recoil_correct(), used for real dated
+       grains via reduce_quad.py) is unaffected in proportion to how
+       small that Sm term already was for those grains.
+    2. R < S is now handled explicitly per isotope rather than left to
+       the bare polynomial. Farley (1996)'s cubic form
+       1 - (3/4)(S/R) + (1/16)(S/R)^3 is exact only for R >= S; for
+       R < S it doesn't just dip negative, it diverges (the cubic term
+       dominates and blows up positive as R -> 0), since the polynomial
+       was derived as a surface-correction term under R >= S and was
+       never meant to extrapolate below it. Every existing caller uses
+       real mineral grain radii (tens to hundreds of microns) that are
+       always >= the ~15-22 um stopping distances involved, so this
+       branch was never exercised before and changes nothing for them --
+       it only matters for new callers modeling deliberately sub-
+       stopping-distance grains/inclusions, where R < S means every
+       decay's alpha track exits the grain regardless of direction, so
+       retention for that isotope is exactly zero.
+
+    Returns a scalar if R is scalar, else an array the same shape as R.
+    """
+    R_arr = np.asarray(R, dtype=float)
+    S = np.asarray(S, dtype=float)
+    alpha_weights = np.array([8 * X[0], 7 * X[0] / 137.88, 6 * X[1],
+                              isotope_fraction('Sm', 147) * X[2]])
+    weights = alpha_weights / alpha_weights.sum()
+
+    if R_arr.ndim == 0:
+        ratio = S / R_arr
+        ft_per_isotope = np.where(R_arr >= S, 1 - (3 / 4) * ratio + (1 / 16) * ratio ** 3, 0.0)
+        return float(np.sum(ft_per_isotope * weights))
+    ratio = S / R_arr[:, None]
+    ft_per_isotope = np.where(R_arr[:, None] >= S, 1 - (3 / 4) * ratio + (1 / 16) * ratio ** 3, 0.0)
+    return ft_per_isotope @ weights
 
 
 def recoil_correct(r, inputArray, alpha_stopping_distances, a_phase):

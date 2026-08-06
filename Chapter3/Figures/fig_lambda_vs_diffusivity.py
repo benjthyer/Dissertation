@@ -8,9 +8,9 @@ Reads the plot-ready cache built by Chapter3/Tables/build_plotable_cache.py
 (run that script first if plotable_sulfides_cache.pkl is missing or stale).
 
 Outputs, per sample -> Chapter3/Figures/generated/lambdaVdiff/:
-    <sample>_diffusivity_arrhenius.png
-    <sample>_lambda_arrhenius.png
-    <sample>_diff_vs_lambda.png
+    <sample>_diffusivity_arrhenius.pdf
+    <sample>_lambda_arrhenius.pdf
+    <sample>_diff_vs_lambda.pdf
 """
 import os
 import sys
@@ -22,7 +22,7 @@ import scipy.stats
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPT_DIR)
-from plot_style import apply_style
+from plot_style import apply_style, diffusivity_errorbar
 apply_style()
 
 CACHE_PKL = os.path.join(SCRIPT_DIR, '..', 'Tables', 'plotable_sulfides_cache.pkl')
@@ -67,18 +67,20 @@ def plot_diffusivity_arrhenius(df, sample):
     tk = df['10000/TK'].to_numpy(dtype=float)
     ln_d = df['ln(d/a^2)'].to_numpy(dtype=float)
     lb, ub = _num(df, 'LB_dln(d/a^2)'), _num(df, 'UB_dln(d/a^2)')
-    yerr = np.clip(np.vstack([lb, ub]), 0, None)
 
     fig, ax1 = plt.subplots()
-    ax1.errorbar(tk, ln_d, yerr=yerr, marker='o', capsize=4, alpha=0.7,
-                 linestyle=':', color='tab:blue')
+    # Own low-alpha connecting line (chronological step order) so it stays
+    # continuous across any ghosted (unconstrained-LB) points -- see
+    # diffusivity_errorbar's docstring.
+    ax1.plot(tk, ln_d, linestyle=':', color='tab:blue', alpha=0.4, zorder=1)
+    diffusivity_errorbar(ax1, tk, ln_d, lb, ub, 'tab:blue', 'o', normal_alpha=0.7)
     _add_temp_axis(ax1)
     ax1.set_xlabel(r'$10^4/T$ (K)')
     ax1.set_ylabel(r'$\ln(D/a^2)$ (s$^{-1}$)')
     ax1.grid(alpha=0.3)
     ax1.set_title(f'{sample}: Apparent 3He Diffusivity')
     fig.tight_layout()
-    fig.savefig(os.path.join(OUTDIR, f'{_safe_name(sample)}_diffusivity_arrhenius.png'),
+    fig.savefig(os.path.join(OUTDIR, f'{_safe_name(sample)}_diffusivity_arrhenius.pdf'),
                 dpi=300, bbox_inches='tight')
     plt.close(fig)
 
@@ -105,7 +107,7 @@ def plot_lambda_arrhenius(df, sample):
     ax1.grid(alpha=0.3)
     ax1.set_title(f'{sample}: Apparent 3He Rate Constant')
     fig.tight_layout()
-    fig.savefig(os.path.join(OUTDIR, f'{_safe_name(sample)}_lambda_arrhenius.png'),
+    fig.savefig(os.path.join(OUTDIR, f'{_safe_name(sample)}_lambda_arrhenius.pdf'),
                 dpi=300, bbox_inches='tight')
     plt.close(fig)
 
@@ -153,7 +155,7 @@ def plot_diff_vs_lambda(df, sample):
     ax.legend(fontsize=9)
     ax.set_title(f'{sample}: Diffusivity vs. Rate Constant')
     fig.tight_layout()
-    fig.savefig(os.path.join(OUTDIR, f'{_safe_name(sample)}_diff_vs_lambda.png'),
+    fig.savefig(os.path.join(OUTDIR, f'{_safe_name(sample)}_diff_vs_lambda.pdf'),
                 dpi=300, bbox_inches='tight')
     plt.close(fig)
 

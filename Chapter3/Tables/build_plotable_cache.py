@@ -41,6 +41,25 @@ TK_TOL = 1e-6  # relative tolerance matching 10000/TK between the old cache and 
 LAMBDA_NAMES = ("FLB", "Fm", "FUB", "λLB", "λm", "λUB")
 LAMBDA_OUT_NAMES = ("FLB", "Fm", "FUB", "lambdaLB", "lambdaM", "lambdaUB")
 
+# Steps that meet the lambda*t>=4 "plotable" threshold but are excluded
+# anyway as known-bad measurements. Applied in build_cache(), not by
+# editing plotable_row_index.json directly, so the exclusion survives a
+# --rebuild-index run instead of silently being lost.
+#   SalAspIrr (112123SalAspIrr, arsenopyrite): final 6-step high-
+#   temperature ramp tail (steps 135-140, ~435-497 degC) -- flagged as
+#   unreliable.
+#   Rustenburg Pyrite (step 90609, the last analytical step, 581.6 degC
+#   nominal / 1200 s hold): the He measurement itself is fine, but the
+#   step failed to reach its setpoint temperature and thermally drifted,
+#   invalidating the Fechtig & Kalbitzer diffusivity inversion (which
+#   assumes a step held at a known, stable temperature) -- not a signal-
+#   quality problem, so only this apparent-diffusivity point is dropped,
+#   not the step's contribution to cumulative yield elsewhere.
+MANUAL_STEP_EXCLUSIONS = {
+    "SalAspIrr": {135, 136, 137, 138, 139, 140},
+    "Rustenburg Pyrite": {90609},
+}
+
 
 def _reduced_files():
     return sorted(TABLES_DIR.glob("Reduced01_*.xlsx"))
@@ -187,7 +206,10 @@ def build_cache(index):
             )
             warned_samples.add(sample)
 
+        excluded_steps = MANUAL_STEP_EXCLUSIONS.get(sample, set())
         for step in entry["steps"]:
+            if step in excluded_steps:
+                continue
             r2 = step_to_row2.get(step)
             if r2 is None:
                 print(f"WARNING: step {step} for sample '{sample}' no longer exists in "

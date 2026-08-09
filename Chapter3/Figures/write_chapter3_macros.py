@@ -30,7 +30,7 @@ uses the same M-bound convention as everywhere else in the chapter
 M-bound Tc, not LB's -136 or UB's 138), i.e. 300.6 +/- 7.3 kJ/mol.
 
 Run this AFTER prepare_ch3_regression_cache.py (it only reads that
-script's JSON output). run_all_ch3_figures.py runs both, in order,
+script's JSON output). run_all_figures.py runs both, in order,
 automatically.
 
 Significant-figure handling matches write_chapter2_macros.py: each
@@ -103,7 +103,7 @@ if __name__ == '__main__':
         "%  Regenerate after any data/regression change:\n",
         "%    python3 Figures/prepare_ch3_regression_cache.py\n",
         "%    python3 Figures/write_chapter3_macros.py\n",
-        "%  (run_all_ch3_figures.py does both automatically.)\n",
+        "%  (run_all_figures.py does both automatically.)\n",
         "%\n",
         "%  \\input{} by HeInSulfides_Main_Body.tex and HeInSulfides_abstract.tex\n",
         "%  so the Abstract, Results, and Discussion all read the same numbers.\n",

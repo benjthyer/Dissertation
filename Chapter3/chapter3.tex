@@ -23,7 +23,7 @@
 
 % --- Derived-value macros (auto-generated -- see the file header) -------------
 % Must be \input{} before the abstract and body below, since both reference
-% these macros. Regenerate via Chapter3/Figures/run_all_ch3_figures.py (or
+% these macros. Regenerate via Chapter3/Figures/run_all_figures.py (or
 % prepare_ch3_regression_cache.py then write_chapter3_macros.py directly)
 % after any change to the step-heat data or regressions.
 \input{Chapter3/Writing/chapter3_derived_values}
@@ -36,6 +36,15 @@
 % Regenerate via Chapter3/Figures/write_chapter3_geochron_tables.py after
 % any change to Tables/geochronology_compilation_BJT.xlsx.
 \input{Chapter3/Writing/chapter3_geochron_tables}
+
+% --- Sulfide 3He step-heat data-table macros (auto-generated -- see the file header) --
+% \ChThreeStepHeat<Sample> macros, one per plotable sulfide step-heat
+% experiment. Defined here (rather than only where first used) so both
+% the main-text pyrite/arsenopyrite tables (HeInSulfides_Main_Body.tex)
+% and the SI galena/chalcopyrite tables (HeInSulfides_SI_body.tex) can
+% invoke them. Regenerate via Chapter3/Figures/write_chapter3_stepheat_tables.py
+% after any change to the underlying step-heat data.
+\input{Chapter3/Writing/chapter3_stepheat_tables}
 
 % --- Chapter abstract / summary -----------------------------------------------
 \begin{quote}

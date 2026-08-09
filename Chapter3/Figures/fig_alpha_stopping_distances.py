@@ -113,6 +113,7 @@ U, TH, SM = 1.0, 2.0, 2.0
 
 R_MAX_UM = 150.0  # apatite half-prism widths up to 150 um
 REFERENCE_R_UM = 20.0  # the "~20 um" rule of thumb this pair of plots is built around
+OBSERVED_R_MAX_UM = 30.0  # observed inclusion half-prism widths span 0 to this
 
 MC_N_SAMPLES = 1_000_000
 MC_RHO_GRID = np.logspace(-2, np.log10(30), 400)  # covers rho = R/S from 0.01 to 30
@@ -190,6 +191,20 @@ def solve_He_age_years(U_mol, Th_mol, Sm_mol, target_He, t_bounds_yr=(1.0, 5e9))
     return scipy.optimize.brentq(resid, *t_bounds_yr, xtol=1.0, rtol=1e-12)
 
 
+def _add_observed_inclusion_band(ax):
+    """Teal vertical band marking the observed range of inclusion
+    half-prism widths (0 to OBSERVED_R_MAX_UM), shared by both plots below
+    since they share the same x quantity/range. Labeled directly (rotated,
+    centered in the band) rather than via a legend, with a white background
+    box so it stays legible over whichever curve/gridlines sit behind it --
+    same convention used for the other direct labels in plot_helium_age."""
+    ax.axvspan(0, OBSERVED_R_MAX_UM, color='teal', alpha=0.15, zorder=0)
+    trans = ax.get_xaxis_transform()  # x in data coords, y in axes-fraction
+    ax.text(OBSERVED_R_MAX_UM / 2, 0.5, 'Observed Inclusion Half-Prism Width',
+            transform=trans, rotation=90, ha='center', va='center', fontsize=8,
+            color='teal', bbox=dict(facecolor='white', edgecolor='none', alpha=0.75, pad=1.5))
+
+
 def plot_sulfide_fraction(R, sulfide_fraction):
     fig, ax = plt.subplots()
     ax.plot(R, sulfide_fraction, color='tab:red', linewidth=2)
@@ -197,7 +212,8 @@ def plot_sulfide_fraction(R, sulfide_fraction):
                label=f'{REFERENCE_R_UM:.0f} µm reference')
     ax.set_xlim(0, R_MAX_UM)
     ax.set_ylim(0, 1.02)
-    ax.set_xlabel('Apatite Inclusion Half-Prism Radius (µm)')
+    _add_observed_inclusion_band(ax)
+    ax.set_xlabel('Apatite Inclusion Half-Prism Width (µm)')
     ax.set_ylabel(r'Fraction of Sulfide-Hosted He, $1 - F_t$')
     ax.set_title('Sulfide- vs. Inclusion-Hosted Helium\n'
                   f'(fluorapatite inclusions, U:Th:Sm = 1:{TH/U:.0f}:{SM/U:.0f})')
@@ -227,6 +243,10 @@ def plot_helium_age(R, ft):
           f"naive linear-mixing age = {naive_ages_Ma[mid]:.1f} Ma "
           f"(difference = {naive_ages_Ma[mid] - ages_Ma[mid]:.1f} Ma)")
 
+    chosen_age = 639
+    chosen_R = R[np.argmin(np.abs(ages_Ma - chosen_age))]
+    print(f"Closest R to {chosen_age:.0f} Ma: R={chosen_R:.1f} um")
+
     fig, ax = plt.subplots()
     ax.plot(R, ages_Ma, color='tab:blue', linewidth=2)
     #ax.plot(R, naive_ages_Ma, color='tab:blue', linewidth=1.2, linestyle=':', alpha=0.6)
@@ -234,9 +254,10 @@ def plot_helium_age(R, ft):
     ax.axhline(COOLING_AGE_MYR, color='gray', linestyle='-.', linewidth=1)
     ax.axhspan(PYRITE_AGE_MIN_MYR, PYRITE_AGE_MAX_MYR, color='tab:orange', alpha=0.15, zorder=0)
     ax.set_xlim(0, R_MAX_UM)
-    ax.set_xlabel('Apatite Inclusion Half-Prism Radius (µm)')
+    _add_observed_inclusion_band(ax)
+    ax.set_xlabel('Apatite Inclusion Half-Prism Width (µm)')
     ax.set_ylabel('Apparent Bulk He Age (Ma)')
-    ax.set_title('Inclusion Size Age Affect For Kidd Creek Pyrite')
+    ax.set_title('Inclusion Size Age Effect For Kidd Creek (Arseno)Pyrite')
     ax.grid(alpha=0.3)
 
     # Everything labeled directly on the plot instead of via a legend --
@@ -250,16 +271,17 @@ def plot_helium_age(R, ft):
     # than right where each line starts (which the curves hug closely).
     trans = ax.get_yaxis_transform()
     label_box = dict(facecolor='white', edgecolor='none', alpha=0.85, pad=1.5)
+
     ax.text(0.97, AGE_INCLUSION_MYR, f'Inclusion crystallization age ({AGE_INCLUSION_MYR:.0f} Ma)',
             transform=trans, ha='right', va='center', fontsize=8, bbox=label_box)
-    ax.text(0.03, COOLING_AGE_MYR, f'Apatite cooling age ({COOLING_AGE_MYR:.0f} Ma)',
-            transform=trans, ha='left', va='center', fontsize=8, bbox=label_box)
+    ax.text(0.97, COOLING_AGE_MYR, f'Apatite cooling age ({COOLING_AGE_MYR:.0f} Ma)',
+            transform=trans, ha='right', va='center', fontsize=8, bbox=label_box)
     # Placed in the band's left portion, where the age curve is still
     # entirely above it (crosses in at R~90 um, never gets back down to
     # the band's own lower edge within the plotted R range) -- no need
     # for a white box there since the curve never crosses through it.
-    ax.text(0.35, (PYRITE_AGE_MIN_MYR + PYRITE_AGE_MAX_MYR) / 2, 'Pyrite U-Th/He age',
-            transform=trans, ha='center', va='center', fontsize=8, color='tab:orange')
+    ax.text(0.45, (PYRITE_AGE_MIN_MYR + PYRITE_AGE_MAX_MYR) / 2, '(Arseno)pyrite U-Th/He ages',
+            transform=trans, ha='center', va='center', fontsize=8, color='tab:orange', bbox=dict(facecolor='white', edgecolor='none', alpha=0.75, pad=1.5))
 
     label_R = 0.72 * R_MAX_UM
     """ax.annotate('Full treatment\n(He-domain mixing)', xy=(label_R, np.interp(label_R, R, ages_Ma)),

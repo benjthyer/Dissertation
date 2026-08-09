@@ -312,7 +312,7 @@ plt.legend(handles + [measured_handle], labels + [r'$m_{cum}$: Measured $\Sigma 
            fontsize=LEGEND_SIZE * 0.75)  # crowded legend, kept smaller than the standard size
 plt.tight_layout()
 plt.savefig(os.path.join(OUTDIR, 'Durango_Sim.pdf'), dpi=300)#, dpi = 1024)
-plt.show()
+plt.close()
 
 plt.plot(np.arange(len(n0))/3600, n0, linestyle = '--', color = 'blue',label = r'Fractional Yield in Tube ($n_t$)')
 plt.plot(np.arange(len(n0))/3600, m, linestyle = '--', color = 'red', label = r'Measurable Fractional Yield ($m$)')
@@ -320,11 +320,11 @@ plt.plot(np.arange(len(n0))/3600, w, color = 'black', label = r'Evolved Fraction
 plt.xlabel('Time (hr)')
 plt.ylabel(r'Helium Fractional Yield of 150 $\mu$s Durango Apatite')
 plt.savefig(os.path.join(OUTDIR, 'Diffusion_Tube_Simulation1.0.pdf'), dpi=300)
-plt.show()
+plt.close()
 
 
 diffdat = diffusion_reduction(Fstep_apparent+[1-Fstep_apparent[-1]], TimeSeconds=np.array(time_input+[0]), TempKelvin=np.array(temp_input+[0])+273)
-plt.show()
+plt.close()
 
 x = diffdat['10^4/T']
 y = diffdat['ln(D/a^2)']
@@ -360,4 +360,4 @@ ax1.legend()
 plt.title('Forward Modeled Apparent Helium Diffusivities\nfor Encapsulated Durango Apatite (r = 150 µm)')
 fig.tight_layout()
 plt.savefig(os.path.join(OUTDIR, 'Apatite_diff_sim1.1.pdf'), dpi=300)#dpi = 1024)
-plt.show()
+plt.close()

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-run_all_ch3_figures.py -- orchestrate runs of all Chapter 3 figure-generating
+run_all_figures.py -- orchestrate runs of all Chapter 3 figure-generating
 scripts, mirroring Chapter 2's run_all_figures.py.
 
 Before any fig_*.py script runs, prepare_ch3_regression_cache.py always runs
@@ -20,11 +20,11 @@ Results inconsistency this replaced).
 
 Usage
 -----
-    python run_all_ch3_figures.py                 # run every discovered figure script
-    python run_all_ch3_figures.py --list           # just show what would run
-    python run_all_ch3_figures.py --only fig_sulfide_arrhenius.py
-    python run_all_ch3_figures.py --skip fig_cumulative_diffusive_time.py
-    python run_all_ch3_figures.py --stop-on-error
+    python run_all_figures.py                 # run every discovered figure script
+    python run_all_figures.py --list           # just show what would run
+    python run_all_figures.py --only fig_sulfide_arrhenius.py
+    python run_all_figures.py --skip fig_cumulative_diffusive_time.py
+    python run_all_figures.py --stop-on-error
 
 Exit code is 0 if every script succeeded, 1 if any script failed.
 """

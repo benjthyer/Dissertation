@@ -48,6 +48,8 @@ COLS = dict(
     age1ra=19, age1raerr=20,
     ageexo=27, ageexoerr=28,
     U=29, Uerr=30, Th=31, Therr=32, Sm=33, Smerr=34,
+    Cu=35, Cuerr=36, As=37, Aserr=38, Zr=39, Zrerr=40,
+    Ag=41, Agerr=42, Sb=43, Sberr=44,
 )
 
 
@@ -91,6 +93,24 @@ def age_cell(row):
     return '--', ''
 
 
+TRACE_COLS_ZERO_MEANS_NOT_MEASURED = ('Cu', 'As', 'Zr', 'Ag', 'Sb')
+
+
+def g_trace(row, key):
+    """Like g(), but for the five ratio-to-spike-vanadium trace elements
+    (Cu, As, Zr, Ag, Sb), where the workbook records an exact 0 (not a
+    blank cell) for aliquots on which that element simply wasn't
+    monitored/quantified -- e.g. every pre-degassing-protocol Durango
+    aliquot (rows 33-36) and several other early-batch aliquots
+    throughout the compilation. An exact 0.000 +/- 0.000 is not a
+    plausible real ICPMS measurement for any of these five elements
+    (checked: no genuinely-measured row for any of them is anywhere near
+    0), so it is treated the same as a missing cell and rendered as
+    '--' rather than a misleading literal zero."""
+    v = g(row, key)
+    return None if v == 0 else v
+
+
 def data_row(rows, i, note=''):
     row = rows[i]
     name = row[COLS['name']]
@@ -104,6 +124,11 @@ def data_row(rows, i, note=''):
         fmt_pm(g(row, 'U'), g(row, 'Uerr'), 3),
         fmt_pm(g(row, 'Th'), g(row, 'Therr'), 3),
         fmt_pm(g(row, 'Sm'), g(row, 'Smerr'), 3),
+        fmt_pm(g_trace(row, 'Cu'), g(row, 'Cuerr'), 2),
+        fmt_pm(g_trace(row, 'As'), g(row, 'Aserr'), 2),
+        fmt_pm(g_trace(row, 'Zr'), g(row, 'Zrerr'), 2),
+        fmt_pm(g_trace(row, 'Ag'), g(row, 'Agerr'), 2),
+        fmt_pm(g_trace(row, 'Sb'), g(row, 'Sberr'), 2),
         fmt(g(row, 'eU'), 3),
         fmt(g(row, 'he4'), 2),
         age,
@@ -115,28 +140,28 @@ def _tex_escape(s):
     return s.replace('_', r'\_').replace('%', r'\%').replace('#', r'\#')
 
 
-def group_header(label, ncols=9):
+def group_header(label, ncols=14):
     return r'\multicolumn{%d}{l}{\textbf{%s}} \\' % (ncols, label)
 
 
-HEADER_ROW = (r'Sample & Mass & U & Th & Sm & eU & $^4$He & Age & Note \\'
-              '\n' + r'& (mg) & (ppm) & (ppm) & (ppm) & (ppm) & (ncc) & (Ma) & \\')
+HEADER_ROW = (r'Sample & Mass & U & Th & Sm & Cu & As & Zr & Ag & Sb & eU & $^4$He & Age & Note \\'
+              '\n' + r'& (mg) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ncc) & (Ma) & \\')
 
 TABLE_PREAMBLE = r"""\begin{landscape}
 \begin{footnotesize}
-\begin{longtable}{l r r r r r r r l}
+\begin{longtable}{l r r r r r r r r r r r r l}
 \caption{%s}\label{%s}\\
 \toprule
 %s
 \midrule
 \endfirsthead
-\multicolumn{9}{l}{\textit{(continued)}} \\
+\multicolumn{14}{l}{\textit{(continued)}} \\
 \toprule
 %s
 \midrule
 \endhead
 \midrule
-\multicolumn{9}{r}{\textit{continued on next page}} \\
+\multicolumn{14}{r}{\textit{continued on next page}} \\
 \endfoot
 \bottomrule
 \endlastfoot
@@ -151,11 +176,17 @@ def build_main_table(rows):
     body = [TABLE_PREAMBLE % (
         r"U-Th/He geochronology results for the four sample suites discussed in the main "
         r"text: Kidd Creek pyrite, Gympie pyrite, and the Durango apatite and Gogebic (MI-43) "
-        r"hematite standards run alongside them. Ages are the atmospheric-He-corrected "
-        r"`Age (Ma Atm=1Ra Corr.)' value (\S\ref{sec:ch3-experimental-methods-geochronology}); "
-        r"\textdagger\ marks the handful of early aliquots analyzed before a tube blank was "
-        r"available, for which the uncorrected measured age is reported instead. Excluded "
-        r"aliquots (\S\ref{ch3-results-gympie-ages}) are noted in the last column. The "
+        r"hematite standards run alongside them, including all trace elements quantified by "
+        r"ICPMS (\S\ref{sec:ch3-experimental-methods-geochronology}): U, Th, and Sm (the "
+        r"radiogenic-budget elements) plus Cu, As, Zr, Ag, and Sb, all measured as ratios to "
+        r"spike vanadium; `--' denotes below detection or not measured for that aliquot. Ages "
+        r"are the atmospheric-He-corrected `Age (Ma Atm=1Ra Corr.)' value; \textdagger\ marks "
+        r"the handful of early aliquots analyzed before a tube blank was available, for which "
+        r"the uncorrected measured age is reported instead. Excluded aliquots "
+        r"(\S\ref{ch3-results-gympie-ages}) are noted in the last column, as are the first four "
+        r"Durango apatite aliquots (2211DApA, 2211DApC, 2211DApD, 2022StDApA), analyzed under "
+        r"the early ``old method'' protocol that predated the warm atmosphere-degassing step "
+        r"(\S\ref{ch3-geochron-helium-methods}, Fig.~\ref{fig:ch3-durango-age-vs-ra}). The "
         r"complete compilation, including localities not discussed in the main text, is given "
         r"in the Supplementary Information (Table~\ref{tab:ch3-si-geochron}).",
         'tab:ch3-main-geochron', HEADER_ROW, HEADER_ROW)]
@@ -180,8 +211,12 @@ def build_main_table(rows):
 
     body.append(r'\midrule')
     body.append(group_header('Durango Apatite Standard (accepted age 32.1 Ma; Farley 2000)'))
+    durango_notes = {
+        33: 'old method: pre-degassing', 34: 'old method: pre-degassing',
+        35: 'old method: pre-degassing', 36: 'old method: pre-degassing',
+    }
     for i in range(33, 47):
-        r = data_row(rows, i)
+        r = data_row(rows, i, note=durango_notes.get(i, ''))
         if r:
             body.append(r)
     avg_row = data_row(rows, 47, note='')

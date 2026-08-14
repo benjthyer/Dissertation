@@ -1,0 +1,31 @@
+% =============================================================
+%  hydrothermal_goethite_SI_body.tex
+%  Supplementary Information for the merged (Ch1 + Ch2) GCA manuscript.
+%
+%  Class-agnostic body, same convention as the main body. \input{}
+%  from an SI wrapper. Requires longtable, booktabs, lscape.
+%
+%  CONTENTS: the encapsulated Durango apatite step-heat dataset.
+%  It supports Fig. 2 of the main text but does not need to sit in
+%  the body: the apatite experiment is a validation, not a result of
+%  the paper, and the table is large. The Winsor goethite datasets
+%  stay in the main text (Tables 1 and 2), since they underpin the
+%  paper's own conclusions.
+%
+%  SIG FIGS: this table is reproduced verbatim from chapter1_body.tex
+%  so no digit has been retyped or altered. Farley's comment #126
+%  ("carrying too many significant figures ... very cluttered") still
+%  applies and should be addressed in the generating script rather
+%  than by hand-editing here. He also suggested dropping the
+%  He-F_Tube column as near-constant and superfluous (#126).
+% =============================================================
+
+\section{Encapsulated Durango apatite step-heat data}\label{sec:si-durango}
+
+The following table gives the complete step-heat dataset for the silica glass encapsulated Durango apatite experiment described in \S\ref{sec:methods-apatite} and plotted in Fig.~\ref{fig:durango-arrhenius}. Permeation lag corrections follow the permeation-step route of \S\ref{sec:permeation-steps}: Eq.~\eqref{eq:n0perm} is applied to the permeation steps shown in \textbf{bold} to solve for the ampoule's helium content, and Eq.~\eqref{eq:permlag} propagates that content forward and backward in time to the neighbouring experimental steps.
+
+Only the last of each sequence of room-temperature measurements was used to solve for $n_{0}$, because the temperature records show that the ampoule had not yet cooled to room temperature when the first permeation step of each sequence began. Each pair of permeation steps nonetheless yielded values of $n_{0}$ within 2$\sigma$ of one another.
+
+Measurement uncertainties are estimated from the standard deviations of sensitivities and blanks determined by standards, and are propagated through Eqs.~\eqref{eq:permsol} and~\eqref{eq:permlag} in quadrature, together with a general 10\% uncertainty on the use of Eq.~\eqref{eq:permsol}. Uncertainty on a step's cumulative fractional yield is the sum of the uncertainty on its own fractional yield and those of all preceding steps, added in quadrature. The total yield is estimated from the measured mass of encapsulated apatite (3.18\,mg) and its helium concentration of 194.2\,nccSTP/mg \citep{farley2000}; no uncertainty on the total yield is propagated into the reported diffusivities.
+
+\input{tables/si_durango_stepheat.tex}

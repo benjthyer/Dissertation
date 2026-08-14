@@ -1,0 +1,88 @@
+% =============================================================
+%  hydrothermal_goethite_GCA_SI.tex
+%
+%  Supplementary Information wrapper, companion to
+%  hydrothermal_goethite_GCA.tex. Same class and packages so the SI
+%  matches the manuscript. Content lives in
+%  hydrothermal_goethite_SI_body.tex -- edit that, not this file.
+%
+%  NOTE: the SI body cross-references labels defined in the MAIN body
+%  (\S\ref{sec:methods-apatite}, Fig.~\ref{fig:durango-arrhenius},
+%  Eqs.~\eqref{eq:permlag}, \eqref{eq:permsol}, \eqref{eq:n0perm}).
+%  Compiled standalone, those render as "??" because the two documents
+%  do not share an .aux file. This is the same limitation Chapter 1's
+%  standalone paper/SI split already has. Options, in order of effort:
+%    1. Accept "??" in drafts and hard-code the numbers at submission
+%       (GCA wants the SI as a separate file anyway).
+%    2. Load `xr` here and \externaldocument{hydrothermal_goethite_GCA}
+%       after building the main document once -- resolves them
+%       automatically. Uncomment the two lines below to do that.
+% =============================================================
+\documentclass[preprint,12pt,nonatbib]{elsarticle}
+
+\journal{Geochimica et Cosmochimica Acta}
+
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{pdflscape}
+\usepackage{subcaption}
+
+% --- Cross-references into the main manuscript (see note above) ---
+% \usepackage{xr}
+% \externaldocument{hydrothermal_goethite_GCA}
+
+\usepackage[
+  backend    = biber,
+  style      = authoryear,
+  sorting    = nyt,
+  maxnames   = 2,
+  minnames   = 1,
+  maxbibnames = 99,
+  uniquelist = true,
+  giveninits = true,
+  uniquename = init,
+  natbib     = true,
+]{biblatex}
+\addbibresource{../../references.bib}
+
+\graphicspath{{../../Chapter1/Figures/generated/}{../../Chapter1/Figures/source/}{../../Chapter2/Figures/generated/}{../../Chapter2/Figures/source/}}
+
+\input{../../Chapter2/Writing/chapter2_derived_values.tex}
+
+\providecommand{\tophline}{\toprule}
+\providecommand{\middlehline}{\midrule}
+\providecommand{\bottomhline}{\bottomrule}
+
+% SI numbering: S1, S2, ... for tables and figures
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+
+\begin{document}
+
+\begin{frontmatter}
+\title{Supplementary Information for: High Helium Retentivity in Goethite under Hydrothermal Conditions Measured by Step-Heat Experiments in Silica Glass Ampoules}
+\author[caltech]{Ben J. Thyer\corref{cor1}}
+\ead{bthyer@caltech.edu}
+\author[caltech]{Jonathan Treffkorn}
+\author[caltech]{Kenneth A. Farley}
+\cortext[cor1]{Corresponding author.}
+\affiliation[caltech]{organization={Division of Geological and Planetary Sciences, California Institute of Technology},
+            city={Pasadena},
+            postcode={91125},
+            state={CA},
+            country={USA}}
+\end{frontmatter}
+
+\input{hydrothermal_goethite_SI_body}
+
+\printbibliography[title={References}]
+
+\end{document}

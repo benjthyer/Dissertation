@@ -1,0 +1,103 @@
+% =============================================================
+%  hydrothermal_goethite_GCA.tex
+%
+%  Submission wrapper (elsarticle class, per Geochimica et Cosmochimica
+%  Acta's guide for authors) for the merged Chapter 1 + Chapter 2
+%  manuscript. Shares its actual content with
+%  hydrothermal_goethite_abstract.tex and hydrothermal_goethite_body.tex
+%  -- edit those, not this file, to change text, equations, figures, or
+%  citations. See hydrothermal_goethite_body.tex's header comment for
+%  the narrative rationale (K. Farley review, 2026-08-08).
+%
+%  Author list/affiliation are carried over from the Chapter 1 method
+%  paper (Chapter1/Writing/TubeMethodPaper.tex), since this manuscript
+%  builds directly on that method and reuses its co-authors. Adjust
+%  \author/\affiliation below if the actual author list for this
+%  submission differs.
+%
+%  Citations use \citep/\citet against the same shared references.bib
+%  as the rest of the dissertation, via biblatex in natbib-compatible
+%  mode. elsarticle's own natbib loading is disabled (`nonatbib` class
+%  option) to avoid a conflict between the two packages.
+% =============================================================
+\documentclass[preprint,12pt,nonatbib]{elsarticle}
+
+\journal{Geochimica et Cosmochimica Acta}
+
+% --- Fonts (pdflatex) ---
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% --- Core packages ---
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\usepackage{booktabs}
+\usepackage{longtable}
+% Winsor data tables (Tables 1 and 2) and the SI Durango table are wide
+% enough to need landscape pages; they use \begin{landscape}.
+\usepackage{pdflscape}
+% Two-panel ampoule figure (Fig. 1) uses subfigure/\subref.
+\usepackage{subcaption}
+
+% --- Bibliography (shared references.bib, same config as dissertation_preamble.tex) ---
+\usepackage[
+  backend    = biber,
+  style      = authoryear,
+  sorting    = nyt,
+  maxnames   = 2,
+  minnames   = 1,
+  maxbibnames = 99,
+  uniquelist = true,
+  giveninits = true,
+  uniquename = init,
+  natbib     = true,
+]{biblatex}
+\addbibresource{../../references.bib}
+
+% Chapter1/Figures/source/ is required for the pyrite and arsenopyrite
+% SEM panels in Fig. 1 (LVPY_*, Asp_*, asp_*).
+\graphicspath{{../../Chapter1/Figures/generated/}{../../Chapter1/Figures/source/}{../../Chapter2/Figures/generated/}{../../Chapter2/Figures/source/}}
+
+% Numeric macros used in the body (\ChTwoEa etc.)
+\input{../../Chapter2/Writing/chapter2_derived_values.tex}
+
+\providecommand{\tophline}{\toprule}
+\providecommand{\middlehline}{\midrule}
+\providecommand{\bottomhline}{\bottomrule}
+
+\begin{document}
+
+\begin{frontmatter}
+
+\title{High Helium Retentivity in Goethite under Hydrothermal Conditions Measured by Step-Heat Experiments in Silica Glass Ampoules}
+
+\author[caltech]{Ben J. Thyer\corref{cor1}}
+\ead{bthyer@caltech.edu}
+\author[caltech]{Jonathan Treffkorn}
+\author[caltech]{Kenneth A. Farley}
+
+\cortext[cor1]{Corresponding author.}
+\affiliation[caltech]{organization={Division of Geological and Planetary Sciences, California Institute of Technology},
+            city={Pasadena},
+            postcode={91125},
+            state={CA},
+            country={USA}}
+
+\begin{abstract}
+\input{hydrothermal_goethite_abstract}
+\end{abstract}
+
+\begin{keyword}
+goethite \sep U-Th/He geochronology \sep helium diffusion \sep hydrothermal \sep silica glass permeation \sep step heating
+\end{keyword}
+
+\end{frontmatter}
+
+\input{hydrothermal_goethite_body}
+
+\printbibliography[title={References}]
+
+\end{document}

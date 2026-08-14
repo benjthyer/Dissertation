@@ -1,0 +1,556 @@
+% =============================================================
+%  hydrothermal_goethite_body.tex   --   REBUILD v2
+%
+%  MERGED PAPER (Chapters 1 + 2), goethite-led, targeted at
+%  Geochimica et Cosmochimica Acta.
+%
+%  Chapters 1 and 2 remain the extended thesis record and are NOT
+%  edited by this file.
+%
+%  WHAT CHANGED FROM v1 (per BJT, this rebuild)
+%  --------------------------------------------
+%  The paper is now built around a fixed figure sequence, and the
+%  empty- and sulfur-ampoule calibration experiments are GONE: not
+%  named, not characterized, not tabulated. Only one sentence in the
+%  Discussion notes that water-bearing ampoules show anomalously high
+%  rate constants, as motivation for measuring the rate constant in
+%  situ.
+%
+%  This is a structural improvement, not just a cut. In v1 the
+%  conservative-bound argument leaned on a separate water calibration
+%  ampoule. Here it rests on the goethite ampoule's OWN measured rate
+%  constant exceeding the anhydrous literature value (Fig. 3), which
+%  is self-contained, needs no companion experiment, and is a stronger
+%  argument besides.
+%
+%  ARC (BJT's four moves):
+%    1. The ampoule stabilizes reactive phases during step heating,
+%       which motivates investigating ampoule systematics.  [Fig. 1]
+%    2. Ampoule systematics are tractable: encapsulated Durango
+%       apatite recovers its published Arrhenius array.       [Fig. 2]
+%    3. The permeation theory, demonstrated by measuring the rate
+%       constant of the goethite ampoule itself. This is the bridge
+%       from Chapter 1 into Chapter 2.                 [Figs. 3, 4; Tables 1, 2]
+%    4. Goethite results, discussion, science.          [Figs. 5-9]
+%
+%  FIGURE / TABLE SEQUENCE (fixed by BJT):
+%    Fig. 1  stabilization grid, 3 rows (pyrite / arsenopyrite / goethite)
+%    Fig. 2  encapsulated_DApErr.pdf
+%    Fig. 3  NaiveIsothermalFits_Grid.pdf   (low-T sequence fits)
+%    Fig. 4  NaiveLambda_Arrhenius.pdf
+%    Table 1 Winsor 3He data      \input{tables/winsor_3he.tex}
+%    Table 2 Winsor 4He data      \input{tables/winsor_4he.tex}
+%    (Fig. 1 is now the two-panel ampoule figure in Methods:
+%     Apatite_tube.jpg + zoomout2.jpg. Requires `subcaption`.)
+%    Fig. 6  winsor_goethite_Diffusivities_Arrhenius.pdf
+%    Fig. 7  winsor_goethite_Diffusivities_Arrhenius_Zoomin.pdf
+%    Fig. 8  DeltasWinsorGTzoomin_VacuumHydrothermal.pdf
+%    Fig. 9  Comparative_Ratios_Dtplot_WinsorGT_VacuumHDMKAF.pdf
+%    SI      Durango step heat table  -> hydrothermal_goethite_SI_body.tex
+%
+%  NOTE ON FIG. 3 / FIG. 4 ORDER: these were swapped from BJT's
+%  original sequence, which had the Arrhenius summary ahead of the
+%  sequence fits that produce it. They now run in causal order
+%  (fits -> rate constants -> Arrhenius), which matches the order the
+%  prose in \S\ref{sec:results-rate-constant} already followed.
+%
+%  Fig. 4 currently plots measured permeabilities K. When BJT recasts
+%  it in terms of the rate constant lambda, the following need to
+%  change together:
+%    - Fig. 4 caption: drop "converted from the rate constants fitted
+%      in Fig. 3 via K = lambda/GRT"; the conversion disappears.
+%    - Fig. 3 caption, last sentence: same, "converted to
+%      permeabilities ... plotted against temperature" becomes simply
+%      "plotted against temperature in Fig. 4".
+%    - \S\ref{sec:results-rate-constant} para 2 opener: "Converting
+%      these rate constants to permeabilities through K = lambda/GRT"
+%      becomes "Every fitted rate constant ...", and "regression of
+%      ln K" becomes "regression of ln lambda".
+%    - The activation energy is NOT invariant under the recast, so
+%      \ChTwoPermEa must be regenerated, not reused. Since
+%      lambda = K G R T,  ln lambda = ln K + ln(GR) + ln T, and
+%      d(ln T)/d(1/T) = -T, the fitted slope shifts by exactly RT:
+%          Ea(lambda) = Ea(K) + RT
+%      At the ~373 K midpoint of the 90-110 C fitting range that is
+%      about +740 cal/mol, i.e. ~7% of the current 10192 cal/mol.
+%      That is inside the current +/-1882 (2 s.e.) uncertainty, but
+%      it is a real and predictable offset: use it to check that the
+%      regenerated regression is right rather than quoting the old
+%      number.
+%
+%  PORTABILITY
+%    Class-agnostic body: no \documentclass, no \begin{document}, no
+%    abstract wrapper. \input{} from a journal or thesis wrapper.
+%    \graphicspath must include:
+%      Chapter1/Figures/generated/   Chapter1/Figures/source/
+%      Chapter2/Figures/generated/   Chapter2/Figures/source/
+%    Requires: booktabs, longtable, graphicx, amsmath, lscape (or
+%    pdflscape) for the landscape data tables.
+%    \input Chapter2/Writing/chapter2_derived_values.tex for \ChTwo* macros.
+% =============================================================
+
+\providecommand{\tophline}{\toprule}
+\providecommand{\middlehline}{\midrule}
+\providecommand{\bottomhline}{\bottomrule}
+
+% =============================================================
+\section{Introduction}\label{sec:introduction}
+% =============================================================
+
+Goethite (FeOOH) crystallization is datable only by U-Th/He geochronology \citep{shustervasconcelos2005,farley2024}. Goethite is a powerful chronometer for dating surface processes such weathering and ferruginization directly: laterite and duricrust formation and recrystallization \citep{monteiro2014,allard2018}, and the ferruginization of organic matter and paleosols \citep{heim2006,yappshuster2011,vasconcelos2013,danisik2013,hofmann2017}. 
+
+Interpreting a goethite U-Th/He date requires knowing the conditions under which the mineral retains radiogenic helium. Step heats of proton-irradiated samples measure the degree of partial helium loss by the \textsuperscript{4}He/\textsuperscript{3}He method \citep{shustervasconcelos2005}, and reported losses are always non-zero but modest, ranging from 2 to 30\% \citep{shustervasconcelos2005,heim2006,hofmann2017,deng2017}, but the effects of temperature, crystallite size, and chemical composition have not been determined experimentally and remain unresolved because goethite (FeOOH) decomposes to Hematite (Fe\textsubscript{2}O\textsubscript{3}) in the step heat experiments used to characterize it \citep{farley2024}. \citet{farley2024} measured evolved water by capacitance manometry during vacuum step heats and found helium and water release to be tightly correlated even below 200\textdegree C, indicating that decomposition, rather than helium migration through an unchanging crystal, governs the release. Vacuum step-heat results for goethite therefore need not describe helium behavior in nature.
+
+Goethite dehydration is suppressed at high water pressure, so a step heat conducted under hydrothermal conditions may interrogate helium loss rather than decomposition kinetics. 
+A particularly simple and agile approach to do this is to seal the sample inside a pure silica glass ampoule. Silica glass is the most helium-permeable common glass \citep{norton1953,altemose1961} because it lacks the network-modifying cations that occupy interstitial space in other glasses. Helium permeation in silica glass is sufficiently rapid, so helium evolved from a sample inside the ampoule escapes to the vacuum system and can be measured while other gaseous species, such as water, sulfur, or oxygen is retained. Earlier work has exploited the permeability and selectivity of silica glass for U-Th/He geochronology \citep{yakubovich2020,yakubovich2021,yakubovich2024} and for monotonic ramped-heating experiments \citep{yakubovich2019}, but not to impose hydrothermal conditions during step heating. 
+
+Silica glass encapsulation offers a unique opportunity to preserve reactive phases such as goethite that would otherwise decompose during helium step heat experiments Fig.~\ref{fig:stabilization-grid}, motivating the characterization of a step heat method utilizing this approach. Early applications reveal one cost: Permeation through the ampoule wall is rapid but not instantaneous, so helium released during a heating step is measured partly during that step and partly during later ones. We refer to this offset as permeation lag, and it must be quantified before any encapsulated step heat can be faithfully interpreted.
+
+
+\begin{figure}[htbp]
+\centering
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{cccc}
+ & \textbf{Control} & \textbf{Buffered} & \textbf{Unbuffered} \\[2pt]
+
+\rotatebox[]{90}{\textbf{Pyrite}} & % origin=c
+\includegraphics[width=0.27\textwidth]{LVPY_control_10um0.pdf} &
+\includegraphics[width=0.27\textwidth]{LVPy_buff_600_8Hr_10um07.pdf} &
+\includegraphics[width=0.27\textwidth]{LVPy_open_400_5Hr_2um11.pdf} \\[4pt]
+
+\rotatebox[]{90}{\textbf{Arsenopyrite}} &
+\includegraphics[width=0.27\textwidth]{Asp_control_2um7.pdf} &
+\includegraphics[width=0.27\textwidth]{asp_buff_400_8Hr_10um12.pdf} &
+\includegraphics[width=0.27\textwidth]{Asp_bigClosed_400C_4hr_10um5.pdf} \\[4pt]
+
+\rotatebox[]{90}{\textbf{Goethite}} & 
+\includegraphics[width=0.27\textwidth]{bahiaGoeControl_20um4.pdf} &
+\includegraphics[width=0.27\textwidth]{Goeth_Water_300C_4hr_10um6.pdf} &
+\includegraphics[width=0.27\textwidth]{Goethite_Vacuum_300C_11hr_10u9.pdf} \\
+
+\end{tabular}
+\caption{Secondary electron images of pyrite, arsenopyrite, and goethite before heat treatment (control), after heat treatment buffered within a sealed silica glass ampoule, and after heat treatment unbuffered. Sulfides were heated at 400\textdegree C for at least 4 hours, buffered with fused sulfur (pyrite) or mineral realgar (arsenopyrite); goethite was heated at 300\textdegree C, buffered with water for 4 hours and unbuffered in vacuum for 11 hours. Buffered samples retain the smooth surfaces and clear cleavage faces of the controls, with no evidence of decomposition. Unbuffered samples show contraction cracks and surface roughening. For goethite, cracks in the unbuffered material run both parallel and perpendicular to the long axis of the polycrystalline aggregate.}
+\label{fig:stabilization-grid}
+\end{figure}
+
+This paper establishes that the ampoule contribution to the measured helium in step heat experiments is tractable and that this method can address questions that vacuum experiments cannot. We show that encapsulation stabilizes reactive phases during heating and that we can successfully deconvolve the ampoule's permation lag effect from helium step heat measurements of Durango Apatite to recover its well-documented helium diffusion systematics \citep{wolf1998, farley2000}. We show that the ampoule's permeation rate constant can be measured during the experiment itself, which is necessary to apply the method to goethite because water-bearing ampoules often permeate heium anomalously fast. Finally, we apply the method to proton-irradiated goethite Win-06-01b under water saturation at 170--250\textdegree C, the first hydrothermal helium step heat reported for goethite.
+
+% =============================================================
+\section{Materials and Methods}\label{sec:methods}
+% =============================================================
+
+\subsection{Ampoule preparation and sealing}\label{sec:ampoule-prep}
+
+Segments of pure silica glass tube approximately 10\,cm long, 4\,mm outer diameter and 3\,mm inner diameter, were sonicated in sequential baths of acetone, ethanol, and MilliQ water, then dried overnight at 100\textdegree C. The tubes were hand-pulled into pipettes with a jewelry welding torch and the thin ends were fused closed. The sample and buffering phase were then loaded into the pipette tip. Inner and outer diameters were measured on a calibrated stereo microscope. These give the geometric factor \emph{G} of Eq.~\eqref{eq:geomfactor}: 2393.5\,cm\textsuperscript{-2} for the Durango apatite ampoule (850\,\textmu m inner, 1350\,\textmu m outer diameter) and, for the goethite ampoule, the value used throughout \S\ref{sec:results-rate-constant}.
+
+It is paramount to avoid heating the sample during the encapulation process to preserve the integrity of the step heat experimentl however, this challenging because silica glass softens well above 1600\textdegree C. To protect against heating during the sealing process, the sample-end of the ampoule was held by a water-soaked Kimwipe while the top was fused. Liquid water saturated the wipe afterward, so the adjacent glass containing the sample never exceeded 100\textdegree C. For goethite, the contents were frozen and held in liquid nitogen instead, serving the same purpose while additionally preventing the loss of the water charge.
+
+Before sealing, each ampoule was pumped to below 0.1\,torr through its open top. The purpose of evacuation is mechanical: under an internal-external pressure contrast, softening glass deforms inward and self-seals, which gives a better seal with far less heat input. Unfortunately, this process may not usefully reduce the ampoule's helium inventory, because room-temperature permeation is fast enough that atmospheric helium re-enters a sealed ampoule within hours to days. The residual atmospheric helium is instead measured directly at the start of each experiment (\S\ref{sec:permeation-steps}).
+
+Ampoules containing water withstood the vapor pressure of liquid-water saturation up to about 86\,bar at 300\textdegree C \citep{haar1984} but ruptured above 315\textdegree C. We recommend limiting water-bearing ampoules to below 300\textdegree C.
+
+\subsection{Encapsulated Durango apatite}\label{sec:methods-apatite}
+
+Durango apatite crushate sieved to 300\,\textmu m (radii $\approx$ 150\,\textmu m), 3.18\,mg, was encapsulated (Fig.~\ref{fig:ampoule-apatite}) and step heated over 100--400\textdegree C. Durango apatite is a standard for helium diffusion and U-Th/He thermochronometry \citep{zeitler1987,wolf1996,farley2000,shuster2005,shuster2006,flowers2007}, so its Arrhenius behavior is known independently. The experiment then is a direct test of the validity of the permeation-lag correction.
+
+Each high-temperature step was preceded and followed by a sequence of two or three low-temperature permeation steps (\S\ref{sec:permeation-steps}). The total \textsuperscript{4}He yield was estimated from the measured mass and the helium concentration of 194.2\,nccSTP/mg reported by \citet{farley2000}, a value verified independently in-lab. The atmospheric \textsuperscript{4}He present at the start of the experiment, constrained by the initial permeation steps, was 1.47 $\pm$ 0.18\,nccSTP. The full step-heat dataset is given in the Supplementary Information (Table~\ref{tab:si-durango-stepheat}).
+
+\subsection{Hydrothermal goethite experiment}\label{sec:methods-goethite}
+
+The sample is dense colloform goethite Win-06-01b, collected as float in the Flinders Ranges, South Australia \citep{waltenberg2012,monteiro2017}. It yields one of the oldest known goethite U-Th/He ages, 180--135\,Ma \citep{waltenberg2012}. Win-06-01b was irradiated with 220\,MeV protons for 24 hours at the Francis H. Burr Proton Therapy Center, Massachusetts General Hospital, following \citet{shuster2005} to produce a uniform \textsuperscript{3}He distribution. Aliquots of this same irradiated material were previously step heated in vacuum by \citet{monteiro2017} and \citet{farley2024}, whose results agree well with one another. 
+
+An aliquot of 1.18\,mg Win-06-01 goethite blades shorter than 2\,mm was transferred to the ampoule tip in the presence of an ionizing fan. Less than one microlitre of distilled water was added through a glass capillary, submerging the goethite. The ampoule was tapped to release bubbles before it was flash-frozen in liquid nitrogen, the it was transferred to a $-10$\textdegree C saltwater-ice bath so that the water ice remained solid while atmospheric gases were pumped away. After pumping to <0.1 torr, the saltwater bath was swapped with liquid nitrogen to prevent heating of the sample or melting of the water ice buffer, and the ampoule was fused closed. 
+
+The sealed ampoule, designated HT-Win-06-01b, retained all of its original water through the entire experiment (Fig.~\ref{fig:ampoule-post}), across a pressure contrast of more than eleven orders of magnitude between an internal vapor pressure of roughly 40\,bar at 250\textdegree C \citep{haar1984} and the high vacuum ( 10\textsuperscript{-7} torr) pressures of the lamp cell.
+
+% Two-panel figure: the two ampoules of this study, as prepared and
+% after a 40-day hydrothermal run. Sits at the §2.2/§2.3 boundary so
+% it follows the apatite methods and accompanies the goethite ones.
+% Sub-label fig:ampoule-post is retained from the previous
+% single-panel version so existing references still resolve.
+% Source aspect ratios are 1.38 (a) and 1.33 (b), so equal widths
+% give panels within ~4% of the same height; [t] keeps their tops
+% aligned regardless.
+\begin{figure}[htbp]
+\centering
+\begin{subfigure}[t]{0.48\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{Apatite_tube.jpg}
+  \caption{}
+  \label{fig:ampoule-apatite}
+\end{subfigure}
+\hfill
+\begin{subfigure}[t]{0.48\textwidth}
+  \centering
+  \includegraphics[width=\linewidth]{zoomout2.jpg}
+  \caption{}
+  \label{fig:ampoule-post}
+\end{subfigure}
+\caption{Silica glass ampoules used for helium step heat experiments. (\subref{fig:ampoule-apatite}) A typical ampoule as prepared, here containing Durango apatite crushate sieved to 300\,\textmu m (radii $\approx$ 150\,\textmu m). The ampoule is roughly one cm long and one mm wide; the bars visible behind it are separated by 1\,mm. (\subref{fig:ampoule-post}) HT-Win-06-01b after completion of the step heats, before breaking for the final furnace step. At room temperature this ampoule is about half gas, one third liquid water, and one sixth goethite shards under 2\,mm long. All of the original water remains, across a pressure contrast sustained for over a week at 250\textdegree C. The gel-like lining on the inner wall is likely amorphous silica dissolved from the ampoule and redeposited by the thermally cycled hydrothermal fluid.}
+\label{fig:ampoules}
+\end{figure}
+
+Before heating, HT-Win-06-01b was held at 70\textdegree C for four days under vacuum to remove atmospheric helium entrained in the ampoule. The experiment then ran for about 40 days over 170--250\textdegree C, with step durations from 2 hours to about a week, through multiple prograde and retrograde cycles designed to test for multiple diffusion domain behavior. We did not heat above 250\textdegree C because of the risk of rupture due to high vapor pressure.
+
+Temperature records show oscillations of about 1\textdegree C amplitude around each set point. While we did not conduct a detailed study to charectarize temperature gradients throughout the ampoule during step heats, we suggest that the apatite experiment of \S\ref{sec:methods-apatite} provides an independent check that recorded temperatures are accurate. 
+
+For the final step, the ampoule was broken and dried overnight at 50\textdegree C, then helium was completely degassed at $\sim$1100\textdegree C in a resistance furnace and measured on a Thermo Fisher Helix SFT mass spectrometer. 
+
+\subsection{Heating and helium isotope analysis}\label{sec:methods-analysis}
+
+Sealed ampoules were washed in ethanol and air dried, then placed in copper foil packets and mounted to a K-type thermocouple in an ultra-high-vacuum projector-lamp heating cell \citep{farley1999}. The lamp cell was pumped to high vacuum and held at 100\textdegree C for 30 minutes to desorb adsorbed species. For encapsulated Durango apatite, less than 0.5\,\textperthousand{} of the radiogenic helium would be expected to escape during this pre-treatment, about 0.01\,nccSTP, using the diffusion parameters of \citet{farley2000} and the forward equations of \citet{fechtigkalbitzer1966}.
+
+Helium isotope abundances for the Win-06-01b goethite were measured on a Thermo Fisher Helix-MC-Plus\textsuperscript{10K}, and 4He abundances were measured with isotope dilution on a Pfeiffer QMS 200 mass spectrometer, both at Caltech. Evolved gases were purified over a liquid-nitrogen charcoal trap, a titanium sponge getter, and a SAES NP10 getter. For the Win-06-01b step heats, \textsuperscript{3}He was counted on a pulse-counting electron multiplier and \textsuperscript{4}He on a Faraday detector. Sensitivities were tracked with measurements of calibrated gas standards every 8 hours, giving internal reproducibilities of 5\% for \textsuperscript{3}He and 2\% for \textsuperscript{4}He (2$\sigma$).
+
+For HT-Win-06-01b, a cold blank gave a negligible \textsuperscript{3}He blank and a \textsuperscript{4}He blank of about 1.25\,pccSTP, comparable to the 4He signals measured during low-temperature permeation steps, but 3He was well-above blank for these steps. Pump-out between steps was 1--5 minutes.
+
+\subsection{Data reduction}\label{sec:methods-reduction}
+
+Apparent values of $D/a^{2}$ for both isotopes were calculated from step durations and cumulative corrected yields using the equations of \citet{fechtigkalbitzer1966}. Because the permeation-lag correction returns bounds on the release rather than a point value (\S\ref{sec:bounding}), each step yields a range of diffusivities. The range is widest when the difference between successive cumulative fractional yields is largest, so the upper bound corresponds to the case in which the preceding step carried no residual and the current step carried the maximum, and the lower bound to the reverse. A linear regression defining the Stage 1 reference line was fit to \textsuperscript{3}He steps above 7\% cumulative fractional yield. No uncertainty on the total \textsuperscript{3}He and \textsuperscript{4}He inventories is propagated into the diffusivities: the experiment operated at low cumulative yields, where that term shifts all diffusivities almost equally and so affects only the regression intercept and the closure temperature derived from it, by an amount small compared with the uncertainty on the regression itself.
+
+Bounds on the \textsuperscript{4}He/\textsuperscript{3}He ratio of each step were evaluated from the four end-member permeation scenarios that the two isotopes could jointly have experienced: no residual before or after the step; maximum residual after only; maximum residual both before and after; and maximum residual before only. Residuals are taken from Eq.~\eqref{eq:steadystate} and the reported bounds are the extrema over these four cases. This treatment applies to both isotopes together, which is one reason the two are reduced identically (\S\ref{sec:route-choice}).
+
+Helium continues to permeate while the ampoule cools between the end of a heating step and the inlet of gas to the mass spectrometer, which inflates the apparent permeability recovered from a permeation series. To quantify this, a finite-difference model was used to simulate diffusion into, through, and out of a hollow glass cylinder of the ampoule's dimensions containing helium gas within a helium-free chamber, subject to the same heating and cooling schedule as the permeation steps. The cylinder was charged with an arbitrary quantity of helium at the end of each experimental step and given the steady-state concentration profile appropriate to 24\textdegree C. \textsuperscript{3}He permeabilities were taken as the product of the \textsuperscript{4}He values of \citet{swets1961} and the \textsuperscript{3}He/\textsuperscript{4}He ratio of \citet{jones1953}. Cooling was imposed using a quadratic fit to $dT/dt$ derived from the experiment's own temperature records, with a single root at 24\textdegree C so that the simulated ampoule stabilises at room temperature:
+
+\begin{equation}
+\label{eq:coolingrate}
+\frac{dT}{dt} = -\left(9.23081\times10^{-6}\right)(T-24)^{2} - \left(7.74304\times10^{-4}\right)(T-24) ,
+\end{equation}
+
+with $dT/dt$ in \textdegree C\,s\textsuperscript{-1}, $T$ in \textdegree C, and $R^{2} = 0.9633$.
+
+\subsection{Electron microscopy of thermally treated phases}\label{sec:methods-sem}
+
+To assess whether encapsulation preserves reactive phases at experimental temperatures, single crystals of pyrite and arsenopyrite and aggregates of Bahia goethite morphologically similar to Win-06-01b \citep{shustervasconcelos2005,monteiro2017} were subjected to heat treatment in both buffered and unbuffered configurations: unbuffered samples were heated either in vacuum in the lamp-heating apparatus of \citet{farley1999} or in open air while buffered samples were sealed in silica glass ampoules with fused sulfur, mineral realgar, or water for pyrite, arsenopyrite, and goethite respectively. Sulfides were held at 400\textdegree C for at least 4 hours and goethite at 300\textdegree C for 4--11 hours. The ampoules were then broken and the samples air dried, then mounted on carbon tape, carbon coated, and imaged in secondary electron mode on a ZEISS 1550VP field emission SEM at Caltech.
+
+% =============================================================
+\section{Permeation Systematics of Fused Silica Ampoules}\label{sec:theory}
+% =============================================================
+
+\subsection{Helium budget of a single step}\label{sec:budget}
+
+Consider one heating step. Helium enters the ampoule interior from the sample and leaves it by permeation through the wall, so
+
+\begin{equation}
+\label{eq:permlag}
+n_{t} = n_{0} + \omega - m .
+\end{equation}
+
+Here $n_{0}$ is the helium in the ampoule at the start of the step, $n_{t}$ is the helium remaining at its end, $\omega$ is the helium released by the sample during the step, and $m$ is the helium that permeated out and was measured. Only $m$ is observed; but the quantity of interest is $\omega$.
+
+Steps are consecutive, so the helium inventory quantified between steps applies to both the previous and the subsequent step:
+
+\begin{equation}
+\label{eq:carry}
+n_{t}^{\,i} = n_{0}^{\,i+1}, \qquad n_{0}^{\,i} = n_{t}^{\,i-1} .
+\end{equation}
+
+Recovering $\omega$ for a step requires knowledge of the ampoule's helium content immediately before and immediately after it. Sections~\ref{sec:permeation-steps} and~\ref{sec:bounding} give the two routes we use to obtain those quantities.
+
+When $\omega$ is large compared with $n_{0}$ and $n_{t}$, Eq.~\eqref{eq:permlag} reduces to $\omega \approx m$ and no correction is needed. That condition does not hold for hour-long steps at 100--400\textdegree C, such as those used on the Durango apatite, but it is approached for long steps used with retentive phases, such as Win-06-01b (\S\ref{sec:bounding}).
+
+\subsection{Assumptions and the permeation rate law}\label{sec:assumptions}
+
+Helium permeation through silica glass is a well-understood first order process \citep{norton1953,altemose1961,swets1961,masaryk1968}. Two conditions must hold before permeation can be described by a first-order rate law.
+
+\begin{enumerate}
+\item The helium partial pressure outside the ampoule is negligible compared with that inside. The ampoule and diffusion cell volumes differ by a factor of roughly 10,000 \citep{farley1999}, so this holds throughout.
+\item The helium concentration profile across the glass wall is at diffusive steady state. This is established within 30--70 minutes at 80\textdegree C for the ampoules used here, and it is disturbed whenever the temperature changes, because the glass/gas partitioning of helium is temperature dependent. We therefore hold the ampoule at the permeation temperature for at least one diffusive timescale $\tau = L^{2}/D$ after every temperature change before measuring, where $L$ is the wall thickness and $D$ the diffusivity of helium in silica glass \citep{swets1961}.
+\end{enumerate}
+
+Given these conditions, permeation is first order in the amount of helium present:
+
+\begin{equation}
+\label{eq:permode}
+\frac{dn}{dt} = -GKnRT ,
+\end{equation}
+ 
+where $n$ is the number of helium atoms, $G$ is a geometric factor with units of cm\textsuperscript{-2}, $K$ is the permeation constant for helium in fused silica, which follows an Arrhenius law $K(T) = K_{0}e^{-E_{a}/RT}$ and has been measured repeatedly \citep{norton1953,altemose1961,swets1961,masaryk1968}, $R$ is the gas constant, and $T$ is temperature in Kelvin. Equation~\eqref{eq:permode} is the standard permeation equation \citep{norton1953,altemose1961,swets1961,masaryk1968}, written in terms of atom counts rather than partial pressures via the ideal gas law and taking the external partial pressure as zero. 
+
+For a cylindrical wall with negligible permeation through the ends, the geometric factor is 
+
+\begin{equation}
+\label{eq:geomfactor}
+G = \frac{2}{a^{2}\ln(b/a)} ,
+\end{equation}
+
+with $a$ the internal and $b$ the external radius \citep{masaryk1968}. There is no dependence on length. $G$ varies with ampoule construction and must be determined for each experiment.
+
+\subsection{Recovering the residual helium with permeation steps}\label{sec:permeation-steps}
+
+At temperatures low enough that the sample releases no helium, $\omega = 0$ and the ampoule's helium inventory changes only by permeation. The measured helium from such a step then is a measurement of the helium inventory of the ampoule. To this end, a useful expression for the fractional yield of an isothermal step is derived, first through integration of Eq.~\eqref{eq:permode} by separation of variables, yielding $n_t = n_0e^{-GKRTt}$, then by relating the measured value to the tube contents by Eq.~\eqref{eq:permlag} $\left(m(\omega=0)~=~n_0-n_t\right)$.
+
+\begin{equation}
+\label{eq:permsol}
+^{He}F = \frac{m}{n_{0}} = 1 - e^{-\lambda t} , \qquad \lambda = KGRT ,
+\end{equation}
+
+This equation is applied to recover the helium inventory at the beginning of the step.
+
+\begin{equation}
+\label{eq:n0perm}
+n_{0} = \frac{m}{^{He}F} .
+\end{equation}
+
+where $^{He}F$ is the fraction of the ampoule's helium inventory that permeates out during a step of duration $t$, and $\lambda$ is the ampoule's permeation rate constant. Collecting $K$, $G$, $R$, and $T$ into $\lambda$ is useful because $\lambda$ is the quantity that can be measured directly during an experiment (\S\ref{sec:rate-constant}), whereas $K$ and $G$ cannot be separated without independent knowledge of the ampoule geometry.
+ 
+We call such a low-temperature step a \emph{permeation step}. A permeation step does double duty: through Eq.~\eqref{eq:carry} it constrains both the helium remaining after the preceding high-temperature step and the helium inherited by the following one. Placing a permeation step after every high-temperature step therefore supplies $n_{t}$ and $n_{0}$ throughout the experiment, and Eq.~\eqref{eq:permlag} returns $\omega$. This is the approach used to reduce the encapsulated Durango apatite step heat data(\S\ref{sec:results-apatite}).
+
+\subsection{Measuring the ampoule's rate constant during the experiment}\label{sec:rate-constant}
+
+Applying Eq.~\eqref{eq:n0perm} requires $\lambda$. Published permeabilities for anhydrous silica glass \citep{norton1953,altemose1961,swets1961,masaryk1968} combined with a measured $G$ give an estimate, but they should not be relied upon, and they cannot be relied upon at all in hydrothermal experiments: water entering the glass changes its permeability \citep{shelby1972,tsuru2011}, and water-bearing ampoules show anomalously high rate constants (\S\ref{sec:discussion-rate-constant}). The rate constant should therefore be measured on the ampoule actually in use.
+
+Because permeation remains first order regardless of the values of $K$ and $G$, a series of consecutive isothermal permeation steps determines $\lambda$ and $n_{0}$ together with a non-linear least squares solve.
+
+\begin{equation}
+\label{eq:incyield}
+m_{i+1} = n_{0}\left(1 - e^{-\lambda t_{i+1}}\right) - n_{0}\left(1 - e^{-\lambda t_{i}}\right) .
+\end{equation}
+
+We fit individual step yields rather than cumulative yields, because cumulative fitting propagates the errors of early measurements into later measurements, unduly biasing the solver to fit earlier measurements. We used the Levenberg-Marquardt implementation in SciPy \citep{virtanen2020}, weighted by each measurement's own uncertainty, with initial guesses $\lambda \approx 6\times10^{-6}$\,s\textsuperscript{-1} and $n_{0} \approx m_{i}/(1-e^{-\lambda t_{i}})$ evaluated at the first measurement of each series. Uncertainties come from the fit covariance matrices. The fit is poorly conditioned unless enough time has elapsed for the cumulative yield to show curvature, which in practice means letting the permeation rate slow noticeably across three or more consecutive measurements. The exercise can technically be done with as few as two consecutive measurements, although the solver would be unable to estimate uncertainties on the fit parameters. 
+
+\subsection{Bounding the residual helium for long steps}\label{sec:bounding}
+
+Permeation steps require a measurable signal at low temperature. When the sample is retentive and its yields are small, the low-temperature signal can fall to blank level and Eq.~\eqref{eq:n0perm} cannot be applied. This is the situation for \textsuperscript{4}He in the goethite experiment (\S\ref{sec:results-rate-constant}). An alternative is available when steps are long compared with the permeation timescale of the ampoule, which is common for retentive phases.
+
+During a sufficiently long step the ampoule approaches a steady state in which the helium outflux of permeation is balanced by release from the sample, so the residual inventory stops growing while measurable helium continues to accumulate. As time proceeds after this condition is met, the helium inventory becomes relatively small compared to the measured abundance and $\omega \approx m$ becomes an increasinly accurate approximation. Additionaly, an upper bound constraint on the ampoule's helium inventory can be calculated from the high temperature experimental measurement alone. The residual is then bounded above by
+
+\begin{equation}
+\label{eq:steadystate}
+n^{ss} \leq \frac{m}{\lambda t - 1} ,
+\end{equation}
+
+which holds once $\lambda t$ is large enough for steady state to be assumed. When Eq.~\eqref{eq:steadystate} is applied to a long step and to the step preceding it, Eq.~\eqref{eq:permlag}, can be used to bracket $\omega$, the true abundance of helium evolved from the sample:
+
+\begin{equation}
+\label{eq:bound}
+m_{1} - \frac{m_{0}}{(\lambda t)_{0} - 1} \leq \omega_{1} \leq m_{1}\left(1 + \frac{1}{(\lambda t)_{1} - 1}\right) .
+\end{equation}
+
+Equation~\eqref{eq:steadystate} assumes the sample's release rate is constant at a given temperature. In practice the release rate declines with time for volume diffusion \citep{wolf1996,reinersfarley1999,farleymckeon2015,farley2018,farley2024} and for first-order processes \citep{yakubovich2010,wilson1973}, which makes the true residual smaller than the bound and Eq.~\eqref{eq:steadystate} correspondingly conservative. The exceptions are initially inhomogeneous helium distributions at low cumulative yields \citep{goldsmith2020,ketcham2011,shuster2004,farley1996} and radiation damage annealing \citep{cherniak2019,guenthner2013,flowers2007,flowers2009,shuster2006}, which can cause can cause helium release to accelerate.
+
+Equation~\eqref{eq:steadystate} is conservative only if the value of $\lambda$ used does not exceed the true one, because a lower bound on $\lambda$ yields an upper bound on the residual. Any $\lambda$ that can be independently shown to underestimate the ampoule's true rate constant is therefore admissible, and the more it underestimates, the wider and safer the resulting bound.
+
+\subsection{Choosing between the two routes}\label{sec:route-choice}
+
+The two routes have different data requirements, so the choice is made per isotope according to the following rule. Where an isotope's low-temperature permeation steps give signals resolvable above blank, its residual ampoule inventory is recovered directly from Eq.~\eqref{eq:n0perm} using the rate constant measured in situ (\S\ref{sec:rate-constant}). Where those signals are at blank level, the residual is instead bounded above by Eq.~\eqref{eq:steadystate}, which requires only a lower-bound estimate of $\lambda$; the conservatism of the estimate used here is established in \S\ref{sec:discussion-rate-constant}. Steps for which $\lambda t < 4$ admit no useful bound and are excluded from further analysis, except where a bound on the preceding step's residual is available, in which case Eq.~\eqref{eq:bound} can still be evaluated.
+
+For HT-Win-06-01b, \textsuperscript{4}He falls in the second case and \textsuperscript{3}He in the first (\S\ref{sec:results-rate-constant}). We nonetheless reduced both isotopes by the bounding route. The reason is comparability rather than convenience: two of the principal results of this work, the offset between the \textsuperscript{3}He and \textsuperscript{4}He arrays on a delta plot and the bulk-normalized \textsuperscript{4}He/\textsuperscript{3}He spectra, are direct comparisons between the two isotopes. Reducing them by different routes would make any offset between them partly an artifact of the reduction. The isotope ratio bounds in particular are evaluated from permeation end-member scenarios applied to both isotopes together (\S\ref{sec:methods-reduction}), which requires a single treatment. Section~\ref{sec:results-rate-constant} reports the \textsuperscript{3}He reduction by both routes so that the effect of this choice can be assessed directly.
+
+We would nonetheless recommend the direct route of \S\ref{sec:permeation-steps} to experimentalists designing new experiments of this kind. It uses the ampoule's own measured rate constant rather than a conservative external bound, and so returns a point estimate with propagated measurement uncertainty instead of an envelope. An experiment designed so that both isotopes give resolvable low-temperature signals can use it throughout and avoid the trade-off described above.
+
+% =============================================================
+\section{Results}\label{sec:results}
+% =============================================================
+
+\subsection{Encapsulated Durango apatite step heats}\label{sec:results-apatite}
+
+Without correction, apparent diffusivities from the encapsulated Durango apatite step heat are irregular and would not be recognized as belonging to this well-characterized sample (Fig.~\ref{fig:durango-arrhenius}). Applying the permeation-step correction of \S\ref{sec:permeation-steps} removes this irregularity. The corrected diffusivities agree, within uncertainty, with the Arrhenius relationship reported by \citet{farley2000} for Durango apatite of the same 150\,\textmu m half-prism width, except for the first two plotted points and the 400\textdegree C step (Fig.~\ref{fig:durango-arrhenius}), discussed below in \S\ref{sec:recover-arrhenius}. Four of the 25 high-temperature steps had permeation lag corrected yields within 2$\sigma$ of zero and are excluded from the figure.
+
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{encapsulated_DApErr.pdf}
+\caption{Arrhenius plot of a helium step heat of silica glass encapsulated Durango apatite, with 2$\sigma$ uncertainties. Without permeation lag corrections the apparent diffusivities are highly irregular. With corrections the sample agrees with the diffusion parameters reported by \citet{farley2000} for the appropriate sieve size ($r$ = 150\,\textmu m). Beyond 300\textdegree C the activation energy decreases to give a slight downward curl, likely caused by annealing of crystal defects and radiation damage \citep{wolf1996,farley2000}. Apparent diffusivities are calculated with the equations of \citet{fechtigkalbitzer1966}. Four corrected diffusivities are within 2$\sigma$ of zero and are excluded. The full dataset is given in Table~\ref{tab:si-durango-stepheat}.}
+\label{fig:durango-arrhenius}
+\end{figure}
+
+\subsection{Rate constant of the hydrothermal goethite ampoule}\label{sec:results-rate-constant}
+
+Measured \textsuperscript{4}He during the low-temperature permeation steps of HT-Win-06-01b was indistinguishable from blank throughout the experiment. Measured \textsuperscript{3}He during the same steps was well above blank. By the rule of \S\ref{sec:route-choice}, \textsuperscript{4}He therefore falls to the bounding route and \textsuperscript{3}He is eligible for the direct route.
+
+Ten series of three to four consecutive isothermal permeation steps, held at 90--110\textdegree C for 120--180 minutes each with 26 minutes of cooling before inlet, were fit to Eq.~\eqref{eq:incyield} (Fig.~\ref{fig:permeation-fits}). All ten are described by the first-order model within measurement uncertainty. Fitted rate constants span
+% ---------------------------------------------------------------
+% TODO [NUMBER NEEDED -- 1 of 3]: the fitted per-series lambda range.
+% The Results section currently describes the measurement only by
+% comparison to the literature, which is exactly Farley comment #170
+% / #175 ("the results section never really describes your results";
+% "describe your data before comparing to someone else"). It needs
+% the bare values.
+%   Required: min and max fitted lambda across the ten series, units
+%   s^-1, and ideally the median.
+%   Where to get them: fig_naive_isothermal_fits.py calls
+%   scipy.optimize.curve_fit per series but does not persist popt.
+%   naive_lambda_arrhenius_cache.json holds only the aggregate
+%   regression (slope, intercept, r2, n=10, Ea). Dump popt[0] per
+%   series to the cache and quote the range here.
+% ---------------------------------------------------------------
+\textbf{[$\lambda$ range to be inserted]}, with 2$\sigma$ uncertainties of 0.08 to 0.46 log units and no trend resolvable against step duration. One further series that otherwise qualified was poorly conditioned and was excluded; however, its fitted $\lambda$ agreed with the others within uncertainty.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{NaiveIsothermalFits_Grid.pdf}
+\caption{Cumulative \textsuperscript{3}He yield against cumulative time for each series of consecutive isothermal permeation steps on HT-Win-06-01b, with the non-linear least squares fit of $\lambda$ and $n_{0}$ to Eq.~\eqref{eq:incyield} overlain. Each series is held at a single temperature between 90 and 110\textdegree C. The curvature of each series is what conditions the fit: a series in which the permeation rate has not yet slowed appreciably constrains $\lambda$ and $n_{0}$ only weakly (\S\ref{sec:rate-constant}). The rate constants recovered here are converted to permeabilities, $K = \lambda/GRT$, and plotted against temperature in Fig.~\ref{fig:ampoule-permeability}.}
+\label{fig:permeation-fits}
+\end{figure}
+
+Converting these rate constants to permeabilities through $K = \lambda/GRT$ and regressing $\ln K$ against inverse temperature over 90--110\textdegree C gives $R^{2} = \ChTwoPermRtwo$ across \ChTwoPermN\ series, with an activation energy of \ChTwoPermEa\ $\pm$ \ChTwoPermEaErr\,cal/mol (2 s.e.) (Fig.~\ref{fig:ampoule-permeability}).
+
+The finite-difference cooling simulation of \S\ref{sec:methods-reduction} predicts that helium permeating during the cooling interval before each measurement raises the apparent permeability by an offset that is near constant across the temperature range, varies only with hold duration, and is smaller than the 2$\sigma$ uncertainties on the fitted values (Fig.~\ref{fig:ampoule-permeability}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{NaiveLambda_Arrhenius.pdf}
+\caption{Apparent permeation coefficients for HT-Win-06-01b against inverse temperature, converted from the rate constants fitted in Fig.~\ref{fig:permeation-fits} via $K = \lambda/GRT$. The activation energy is higher than for anhydrous silica glass, as expected \citep{masaryk1968,shelby1972}. The apparent \textsuperscript{3}He permeability exceeding the literature values of \citet{swets1961} and \citet{jones1953} is not expected, and is attributed to displacement of gas-phase volume by liquid water (\S\ref{sec:discussion-rate-constant}). Points labelled ``Diffusion Model with cooling, Anhydrous'' give the excess apparent permeability predicted for a dry ampoule that continued to permeate during the 26 minute cooldown before measurement, simulated over the same 120--180 minute holds at 90--110\textdegree C. Their scatter reflects differences in hold duration and is small; the offset from the literature values is near constant and much smaller than the uncertainty on the fitted values.}
+\label{fig:ampoule-permeability}
+\end{figure}
+
+Both isotopes were reduced by the bounding route of \S\ref{sec:bounding} for the reasons given in \S\ref{sec:route-choice}, taking $\lambda$ from the \textsuperscript{4}He permeability of \citet{swets1961} and, for \textsuperscript{3}He, from that value scaled by the ratio of \citet{jones1953}. Propagating the full width of the resulting envelope through the Stage 1 regression (\S\ref{sec:results-goethite}) moves the activation energy over 157.1--160.6\,kJ/mol and the closure temperature over 97.5--101.2\textdegree C, a spread smaller in both cases than the 2 s.e. uncertainty of the regression itself (\ChTwoEaErr\,kJ/mol and \ChTwoTcErr\,\textdegree C).
+
+Reducing \textsuperscript{3}He instead by the direct route of \S\ref{sec:permeation-steps}, using the rate constants fitted above rather than the literature bound, gives a Stage 1 activation energy of
+% ---------------------------------------------------------------
+% TODO [NUMBER NEEDED -- 2 of 3]: direct-route Stage 1 Ea (+/- 2 s.e.)
+% and ideally R^2 and Tc, for the 3He regression above 7% cumulative
+% yield, reduced by the informed/direct route instead of bounding.
+%   Why it matters: 4He can ONLY be reduced by bounding, so this
+%   agreement is the only empirical validation the 4He array will
+%   ever have. Currently it sits in the Chapter 2 SI as a qualitative
+%   "the two methods agree", which understates it.
+%   Where to get it: the informed/naive-bracketing reduction already
+%   exists -- Chapter2/Writing/chapter2goethite_SI_body.tex and the
+%   "Raw Data and Corrections" / "Diffusivities" tabs of
+%   IrrWin0601bTube012624FullDataBJT.xlsx. Re-run the Stage 1
+%   regression on that reduction and quote Ea here.
+% ---------------------------------------------------------------
+\textbf{[direct-route $E_a$ to be inserted]}\,kJ/mol, within uncertainty of the value obtained by bounding.
+
+The first three experimental steps have $\lambda t < 4$ and no bound could be evaluated; they are excluded from further analysis. Later steps with $\lambda t < 4$ could be treated, because bounds on the preceding steps' residuals were available. Tables~\ref{tab:winsor-3he} and~\ref{tab:winsor-4he} give the resulting dataset.
+
+\clearpage
+\input{tables/winsor_3he.tex}
+\input{tables/winsor_4he.tex}
+\clearpage
+
+\subsection{Helium release from goethite under hydrothermal conditions}\label{sec:results-goethite}
+
+The ampoule retained its full water charge for the duration of the experiment (Fig.~\ref{fig:ampoule-post}), so hydrothermal conditions were maintained throughout.
+
+Apparent diffusivities for HT-Win-06-01b are lower than those measured for the same sample in vacuum by \citet{monteiro2017} and \citet{farley2024} at every step. This gap widens to approximately seven natural log units after the first few steps (Figs.~\ref{fig:arrhenius-full},~\ref{fig:arrhenius-zoom}).
+
+The \textsuperscript{3}He Arrhenius array sharply declines along a concave-up trend to about 3.5\% cumulative \textsuperscript{3}He yield, then decreases slowly along sub-parallel arrays through the prograde and retrograde cycles between 3.5 and 7\% cumulative yield. Beyond about 7\% cumulative yield the array is linear. A regression over the remaining \ChTwoN\ steps, spanning 7--15\% cumulative \textsuperscript{3}He yield, gives $R^{2} = \ChTwoRtwo$ and an activation energy of \ChTwoEa\ $\pm$ \ChTwoEaErr\,kJ/mol. Treating this array as a single diffusion domain and considering only the uncertainty in the intercept gives a closure temperature of \ChTwoTc\ $\pm$ \ChTwoTcErr\,\textdegree C at a cooling rate of 10\textdegree C/Ma. Total \textsuperscript{3}He released over the experiment was 14.7\% of the sample's total \textsuperscript{3}helium inventory.
+
+The \textsuperscript{4}He array differs in shape. It is concave-down to about 0.1\% cumulative \textsuperscript{4}He yield, after which it follows a roughly linear array about one log unit below the \textsuperscript{3}He array.
+
+On a delta plot constructed against the \textsuperscript{3}He regression as reference line, \textsuperscript{3}He delta values decrease monotonically until about 7\% cumulative loss and are within error of the reference line thereafter (Fig.~\ref{fig:delta-zoom}). \textsuperscript{4}He delta values are more uncertain; they increase initially and settle into a slow increase or plateau about one log unit below the \textsuperscript{3}He reference line by about 5\% cumulative \textsuperscript{3}He yield. A group of low-yield measurements on the first retrograde cycle produce scattered, high-uncertainty delta values just after 4\% cumulative loss.
+
+Bulk-normalized \textsuperscript{4}He/\textsuperscript{3}He ratios begin at very low values and increase steeply, with the rate of increase slowing as the experiment proceeds (Fig.~\ref{fig:ratio-spectra}). At any given cumulative \textsuperscript{3}He yield the hydrothermal experiment records lower bulk-normalized ratios than either vacuum experiment on the same sample, and its approach toward a plateau is the slowest of the three. The hydrothermal experiment did not reach a plateau. 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{winsor_goethite_Diffusivities_Arrhenius.pdf}
+\caption{Arrhenius plot of \textsuperscript{3}He and \textsuperscript{4}He apparent diffusivities from HT-Win-06-01b, with step heats of the same Win-06-01b material in vacuum from \citet{monteiro2017} and \citet{farley2024}. The Stage 2 reference line is fit to the step heats of \citet{monteiro2017}. Error bars on the data from this study are omitted for clarity. A diffusion domain corresponding to the Stage 2 reference line would have a closure temperature of about 45\textdegree C at a cooling rate of 10\textdegree C/Ma.}
+\label{fig:arrhenius-full}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{winsor_goethite_Diffusivities_Arrhenius_Zoomin.pdf}
+\caption{Linear regression of the \textsuperscript{3}He apparent diffusivities of HT-Win-06-01b above 7\% cumulative yield, defining the Stage 1 reference line. A diffusion domain corresponding to this line has a closure temperature of \ChTwoTc\ $\pm$ \ChTwoTcErr\,\textdegree C at a cooling rate of 10\textdegree C/Ma. Apparent diffusivities calculated from \textsuperscript{4}He are sometimes within error of those calculated from \textsuperscript{3}He, but are occasionally resolved at the 2$\sigma$ level and lie about one log unit lower after a cumulative \textsuperscript{3}He yield of 14\%.}
+\label{fig:arrhenius-zoom}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{DeltasWinsorGTzoomin_VacuumHydrothermal.pdf}
+\caption{Delta plot after \citet{farley2018}, comparable to the $r/r_{0}$ plots of \citet{lovera1991} and \citet{farleyflowers2012}. Delta is the difference between apparent log diffusivity and the Stage 1 reference line, which removes the temperature dependence of the dominant migration process to show how apparent diffusivities evolve through the experiment. \textsuperscript{3}He decreases monotonically, settles on a temporary plateau from 4--6\% fractional yield, then follows the reference line from 7--15\%. \textsuperscript{4}He delta values are more uncertain; they increase initially and settle about one log unit below the \textsuperscript{3}He reference line by about 5\% \textsuperscript{3}He yield.}
+\label{fig:delta-zoom}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{Comparative_Ratios_Dtplot_WinsorGT_VacuumHDMKAF.pdf}
+\caption{Bulk-normalized \textsuperscript{4}He/\textsuperscript{3}He ratios for Win-06-01b step heats against cumulative fractional \textsuperscript{3}He yield. The hydrothermal experiment records lower ratios at a given yield than either vacuum experiment for the entire duration, apart from the first step. All three begin at very small values and increase steeply, with the rate of increase slowing between 0.05 and 0.2 cumulative yield. The hydrothermal experiment is plotted as an envelope spanning the lower and upper bounds of Eq.~\eqref{eq:bound}. Ten of 34 analyses are excluded, either because $\lambda t$ was too small to evaluate bounds or because the measured \textsuperscript{3}He signal was below 0.1\,pccSTP.}
+\label{fig:ratio-spectra}
+\end{figure}
+
+% =============================================================
+\section{Discussion}\label{sec:discussion}
+% =============================================================
+
+\subsection{Encapsulation stabilizes reactive phases during heating}\label{sec:results-stabilization}
+
+Pyrite, arsenopyrite, and goethite heated without a buffering phase, in vacuum or in open air, develop surface roughening and contraction cracks (Fig.~\ref{fig:stabilization-grid}, right column). The same phases heated at the same temperatures inside sealed silica glass ampoules containing sulfur, realgar, or water retain the smooth surfaces and clear cleavage faces of the untreated controls (Fig.~\ref{fig:stabilization-grid}, centre column). For goethite, cracks in the unbuffered material run both parallel and perpendicular to the long axis of the aggregate. Goethite heated in open air turned red; goethite heated in vacuum remained black.
+
+\subsection{Recovering diffusivities for encapsulated Durango apatite}\label{sec:recover-arrhenius}
+Step heats on encapsulated Durango apatite reproduces the diffusion behavior measured on unencapsulated material, following deconvolution of the permeation lag from the sample's own helium release using the protocol described in \S\ref{sec:permeation-steps}. 
+The recovered inverted diffusivities of the encapsulated Durango apatite differ slightly from the reference line taken from \citet{farley2000} at the very beginning and end of the experiment, consistent with previous work on the sample. \citet{farley2000} also observed anomalously low apparent diffusivities in early steps. Above 300\textdegree C the corrected array curves downward, a feature documented for Durango apatite and attributed to annealing of radiation damage and crystal defects \citep{wolf1996,farley2000,shuster2006}. 
+
+This experiment shows that permeation lag can be deconvolved from the sample's own helium release. This approach exhibits robustness in spite of several complexities.
+\begin{enumerate}
+\item The apatite grains were a substantial portion ($\approx$20\%) of the volume of the ampoule. As discussed in \S\ref{sec:discussion-rate-constant} below, Eq.~\eqref{eq:keff} predicts that this is expected to increase the rate constant of permeation by 25\%. Indeed, when we reduce the data using rate constants 25\% higher than the literature values, we recover a cleaner arrhenius plot. Complexities such as these further motivate in-situ measurement of the ampoule's rate constant during the experiment as detailed in \S\ref{sec:rate-constant}. Even still, the $\approx$25\% error in permeabilities does not affect the interpretation of these data.
+\item Less retentive phases such as apatite have the potential to produce relatively large concentrations of helium within the glass ampoule. This could dampen the helium concentration gradient between the sample and the gas phase, slowing helium evolution to produce erroneously low apparent diffusivities when inverted using the equations of \citet{fechtigkalbitzer1966}. The ratio of helium concentration in the ampoule gas phase and the sample can be calculated given their relative volumes, the calculated helium inventory of the ampoule, and the remaining helium within the sample. For the Durango experiment, the maximum value of $C^{He}_{gas}/C^{He}_{apatite}$ is between 1 and 2\%, which, although unimportant for the scope of this work, may be unacceptable for later studies using this method. For more retentive phases, this is less likely to be a concern: this ratio never exceeded 1\textperthousand ~for the Win-06-01b step heat experiment. 
+\end{enumerate}
+
+
+\subsection{Elevated rate constants in water-bearing ampoules}\label{sec:discussion-rate-constant}
+
+Every apparent \textsuperscript{3}He permeability measured on HT-Win-06-01b equals or exceeds the anhydrous literature value, and the fitted activation energy of \ChTwoPermEa\ $\pm$ \ChTwoPermEaErr\,cal/mol is substantially higher than expected for silica glass with or without water \citep{swets1961,jones1953,masaryk1968,shelby1972}, lying closer to the values reported for glasses rich in network-modifying cations \citep{norton1953,altemose1961}. Our measurement of the Win-06-01b helium permeation rate above the anhydrous literature value was, at first, an unexpected result. Water and hydroxyl groups dissolved in silica glass are reported to decrease helium permeability at all temperatures \citep{tsuru2011,shelby1972,masaryk1968}, following the interpretation that species such as OH\textsuperscript{-} occupy interstitial space in the glass network \citep{norton1953,shackelford1999}; However, we have observed anomalously high rate constants in water-bearing ampoules consistently.
+
+The offset is not an artifact of the measurement procedure. Helium continues to permeate while the ampoule cools before each inlet, which inflates the apparent permeability, but the finite-difference simulation of that process predicts an offset that is near constant across the temperature range and smaller than the uncertainties on the fitted values (Fig.~\ref{fig:ampoule-permeability}). It cannot account for a systematic excess over the literature values, nor for the elevated activation energy, which depends on the slope rather than on any constant offset.
+
+The likely explanation is geometric: adding a significant volume of water reduces the volume available to the gas phase without reducing the glass area available for permeation. Helium is only sparingly soluble in water and diffuses through it rapidly, roughly $7 \times 10^{-5}$\,cm\textsuperscript{2}/s at room temperature \citep{verhallen1984} against about $2 \times 10^{-8}$\,cm\textsuperscript{2}/s in silica glass \citep{swets1961}. On the timescale of permeation through the glass wall, transport through the water is effectively instantaneous, so the gas phase stays in equilibrium with the glass over the whole inner surface, including where liquid water contacts it. Helium partitions strongly into the gas phase over both water and glass: helium concentrations in the glass and water are about 3\% and 1\% respectively of the gas-phase concentration, using solubilities from \citet{sander2015} and \citet{swets1961}. Displacing gas-phase volume with water therefore raises the helium partial pressure without changing the surface area available for permeation. Because the rate of helium permeation is proportional to the partial pressure in the gas phase \citep{norton1953,altemose1961,swets1961,masaryk1968}, the permeability rate constant is related to the volume fraction of the gas and condensed phases within according to the following relationship, assuming that negligible helium partitions into condensed phases (such as water or the mineral sample),
+
+\begin{equation}
+\label{eq:keff}
+\lambda_{ampoule} = \lambda_{empty}\,\frac{V_{condensed} + V_{gas}}{V_{gas}} .
+\end{equation}
+
+Where $\lambda_{ampoule}$ is the true rate constant of helium permeation for an ampoule containing a mineral/buffer payload, and $\lambda_{empty}$ is the rate constant of that same ampoule with only the gas phase inside.
+
+Two consequences follow, and both are load-bearing for the results of this work. The first is that the anhydrous literature permeability is a lower bound on $\lambda$ for any ampoule of this kind, since every mechanism identified above acts to raise the rate constant and none to lower it below the dry value. Equation~\eqref{eq:steadystate} evaluated with that bound therefore returns a conservative upper bound on the residual helium, which is what licenses the reduction applied to HT-Win-06-01b (\S\ref{sec:route-choice}). Had water-bearing ampoules permeated more slowly than anhydrous glass, as the glass-hydration literature would predict, this route would not have been available at all.
+
+The second concerns the isotope ratios. Fractionation between the measured and true release grows both with the \textsuperscript{3}He/\textsuperscript{4}He permeability contrast and with the severity of the lag, so we take the \textsuperscript{4}He permeability to be that of \citet{swets1961}, which the ampoule's own \textsuperscript{3}He measurements show to be an underestimate, and the relative \textsuperscript{3}He/\textsuperscript{4}He permeability to be 1.29, in excess of the 1.06--1.11 expected over this temperature range \citep{jones1953}. Both choices widen the reported envelope rather than narrowing it.
+
+That the first-order model of Eq.~\eqref{eq:permode} describes all ten permeation series within measurement uncertainty (Fig.~\ref{fig:permeation-fits}) confirms that the rate law holds for this ampoule under hydrothermal conditions, and not only for the dry silica glass on which it was established. This matters more than it may appear. Because \textsuperscript{4}He gave blank-level signals at low temperature, it can only ever be reduced by the bounding route, and the validity of that reduction cannot be tested on \textsuperscript{4}He itself. \textsuperscript{3}He is the only isotope for which both routes are available, so the agreement between them reported in \S\ref{sec:results-rate-constant} is the sole empirical check on a reduction that the \textsuperscript{4}He array, the delta plot, and the \textsuperscript{4}He/\textsuperscript{3}He spectra all depend upon.
+
+\subsection{Helium release from goethite is consistent with multiple diffusion domain systematics}\label{sec:discussion-mdd}
+
+Natural goethite occurs as aggregates of crystallites typically smaller than 1\,\textmu m, and all published goethite step heats are on polycrystalline material of unclear and probably variable crystallite size \citep{monteiro2017,farley2024}. Such a sample should show multiple diffusion domain behavior, and neglecting it produces inaccurate activation energies and frequency factors \citep{farley2018}.
+
+In a multiple diffusion domain system with an initially uniform diffusant, apparent bulk diffusivity at fixed temperature decreases as the least retentive domains are exhausted, and delta values decrease correspondingly, provided the reference line's activation energy matches that of the controlling process \citep{lovera1991,farley2018}. Using the activation energy retrieved here, the \textsuperscript{3}He delta values decrease monotonically (Fig.~\ref{fig:delta-zoom}), which is the expected behavior.
+
+The plateau in the delta plot and the quality of the regression over 7--15\% cumulative \textsuperscript{3}He yield ($R^{2} = \ChTwoRtwo$) suggest that a single domain dominates the frequency factor over this interval, rather than a mixture of domains as is typically observed for polycrystalline hematite \citep{farley2018}. The \textsuperscript{4}He apparent diffusivities are lower than the \textsuperscript{3}He values and increase early in the experiment, which is what rounding of the radiogenic \textsuperscript{4}He profile by natural loss from the least retentive domains would produce \citep{shuster2004,shustervasconcelos2005}.
+
+Vacuum experiments on goethite also record declining delta values at low \textsuperscript{3}He yields that are not mirrored in the \textsuperscript{4}He data \citep{shustervasconcelos2005,farley2024}. One interpretation is migration out of fast pathways along grain boundaries that would retain little helium in nature \citep{shustervasconcelos2005}. Goethite aggregates contain interstices filled with chemisorbed non-stoichiometric water, which is the first water lost in vacuum \citep{naono1987}, and non-stoichiometric hydrogen persists in goethite above 140\textdegree C \citep{yapppoths1995}. Proton-induced \textsuperscript{3}He sited in such interstices may be released with this early water, which would correspond to the low retention domain of \citet{shustervasconcelos2005} and the Stage 1 release of \citet{farley2024}. The wide variability in the size of this early fraction is consistent with the strong dependence of goethite crystallinity, surface area, and non-stoichiometric water content on formation temperature \citep{schwertmann1985}.
+
+These data do not bear on whether helium diffusion in crystalline goethite is anisotropic or modulated by radiation damage \citep{bassal2022}.
+
+\subsection{Dehydration and recrystallization}\label{sec:discussion-alteration}
+
+Bulk goethite is unstable with respect to hematite and water at the pressures and temperatures of this experiment \citep{majzlan2003}, nanoparticles excepted \citep{guobarnard2011,navrotsky2008}. Dehydration or recrystallization could therefore contribute to the observed release, and neither can be excluded.
+
+The electron microscopy of \S\ref{sec:results-stabilization} bounds pervasive dehydration. Goethite heated in vacuum or open air develops contraction cracks through grain interiors and across grain surfaces, while goethite heated under water-saturated conditions does not (Fig.~\ref{fig:stabilization-grid}). This excludes dehydration at the scale that produces visible cracking. It does not exclude dehydration below that scale, and work on the textural evolution of goethite aggregates at low dehydration fractions would be needed to resolve how much can occur before cracks appear.
+
+Recrystallization is harder to bound. Poorly crystalline synthetic goethite recrystallizes under hydrothermal conditions in as little as 16 hours at 125\textdegree C \citep{schwertmann1985}, and our conditions were considerably harsher. The silica dissolved from the ampoule wall and redeposited as a gel-like lining (Fig.~\ref{fig:ampoule-post}) shows that the fluid was capable of dissolving and reprecipitating rock-forming oxides. Whether it recrystallized Win-06-01b specifically is unclear; this sample is among the most crystalline and most helium-retentive goethites yet dated \citep{waltenberg2012,farley2024}, whereas the less crystalline goethites commonly recrystallized in nature appear to lose their helium and reset \citep{monteiro2018,monteiro2014,heim2006}.
+
+The interpretive consequence is the same either way. If dehydration or recrystallization contributed to the release, the apparent diffusivities reported here are upper bounds on the true helium diffusivity in goethite at these temperatures and yields, and the retentivity we infer is a lower bound. Both would then imply that dehydration and recrystallization, rather than volume diffusion, set the pace of helium loss from goethite in nature.
+
+\subsection{Helium retentivity of goethite}\label{sec:discussion-retentivity}
+
+Apparent diffusivities for HT-Win-06-01b are resolved from, and about seven natural log units below, those measured for the same sample in vacuum \citep{monteiro2017,farley2024}. We consider what this implies through closure temperature, isothermal retention, and comparison with other polycrystalline samples. Each applies strictly only to loss by thermally activated volume diffusion from domains of known size, so each carries the caveats of \S\ref{sec:discussion-alteration}, and none permits estimating the diffusivity at infinite temperature.
+
+Treating the Stage 1 regression as a real diffusion domain gives a closure temperature of \ChTwoTc\ $\pm$ \ChTwoTcErr\,\textdegree C at 10\textdegree C/Ma, considering only the intercept uncertainty. That is the closure temperature of a hematite crystal of about 0.2\,\textmu m radius, or an apatite crystal of about 650\,\textmu m radius.
+
+Closure temperature is the wrong measure for a mineral that forms at the surface and stays there, since it presumes a cooling rate \citep{dodson1973}. Isothermal retention is more appropriate \citep{wolf1998}. For a domain with the parameters of the Stage 1 regression held isothermally at 40\textdegree C for 100\,Ma, $t'/t = 0.968$, where $t'$ is the helium age, $t$ the holding time, and $t'/t = 1$ is perfect retention. At 25\textdegree C the same domain is nearly quantitatively retentive at billion-year timescales.
+
+Comparing whole experiments across samples is easier if the heating schedule is collapsed to a dimensionless diffusive timescale, the Fourier number $Fo = Dt/a^{2}$, calculated against a common reference line. For a single spherical domain the released fraction is a function of Fourier number alone \citep{crank1979,fechtigkalbitzer1966}, so if the reference activation energy matches that of the controlling process, curves for different samples retain their relative positions regardless of the intercept chosen. In this space, vacuum step heats of goethite and of hematite form well separated populations, with goethite the less retentive, and HT-Win-06-01b is the most retentive polycrystalline sample, at least over the 14.7\% of its \textsuperscript{3}He held in the least retentive domains. This suggests that the helium retentivity of goethite that is not decomposing may exceed that of hematite of comparable size, though experiments on irradiated single-crystal goethite of controlled size would be needed to test it. Vacuum step heats of unrelated goethite samples resemble one another more closely than step heats of the same sample at different water activities.
+
+\subsection{Radiogenic helium loss recorded by \textsuperscript{4}He/\textsuperscript{3}He ratios}\label{sec:discussion-ratios}
+
+Bulk-normalized \textsuperscript{4}He/\textsuperscript{3}He ratios in step heats of irradiated samples record the rounding of the radiogenic concentration profile by natural loss, provided loss in nature and in the laboratory propagate with the same geometry \citep{shuster2004,farley2024}. The steep initial rise and subsequent flattening seen in all three Win-06-01b experiments (Fig.~\ref{fig:ratio-spectra}) is consistent with complete, then partial, natural loss from the least retentive domains.
+
+The hydrothermal experiment records lower ratios at any given cumulative \textsuperscript{3}He yield and approaches its plateau most slowly. The three experiments differ systematically in water pressure: \citet{farley2024} heated open to a liquid nitrogen trap, \citet{monteiro2017} at higher water pressures, and this experiment at water saturation. The ordering of the ratio spectra follows that ordering, which suggests the spectra are shaped in part by the extent and spatial propagation of dehydration rather than by natural helium loss alone. The hydrothermal experiment did not reach a plateau and might have with further heating.
+
+Both vacuum experiments show an elevated first-step ratio that is absent here. It represents a negligible fraction of the total \textsuperscript{4}He and may reflect physisorbed atmospheric helium \citep{protin2016}, which would have been removed during the four days at 70\textdegree C preceding the hydrothermal experiment.
+
+% =============================================================
+\section{Conclusions}\label{sec:conclusions}
+% =============================================================
+
+Sealing a sample in a pure silica glass ampoule preserves reactive phases through helium step heating and allows the experiment to be run under controlled water or sulfur fugacity in a standard ultra-high-vacuum heating cell, at internal water pressures up to about 86\,bar at 300\textdegree C. Helium permeates the ampoule wall as a first-order process, and the lag this introduces between release and measurement can be removed either by measuring the ampoule's residual inventory with low-temperature permeation steps or, for long steps, by bounding it. Encapsulated Durango apatite recovers its published Arrhenius array under this correction. The ampoule's permeation rate constant can be measured during the experiment itself, which is necessary for hydrothermal work because water-bearing ampoules do not follow published values for anhydrous glass.
+
+The first hydrothermal helium step heat of goethite gives apparent diffusivities approximately seven natural log units below those obtained from the same sample in vacuum. The corrected \textsuperscript{3}He array is linear above 7\% cumulative yield, with an activation energy of \ChTwoEa\ $\pm$ \ChTwoEaErr\,kJ/mol, and its delta plot follows multiple diffusion domain systematics. Extrapolated to surface conditions, a domain with these parameters is nearly quantitatively retentive of helium at billion-year timescales at 25\textdegree C.
+
+The immediate consequence is for how vacuum step-heat data on goethite should be read. The difference between the two experiments on the same aliquot of the same sample is far larger than the differences between vacuum experiments on unrelated samples, which indicates that vacuum step heats of goethite are dominated by the response of the mineral to the experiment rather than by helium migration through it. Helium retention in natural goethite is correspondingly more robust than vacuum experiments imply.
+
+We cannot exclude a contribution from dehydration or recrystallization under hydrothermal conditions. If either contributed, the diffusivities reported here are upper bounds and the retentivity a lower bound, which would strengthen rather than weaken the conclusion. Distinguishing these possibilities, and separating the effects of crystallite size, chemical composition, and radiation damage, will require hydrothermal experiments on irradiated single-crystal goethite of controlled size. The method described here makes those experiments straightforward.

@@ -115,9 +115,9 @@ Ampoule Contents & Mass Spec. & Inner \newline Diameter \newline µm & Outer \ne
 \middlehline
 Empty & Quad & 630 & 960 & 4785.3  & 1.32 & --- & Atmosphere \\
 Empty & MC & 747 & 1159 & 3263.9 & 1.41 & --- & Tank He \\
-Fused Sulfur & MC & 529--550 & 835--872 & 5992.1 & ~1.5 & \textasciitilde0.2 mg & Tank He \\
+Sulfur & MC & 529--550 & 835--872 & 5992.1 & ~1.5 & \textasciitilde0.2 mg & Tank He \\
 Water & MC & 487--515 & 734--776 & 7789 & 1.27 & \textasciitilde0.5 mg  & Tank He \\
-Durango \newline Apatite \newline r $\approx$ 150 µm & Quad & 850 & 1350 & 2393.5 & 1.52 & 3.18 mg & Radiogenic \\
+Durango \newline Apatite & Quad & 850 & 1350 & 2393.5 & 1.52 & 3.18 mg & Radiogenic \\
 \bottomhline
 \end{tabular}%
 }
@@ -146,11 +146,18 @@ A standard gas with a known amount of 4He is routinely measured, at least one ti
 \begin{figure}[t]
 \centering
 \includegraphics[width=8.3cm]{Durango_Sim.pdf}
-\caption{An illustrative simulation of the effects of permeation lag on step heat measurements of 150 µm radii spheres of Durango apatite encapsulated in a ``standard ampoule'' with an outer diameter of 1mm and inner diameter of 0.6mm, corresponding to a geometric factor \emph{G} of 4350.26 cm\textsuperscript{-2}. Some amount of degassed helium from the apatite remains in the tube during measurement and is gradually lost, some of it in later heating steps. The heating schedule of this model system is given in Table~\ref{tab:heating-schedule}. This simple model assumes new temperatures and their corresponding steady-state diffusive concentration profile within the glass ampoule are reached instantaneously. Effects of diffusive disequilibrium, if considered, would change the permeated amount for each step by less than 5\%.}
+\caption{An illustrative simulation of the effects of permeation lag on step heat measurements of 150 µm radii spheres of Durango apatite encapsulated in a ``standard ampoule'' with an outer diameter of 1mm and inner diameter of 0.6mm, corresponding to a geometric factor \emph{G} of 4350.26 cm\textsuperscript{-2}. Some amount of helium degassed from the apatite during an experimental step remains in the tube during measurement and permeates out in later steps.  The heating schedule of this model system is given in Table~\ref{tab:heating-schedule}. This simple model assumes new temperatures and their corresponding steady-state diffusive concentration profile within the glass ampoule are reached instantaneously. Effects of diffusive disequilibrium, if considered, would change the permeated amount for each step by less than 5\%.}
 \label{fig:durango-stepheat-lag-simulation}
 \end{figure}
 
 The process of helium permeation through thin walls of an ampoule is rapid but not instantaneous on experimental timescales. Helium evolved from encapsulated minerals is only available for measurement following permeation through the glass ampoule  (Fig.~\ref{fig:durango-stepheat-lag-simulation}), producing a predictable ``permeation lag'' effect in helium measurements that commonly manifests with undermeasurement of helium during prograde heating sequences and corresponding overmeasurement of helium produced during retrograde sequences (Fig.~\ref{fig:simulated-arrhenius-lag-artifact}). This is not merely a theoretical concern: Fig.~\ref{fig:durango-arrhenius-lag-corrected} shows the same artifact in real, uncorrected step heat data for the encapsulated Durango apatite experiment described above (\S\ref{experimental-methods}); the correction developed below is applied to this dataset in full in \S\ref{results} (Fig.~\ref{fig:durango-arrhenius-lag-corrected}).
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=8.3cm]{DurangoStepYields_RelativeAnomaly.pdf}
+\caption{Measured-to-true yield ratio, \(m/\omega\), for the first 13 experimental steps (through the isothermal 300\textdegree C triplicate) of the real encapsulated Durango apatite step heat experiment described above (\S\ref{experimental-methods}) and tabulated in full in Table~\ref{tab:apatite-stepheat}, plotted in measurement order and labeled by nominal step temperature. Here \emph{m} is the raw measured helium yield for a step and $\omega$ is its permeation lag-corrected yield; bars are anchored at a ratio of 1 (no anomaly) on a logarithmic axis, so a doubling and a halving of the ratio are given equal visual weight. Steps taken while ramping to higher temperatures are generally undermeasured (blue), as some of the sample's evolved helium has not yet fully permeated out of the tube at the time of measurement, while steps taken while ramping to lower temperatures are generally overmeasured (red), as helium retained in the tube from earlier, hotter steps continues to permeate out. The first two steps (100-150\textdegree C) are strongly overmeasured despite being on the heating ramp because little helium had yet evolved from the apatite, so measured yield there is dominated by pre-existing atmospheric helium draining from the tube rather than fresh sample degassing.}
+\label{fig:durango-stepwise-yields}
+\end{figure}
 
 \begin{figure}[t]
 \centering

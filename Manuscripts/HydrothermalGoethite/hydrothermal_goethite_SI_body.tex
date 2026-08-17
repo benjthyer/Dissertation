@@ -20,6 +20,114 @@
 %  He-F_Tube column as near-constant and superfluous (#126).
 % =============================================================
 
+\todo{Add fig of Nss upper bounds against calculated nts}
+\todo{after editing informed method 3He reduction in supplement, (removing 4He clutter), then port it all here.}
+
+\section{Analytical Methods for Hydrothermal Goethite}
+
+\subsection{Uncertainty Quantification for Bounding Method}
+
+\paragraph{Helium-in-Goethite Diffusivity Inversions}\label{helium-in-goethite-diffusivity-inversions}
+
+
+Apparent values of D/a\textsuperscript{2} for 3He and 4He were
+calculated from times and cumulative measured yields using the equations of \citet{fechtigkalbitzer1966}. 
+Lower and upper bounds for diffusivity were calculated 
+using the upper bound for the helium contents of the 
+ampoules before and after each step, evaluated using \eqref{eq:steadystate}. 
+Diffusivity for step $i$ is a function of the cumulative fractional yield for step i 
+$\Sigma ^{i}F$ and the cumulative fractional yield of the previous step $\Sigma ^{i-1}F$. The diffusivity
+is maximized when the difference between the fractional yields is largest, and minimized when the difference is smallest. 
+This difference is maximized for the extreme case where the previous step ended with no permeation lag, and the current step ended 
+with the maximum amount of permeation lag $\left(_{SS}^{i}n_t\right)$, whereas the opposite is true for the minimum diffusivity. 
+
+
+\begin{equation}
+\label{eq:diffusivity-bounds}
+\begin{gathered}
+{}^{UB}D_\omega = D\!\left(\Sigma^{i-1}F_m ,~ \Sigma^{i}F_m + {}_{SS}^{i}n_t\right) \\
+{}^{LB}D_\omega = D\!\left(\Sigma^{i-1}F_m + {}_{SS}^{i-1}n_t ,~ \Sigma^{i}F_m\right)
+\end{gathered}
+\end{equation}
+
+For the 3He diffusivities, a linear regression was fit to the steps with cumulative 3He fractional
+yield $\geq$7\% (\ChTwoN\ steps, Fig.~\ref{fig:ch2-arrhenius-zoom}),
+yielding an R\textsuperscript{2} statistic of \ChTwoRtwo. The fit's slope and intercept are used as a reference line to
+calculate ``Delta'' values for the diffusivities of 3He and 4He (Fig.~\ref{fig:ch2-delta-zoom}). No uncertainty on
+the total amounts of 3He and 4He is propagated into the diffusivities
+because the experiment operated at low cumulative yields where this
+error affects all diffusivities approximately homogeneously, so it is only
+relevant for the y-intercept of the regression and the corresponding
+calculated closure temperature. The uncertainty from the
+intercept and slope parameters of the linear regression is significantly
+larger than the uncertainty related to the total yield, so it is
+neglected.
+
+\paragraph{Helium Isotope Ratio Uncertainty}\label{helium-isotope-ratio-uncertainty}
+
+The upper and lower bounds of the $\frac{^4He}{^3He}$ isotope ratios for each heating step are taken as the maximum and minimum  $\frac{^4He}{^3He}$ 
+isotope ratio calculated out of the 4 hypothetical end-member permeation scenarios, which would have been experienced by both helium isotopes systems:
+
+\begin{enumerate}
+\item $n_t = 0,\ n_0 = 0$
+\item $n_t = n_t^{\mathrm{UB}},\ n_0 = 0$
+\item $n_t = n_t^{\mathrm{UB}},\ n_0 = n_0^{\mathrm{UB}}$
+\item $n_t = 0,\ n_0 = n_0^{\mathrm{UB}}$
+\end{enumerate}
+
+Intuitively, higher differential permeability between the two helium isotopes ($\delta = \frac{K_{3He}}{K_{4He}}$ here) will result in greater isotope fractionation between the measured $\left(\frac{m_{4}}{m_{3}}\right)$ and true $\left(\frac{\omega_{4}}{\omega_{3}}\right)$.
+Furthermore, lower absolute permeabilities will result in stronger permeation lag, additionally producing higher isotope fractionation in the measured value. The 4He permeability is thus conservatively taken to be identical to \citet{swets1961}, an anhydrous
+literature value which this experiment's own isothermal 3He permeation measurements show to underestimate the ampoule's true permeability (Fig.~\ref{fig:ch2-naive-arrhenius}); 4He permeability itself could not be independently measured in this experiment
+(supplement, \nameref{helium-4-blank-corrections}). For the purposes of evaluating the measured isotope ratios, the relative 3He/4He permeability ($\delta$) is taken to be 1.29, the 2$\sigma$ upper bound of the value measured independently for a water-filled ampoule in Chapter~\ref{ch:apparatus} \citep{thyer2026}:
+1.10 $\pm$ 0.19 (2$\sigma$). 1.29 is in great excess of realistic values of the relative 3He/4He permeability, which is expected to be between 1.06-1.11 for the temperature range relevant to this experiment \citep{jones1953}. These
+conservative assumptions taken together guarantee that the calculated upper and lower bounds for the isotope ratios accurately constrain the true value. The upper bounds of the
+ampoule contents are calculated using the steady-state approximation of Eq.~\eqref{eq:steadystate} (Chapter~\ref{ch:apparatus}): $n_{ss} = \frac{m}{\lambda t - 1}$. For the four extreme cases listed above, the following equations apply:
+
+\begin{enumerate}
+\item \scalebox{1.5}{$\frac{\omega_{4}}{\omega_{3}} = \frac{m_{4}}{m_{3}}$}
+\item \scalebox{1.5}{$\frac{\omega_{4}}{\omega_{3}} = \frac{m_{4}+\frac{m_{4}}{\lambda t - 1}}{m_{3}+\frac{m_{3}}{\delta \lambda t - 1}}$}
+\item \scalebox{1.5}{$\frac{\omega_{4}}{\omega_{3}} = \frac{m_{4}+\frac{m_{4}}{\lambda t - 1} - \frac{m_4^{i-1}}{\left(\lambda t\right)^{i-1} - 1}}{m_{3}+\frac{m_{3}}{\delta \lambda t - 1} - \frac{m_3^{i-1}}{\delta\left(\lambda t\right)^{i-1} - 1}}$}
+\item \scalebox{1.5}{$\frac{\omega_{4}}{\omega_{3}} = \frac{m_{4} - \frac{m_4^{i-1}}{\left(\lambda t\right)^{i-1} - 1}}{m_{3} - \frac{m_3^{i-1}}{\delta\left(\lambda t\right)^{i-1} - 1}}$}
+\end{enumerate}
+
+Where $m_{x}^{i-1}$ and $\left(\lambda t \right)^{i-1}$ refer to the measured helium content and $\lambda t$ of the previous step, respectively. $\lambda$ here applies explicitly to 4He, whereas $\delta \lambda$ applies to 3He. The upper and lower bounds of the isotope ratios are then taken to be the maximum and minimum of these four extreme cases.
+
+
+\subsection{Finite Difference Diffusion Model of Cooling Tube}\label{finite-difference-diffusion-model-of-cooling-tube}
+
+One potential concern about the results of the internally measured permeabilities is that some additional helium was permeated 
+during the cooling period after each permeation step. In order to evaluate the significance of 
+this effect, a finite difference model was built in python to simulate diffusion, influx, and
+outflux of helium across a hollow glass cylinder containing an
+arbitrary amount of helium gas within a helium-free chamber using the procedure described in \citep{thyer2026}. The glass
+cylinder was given the same dimensions of the ampoule used in the
+Win-06-01b hydrothermal experiment, and was subjected to the same
+heating and cooling schedule as the hydrothermal experiment's permeation
+steps. The tube was charged with 100 arbitrary units of helium atoms at
+the end of each experimental step and a steady state concentration
+profile was assumed for the new arbitrary charge at T = 24°. Permeability
+values for 3He were assumed as the product of the 4He permeability
+values given by \citet{swets1961} and the 3He/4He relative
+permeabilities given by \citet{jones1953}.
+
+To simulate cooling, a cooling rate had to be assumed. To most
+accurately simulate the cooling of the experimental ampoule, Watlow temperature records
+of the experimental ampoule during cooling steps were used to calculate the cooling rate dT/dt for discrete time intervals.
+A quadratic function was fit to these data points to model the cooling rate as a function of temperature with a single root at 
+T = 24°C such that the temperature would stabilize at T = 24°C by design.
+\[
+\frac{dT}{dt} = -\left(9.23081\times10^{-6}\right)(T-24)^{2} - \left(7.74304\times10^{-4}\right)(T-24)
+\]
+(dT/dt in \textdegree C/s, T in \textdegree C; \(R^{2} = 0.9633\)). 
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{goethite_cooling_rate_fit.pdf}
+\caption{Discrete cooling rate (dT/dt) values calculated from the Watlow temperature record for the Winsor Goethite experiment, plotted against temperature, with the quadratic fit used to simulate cooling in the finite difference diffusion model overlain.}
+\label{fig:ch2-goethite-cooling-rate}
+\end{figure}
+
+
 \section{Encapsulated Durango apatite step-heat data}\label{sec:si-durango}
 
 The following table gives the complete step-heat dataset for the silica glass encapsulated Durango apatite experiment described in \S\ref{sec:methods-apatite} and plotted in Fig.~\ref{fig:durango-arrhenius}. Permeation lag corrections follow the permeation-step route of \S\ref{sec:permeation-steps}: Eq.~\eqref{eq:n0perm} is applied to the permeation steps shown in \textbf{bold} to solve for the ampoule's helium content, and Eq.~\eqref{eq:permlag} propagates that content forward and backward in time to the neighbouring experimental steps.

@@ -31,6 +31,12 @@ bias-corrected model (Chapter 1's Eq.~\\eqref{eq:incyield}) and computes
 the regression properly; these macros expose that result the same way
 the Stage 1 macros above expose the diffusivity regression.
 
+The same cache also holds lam_min/lam_max, the range (s^-1) of the 10
+per-series fitted rate constants themselves (as opposed to the regression
+built from them), exposed here as \\ChTwoPermLamMin/\\ChTwoPermLamMax so
+the Results text can quote "fitted rate constants span X to Y" without
+hand-copying it from the fit output.
+
 Significant-figure handling: done here in Python, not in LaTeX. Each
 uncertainty is rounded to 2 significant figures; the paired central value
 is then rounded to the same decimal place as the (rounded) uncertainty,
@@ -80,6 +86,19 @@ def newcommand(name, value):
     return f"\\newcommand{{\\{name}}}{{{value}}}\n"
 
 
+def format_sci_mathmode(x, sig_figs=2):
+    """Format x as a math-mode '$m.mm\\times10^{e}$' string, matching the
+    inline scientific-notation convention already used for rate constants
+    in the Results/Methods prose (e.g. "\\lambda \\approx 6\\times10^{-6}"),
+    as opposed to fmt_sci()'s '\\!\\times\\!' convention used inside the
+    SI's auto-generated tables."""
+    if x == 0:
+        return "$0$"
+    exponent = math.floor(math.log10(abs(x)))
+    mantissa = x / 10 ** exponent
+    return f"${mantissa:.{sig_figs - 1}f}\\times10^{{{exponent}}}$"
+
+
 if __name__ == '__main__':
     with open(CACHE_PATH) as f:
         cache = json.load(f)
@@ -96,6 +115,8 @@ if __name__ == '__main__':
         perm['Ea_cal_mol'], perm['Ea_cal_mol_2se'])
     perm_r2_str = f"{perm['r2']:.3f}"
     perm_n_str = str(perm['n_points'])
+    perm_lam_min_str = format_sci_mathmode(perm['lam_min'])
+    perm_lam_max_str = format_sci_mathmode(perm['lam_max'])
 
     lines = [
         "% =============================================================\n",
@@ -129,6 +150,8 @@ if __name__ == '__main__':
             perm['n_points'], perm['r2']),
         "%    ChTwoPermEa/ChTwoPermEaErr : activation energy, 2 s.e. (cal/mol)\n",
         "%    ChTwoPermRtwo/ChTwoPermN   : regression R^2 and number of sequences\n",
+        "%    ChTwoPermLamMin/ChTwoPermLamMax : range of the 10 per-series fitted\n",
+        "%      rate constants themselves (s^-1), math-mode, e.g. \"$1.2\\times10^{-6}$\"\n",
         "% =============================================================\n",
         newcommand('ChTwoEa', ea_str),
         newcommand('ChTwoEaErr', ea_err_str),
@@ -140,6 +163,8 @@ if __name__ == '__main__':
         newcommand('ChTwoPermEaErr', perm_ea_err_str),
         newcommand('ChTwoPermRtwo', perm_r2_str),
         newcommand('ChTwoPermN', perm_n_str),
+        newcommand('ChTwoPermLamMin', perm_lam_min_str),
+        newcommand('ChTwoPermLamMax', perm_lam_max_str),
     ]
 
     with open(OUT_PATH, 'w') as f:
@@ -150,4 +175,5 @@ if __name__ == '__main__':
     print(f"R2 = {r2_str}, n = {n_str}")
     print(f"Isothermal permeation: Ea = {perm_ea_str} +/- {perm_ea_err_str} cal/mol, "
           f"R2 = {perm_r2_str}, n = {perm_n_str}")
+    print(f"Isothermal permeation: lambda spans {perm_lam_min_str} to {perm_lam_max_str} s^-1")
     print(f"Wrote {OUT_PATH}")

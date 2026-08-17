@@ -67,7 +67,12 @@ Outputs:
                                                vs 10^4/T regression above, so the main
                                                text/SI can cite these numbers from a
                                                single reproducible source rather than
-                                               a hand-copied value.
+                                               a hand-copied value. Also includes
+                                               lam_min/lam_max (s^-1), the range of the
+                                               10 per-series fitted rate constants
+                                               themselves (popt[0] of each fit_n0_lambda
+                                               call above), quoted in the Results text
+                                               (\\ChTwoPermLamMin/\\ChTwoPermLamMax).
   ../chapter2_naive_isothermal_tables.tex   - \\newcommand macros \\ChTwoNaiveRawTable
                                                (the 10-sequence raw step-heat dataset,
                                                i.e. 'DistilledNaiveLambdas') and
@@ -236,6 +241,7 @@ Ea_cal_mol = -slope * Rcal * 1E4
 Ea_cal_mol_2se = 2 * reg.stderr * Rcal * 1E4
 print(f"Naive isothermal Arrhenius regression: ln(K) = {intercept:.3f} + {slope:.3f}*x, "
       f"R^2 = {r2:.3f}, Ea = {Ea_cal_mol:.0f} +/- {abs(Ea_cal_mol_2se):.0f} (2 s.e.) cal/mol")
+lam_all = np.array([s['lam'] for s in sequences])
 os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
 with open(CACHE_PATH, 'w') as f:
     json.dump({
@@ -243,6 +249,7 @@ with open(CACHE_PATH, 'w') as f:
         'slope_stderr': reg.stderr, 'n_points': len(x),
         'Ea_cal_mol': Ea_cal_mol, 'Ea_cal_mol_2se': abs(Ea_cal_mol_2se),
         'temperature_range_C': [min(s['T_C'] for s in sequences), max(s['T_C'] for s in sequences)],
+        'lam_min': float(lam_all.min()), 'lam_max': float(lam_all.max()),
     }, f, indent=2)
 print(f"Wrote {CACHE_PATH}")
 

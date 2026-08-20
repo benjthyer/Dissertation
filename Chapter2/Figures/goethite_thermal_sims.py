@@ -53,8 +53,8 @@ times = np.array([120,150,180])*60 # minutes -> seconds
 # the diffusive path length, which suppressed the fitted lambda/K by
 # roughly (2x)^2 = 4x (consistent with the simulated K values plotting
 # noticeably below the actual experimental fits on NaiveLambda_Arrhenius.pdf).
-a = 0.05225 / 2
-b = 0.08095 / 2
+a = 0.053 / 2
+b = 0.081 / 2
 G = 2 / (np.log(b / a) * a ** 2)
 
 Tall = []

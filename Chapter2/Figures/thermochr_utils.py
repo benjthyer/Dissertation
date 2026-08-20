@@ -600,6 +600,63 @@ def load_diffusivities_HTWin0601b_bounds(xlsx_path):
     return out
 
 
+def load_diffusivities_HTWin0601b_naive(xlsx_path, exclude_steps=(11, 12)):
+    """Read the 3He step-heat diffusivity reduction for HT-Win-06-01b from
+    the master workbook's 'diffusivitiesHTWin0601bNaive' sheet: D/a^2 (and
+    its own directly-propagated 2-sigma uncertainty) computed from the
+    na\"ive/informed bracketing (permeation-step) method's n_t/n_0 values,
+    as opposed to the UB/LB/M "treatment as uncertainty" bounds read by
+    load_diffusivities_HTWin0601b_bounds(). This is the direct-measurement
+    counterpart used to check the bounding-method Stage 1 regression
+    (\\S\\ref{sec:discussion-bounding-direct} in the manuscript).
+
+    Only 3He is returned: 4He permeation-step signals were blank-level
+    throughout the experiment, so 4He is reduced exclusively by the
+    bounding method and has no naive-method diffusivity counterpart (the
+    workbook sheet's own 4He block, present for internal bookkeeping only,
+    is not read here for that reason).
+
+    exclude_steps drops steps 11 and 12 (Temp/Minutes 195/1106 and
+    185/740) by default. Those two steps' n_0 values were the only ones in
+    the experiment determined across the He30413/He30418 permeation
+    sequence, which cooled to room temperature and continued permeating
+    for far longer than the ~26-minute cooling window used for every other
+    step in the dataset, and so needed a separate, one-off room-temperature
+    permeability (a "long cool" correction) not used anywhere else in this
+    reduction. Rather than mix a differently-derived correction into an
+    otherwise uniform dataset, these two steps are dropped; pass
+    exclude_steps=() to include them.
+
+    Returns a dict {'3': df} with the same columns as
+    load_diffusivities_HTWin0601b (Temp (C), Minutes, He Corrected, Fi+1,
+    10000/TK, ln(d/a^2), ln(d/a^2) 2 sigma), so it drops in with
+    fit_reference_line() and the existing Arrhenius-plot helpers. 'He
+    Corrected' here is the na\"ive/informed-bracketing-derived n_t, not the
+    raw measured value used by the bounding-method sheets."""
+    sheet = pd.read_excel(xlsx_path, sheet_name='diffusivitiesHTWin0601bNaive', header=None)
+    data = sheet.iloc[3: 3 + 34]
+
+    step = data[0].astype(float).to_numpy()
+    temp_C = data[1].astype(float).to_numpy()
+    d_a2 = data[17].astype(float).to_numpy()
+    d_a2_2sig = data[18].astype(float).to_numpy()
+
+    df = pd.DataFrame({
+        'Temp (C)': temp_C,
+        'Minutes': data[2].astype(float).to_numpy(),
+        'He Corrected': data[3].astype(float).to_numpy(),
+        'Fi+1': data[8].astype(float).to_numpy(),
+        '10000/TK': 10000.0 / (temp_C + 273.0),
+        'ln(d/a^2)': np.log(d_a2),
+        'ln(d/a^2) 2 sigma': d_a2_2sig / d_a2,
+    })
+
+    if exclude_steps:
+        df = df[~np.isin(step, exclude_steps)].reset_index(drop=True)
+
+    return {'3': df}
+
+
 def low_signal_HTWin0601b_mask(xlsx_path, threshold=0.1):
     """Boolean mask (34 steps, same row order as load_diffusivities_HTWin0601b_bounds's
     per-isotope dataframes) flagging HT-Win-06-01b step-heat analyses whose
@@ -781,11 +838,14 @@ def dodson_closure_temperature_stderr_interceptonly(Ea_cal_mol, D0_a2, D0_a2_std
 def load_stage1_cache(cache_path=None):
     """Load the Stage 1 reference-line regression cache written by
     prepare_regression_cache.py. Returns {'M': {...}, 'LB': {...}, 'UB': {...},
-    'fractional_yield_threshold': ..., 'isotope': '3He'}, each of the
-    three bound entries having the same keys as fit_reference_line()'s
+    'naive': {...}, 'fractional_yield_threshold': ..., 'isotope': '3He'}, each
+    of the M/LB/UB/naive entries having the same keys as fit_reference_line()'s
     return value (slope, intercept, r2, n_points, Ea_cal_mol, D0_a2,
     slope_stderr, intercept_stderr, Ea_cal_mol_stderr, D0_a2_stderr,
     Ea_kJ_mol, Ea_kJ_mol_stderr, Tc_C -- see dodson_closure_temperature()).
+    'naive' is the na\"ive/informed bracketing (permeation-step) method's own
+    fit (no LB/UB split; see load_diffusivities_HTWin0601b_naive), the
+    direct-measurement check on the M/LB/UB bounding-method fits.
 
     Raises FileNotFoundError with a clear message if the cache hasn't
     been generated yet -- run prepare_regression_cache.py first."""

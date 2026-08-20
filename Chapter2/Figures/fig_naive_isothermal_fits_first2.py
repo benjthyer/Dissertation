@@ -81,8 +81,8 @@ def fit_n0_lambda(t, He, He_sigma, lamb0=6E-6):
 # Tube geometry: same two ID/OD measurements, and their average G, that the
 # spreadsheet itself uses to convert lambda to K.
 # ---------------------------------------------------------------------------
-ID_cm = 0.05225
-OD_cm = 0.08095
+ID_cm = 0.052
+OD_cm = 0.081
 G = 2 / (np.log(OD_cm / ID_cm) * (ID_cm / 2) ** 2)
 def lambda_to_K(lam, T_K):
     return lam / (G * Ratoms * T_K)

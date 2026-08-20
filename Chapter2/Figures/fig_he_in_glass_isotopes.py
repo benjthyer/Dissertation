@@ -22,8 +22,8 @@ def S3_4(T):
     return 1.003 * np.exp(6 / (T * Rcal))
 
 # Goethite tube geometry (OD 830 µm, ID 540 µm, per Cell 094)
-a = 0.054 / 2   # cm  inner radius
-b = 0.083 / 2   # cm  outer radius
+a = 0.052 / 2   # cm  inner radius
+b = 0.081 / 2   # cm  outer radius
 G = 2 / (a ** 2 * np.log(b / a))
 D = (2 * Ratoms / a ** 2) * ((b ** 3 - 3 * a ** 2 * b + 2 * a ** 3) / (6 * (b - a)))
 

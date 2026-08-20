@@ -37,6 +37,17 @@ built from them), exposed here as \\ChTwoPermLamMin/\\ChTwoPermLamMax so
 the Results text can quote "fitted rate constants span X to Y" without
 hand-copying it from the fit output.
 
+Also reads the 'naive' key of stage1_regression_cache.json: the same
+Stage 1 Arrhenius regression, fit instead to the na\"ive/informed
+bracketing (permeation-step) method's own direct-measurement 3He
+diffusivities, as a check on the bounding-method ('M') regression above.
+Exposed as \\ChTwoBracketEa/Err, \\ChTwoBracketTc/Err, \\ChTwoBracketRtwo,
+\\ChTwoBracketN. Do not confuse this with \\ChTwoPermEa above: that macro
+is the isothermal permeation-rate-constant (K) Arrhenius fit used to
+determine the ampoule's permeability; \\ChTwoBracketEa is a He
+diffusion-in-goethite activation energy, the same physical quantity as
+\\ChTwoEa, just from the other reduction method.
+
 Significant-figure handling: done here in Python, not in LaTeX. Each
 uncertainty is rounded to 2 significant figures; the paired central value
 is then rounded to the same decimal place as the (rounded) uncertainty,
@@ -118,6 +129,14 @@ if __name__ == '__main__':
     perm_lam_min_str = format_sci_mathmode(perm['lam_min'])
     perm_lam_max_str = format_sci_mathmode(perm['lam_max'])
 
+    naive = cache['naive']
+    bracket_ea_str, bracket_ea_err_str = format_value_and_stderr(
+        naive['Ea_kJ_mol'], naive['Ea_kJ_mol_stderr'])
+    bracket_tc_str, bracket_tc_err_str = format_value_and_stderr(
+        naive['Tc_C'], naive[TC_STDERR_KEY])
+    bracket_r2_str = f"{naive['r2']:.3f}"
+    bracket_n_str = str(naive['n_points'])
+
     lines = [
         "% =============================================================\n",
         "%  chapter2_derived_values.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.\n",
@@ -152,6 +171,18 @@ if __name__ == '__main__':
         "%    ChTwoPermRtwo/ChTwoPermN   : regression R^2 and number of sequences\n",
         "%    ChTwoPermLamMin/ChTwoPermLamMax : range of the 10 per-series fitted\n",
         "%      rate constants themselves (s^-1), math-mode, e.g. \"$1.2\\times10^{-6}$\"\n",
+        "%\n",
+        "%  Stage 1 reference line, na\\\"ive/informed bracketing (permeation-step)\n",
+        "%  method (direct-measurement check on ChTwoEa/ChTwoTc above; excludes\n",
+        "%  steps {} -- see load_diffusivities_HTWin0601b_naive docstring;\n".format(
+            naive.get('excluded_steps', [])),
+        "%  n={} points, R2={:.4f}):\n".format(naive['n_points'], naive['r2']),
+        "%    ChTwoBracketEa/ChTwoBracketEaErr : activation energy (kJ/mol)\n",
+        "%    ChTwoBracketTc/ChTwoBracketTcErr : Dodson (1973) closure temperature\n",
+        "%      (degC), intercept-only regression uncertainty, same convention as\n",
+        "%      ChTwoTcErr. Joint slope+intercept uncertainty is +/- {:.1f} degC.\n".format(
+            naive['Tc_C_stderr']),
+        "%    ChTwoBracketRtwo/ChTwoBracketN : regression R^2 and number of points\n",
         "% =============================================================\n",
         newcommand('ChTwoEa', ea_str),
         newcommand('ChTwoEaErr', ea_err_str),
@@ -165,6 +196,12 @@ if __name__ == '__main__':
         newcommand('ChTwoPermN', perm_n_str),
         newcommand('ChTwoPermLamMin', perm_lam_min_str),
         newcommand('ChTwoPermLamMax', perm_lam_max_str),
+        newcommand('ChTwoBracketEa', bracket_ea_str),
+        newcommand('ChTwoBracketEaErr', bracket_ea_err_str),
+        newcommand('ChTwoBracketTc', bracket_tc_str),
+        newcommand('ChTwoBracketTcErr', bracket_tc_err_str),
+        newcommand('ChTwoBracketRtwo', bracket_r2_str),
+        newcommand('ChTwoBracketN', bracket_n_str),
     ]
 
     with open(OUT_PATH, 'w') as f:
@@ -176,4 +213,7 @@ if __name__ == '__main__':
     print(f"Isothermal permeation: Ea = {perm_ea_str} +/- {perm_ea_err_str} cal/mol, "
           f"R2 = {perm_r2_str}, n = {perm_n_str}")
     print(f"Isothermal permeation: lambda spans {perm_lam_min_str} to {perm_lam_max_str} s^-1")
+    print(f"Naive/informed bracketing Stage 1: Ea = {bracket_ea_str} +/- {bracket_ea_err_str} kJ/mol, "
+          f"Tc = {bracket_tc_str} +/- {bracket_tc_err_str} degC (intercept-only), "
+          f"R2 = {bracket_r2_str}, n = {bracket_n_str}")
     print(f"Wrote {OUT_PATH}")

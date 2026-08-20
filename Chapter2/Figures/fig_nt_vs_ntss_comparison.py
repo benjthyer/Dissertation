@@ -194,9 +194,9 @@ cbar.ax.yaxis.set_major_formatter(ScalarFormatter())
 legend_elems = [
     Line2D([0], [0], linestyle='--', color='black', alpha=0.4, label='1:1'),
     Line2D([0], [0], marker='o', linestyle='None', markerfacecolor='0.6',
-           markeredgecolor='black', markersize=8, label=r'HT-Win-06-01b steps ($^3$He)'),
+           markeredgecolor='black', markersize=8, label='HT-Win-06-01b Permeation step'),
     Line2D([0], [0], marker='^', linestyle='None', markerfacecolor='0.6',
-           markeredgecolor='black', markersize=9, label='Attempted complete degas'),
+           markeredgecolor='black', markersize=9, label='Complete Ampoule Degas Step'),
 ]
 ax.legend(handles=legend_elems, loc='upper left')
 

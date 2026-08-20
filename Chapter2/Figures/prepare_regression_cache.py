@@ -22,6 +22,16 @@ result to generated/data/stage1_regression_cache.json. Downstream fig_*.py scrip
 read that cache via thermochr_utils.load_stage1_cache() rather than
 hardcoding numbers.
 
+It also fits the same Stage 1 reference line to the na\"ive/informed
+bracketing (permeation-step) method's own 3He diffusivities -- the
+direct-measurement check on the bounding method's M/UB/LB regression
+above -- via load_diffusivities_HTWin0601b_naive(), caching the result
+under the 'naive' key (no LB/UB split: the permeation-step method
+propagates its own single 2-sigma per point rather than an explicit
+bound pair). Used by fig_naive_stage1_arrhenius.py and referenced in
+\\S\\ref{sec:discussion-bounding-direct} (manuscript) /
+Chapter 2's complete-degas discussion.
+
 Note Tc_C_stderr (regression statistical uncertainty, propagated) and
 the bound-to-bound spread of Tc_C across M/LB/UB (different
 data-reduction treatments) are two different notions of "uncertainty"
@@ -53,8 +63,8 @@ import os
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from thermochr_utils import (load_diffusivities_HTWin0601b_bounds, fit_reference_line,
-                              dodson_closure_temperature, dodson_closure_temperature_stderr,
+from thermochr_utils import (load_diffusivities_HTWin0601b_bounds, load_diffusivities_HTWin0601b_naive,
+                              fit_reference_line, dodson_closure_temperature, dodson_closure_temperature_stderr,
                               dodson_closure_temperature_stderr_interceptonly)
 
 FIG_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -102,6 +112,30 @@ if __name__ == '__main__':
           f"range {cache['LB']['Tc_C']:.1f}-{cache['UB']['Tc_C']:.1f} degC "
           f"across LB/UB bounds (data-reduction-treatment uncertainty), "
           f"A={DODSON_A} (sphere), cooling rate={COOLING_RATE_C_PER_MYR} degC/Myr")
+
+    # --- Na\"ive/informed bracketing (permeation-step) method: same Stage 1
+    # fit, applied to the direct-measurement 3He diffusivities instead of
+    # the bounding method's M/UB/LB reduction. ---
+    naive = load_diffusivities_HTWin0601b_naive(MASTER_XLSX)['3']
+    naive_fit = fit_reference_line(naive['Temp (C)'], naive['ln(d/a^2)'], naive['Fi+1'],
+                                    threshold=FRACTIONAL_YIELD_THRESHOLD)
+    naive_fit['Tc_C'] = dodson_closure_temperature(naive_fit['Ea_cal_mol'], naive_fit['D0_a2'],
+                                                     COOLING_RATE_C_PER_MYR, A=DODSON_A)
+    naive_fit['Tc_C_stderr'] = dodson_closure_temperature_stderr(
+        naive_fit['Ea_cal_mol'], naive_fit['D0_a2'], naive_fit['Ea_cal_mol_stderr'], naive_fit['D0_a2_stderr'],
+        COOLING_RATE_C_PER_MYR, A=DODSON_A)
+    naive_fit['Tc_C_stderr_interceptonly'] = dodson_closure_temperature_stderr_interceptonly(
+        naive_fit['Ea_cal_mol'], naive_fit['D0_a2'], naive_fit['D0_a2_stderr'],
+        COOLING_RATE_C_PER_MYR, A=DODSON_A)
+    naive_fit['excluded_steps'] = [11, 12]
+    cache['naive'] = naive_fit
+    print(f"\nStage 1 reference (naive/informed bracketing, direct-measurement check): "
+          f"slope={naive_fit['slope']:.4f}+/-{naive_fit['slope_stderr']:.4f}  "
+          f"intercept={naive_fit['intercept']:.4f}+/-{naive_fit['intercept_stderr']:.4f}  "
+          f"Ea={naive_fit['Ea_kJ_mol']:.1f}+/-{naive_fit['Ea_kJ_mol_stderr']:.1f} kJ/mol  "
+          f"R2={naive_fit['r2']:.4f}  n={naive_fit['n_points']}  "
+          f"Tc={naive_fit['Tc_C']:.1f}+/-{naive_fit['Tc_C_stderr']:.1f} degC (joint)  "
+          f"+/-{naive_fit['Tc_C_stderr_interceptonly']:.1f} degC (intercept-only)")
 
     with open(CACHE_PATH, 'w') as f:
         json.dump(cache, f, indent=2)

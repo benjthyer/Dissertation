@@ -1,0 +1,233 @@
+\documentclass[gchron, manuscript]{copernicus}
+
+% copernicus.cls loads `supertabular` natively but NOT `longtable`.
+% chapter1_body.tex's apatite step-heat table (\chplandscape-wrapped,
+% a no-op here) now uses `longtable` instead of `supertabular` -- see
+% the comment at that table in chapter1_body.tex for why. Load it
+% explicitly so \begin{longtable} is defined in this standalone
+% manuscript too (dissertation_preamble.tex already loads it for the
+% thesis side).
+\usepackage{longtable}
+
+\begin{document}
+
+\title{A Simple Method for Helium Step Heat Experiments at High Water or Sulfur Fugacity}
+
+\Author[1][bthyer@caltech.edu]{Ben J.}{Thyer}
+\Author[1]{Jonathan}{Treffkorn}
+\Author[1]{Ken A.}{Farley}
+
+\affil[1]{Division of Geological and Planetary Sciences, California Institute of Technology, Pasadena, CA 91125, USA}
+
+\runningtitle{Helium Step Heat Experiments at High Water or Sulfur Fugacity}
+
+\runningauthor{Thyer et al.}
+
+\received{}
+\pubdiscuss{}
+\revised{}
+\accepted{}
+\published{}
+
+\firstpage{1}
+
+\graphicspath{{../Figures/source/}{../Figures/generated/}}
+
+\maketitle
+
+\begin{abstract}
+\input{chapter1_abstract}
+\end{abstract}
+
+%% ---------------------------------------------------------------
+%% NOTE: Geochronology does not typeset a separate "Plain Language
+%% Summary" section in the manuscript PDF. Copernicus instead asks
+%% for a short, non-technical "short summary" pasted directly into
+%% the online submission form. The text below is kept here (as a
+%% comment, so it does not print) purely so it can be
+%% copied into the submission form's short-summary field.
+%%
+%% U-Th/He Thermochronology is a technique geochemists use to understand a region's thermal history. This approach could potentially be applied to minerals that form in hydrothermal systems, such as sulfide ore minerals and iron oxides, to directly date events like ore deposit formation or ancient fluid circulation; however, it requires knowledge of how helium is lost within the mineral at elevated temperatures. Unfortunately, the measurements necessary to study this process are difficult because these minerals decompose when heated in the strong vacuum of the experimental environment, producing results that do not mimic natural conditions.
+%% 
+%% This paper describes a new experimental technique to address this problem. The mineral sample is sealed inside a small silica glass tube, which keeps the mineral surrounded by water vapor or sulfur gas, providing the conditions it needs to stay stable, even while the outside of the tube is under high vacuum. Silica glass is naturally permeable to helium, so helium released from the mineral as it is heated can still pass through the tube walls and be detected by standard instruments. The key analytical challenge is separating the helium signal coming from the mineral itself from the delay introduced by helium slowly diffusing through the glass tube walls. This chapter presents the equations and experimental procedures needed to make that separation and tests the approach using simple calibration experiments. The results show the method works well for sulfur-saturated experiments but also reveal some manageable complications for water-saturated experiments. This technique extends helium-based age-dating methods to a new class of geologically important minerals.
+%% ---------------------------------------------------------------
+
+% chapter1_body.tex wraps its widest tables in \chplandscape so the
+% dissertation version (Chapter1/chapter1.tex) can rotate them to
+% landscape for extra width while this journal manuscript keeps them
+% portrait at their original compact size -- defined here as a no-op.
+\newenvironment{chplandscape}{}{}
+
+\input{chapter1_body}
+
+
+\authorcontribution{\textbf{B.J. Thyer:} Writing - Original Draft, Formal Analysis, Methodology, Investigation. \textbf{J. Treffkorn:} Methodology, Investigation. \textbf{K.A. Farley:} Writing - Review and Editing, Conceptualization, Funding acquisition.}
+
+\competinginterests{The authors declare that they have no conflict of interest.}
+
+\begin{acknowledgements}
+This work was supported by National Science Foundation (NSF) grant EAR 1945974 to KAF. Dr. Paul Asimow is thanked for helpful discussions on the experimental design. Claude AI was used to assist with software programming and the editing and LaTeX typesetting of this manuscript.
+\end{acknowledgements}
+
+
+\begin{thebibliography}{}
+
+\bibitem[Altemose(1961)]{altemose1961}
+Altemose, V. O. Helium Diffusion through Glass. \emph{Journal of Applied Physics} \textbf{32}, 1309--1316 (1961).
+
+\bibitem[Cherniak(2019)]{cherniak2019}
+Cherniak, D. J. Diffusion of helium in radiation-damaged zircon. \emph{Chemical Geology} \textbf{529}, 119308 (2019).
+
+\bibitem[Davis and Tomozawa(1995)]{davis1995}
+Davis, K. M. \& Tomozawa, M. Water diffusion into silica glass: Structural changes in silica glass and their effect on water solubility and diffusivity. \emph{Journal of Non-Crystalline Solids} \textbf{185}, 203--220 (1995).
+
+\bibitem[Doremus(1966)]{doremus1966}
+Doremus, R. H. Physical Solubility of Gases in Fused Silica. \emph{Journal of the American Ceramic Society} \textbf{49}, 461--462 (1966).
+
+\bibitem[Farley(2000)]{farley2000}
+Farley, K. A. Helium diffusion from apatite: General behavior as illustrated by Durango fluorapatite. \emph{Journal of Geophysical Research: Solid Earth} \textbf{105}, 2903--2914 (2000).
+
+\bibitem[Farley(2018)]{farley2018}
+Farley, K. A. Helium diffusion parameters of hematite from a single-diffusion-domain crystal. \emph{Geochimica et Cosmochimica Acta} \textbf{231}, 117--129 (2018).
+
+\bibitem[Farley and McKeon(2015)]{farleymckeon2015}
+Farley, K. A. \& McKeon, R. Radiometric dating and temperature history of banded iron formation-associated hematite, Gogebic iron range, Michigan, USA. \emph{Geology} \textbf{43}, 1083--1086 (2015).
+
+\bibitem[Farley et al.(2024)]{farley2024}
+Farley, K. A., Monteiro, H. B., Vasconcelos, P. M. \& Waltenberg, K. Dehydration of goethite during vacuum step-heating and implications for he retentivity characterization. \emph{Chemical Geology} \textbf{663}, 122254 (2024).
+
+\bibitem[Farley et al.(1996)]{farley1996}
+Farley, K. A., Wolf, R. A. \& Silver, L. T. The effects of long alpha-stopping distances on (U-Th)/He ages. \emph{Geochimica et Cosmochimica Acta} \textbf{60}, 4223--4229 (1996).
+
+\bibitem[Farley et al.(1999)]{farley1999}
+Farley, K. A., Reiners, P. W. \& Nenow, V. An Apparatus for High-Precision Helium Diffusion Measurements from Minerals. \emph{Anal. Chem.} \textbf{71}, 2059--2061 (1999).
+
+\bibitem[Fechtig and Kalbitzer(1966)]{fechtigkalbitzer1966}
+Fechtig, H. \& Kalbitzer, S. The Diffusion of Argon in Potassium-Bearing Solids. In: \emph{Potassium Argon Dating} (eds Schaeffer, O. A. \& Z\"ahringer, J.) 68--107 (Springer, Berlin, Heidelberg, 1966).
+
+\bibitem[Flowers et al.(2007)]{flowers2007}
+Flowers, R. M., Shuster, D. L., Wernicke, B. P. \& Farley, K. A. Radiation damage control on apatite (U-Th)/He dates from the Grand Canyon region, Colorado Plateau. \emph{Geology} \textbf{35}, 447--450 (2007).
+
+\bibitem[Flowers et al.(2009)]{flowers2009}
+Flowers, R. M., Ketcham, R. A., Shuster, D. L. \& Farley, K. A. Apatite (U-Th)/He thermochronometry using a radiation damage accumulation and annealing model. \emph{Geochimica et Cosmochimica Acta} \textbf{73}, 2347--2365 (2009).
+
+\bibitem[Goldsmith et al.(2020)]{goldsmith2020}
+Goldsmith, A. S., Ketcham, R. A. \& Stockli, D. F. Simulating effects of heterogeneous 4He concentration profiles and radiation damage annealing on whole-grain zircon diffusivity analyses. \emph{Geochimica et Cosmochimica Acta} \textbf{284}, 239--253 (2020).
+
+\bibitem[Guenthner et al.(2013)]{guenthner2013}
+Guenthner, W. R., Reiners, P. W., Ketcham, R. A., Nasdala, L. \& Giester, G. Helium diffusion in natural zircon: Radiation damage, anisotropy, and the interpretation of zircon (U-Th)/He thermochronology. \emph{American Journal of Science} \textbf{313}, 145--198 (2013).
+
+\bibitem[Hanson et al.(1975)]{hanson1975}
+Hanson, G. N., Simmons, K. R. \& Bence, A. E. 40Ar/39Ar spectrum ages for biotite, hornblende and muscovite in a contact metamorphic zone. \emph{Geochimica et Cosmochimica Acta} \textbf{39}, 1269--1278 (1975).
+
+\bibitem[Harrison(1982)]{harrison1982}
+Harrison, M. T. Diffusion of 40Ar in hornblende. \emph{Contr. Mineral. and Petrol.} \textbf{78}, 324--331 (1982).
+
+\bibitem[Harrison et al.(1985)]{harrison1985}
+Harrison, M. T., Duncan, I. \& McDougall, I. Diffusion of 40Ar in biotite: Temperature, pressure and compositional effects. \emph{Geochimica et Cosmochimica Acta} \textbf{49}, 2461--2468 (1985).
+
+\bibitem[Heim et al.(2006)]{heim2006}
+Heim, J. A., Vasconcelos, P. M., Shuster, D. L., Farley, K. A. \& Broadbent, G. Dating paleochannel iron ore by (U-Th)/He analysis of supergene goethite, Hamersley province, Australia. \emph{Geology} \textbf{34}, 173--176 (2006).
+
+\bibitem[Jones(1953)]{jones1953}
+Jones, W. M. Permeability and Solubility of He\textsuperscript{3} and He\textsuperscript{4} in Vitreous Silica. \emph{J. Am. Chem. Soc.} \textbf{75}, 3093--3096 (1953).
+
+\bibitem[Ketcham et al.(2011)]{ketcham2011}
+Ketcham, R. A., Gautheron, C. \& Tassan-Got, L. Accounting for long alpha-particle stopping distances in (U-Th-Sm)/He geochronology: Refinement of the baseline case. \emph{Geochimica et Cosmochimica Acta} \textbf{75}, 7779--7791 (2011).
+
+\bibitem[Lee(1993)]{lee1993}
+Lee, J. K. W. The argon release mechanisms of hornblende in vacuo. \emph{Chemical Geology} \textbf{106}, 133--170 (1993).
+
+\bibitem[Lo et al.(2000)]{lo2000}
+Lo, C.-H., Lee, J. K. W. \& Onstott, T. C. Argon release mechanisms of biotite in vacuo and the role of short-circuit diffusion and recoil. \emph{Chemical Geology} \textbf{165}, 135--166 (2000).
+
+\bibitem[Masaryk(1968)]{masaryk1968}
+Masaryk, J. S. Permeation in Fused Silica (1968).
+
+\bibitem[McMurtry et al.(2019)]{mcmurtry2019}
+McMurtry, G. M., DeLuze, J. R., Hilton, D. R. \& Blessing, J. E. Differential Diffusion of Helium Isotopes in Glass, Quantum-tunneling 3He Enrichment, and Portable 3He/4He Monitoring of Mantle Processes. \emph{Sci Rep} \textbf{9}, 5213 (2019).
+
+\bibitem[Nomade et al.(2004)]{nomade2004}
+Nomade, S., Renne, P. R. \& Merkle, R. K. W. 40Ar/39Ar age constraints on ore deposition and cooling of the Bushveld Complex, South Africa. \emph{Journal of the Geological Society} \textbf{161}, 411--420 (2004).
+
+\bibitem[Norton(1953)]{norton1953}
+Norton, F. J. Helium Diffusion Through Glass. \emph{Journal of the American Ceramic Society} \textbf{36}, 90--96 (1953).
+
+\bibitem[Oehler and Tomozawa(2004)]{oehler2004}
+Oehler, A. \& Tomozawa, M. Water diffusion into silica glass at a low temperature under high water vapor pressure. \emph{Journal of Non-Crystalline Solids} \textbf{347}, 211--219 (2004).
+
+\bibitem[Reiners and Farley(1999)]{reinersfarley1999}
+Reiners, P. W. \& Farley, K. A. Helium diffusion and (U-Th)/He thermochronometry of titanite. \emph{Geochimica et Cosmochimica Acta} \textbf{63}, 3845--3859 (1999).
+
+\bibitem[Rogers et al.(1954)]{rogers1954}
+Rogers, W. A., Buritz, R. S. \& Alpert, D. Diffusion Coefficient, Solubility, and Permeability for Helium in Glass. \emph{J. Appl. Phys.} \textbf{25}, 868--875 (1954).
+
+\bibitem[Sander(2015)]{sander2015}
+Sander, R. Compilation of Henry's law constants (version 4.0) for water as solvent. \emph{Atmos. Chem. Phys.} \textbf{15}, 4399--4981 (2015).
+
+\bibitem[Shackelford et al.(1972)]{shackelford1972}
+Shackelford, J. F., Studt, P. L. \& Fulrath, R. M. Solubility of Gases in Glass. II. He, Ne, and H2 in Fused Silica. \emph{Journal of Applied Physics} \textbf{43}, 1619--1626 (1972).
+
+\bibitem[Shelby(1971)]{shelby1971}
+Shelby, J. E. Diffusion of Helium Isotopes in Vitreous Silica. \emph{Phys. Rev. B} \textbf{4}, 2681--2686 (1971).
+
+\bibitem[Shelby(1972)]{shelby1972}
+Shelby, J. E. Helium Migration in Natural and Synthetic Vitreous Silica. \emph{Journal of the American Ceramic Society} \textbf{55}, 61--64 (1972).
+
+\bibitem[Shelby(1976)]{shelby1976}
+Shelby, J. E. Pressure dependence of helium and neon solubility in vitreous silica. \emph{Journal of Applied Physics} \textbf{47}, 135--139 (1976).
+
+\bibitem[Shuster et al.(2004)]{shuster2004}
+Shuster, D. L., Farley, K. A., Sisterson, J. M. \& Burnett, D. S. Quantifying the diffusion kinetics and spatial distributions of radiogenic 4He in minerals containing proton-induced 3He. \emph{Earth and Planetary Science Letters} \textbf{217}, 19--32 (2004).
+
+\bibitem[Shuster and Farley(2005)]{shuster2005}
+Shuster, D. L. \& Farley, K. A. 4He/3He Thermochronometry: Theory, Practice, and Potential Complications. \emph{Reviews in Mineralogy and Geochemistry} \textbf{58}, 181--203 (2005).
+
+\bibitem[Shuster et al.(2006)]{shuster2006}
+Shuster, D. L., Flowers, R. M. \& Farley, K. A. The influence of natural radiation damage on helium diffusion kinetics in apatite. \emph{Earth and Planetary Science Letters} \textbf{249}, 148--161 (2006).
+
+\bibitem[Studt(1962)]{studt1962}
+Studt, P. L. Mechanism of Gaseous Permeation through Glass, Single-Crystal Silicon, and Germanium; and Stress-Enhanced Gaseous Permeation through Alumina Bodies. \url{https://escholarship.org/uc/item/9pj1h2x1} (1962).
+
+\bibitem[Swets et al.(1961)]{swets1961}
+Swets, D. E., Lee, R. W. \& Frank, R. C. Diffusion Coefficients of Helium in Fused Quartz. \emph{The Journal of Chemical Physics} \textbf{34}, 17--22 (1961).
+
+\bibitem[Tsuru et al.(2011)]{tsuru2011}
+Tsuru, T. \emph{et al.} Permeation properties of hydrogen and water vapor through porous silica membranes at high temperatures. \emph{AIChE Journal} \textbf{57}, 618--629 (2011).
+
+\bibitem[Vasconcelos et al.(2013)]{vasconcelos2013}
+Vasconcelos, P. M., Heim, J. A., Farley, K. A., Monteiro, H. \& Waltenberg, K. 40Ar/39Ar and (U-Th)/He--4He/3He geochronology of landscape evolution and channel iron deposit genesis at Lynn Peak, Western Australia. \emph{Geochimica et Cosmochimica Acta} \textbf{117}, 283--312 (2013).
+
+\bibitem[Verhallen et al.(1984)]{verhallen1984}
+Verhallen, P. T. H. M., Oomen, L. J. P., Elsen, A. J. J. M. v. d., Kruger, J. \& Fortuin, J. M. H. The diffusion coefficients of helium, hydrogen, oxygen and nitrogen in water determined from the permeability of a stagnant liquid layer in the quasi-steady state. \emph{Chemical Engineering Science} \textbf{39}, 1535--1541 (1984).
+
+\bibitem[Virtanen et al.(2020)]{virtanen2020}
+Virtanen, P. \emph{et al.} SciPy 1.0: Fundamental algorithms for scientific computing in Python. \emph{Nature Methods} \textbf{17}, 261--272 (2020).
+
+\bibitem[Wilson and Bisson(1973)]{wilson1973}
+Wilson, W. D. \& Bisson, C. L. Atomistics of helium diffusion in copper and tungsten. \emph{Radiation Effects} \textbf{19}, 53--58 (1973).
+
+\bibitem[Wolf et al.(1996)]{wolf1996}
+Wolf, R. A., Farley, K. A. \& Silver, L. T. Helium diffusion and low-temperature thermochronometry of apatite. \emph{Geochimica et Cosmochimica Acta} \textbf{60}, 4231--4240 (1996).
+
+\bibitem[Yakubovich et al.(2019)]{yakubovich2019}
+Yakubovich, O. V., Gedz, A. M., Vikentyev, I. V., Kotov, A. B. \& Gorokhovskii, B. M. Migration of Radiogenic Helium in the Crystal Structure of Sulfides and Prospects of Their Isotopic Dating. \emph{Petrology} \textbf{27}, 59--78 (2019).
+
+\bibitem[Yakubovich et al.(2010)]{yakubovich2010}
+Yakubovich, O. V., Shukolyukov, Yu. A., Kotov, A. B., Yakovleva, S. Z. \& Sal'nikova, E. B. Geothermochronology based on noble gases: II. Stability of the (U-Th)/He isotope system in zircon. \emph{Petrology} \textbf{18}, 555--570 (2010).
+
+\bibitem[Yakubovich et al.(2020)]{yakubovich2020}
+Yakubovich, O., Podolskaya, M., Vikentyev, I., Fokina, E. \& Kotov, A. U-Th-He Geochronology of Pyrite from the Uzelga VMS Deposit (South Urals) -- New Perspectives for Direct Dating of the Ore-Forming Processes. \emph{Minerals} \textbf{10}, 629 (2020).
+
+\bibitem[Yakubovich et al.(2021)]{yakubovich2021}
+Yakubovich, O. \emph{et al.} U-Th-He Geochronology of Pyrite from Alteration of the Au-Fe-Skarn Novogodnee-Monto Deposit (Polar Urals, Russia) -- The Next Step in the Development of a New Approach for Direct Dating of Ore-Forming Processes. \emph{Geosciences} \textbf{11}, 408 (2021).
+
+\bibitem[Zeitler et al.(1987)]{zeitler1987}
+Zeitler, P. K., Herczeg, A. L., McDougall, I. \& Honda, M. U-Th-He dating of apatite: A potential thermochronometer. \emph{Geochimica et Cosmochimica Acta} \textbf{51}, 2865--2868 (1987).
+
+\bibitem[McInnes et al.(2005)]{mcinnes2005}
+McInnes, B. I. A., Evans, N. J., Fu, F. Q. \& Garwin, S. Application of Thermochronology to Hydrothermal Ore Deposits. \emph{Reviews in Mineralogy and Geochemistry} \textbf{58}, 467--498 (2005).
+
+\end{thebibliography}
+
+\end{document}

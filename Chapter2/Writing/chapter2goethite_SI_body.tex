@@ -16,14 +16,10 @@
 %  equations, figures, or citations.
 % =============================================================
 
-\todo{Make figure of upper bound nt and calculated nt for goethite. 1:1 line or below is correct region.}
-\todo{remove all helium 4 junk from informed method desciption}
-
-
 \section{Supplementary Verification: The Na\"ive/Informed Bracketing Method for the Encapsulated, Irradiated Win-06-01b Step Heat Experiment}
 \label{sec:ch2-si-detailed-methods}
 
-This supplement documents the na\"ive/informed bracketing method: an independent, more bespoke treatment of the HT-Win-06-01b dataset that explicitly tracks the helium content of the ampoule step by step, rather than bounding it as in the main text's ``treatment as uncertainty'' approach (\S\ref{experimental-methods}, \S\ref{analytical-methods}). It is retained here solely as a secondary, independent verification of the main text's results and conclusions, not as the primary basis for them: the results of the two methods' distilled datasets and derived quantities agree, corroborating the main text's simpler treatment. This supplement covers only the na\"ive/informed bracketing dataset and the bespoke, step-by-step corrections applied to it (the \nameref{raw-data-and-corrections-columns} through \nameref{totals} sections below); the isothermal-permeation-fit methodology and cooling-tube numerical model that establish the ampoule's elevated permeability -- the evidentiary basis for the main text's conservative literature-permeability assumption, and a prerequisite for the corrections applied below -- are described in full in the main text (\S\ref{experimental-methods}).
+This supplement documents the na\"ive/informed bracketing method: an independent, more bespoke treatment of the HT-Win-06-01b 3He dataset that explicitly tracks the helium content of the ampoule step by step, rather than bounding it as in the main text's ``treatment as uncertainty'' approach (\S\ref{experimental-methods}, \S\ref{analytical-methods}). It is retained here solely as a secondary, independent verification of the main text's results and conclusions, not as the primary basis for them: the two methods' distilled 3He datasets and derived quantities agree (\S\ref{complete-degas-test}), corroborating the main text's simpler treatment. Because 4He permeation-step signals were blank level, no analogous direct check exists for 4He; 4He is therefore reduced exclusively by the bounding method throughout this chapter and does not otherwise appear in this supplement. This supplement covers only the na\"ive/informed bracketing dataset and the bespoke, step-by-step corrections applied to it (the \nameref{raw-data-and-corrections-columns} through \nameref{totals} sections below); the isothermal-permeation-fit methodology and cooling-tube numerical model that establish the ampoule's elevated permeability -- the evidentiary basis for the main text's conservative literature-permeability assumption, and a prerequisite for the corrections applied below -- are described in full in the main text (\S\ref{experimental-methods}).
 
 \subsection{Summary}
 
@@ -299,208 +295,58 @@ n_{0} = \frac{m}{\left( 1 - e^{- KGRT} \right)}
 \end{array}\]
 
 The ``3He \(n_{0}\) (pccSTP)'' column tracks the accepted value of
-n\textsubscript{0} (and n\textsubscript{t,;} which is n\textsubscript{0}
+n\textsubscript{0} (and n\textsubscript{t}, which is n\textsubscript{0}
 in the subsequent column) for ultimate use in permeation corrections
-using Eq.~\eqref{eq:n0informed}. Permeation steps colored in pink and
-magenta are ``Informed Bracket'' measurements. They set the accepted
-value of n\textsubscript{0} at the time of their measurement using
-Eq.~\eqref{eq:n0informed}. In other words, the ``3He \(n_{0}\) (pccSTP)''
-column inherits the value calculated by Eq.~\eqref{eq:n0informed} in the
-``3He n0 calc (pccSTP) (m/(1-e\^{}-$\lambda$t))'' column for permeation steps
-colored pink, whereas the permeation steps colored darker magenta set the
-value of \(n_{0}\) with an altered version of Eq.~\eqref{eq:n0informed}
-because they cooled to room temperature and sat permeating for longer
-than 1560 seconds before measurement. Their respective n0 values are
-calculated using an altered form of Eq.~\eqref{eq:n0informed}
-(Eq.~\eqref{eq:ch2-longcool}) in a column entitled ``3He n0 calc long cool'':
+using Eq.~\eqref{eq:n0informed}. Depending on the step, this value is
+determined one of three ways.
 
-\begin{equation}
-n_{0} = \frac{m}{\left( 1 - {(e}^{- K_{hot}GRT_{hot}t_{hot}}{*e}^{- K_{cold}GRT_{cold}t_{cold}} \right))}
-\label{eq:ch2-longcool}
-\end{equation}
+Most permeation steps in this study are ``Informed Bracket''
+measurements, which set n\textsubscript{0} directly from their own
+measurement using Eq.~\eqref{eq:n0informed} -- calculated in the
+``3He n0 calc (pccSTP) (m/(1-e\^{}-$\lambda$t))'' column.
 
-\emph{T\textsubscript{cold}} is 26°C, \emph{K\textsubscript{cold}} is
-measured internally in a process described in more detail below, and
-\emph{t\textsubscript{cold}} is equal to the value in the ``Cooling
-time'' column minus 1560 seconds, because the effective
-permeabilities for the warmer temperatures used here were calculated
-from measurements that cooled for 1560 seconds.
+Permeation steps between Informed Bracket measurements instead track the
+decreasing value of n\textsubscript{0} by the default first-order decay
+of Eq.~\eqref{eq:naive}: the calculated n\textsubscript{0} value for step
+\emph{i} is \(n_{0}^{i} = n_{0}^{i - 1}e^{- RG(KTt)_{i - 1}}\). This
+default treatment is used whenever the previous step's cooling time
+matched the \textasciitilde26-minute window used to calibrate the
+effective permeabilities themselves (\S\ref{experimental-methods}), and
+is generally preferred over re-inverting from an Informed Bracket
+measurement because it lets n\textsubscript{0} be set by earlier
+measurements with larger signals, avoiding error inflation from
+near-blank permeation steps. Errors associated with \emph{K} and
+\(n_{0}^{i - 1}\) are propagated through Eq.~\eqref{eq:naive} in
+quadrature.
 
-Most experimental steps within this study are separated by multiple
-permeation steps that each decrease the value of n\textsubscript{0}.
-Values in the ``3He \(n_{0}\) (pccSTP)'' column are color coded
-according to how they are calculated. Uncolored cells denote the default
-method of tracking the decreasing values of n0, which is handled with
-Eq.~\eqref{eq:naive}. The calculated n\textsubscript{0} value for uncolored step
-\emph{i} in the \emph{i}th row is
-\(n_{0}^{i} = n_{0}^{i - 1}e^{- RG(KTt)_{i - 1}}\). This default
-behavior is followed when cooling times for the previous step were 26
-minutes, to avoid applying a value for the effective permeation constant
-`K' that doesn't capture the additional effects of long cooling. It is
-advantageous to use this approach because it allows for the n0 value
-to be set by earlier measurements with larger signals, avoiding
-potential errors related to near-blank measurements. Errors associated
-with \emph{K} and \(n_{0}^{i - 1}\) are propagated through
-Eq.~\eqref{eq:naive} in quadrature.
+A small number of near-blank permeation steps, whose own signal was too
+close to baseline to invert reliably, instead had n\textsubscript{0} set
+by direct mass balance from an adjacent, reliably determined step:
+forward, by subtracting that step's own measured amount \emph{m} from
+the following step's n\textsubscript{0}; or backward, by adding it to
+the preceding step's n\textsubscript{0}.
 
-Values in the ``3He \(n_{0}\) (pccSTP)'' that are colored brown or tan
-are propagated by adding or subtracting measured amounts of helium from
-the previous or subsequent step's determined value of ``3He \(n_{0}\)
-(pccSTP)'', and simply adding the uncertainty from the previous or
-subsequent \(n_{0}\) and the corresponding measured value of helium
-\emph{m}. Tan cells are calculated by adding that cell's measured value
-\emph{m} to the subsequent row's value of \(n_{0}\), while the brown
-cells are calculated by subtracting the previous row's measured value
-\emph{m} from its value of \(n_{0}\).
+Finally, some permeation steps and series -- including the arbitrarily
+long ``complete purge'' steps at the end of the experiment discussed in
+\S\ref{complete-degas-test} -- were long enough to be treated as
+emptying the ampoule entirely, so that n\textsubscript{0} for the
+following row was set to 0 rather than inverted from
+Eq.~\eqref{eq:naive}.
 
-Permeation steps/series in rows colored grey at the end of the
-experiment were arbitrarily long and were considered to effectively
-empty the tube of any helium, so that the value of \(n_{0}\) for the
-subsequent cell was 0.
+One further complication affects two adjacent high-temperature steps
+(195°C/1106 min and 185°C/740 min): the Informed Bracket measurement
+bracketing them cooled to room temperature and continued permeating for
+far longer (\textasciitilde13 hours) than the \textasciitilde26-minute
+window used to calibrate every other step's effective permeability, and
+so would have needed a one-off, separately calibrated room-temperature
+permeability not used anywhere else in this reduction. Rather than build
+a special-case correction around two points, these two steps are instead
+excluded from the fitted Stage 1 regression (\S\ref{ch2-si-distilled-naive}),
+its Arrhenius plot, and the diffusivity comparison of
+\S\ref{complete-degas-test}, and marked (not derived) with ``$^\dagger$''
+in Table~\ref{tab:ch2-distilled-naive-3he} below: their differing cooling
+time, rather than their signal strength, is the reason for the exclusion.
 
-Permeation steps that are colored blue were taken at room temperature
-and were used to calculate the tube's permeability at room temperature
-\emph{(K\textsubscript{cold})} for use in Eq.~\eqref{eq:ch2-longcool}.
-
-\subsubsection*{\texorpdfstring{Calculating the Permeability of the Ampoule
-at Room Temperature (K\textsubscript{cold})
-}{Calculating the Permeability of the Ampoule at Room Temperature (Kcold) }}\label{calculating-the-permeability-of-the-ampoule-at-room-temperature-kcold}
-
-Three measurements were taken of the experimental ampoule permeating at
-room temperature; corresponding to the blue rows. The determined values
-can be found after the final columns of the ``Raw Data and
-Corrections'' tab. These measurements solve for the permeation
-coefficient \emph{K} at 26°C using Eq.~\eqref{eq:naive} solved for K,
-given by Eq.~\eqref{eq:ch2-kcold}.
-
-\begin{equation}
-K = - \frac{\ln\left( n_{t} \right) - \ln\left( n_{0} \right)}{GRTt}
-\label{eq:ch2-kcold}
-\end{equation}
-
-Where \(n_{t}\) is the value of \(n_{0}\ \)in the ``3He \(n_{0}\)
-(pccSTP)'' column of the next row. Uncertainties for \(n_{0}\) and
-\(n_{t}\) are propagated in quadrature to \emph{K} and are relatively
-large, however the values of \emph{K} for the three measurements are
-tightly clustered. The mean value of \emph{K} determined from the three
-measurements is taken as \emph{K\textsubscript{cold}} and the standard
-deviation of the three measurements is taken as the 1$\sigma$ uncertainty.
-These steps all added/subtracted the measured values \emph{m} to
-determine the value of \(n_{0}\) so that there was no dependence
-\emph{K\textsubscript{cold}} on their \(n_{0}\) values. Their \(n_{0}\)
-values are thus color-coded tan or brown.
-
-The first of these three measurements (H30413) was slightly dependent
-on the value of \emph{K\textsubscript{cold}}, as all the permeation
-steps in that series had cooled for longer than 26 minutes and required
-Eq.~\eqref{eq:ch2-longcool} to determine \(n_{0}\). This series was treated subtly
-different than the rest of the permeation steps, since it both required
-and contributed a value of \emph{K\textsubscript{cold}}. The informed
-bracketing step He30418 is given bold yellow text in addition to being
-colored dark magenta to signify that the \(n_{0}\) was determined using
-Eq.~\eqref{eq:ch2-longcool}. For this step, \emph{K\textsubscript{cold}} and its
-uncertainty was taken to be the average and standard deviations of the
-other two determinations of \emph{K\textsubscript{cold}}
-(2.68x10\textsuperscript{10} ± 8.50x10\textsuperscript{9}). The rest of
-the magenta ``informed bracketing'' steps used the average and standard
-deviation of all three measured values of \emph{K\textsubscript{cold}}
-(2.56x10\textsuperscript{10} ± 7.63x10\textsuperscript{9}). All measured
-values of \emph{K\textsubscript{cold}} are within uncertainty of one
-another.
-
-The permeation coefficient \emph{K\textsubscript{cold}} determined here
-is \emph{not} an effective permeation coefficient, because there was no
-change in temperature at the end of the measurement.
-\emph{K\textsubscript{cold }}is plotted along with the effective
-permeation coefficients determined with the naïve bracketing method in a
-smaller plot, but it was not incorporated into the regression and error
-of the estimation of the effective permeabilities used in
-Eq.~\eqref{eq:n0informed} for the informed bracketing method, only for
-the darker magenta informed bracketing steps using Eq.~\eqref{eq:ch2-longcool}.
-
-
-\subsection*{Permeation Lag Corrections for
-4He}\label{permeation-lag-corrections-for-4he}
-
-Because of blank-level 4He signals for the permeation steps, 4He
-abundances within the ampoule could not be independently estimated.
-Instead, they were estimated using the 3He \(n_{0}\) abundances in the
-``3He \(n_{0}\) (pccSTP)'' column immediately following high-temperature
-experimental steps, assuming a high-uncertainty but temperature
-independent ratio of permeabilities
-\(\left( \frac{K_{3He}}{K_{4}He} \right)\). This approach utilizes the
-steady-state \(n_{t}\) value \(n_{ss}\) already established in
-Chapter~\ref{ch:apparatus}: for any long high-temperature experimental
-step where the helium source is assumed constant and the permeation
-coefficient is known, Eq.~\eqref{eq:steadystate} gives
-$n^{ss} \le m/(\lambda t - 1)$, which for these long steps
-($\lambda t \gg 1$) is well approximated by $n^{ss} \approx \omega/(\lambda t)$,
-the exact steady-state balance between the sample's helium production
-rate $\Omega$ and permeative loss ($n^{ss}=\Omega/\lambda$, with
-$\omega = \Omega t$ the total production over the step).
-
-Taking the ratio of the steady state abundances for 3He and 4He within
-the ampoule:
-
-\[\frac{n_{t}^{4He}}{n_{t}^{3He}}_{ss} = \frac{\omega^{4He}\lambda^{3He}}{\omega^{3He}\lambda^{4He}}\]
-
-Consider that $\lambda$ = \emph{KGRT} and \emph{G, R,} and \emph{T} are
-constants, the above expression reduces. Additionally, the value for $\omega$
-is not known, but it is related to the measured value in an experimental
-step according to Eq.~\eqref{eq:permlag}: \(\omega = m + n_{t} - n_{0}\). For long
-experimental steps at high temperature, \(\omega \gg n_{t},\ n_{0}\), so
-\(\omega \approx m\). Furthermore, even when \(n_{t}\) and/or \(n_{0}\)
-are significant relative to the measured value \emph{m}, their relative
-significances \(\left( \frac{n_{t}}{m},\frac{n_{0}}{m} \right)\) would
-be expected to be very similar for both isotopes, because their
-permeabilities through silica glass are similar and both isotopes
-experienced the same heating schedule that would affect their abundances
-similarly. Therefore, both isotopes would be expected to differ from the
-assumption that \(\omega \approx m\) in a similar fashion. In other
-words, the assumption
-\(\frac{\omega^{4He}}{\omega^{3He}} \approx \frac{m^{4He}}{m^{3}He}\) is
-a much stronger assumption than \(\omega \approx m\). Making this
-assumption and reducing:
-
-\[\frac{n_{t}^{4He}}{n_{t}^{3He}}_{ss} \approx \frac{m^{4He}K^{3He}}{m^{3He}K^{4He}}\]
-
-Which can be solved for \(n_{t}^{4He}\)
-
-\begin{equation}
-n_{t}^{4He} \approx \frac{m^{4He}K^{3He}}{m^{3He}K^{4He}}{\bullet n}_{t}^{3He}
-\label{eq:ch2-4he-ratio}
-\end{equation}
-
-In this work, \(\frac{K_{3He}}{K_{4}He} = 1.10 \pm 0.19\) (2$\sigma$) and is not
-treated as a function of temperature, as conservatively measured by \citep{thyer2026}. When used in any equation in this
-work, its uncertainty is always propagated through quadrature.
-
-Eq.~\eqref{eq:ch2-4he-ratio} is solved in the column entitled ``4He n0 by ratio (nccSTP)''.
-Since Eq.~\eqref{eq:ch2-4he-ratio} only applies to the \(n_{t}\) value of a high
-temperature experimental step (which is the same as the \(n_{0}\) value
-of the permeation step immediately following), it is only used to assign
-\(n_{0}^{4He}\ \)values for the permeation step immediately following
-each high-temperature experimental step. \(\frac{m^{4He}}{m^{3He}}\)
-refers to the ratio of measured helium values of the high temperature
-step, and the \(n_{t}^{3He}\) term is \(n_{0}^{3He}\) of the permeation
-step immediately following a high temperature step in the ``3He
-\(n_{0}\) (pccSTP)'' column.
-
-Similarly to 3He, \(n_{0}^{4He}\) values decrease for every permeation
-step. Because the measurements of 4He are blank level, the evolution of
-\(n_{0}^{4He}\) is tracked in the ``4He n0 (nccSTP)'' column using
-Eq.~\eqref{eq:ch2-longcool} to account for long cooling times for some permeation steps.
-Because the permeation coefficient of 4He is not known for any
-temperature for Win-06-01b, the permeation coefficients for 3He at the
-relevant temperature is multiplied by \(1.10 \pm 0.19\) (2$\sigma$) and the
-errors are all propagated in quadrature. Because of large blank
-corrections and uncertainty in the permeation coefficient, the errors
-for corrected 4He yields are very high. Regardless, diffusivities
-calculated from these 4He data form a sensible array on an Arrhenius
-plot. Many of these measurements are within error of the 3He array, but
-some less uncertain data are resolved to lower apparent diffusivity
-values, suggesting that there is some degree of helium loss recorded
-even up to 14\% cumulate yield of 3He.
 
 \section*{Na\"ive-Method Isothermal Permeability Dataset}\label{naive-apparent-lambdas-permeability-coefficient-description-and-methods}
 \markright{\MakeUppercase{Na\"ive-Method Isothermal Permeability Dataset}}
@@ -517,21 +363,25 @@ The effective permeability coefficients used by the informed bracketing method b
 
 The complete corrected step-heat dataset underlying the na\"ive bracketing
 method's apparent permeabilities (Fig.~\ref{fig:ch2-naive-arrhenius}) is reported
-in Tables~\ref{tab:ch2-distilled-naive-3he}
-and~\ref{tab:ch2-distilled-naive-4he}, reporting the central value and
+in Table~\ref{tab:ch2-distilled-naive-3he}, reporting the central value and
 2$\sigma$ uncertainty for each quantity, analogous to
-Tables~\ref{tab:ch2-distilled-3he} and~\ref{tab:ch2-distilled-4he} in the
+Table~\ref{tab:ch2-distilled-3he} in the
 main text for the informed bracketing (``treatment as uncertainty'')
-method. Table~\ref{tab:ch2-distilled-naive-ratios} separately reports the
-bulk-normalized $^4$He/$^3$He ratios and cumulative fractional $^3$He
-yield for each step. ``--'' denotes steps for which a quantity could not
+method. 4He is not treated by the na\"ive/informed bracketing method: 4He
+permeation-step signals were blank level (\nameref{helium-4-blank-corrections}),
+so no direct, step-by-step quantification of the ampoule's 4He inventory was
+possible, and 4He throughout this chapter is instead reduced exclusively by
+the bounding method of the main text (\S\ref{analytical-methods}). The
+na\"ive/informed bracketing dataset reported here is retained only for 3He,
+as the internal check on the bounding method discussed in
+\S\ref{complete-degas-test}. ``--'' denotes steps for which a quantity could not
 be determined (see \S\ref{finite-difference-diffusion-model-of-cooling-tube}
 in the main text).
 
 \begin{landscape}
 \begin{footnotesize}
 \begin{longtable}{r r r r r r r r r r r r}
-\caption{$^3$He step-heat dataset for HT-Win-06-01b under the na\"ive bracketing method: measured and cumulative $^3$He, the initial and residual ampoule content ($n_{0}$, $n_{t}$), the true step production ($\omega$), and the apparent diffusivity $\ln(D/a^2)$, each with its 2$\sigma$ uncertainty.}\label{tab:ch2-distilled-naive-3he}\\
+\caption{$^3$He step-heat dataset for HT-Win-06-01b under the na\"ive bracketing method: measured and cumulative $^3$He, the initial and residual ampoule content ($n_{0}$, $n_{t}$), the true step production ($\omega$), and the apparent diffusivity $\ln(D/a^2)$, each with its 2$\sigma$ uncertainty. Six rows have derived values marked with ``$^*$'': these steps have measured $^3$He $<0.1$ pccSTP and are excluded as low-signal, as in Table~\ref{tab:ch2-distilled-3he}. Two of those six (195\textdegree C/1106 min and 185\textdegree C/740 min) are additionally marked ``$^\dagger$'': their $n_0$ depended on an atypically long room-temperature permeation rather than the standard cooling window used to calibrate the effective permeability (\S\ref{sec:ch2-si-detailed-methods}), so they are excluded (independently of the low-signal exclusion) from the fitted Stage 1 regression, Fig.~\ref{fig:ch2-bracket-arrhenius-zoom}, and Fig.~\ref{fig:ch2-diffusivity-comparison}.}\label{tab:ch2-distilled-naive-3he}\\
 \toprule
 Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{0}$ & $\pm2\sigma$ & $n_{t}$ & $\pm2\sigma$ & $\omega$ & $\pm2\sigma$ & $\ln(D/a^2)$ & $\pm2\sigma$ \\
 (°C) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & & (pccSTP) & & (pccSTP) & & & \\
@@ -557,12 +407,12 @@ Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{0}$ & $\pm2\sigma$ & $n_{t}$ & $\
 230 & 425 & 0.7899 & 4.0551 & \(5.87\!\times\!10^{-3}\) & \(1.86\!\times\!10^{-3}\) & 0.0639 & \(3.48\!\times\!10^{-3}\) & 0.8479 & \(1.25\!\times\!10^{-2}\) & -20.514 & 0.066 \\
 225 & 908 & 0.7513 & 4.8885 & \(1.95\!\times\!10^{-2}\) & \(2.45\!\times\!10^{-3}\) & 0.0420 & \(4.94\!\times\!10^{-3}\) & 0.7738 & \(1.42\!\times\!10^{-2}\) & -21.200 & 0.121 \\
 215 & 450 & 0.1415 & 5.6842 & \(1.31\!\times\!10^{-2}\) & \(1.85\!\times\!10^{-3}\) & 0.0278 & \(3.54\!\times\!10^{-3}\) & 0.1563 & \(6.48\!\times\!10^{-3}\) & -22.015 & 0.316 \\
-205 & 520 & 0.0763 & 5.8529 & \(7.18\!\times\!10^{-3}\) & \(1.23\!\times\!10^{-3}\) & 0.0125 & \(1.63\!\times\!10^{-3}\) & 0.0816 & \(8.10\!\times\!10^{-3}\) & -22.788 & 0.829 \\
-195 & 1106 & 0.0670 & 5.9491 & \(2.12\!\times\!10^{-3}\) & \(4.02\!\times\!10^{-4}\) & 0.0307 & \(2.86\!\times\!10^{-3}\) & 0.0956 & \(3.23\!\times\!10^{-3}\) & -23.370 & 1.094 \\
-185 & 740 & 0.0227 & 6.0246 & \(1.25\!\times\!10^{-2}\) & \(1.64\!\times\!10^{-3}\) & 0.0090 & \(1.06\!\times\!10^{-3}\) & 0.0192 & \(2.00\!\times\!10^{-3}\) & -24.567 & 2.822 \\
-175 & 920 & 0.0180 & 6.0610 & \(3.68\!\times\!10^{-3}\) & \(5.02\!\times\!10^{-4}\) & 0.0045 & \(4.42\!\times\!10^{-4}\) & 0.0189 & \(7.42\!\times\!10^{-4}\) & -24.796 & 3.797 \\
-200 & 260 & 0.0224 & 6.0814 & \(6.53\!\times\!10^{-4}\) & \(1.17\!\times\!10^{-4}\) & 0.0095 & \(1.23\!\times\!10^{-3}\) & 0.0313 & \(1.65\!\times\!10^{-3}\) & -23.022 & 1.495 \\
-210 & 520 & 0.0812 & 6.1081 & \(7.48\!\times\!10^{-3}\) & \(9.98\!\times\!10^{-4}\) & 0.0145 & \(1.32\!\times\!10^{-3}\) & 0.0882 & \(3.85\!\times\!10^{-3}\) & -22.669 & 1.135 \\
+205 & 520 & 0.0763 & 5.8529 & \(7.18\!\times\!10^{-3}\)$^*$ & \(1.23\!\times\!10^{-3}\)$^*$ & 0.0125$^*$ & \(1.63\!\times\!10^{-3}\)$^*$ & 0.0816$^*$ & \(8.10\!\times\!10^{-3}\)$^*$ & -22.788$^*$ & 0.829$^*$ \\
+195 & 1106 & 0.0670 & 5.9491 & \(2.12\!\times\!10^{-3}\)$^{*\dagger}$ & \(4.02\!\times\!10^{-4}\)$^{*\dagger}$ & 0.0307$^{*\dagger}$ & \(2.86\!\times\!10^{-3}\)$^{*\dagger}$ & 0.0956$^{*\dagger}$ & \(3.23\!\times\!10^{-3}\)$^{*\dagger}$ & -23.370$^{*\dagger}$ & 1.094$^{*\dagger}$ \\
+185 & 740 & 0.0227 & 6.0246 & \(1.25\!\times\!10^{-2}\)$^{*\dagger}$ & \(1.64\!\times\!10^{-3}\)$^{*\dagger}$ & 0.0090$^{*\dagger}$ & \(1.06\!\times\!10^{-3}\)$^{*\dagger}$ & 0.0192$^{*\dagger}$ & \(2.00\!\times\!10^{-3}\)$^{*\dagger}$ & -24.567$^{*\dagger}$ & 2.822$^{*\dagger}$ \\
+175 & 920 & 0.0180 & 6.0610 & \(3.68\!\times\!10^{-3}\)$^*$ & \(5.02\!\times\!10^{-4}\)$^*$ & 0.0045$^*$ & \(4.42\!\times\!10^{-4}\)$^*$ & 0.0189$^*$ & \(7.42\!\times\!10^{-4}\)$^*$ & -24.796$^*$ & 3.797$^*$ \\
+200 & 260 & 0.0224 & 6.0814 & \(6.53\!\times\!10^{-4}\)$^*$ & \(1.17\!\times\!10^{-4}\)$^*$ & 0.0095$^*$ & \(1.23\!\times\!10^{-3}\)$^*$ & 0.0313$^*$ & \(1.65\!\times\!10^{-3}\)$^*$ & -23.022$^*$ & 1.495$^*$ \\
+210 & 520 & 0.0812 & 6.1081 & \(7.48\!\times\!10^{-3}\)$^*$ & \(9.98\!\times\!10^{-4}\)$^*$ & 0.0145$^*$ & \(1.32\!\times\!10^{-3}\)$^*$ & 0.0882$^*$ & \(3.85\!\times\!10^{-3}\)$^*$ & -22.669$^*$ & 1.135$^*$ \\
 220 & 1167 & 0.5766 & 6.1914 & \(2.82\!\times\!10^{-3}\) & \(1.44\!\times\!10^{-3}\) & 0.0276 & \(3.24\!\times\!10^{-3}\) & 0.6014 & \(2.45\!\times\!10^{-2}\) & -21.504 & 0.184 \\
 230 & 370 & 0.3577 & 6.7796 & \(8.68\!\times\!10^{-3}\) & \(3.96\!\times\!10^{-3}\) & 0.0422 & \(5.13\!\times\!10^{-3}\) & 0.3912 & \(1.48\!\times\!10^{-2}\) & -20.712 & 0.146 \\
 240 & 320 & 0.6767 & 7.1563 & \(1.72\!\times\!10^{-2}\) & \(2.42\!\times\!10^{-3}\) & 0.0826 & \(9.94\!\times\!10^{-3}\) & 0.7420 & \(1.57\!\times\!10^{-2}\) & -19.807 & 0.099 \\
@@ -588,125 +438,26 @@ Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{0}$ & $\pm2\sigma$ & $n_{t}$ & $\
 \end{footnotesize}
 \end{landscape}
 
-\begin{landscape}
-\begin{footnotesize}
-\begin{longtable}{r r r r r r r r r r r r}
-\caption{$^4$He step-heat dataset for HT-Win-06-01b under the na\"ive bracketing method, structured as in Table~\ref{tab:ch2-distilled-naive-3he}.}\label{tab:ch2-distilled-naive-4he}\\
-\toprule
-Temp & Time & $^4$He meas. & Cum. $^4$He & $n_{0}$ & $\pm2\sigma$ & $n_{t}$ & $\pm2\sigma$ & $\omega$ & $\pm2\sigma$ & $\ln(D/a^2)$ & $\pm2\sigma$ \\
-(°C) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & & (nccSTP) & & (nccSTP) & & & \\
-\midrule
-\endfirsthead
-\multicolumn{12}{l}{\textit{(continued)}} \\
-\toprule
-Temp & Time & $^4$He meas. & Cum. $^4$He & $n_{0}$ & $\pm2\sigma$ & $n_{t}$ & $\pm2\sigma$ & $\omega$ & $\pm2\sigma$ & $\ln(D/a^2)$ & $\pm2\sigma$ \\
-(°C) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & & (nccSTP) & & (nccSTP) & & & \\
-\midrule
-\endhead
-\midrule
-\multicolumn{12}{r}{\textit{continued on next page}} \\
-\endfoot
-\bottomrule
-\endlastfoot
-170 & 300 & 0.0192 & 0.0000 & \(0.00\!\times\!10^{0}\) & \(0.00\!\times\!10^{0}\) & \(3.10\!\times\!10^{-3}\) & 0.0014 & 0.0169 & 0.0057 & -30.366 & 0.674 \\
-180 & 463 & 0.0305 & 0.0192 & \(1.14\!\times\!10^{-3}\) & \(5.30\!\times\!10^{-4}\) & \(3.99\!\times\!10^{-3}\) & 0.0011 & 0.0281 & 0.0055 & -28.998 & 0.446 \\
-190 & 550 & 0.0558 & 0.0660 & \(1.22\!\times\!10^{-3}\) & \(3.80\!\times\!10^{-4}\) & \(7.42\!\times\!10^{-3}\) & 0.0016 & 0.0586 & 0.0039 & -27.556 & 0.233 \\
-200 & 500 & 0.1024 & 0.1375 & \(3.77\!\times\!10^{-3}\) & \(8.85\!\times\!10^{-4}\) & \(1.12\!\times\!10^{-2}\) & 0.0023 & 0.1066 & 0.0044 & -26.114 & 0.134 \\
-210 & 475 & 0.1460 & 0.2500 & \(3.32\!\times\!10^{-3}\) & \(8.39\!\times\!10^{-4}\) & \(1.48\!\times\!10^{-2}\) & 0.0030 & 0.1517 & 0.0071 & -25.110 & 0.112 \\
-220 & 450 & 0.2091 & 0.4055 & \(3.40\!\times\!10^{-3}\) & \(9.21\!\times\!10^{-4}\) & \(1.64\!\times\!10^{-2}\) & 0.0033 & 0.2142 & 0.0095 & -24.217 & 0.098 \\
-230 & 425 & 0.3243 & 0.6319 & \(2.79\!\times\!10^{-3}\) & \(8.21\!\times\!10^{-4}\) & \(2.83\!\times\!10^{-2}\) & 0.0051 & 0.3430 & 0.0097 & -23.222 & 0.073 \\
-225 & 908 & 0.3483 & 0.9799 & \(1.39\!\times\!10^{-2}\) & \(2.76\!\times\!10^{-3}\) & \(1.46\!\times\!10^{-2}\) & 0.0034 & 0.3517 & 0.0076 & -23.575 & 0.114 \\
-215 & 450 & 0.0716 & 1.3487 & \(7.32\!\times\!10^{-3}\) & \(1.73\!\times\!10^{-3}\) & \(5.64\!\times\!10^{-3}\) & 0.0025 & 0.0747 & 0.0075 & -24.245 & 0.318 \\
-205 & 520 & 0.0385 & 1.4359 & \(3.01\!\times\!10^{-3}\) & \(8.65\!\times\!10^{-4}\) & \(8.98\!\times\!10^{-3}\) & 0.0083 & 0.0338 & 0.0120 & -25.142 & 1.022 \\
-195 & 1106 & 0.0336 & 1.4912 & \(9.47\!\times\!10^{-4}\) & \(4.68\!\times\!10^{-4}\) & \(8.68\!\times\!10^{-4}\) & 0.0026 & 0.0258 & 0.0180 & -26.143 & 2.313 \\
-185 & 740 & 0.0079 & 1.5467 & \(4.94\!\times\!10^{-3}\) & \(4.56\!\times\!10^{-3}\) & \(3.39\!\times\!10^{-3}\) & 0.0011 & -0.0021 & 0.0080 & -- & -- \\
-175 & 920 & 0.0152 & 1.6020 & \(3.82\!\times\!10^{-4}\) & \(1.16\!\times\!10^{-3}\) & \(4.93\!\times\!10^{-3}\) & 0.0011 & 0.0152 & 0.0034 & -26.474 & 3.286 \\
-200 & 260 & 0.0107 & 1.6351 & \(5.77\!\times\!10^{-4}\) & \(2.20\!\times\!10^{-4}\) & \(1.07\!\times\!10^{-2}\) & 0.0322 & 0.0149 & 0.0011 & -25.224 & 2.214 \\
-210 & 520 & 0.2166 & 1.6547 & \(3.95\!\times\!10^{-3}\) & \(8.87\!\times\!10^{-4}\) & \(1.20\!\times\!10^{-2}\) & 0.0055 & 0.0612 & 0.1666 & -24.476 & 3.011 \\
-220 & 1167 & 0.3187 & 1.8714 & \(2.95\!\times\!10^{-3}\) & \(8.90\!\times\!10^{-3}\) & \(2.52\!\times\!10^{-2}\) & 0.0059 & 0.2365 & 0.0940 & -23.836 & 1.736 \\
-230 & 370 & 0.2113 & 2.6766 & \(4.31\!\times\!10^{-3}\) & \(2.06\!\times\!10^{-3}\) & \(4.90\!\times\!10^{-2}\) & 0.0136 & 0.2146 & 0.0199 & -22.653 & 1.000 \\
-240 & 320 & 0.4286 & 3.1616 & \(1.11\!\times\!10^{-2}\) & \(2.82\!\times\!10^{-3}\) & \(3.93\!\times\!10^{-2}\) & 0.0082 & 0.4018 & 0.0683 & -21.726 & 0.680 \\
-245 & 250 & 0.3988 & 3.6430 & \(1.43\!\times\!10^{-2}\) & \(4.47\!\times\!10^{-3}\) & \(4.89\!\times\!10^{-2}\) & 0.0102 & 0.4084 & 0.0195 & -21.290 & 0.660 \\
-250 & 210 & 0.4440 & 4.2359 & \(1.13\!\times\!10^{-2}\) & \(2.88\!\times\!10^{-3}\) & \(3.58\!\times\!10^{-2}\) & 0.0075 & 0.4663 & 0.0204 & -20.824 & 0.594 \\
-245 & 270 & 0.3123 & 4.7263 & \(1.85\!\times\!10^{-2}\) & \(4.43\!\times\!10^{-3}\) & \(2.45\!\times\!10^{-2}\) & 0.0052 & 0.3210 & 0.0132 & -21.326 & 1.050 \\
-240 & 320 & 0.1927 & 5.0846 & \(1.61\!\times\!10^{-2}\) & \(3.71\!\times\!10^{-3}\) & \(2.02\!\times\!10^{-2}\) & 0.0043 & 0.1955 & 0.0090 & -21.918 & 1.654 \\
-235 & 370 & 0.1517 & 5.3031 & \(1.27\!\times\!10^{-2}\) & \(2.87\!\times\!10^{-3}\) & \(1.90\!\times\!10^{-2}\) & 0.0039 & 0.1548 & 0.0071 & -22.249 & 2.064 \\
-230 & 420 & 0.0991 & 5.4714 & \(1.04\!\times\!10^{-2}\) & \(2.35\!\times\!10^{-3}\) & \(8.87\!\times\!10^{-3}\) & 0.0020 & 0.1031 & 0.0067 & -22.749 & 3.071 \\
-225 & 652 & 0.0995 & 5.5835 & \(9.79\!\times\!10^{-3}\) & \(2.15\!\times\!10^{-3}\) & \(9.15\!\times\!10^{-3}\) & 0.0019 & 0.0909 & 0.0087 & -23.291 & 4.243 \\
-230 & 500 & 0.1051 & 5.6969 & \(3.22\!\times\!10^{-3}\) & \(8.17\!\times\!10^{-4}\) & \(2.42\!\times\!10^{-2}\) & 0.0047 & 0.1063 & 0.0056 & -22.845 & 2.498 \\
-235 & 450 & 0.1369 & 5.8251 & \(2.11\!\times\!10^{-3}\) & \(5.73\!\times\!10^{-4}\) & \(1.93\!\times\!10^{-2}\) & 0.0044 & 0.1502 & 0.0106 & -22.363 & 1.886 \\
-240 & 400 & 0.1781 & 5.9762 & \(4.79\!\times\!10^{-3}\) & \(1.27\!\times\!10^{-3}\) & \(3.09\!\times\!10^{-2}\) & 0.0065 & 0.1835 & 0.0115 & -22.007 & 1.539 \\
-245 & 350 & 0.2305 & 6.1807 & \(5.05\!\times\!10^{-3}\) & \(1.47\!\times\!10^{-3}\) & \(3.77\!\times\!10^{-2}\) & 0.0078 & 0.2493 & 0.0110 & -21.519 & 1.128 \\
-250 & 300 & 0.2777 & 6.4385 & \(1.39\!\times\!10^{-2}\) & \(3.23\!\times\!10^{-3}\) & \(2.66\!\times\!10^{-2}\) & 0.0055 & 0.2965 & 0.0110 & -21.135 & 0.942 \\
-250 & 300 & 0.2654 & 6.7374 & \(2.41\!\times\!10^{-2}\) & \(5.21\!\times\!10^{-3}\) & \(3.00\!\times\!10^{-2}\) & 0.0064 & 0.2619 & 0.0106 & -21.204 & 1.142 \\
-250 & 300 & 0.2489 & 7.0231 & \(9.79\!\times\!10^{-3}\) & \(2.34\!\times\!10^{-3}\) & \(1.02\!\times\!10^{-1}\) & 0.0186 & 0.2585 & 0.0150 & -21.168 & 1.159 \\
-250 & 10250 & 6.8042 & 7.2901 & \(1.54\!\times\!10^{-2}\) & \(3.62\!\times\!10^{-3}\) & \(2.15\!\times\!10^{-2}\) & 0.0054 & 6.8476 & 0.0767 & -20.869 & 0.644 \\
-240 & 785 & 0.1853 & 14.1156 & \(1.08\!\times\!10^{-8}\) & \(3.61\!\times\!10^{-8}\) & \(1.85\!\times\!10^{-1}\) & 0.0215 & 0.0054 & 0.0192 & -21.540 & 1.209 \\
-\midrule
-\textbf{Total} &  &  & 145.8145 &  &  &  &  &  &  &  &  \\
-\end{longtable}
-\end{footnotesize}
-\end{landscape}
+% 4He na\"ive-bracketing step-heat table (tab:ch2-distilled-naive-4he) and the
+% derived 4He/3He ratio table (tab:ch2-distilled-naive-ratios) removed here:
+% both depended on the "Permeation Lag Corrections for 4He" reduction removed
+% above. 4He is reduced exclusively by the bounding method in the main text.
 
-\clearpage
+Beyond the ampoule's residual helium content itself (\S\ref{complete-degas-test}), the two methods' derived apparent diffusivities agree just as closely. Fig.~\ref{fig:ch2-diffusivity-comparison} compares $\ln(D/a^2)$ from the permeation-step method against the bounding method's central value for every step in the experiment, with the bounding method's own ``treatment as uncertainty'' spread on one axis and the permeation-step method's propagated uncertainty on the other; the two steps marked ``$^\dagger$'' in Table~\ref{tab:ch2-distilled-naive-3he} above are excluded for the reason given there. The two diffusivity datasets track the 1:1 line within uncertainty across the full range of the experiment. Fitting the permeation-step method's own diffusivities with the same Stage 1 procedure used for the bounding method in the main text (Fig.~\ref{fig:ch2-bracket-arrhenius-zoom}) yields an activation energy of \ChTwoBracketEa$\pm$\ChTwoBracketEaErr\ kJ/mol (R\textsuperscript{2}=\ChTwoBracketRtwo, n=\ChTwoBracketN) and a closure temperature of \ChTwoBracketTc$\pm$\ChTwoBracketTcErr\textdegree C, indistinguishable from the bounding method's own \ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol and \ChTwoTc$\pm$\ChTwoTcErr\textdegree C (Fig.~\ref{fig:ch2-arrhenius-zoom}, main text).
 
-\begin{footnotesize}
-\begin{longtable}{r r r r r r r}
-\caption{Cumulative $^3$He fractional yield and bulk-normalized $^4$He/$^3$He ratios for HT-Win-06-01b under the na\"ive bracketing method. $(^4\mathrm{He}/^3\mathrm{He})_{\omega}$ is the ratio of the step's permeation-corrected $^4$He and $^3$He production ($\omega$); $F$~$^3$He is the cumulative fractional $^3$He yield; $(^4\mathrm{He}/^3\mathrm{He})_{\omega}$ is this step's ratio normalized to the bulk (whole-experiment) $^4$He/$^3$He ratio. These data have much smaller uncertainties than those produced when permeation lag is treated as uncertainty.}\label{tab:ch2-distilled-naive-ratios}\\
-\toprule
-Temp & Time & $(^4\mathrm{He}/^3\mathrm{He})_{\omega}$ & $\pm2\sigma$ & $F$ $^3$He & $\frac{(^4/^3\mathrm{He})}{(^4/^3\mathrm{He})_{\mathrm{bulk}}}$ & $\pm2\sigma$ \\
-(°C) & (min) &  &  &  &  &  \\
-\midrule
-\endfirsthead
-\multicolumn{7}{l}{\textit{(continued)}} \\
-\toprule
-Temp & Time & $(^4\mathrm{He}/^3\mathrm{He})_{\omega}$ & $\pm2\sigma$ & $F$ $^3$He & $\frac{(^4/^3\mathrm{He})}{(^4/^3\mathrm{He})_{\mathrm{bulk}}}$ & $\pm2\sigma$ \\
-(°C) & (min) &  &  &  &  &  \\
-\midrule
-\endhead
-\midrule
-\multicolumn{7}{r}{\textit{continued on next page}} \\
-\endfoot
-\bottomrule
-\endlastfoot
-170 & 300 & 14.5470 & \(4.91\!\times\!10^{0}\) & 0.0079 & 0.0146 & 0.0049 \\
-180 & 463 & 51.0439 & \(1.02\!\times\!10^{1}\) & 0.0117 & 0.0512 & 0.0102 \\
-190 & 550 & 101.4852 & \(7.20\!\times\!10^{0}\) & 0.0156 & 0.1017 & 0.0073 \\
-200 & 500 & 197.7263 & \(9.21\!\times\!10^{0}\) & 0.0193 & 0.1982 & 0.0095 \\
-210 & 475 & 245.3349 & \(1.24\!\times\!10^{1}\) & 0.0236 & 0.2459 & 0.0127 \\
-220 & 450 & 320.0824 & \(1.54\!\times\!10^{1}\) & 0.0281 & 0.3208 & 0.0158 \\
-230 & 425 & 404.5353 & \(1.29\!\times\!10^{1}\) & 0.0340 & 0.4055 & 0.0136 \\
-225 & 908 & 454.4434 & \(1.29\!\times\!10^{1}\) & 0.0392 & 0.4555 & 0.0138 \\
-215 & 450 & 477.9049 & \(5.18\!\times\!10^{1}\) & 0.0403 & 0.4790 & 0.0522 \\
-205 & 520 & 413.8402 & \(1.53\!\times\!10^{2}\) & 0.0409 & 0.4148 & 0.1532 \\
-195 & 1106 & 269.9648 & \(1.88\!\times\!10^{2}\) & 0.0415 & 0.2706 & 0.1887 \\
-185 & 740 & -- & -- & 0.0417 & -- & -- \\
-175 & 920 & 807.5143 & \(1.84\!\times\!10^{2}\) & 0.0418 & 0.8094 & 0.1844 \\
-200 & 260 & 474.9353 & \(4.38\!\times\!10^{1}\) & 0.0420 & 0.4760 & 0.0442 \\
-210 & 520 & 693.4629 & \(1.89\!\times\!10^{3}\) & 0.0426 & 0.6951 & 1.8938 \\
-220 & 1167 & 393.2223 & \(1.57\!\times\!10^{2}\) & 0.0467 & 0.3941 & 0.1575 \\
-230 & 370 & 548.6002 & \(5.50\!\times\!10^{1}\) & 0.0494 & 0.5499 & 0.0554 \\
-240 & 320 & 541.4759 & \(9.28\!\times\!10^{1}\) & 0.0545 & 0.5427 & 0.0932 \\
-245 & 250 & 697.8180 & \(3.76\!\times\!10^{1}\) & 0.0585 & 0.6994 & 0.0385 \\
-250 & 210 & 618.0428 & \(2.94\!\times\!10^{1}\) & 0.0636 & 0.6195 & 0.0302 \\
-245 & 270 & 653.8778 & \(3.01\!\times\!10^{1}\) & 0.0670 & 0.6554 & 0.0310 \\
-240 & 320 & 654.1454 & \(3.33\!\times\!10^{1}\) & 0.0690 & 0.6556 & 0.0341 \\
-235 & 370 & 671.0610 & \(3.44\!\times\!10^{1}\) & 0.0706 & 0.6726 & 0.0352 \\
-230 & 420 & 677.0110 & \(4.77\!\times\!10^{1}\) & 0.0717 & 0.6786 & 0.0484 \\
-225 & 652 & 606.4642 & \(5.99\!\times\!10^{1}\) & 0.0727 & 0.6079 & 0.0604 \\
-230 & 500 & 636.2191 & \(3.58\!\times\!10^{1}\) & 0.0738 & 0.6377 & 0.0365 \\
-235 & 450 & 664.7204 & \(4.79\!\times\!10^{1}\) & 0.0754 & 0.6662 & 0.0486 \\
-240 & 400 & 704.0598 & \(5.54\!\times\!10^{1}\) & 0.0772 & 0.7057 & 0.0560 \\
-245 & 350 & 714.8865 & \(3.70\!\times\!10^{1}\) & 0.0795 & 0.7165 & 0.0379 \\
-250 & 300 & 737.8848 & \(3.27\!\times\!10^{1}\) & 0.0823 & 0.7396 & 0.0337 \\
-250 & 300 & 701.0048 & \(3.21\!\times\!10^{1}\) & 0.0849 & 0.7026 & 0.0330 \\
-250 & 300 & 692.4920 & \(4.29\!\times\!10^{1}\) & 0.0874 & 0.6941 & 0.0436 \\
-250 & 10250 & 798.0564 & \(1.49\!\times\!10^{1}\) & 0.1461 & 0.7999 & 0.0172 \\
-240 & 785 & 749.8748 & \(1.01\!\times\!10^{2}\) & 0.1478 & 0.7516 & 0.1011 \\
-\midrule
-\textbf{Total} &  & 997.716 &  &  &  &  \\
-\end{longtable}
-\end{footnotesize}
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{Winsor_diffusivity_naive_vs_bounding.pdf}
+\caption{Apparent \textsuperscript{3}He diffusivities for HT-Win-06-01b from the permeation-step method ($y$-axis) against the bounding method's central value ($x$-axis, Eq.~\eqref{eq:steadystate}), with the bounding method's ``treatment as uncertainty'' LB/UB spread and the permeation-step method's own propagated uncertainty plotted on their respective axes. The dashed line is 1:1. Two steps (195\textdegree C/1106 min and 185\textdegree C/740 min) are excluded for the reason given in Table~\ref{tab:ch2-distilled-naive-3he}'s caption.}
+\label{fig:ch2-diffusivity-comparison}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{winsor_goethite_Diffusivities_Arrhenius_Zoomin_naive.pdf}
+\caption{Analogue of Fig.~\ref{fig:ch2-arrhenius-zoom} (main text) using the permeation-step method's own \textsuperscript{3}He diffusivities and its own Stage 1 linear regression, rather than the bounding method's. The resulting activation energy and closure temperature (\ChTwoBracketEa$\pm$\ChTwoBracketEaErr\ kJ/mol; \ChTwoBracketTc$\pm$\ChTwoBracketTcErr\textdegree C) agree closely with the bounding method's own (\ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol; \ChTwoTc$\pm$\ChTwoTcErr\textdegree C).}
+\label{fig:ch2-bracket-arrhenius-zoom}
+\end{figure}
 
 \clearpage
 

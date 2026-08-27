@@ -64,3 +64,13 @@ Workspace/
 # run_all_figures.py pipeline in each chapter, so not tracked. Figures/source/
 # and Figures/data/ (hand-provided/curated) remain tracked.
 **/Figures/generated/
+
+# GCA manuscript's local, self-contained copies of its figures, cited
+# bibliography, and upstream macro .tex files -- all reproducible via
+# Manuscripts/HydrothermalGoethite/copy_manuscript_sources.py from
+# Chapter1/Chapter2's own Figures/{generated,source}/, the dissertation's
+# shared references.bib, and Chapter2/Writing/, so not tracked.
+Manuscripts/HydrothermalGoethite/figures/
+Manuscripts/HydrothermalGoethite/references.bib
+Manuscripts/HydrothermalGoethite/chapter2_derived_values.tex
+Manuscripts/HydrothermalGoethite/chapter2_naive_isothermal_tables.tex

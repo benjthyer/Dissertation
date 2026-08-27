@@ -18,7 +18,7 @@
 %       after building the main document once -- resolves them
 %       automatically. Uncomment the two lines below to do that.
 % =============================================================
-\documentclass[preprint,12pt,nonatbib]{elsarticle}
+\documentclass[preprint,12pt,authoryear]{elsarticle}
 
 \journal{Geochimica et Cosmochimica Acta}
 
@@ -40,27 +40,23 @@
 % \usepackage{xr}
 % \externaldocument{hydrothermal_goethite_GCA}
 
-\usepackage[
-  backend    = biber,
-  style      = authoryear,
-  sorting    = nyt,
-  maxnames   = 2,
-  minnames   = 1,
-  maxbibnames = 99,
-  uniquelist = true,
-  giveninits = true,
-  uniquename = init,
-  natbib     = true,
-]{biblatex}
-\addbibresource{../../references.bib}
+% --- Bibliography: elsarticle-harv.bst via classic BibTeX, matching the
+% main manuscript (see hydrothermal_goethite_GCA.tex's header note).
+% natbib is loaded by elsarticle.cls itself via the `authoryear` class
+% option above.
 
-\graphicspath{{../../Chapter1/Figures/generated/}{../../Chapter1/Figures/source/}{../../Chapter2/Figures/generated/}{../../Chapter2/Figures/source/}}
+% --- Self-contained sources: figures/, references.bib,
+% chapter2_derived_values.tex, and chapter2_naive_isothermal_tables.tex
+% below are local copies written by copy_manuscript_sources.py, same as
+% the main manuscript -- see hydrothermal_goethite_GCA.tex's header note
+% and that script's docstring. Do not hand-edit any of them here.
+\graphicspath{{figures/}}
 
-\input{../../Chapter2/Writing/chapter2_derived_values.tex}
+\input{chapter2_derived_values.tex}
 
 % \ChTwoNaiveRawTable / \ChTwoNaiveFitTable, used by the na\"ive/informed
 % bracketing verification section (\S\ref{sec:si-naive}) in the SI body.
-\input{../../Chapter2/Writing/chapter2_naive_isothermal_tables.tex}
+\input{chapter2_naive_isothermal_tables.tex}
 
 \providecommand{\tophline}{\toprule}
 \providecommand{\middlehline}{\midrule}
@@ -88,6 +84,7 @@
 
 \input{hydrothermal_goethite_SI_body}
 
-\printbibliography[title={References}]
+\bibliographystyle{elsarticle/elsarticle-harv}
+\bibliography{references}
 
 \end{document}

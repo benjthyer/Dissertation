@@ -95,7 +95,7 @@ the pump out times were only 1 minute and always occurred when the
 sample was coolest (and permeation was slowest), permeation from the
 ampoule during pump out is neglected in the data reduction. Less than
 one thousandth of the helium remaining in the ampoule would permeate out
-within one minute at room temperature (Eq.~\eqref{eq:naive}, Chapter~\ref{ch:apparatus}, with log
+within one minute at room temperature (Eq.~\eqref{eq:decay}, Chapter~\ref{ch:apparatus}, with log
 permeability (ln(K)) at 26°C of 23.88 ln(atoms/cm*atm*s)). Due to the
 formatting of the time stamps, these values have a 1-minute resolution.
 
@@ -255,7 +255,7 @@ m = n_{0} - n_{t}
 
 In this case, all the helium measured is a result of helium permeation
 through the silica glass ampoule. Helium permeation is a first order
-process that follows Eq.~\eqref{eq:naive} (Chapter~\ref{ch:apparatus}),
+process that follows Eq.~\eqref{eq:decay} (Chapter~\ref{ch:apparatus}),
 with \(\lambda = KGRT\):
 
 \[\begin{array}{r}
@@ -280,14 +280,14 @@ value of \emph{G} of 6708.6 cm\textsuperscript{-1}.
 
 
 For permeation steps, Eqs.~\eqref{eq:permlag} (with \(\omega=0\)) and
-\eqref{eq:naive} apply because the temperature is too low to evolve any
+\eqref{eq:decay} apply because the temperature is too low to evolve any
 helium from the sample, and the \(\omega=0\) form of
-Eq.~\eqref{eq:permlag} can be substituted into Eq.~\eqref{eq:naive} to
+Eq.~\eqref{eq:permlag} can be substituted into Eq.~\eqref{eq:decay} to
 relate a measurement to \(n_{0}\). This equation is calculated in the
 column entitled ``3He n0 calc (pccSTP) (m/(1-e\^{}-$\lambda$t))''. Errors in the
 measured value \emph{m} and the permeability \emph{K} are propagated in
 quadrature. This is the informed-bracketing relation of
-Eq.~\eqref{eq:n0informed} (Chapter~\ref{ch:apparatus}), expressed with
+Eq.~\eqref{eq:n0perm} (Chapter~\ref{ch:apparatus}), expressed with
 Eq.~\eqref{eq:permsol}'s exponential form for \(^{He}F\):
 
 \[\begin{array}{r}
@@ -297,17 +297,17 @@ n_{0} = \frac{m}{\left( 1 - e^{- KGRT} \right)}
 The ``3He \(n_{0}\) (pccSTP)'' column tracks the accepted value of
 n\textsubscript{0} (and n\textsubscript{t}, which is n\textsubscript{0}
 in the subsequent column) for ultimate use in permeation corrections
-using Eq.~\eqref{eq:n0informed}. Depending on the step, this value is
+using Eq.~\eqref{eq:n0perm}. Depending on the step, this value is
 determined one of three ways.
 
 Most permeation steps in this study are ``Informed Bracket''
 measurements, which set n\textsubscript{0} directly from their own
-measurement using Eq.~\eqref{eq:n0informed} -- calculated in the
+measurement using Eq.~\eqref{eq:n0perm} -- calculated in the
 ``3He n0 calc (pccSTP) (m/(1-e\^{}-$\lambda$t))'' column.
 
 Permeation steps between Informed Bracket measurements instead track the
 decreasing value of n\textsubscript{0} by the default first-order decay
-of Eq.~\eqref{eq:naive}: the calculated n\textsubscript{0} value for step
+of Eq.~\eqref{eq:decay}: the calculated n\textsubscript{0} value for step
 \emph{i} is \(n_{0}^{i} = n_{0}^{i - 1}e^{- RG(KTt)_{i - 1}}\). This
 default treatment is used whenever the previous step's cooling time
 matched the \textasciitilde26-minute window used to calibrate the
@@ -316,7 +316,7 @@ is generally preferred over re-inverting from an Informed Bracket
 measurement because it lets n\textsubscript{0} be set by earlier
 measurements with larger signals, avoiding error inflation from
 near-blank permeation steps. Errors associated with \emph{K} and
-\(n_{0}^{i - 1}\) are propagated through Eq.~\eqref{eq:naive} in
+\(n_{0}^{i - 1}\) are propagated through Eq.~\eqref{eq:decay} in
 quadrature.
 
 A small number of near-blank permeation steps, whose own signal was too
@@ -331,7 +331,7 @@ long ``complete purge'' steps at the end of the experiment discussed in
 \S\ref{complete-degas-test} -- were long enough to be treated as
 emptying the ampoule entirely, so that n\textsubscript{0} for the
 following row was set to 0 rather than inverted from
-Eq.~\eqref{eq:naive}.
+Eq.~\eqref{eq:decay}.
 
 One further complication affects two adjacent high-temperature steps
 (195°C/1106 min and 185°C/740 min): the Informed Bracket measurement

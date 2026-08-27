@@ -6,8 +6,8 @@
 %  from an SI wrapper. Requires longtable, booktabs, lscape.
 %
 %  CONTENTS: the encapsulated Durango apatite step-heat dataset, and the
-%  na\"ive/informed bracketing (direct permeation-step) verification of the
-%  bounding method for HT-Win-06-01b 3He (\S\ref{sec:si-naive}). The Winsor
+%  permeation step method verification of the
+%  bounding method for HT-Win-06-01b 3He (\S\ref{sec:si-permeation-step}). The Winsor
 %  goethite bounding-method datasets stay in the main text (Tables 1 and 2),
 %  since they underpin the paper's own conclusions.
 %
@@ -18,12 +18,12 @@
 %  than by hand-editing here. He also suggested dropping the
 %  He-F_Tube column as near-constant and superfluous (#126).
 %
-%  \S\ref{sec:si-naive} (the na\"ive/informed bracketing verification) is
+%  \S\ref{sec:si-permeation-step} (the permeation step verification) is
 %  ported from Chapter2/Writing/chapter2goethite_SI_body.tex of the
 %  dissertation, which remains the authoritative source for that reduction
 %  -- edit there first, then re-port, rather than diverging the two copies.
 %  4He is not treated by that method (blank-level permeation-step signals);
-%  see \S\ref{sec:si-naive} for why. The distilled 3He table it reports
+%  see \S\ref{sec:si-permeation-step} for why. The distilled 3He table it reports
 %  lives in tables/winsor_3he_naive.tex, alongside the existing
 %  tables/winsor_3he.tex and tables/winsor_4he.tex (bounding-method,
 %  main text). The \ChTwoNaiveRawTable/\ChTwoNaiveFitTable macros it calls
@@ -136,9 +136,9 @@ T = 24°C such that the temperature would stabilize at T = 24°C by design.
 \end{figure}
 
 
-\section{Verification of the Bounding Method for HT-Win-06-01b: The Na\"ive/Informed Bracketing Method}\label{sec:si-naive}
+\section{Verification of the Bounding Method for HT-Win-06-01b Using the Permeation Step Method}\label{sec:si-permeation-step}
 
-This section documents the na\"ive/informed bracketing method: an independent, step-by-step treatment of the HT-Win-06-01b \textsuperscript{3}He dataset that explicitly tracks the helium content of the ampoule between steps, rather than bounding it as in the main text's approach (\S\ref{sec:permeation-steps}, \S\ref{sec:bounding}). It is retained here solely as an internal verification of the bounding method used throughout this paper, not as the primary basis for the paper's results: the two methods' distilled \textsuperscript{3}He datasets and derived quantities agree, apart from the two ``attempted complete degas'' steps discussed in \S\ref{sec:discussion-bounding-direct}, corroborating the bounding method used in the main text. Because \textsuperscript{4}He permeation-step signals were blank level, no analogous direct check exists for \textsuperscript{4}He; \textsuperscript{4}He is therefore reduced exclusively by the bounding method throughout this paper and does not otherwise appear in this section. This section covers only the na\"ive/informed bracketing dataset and the step-by-step corrections applied to it; the isothermal-permeation-fit methodology and cooling-tube numerical model that establish the ampoule's elevated permeability -- the evidentiary basis for the conservative literature-permeability assumption used in the main text, and a prerequisite for the corrections applied below -- are described in \S\ref{sec:rate-constant} and \S\ref{finite-difference-diffusion-model-of-cooling-tube}.
+This section documents the permeation step method applied to this dataset: an independent, step-by-step treatment of the HT-Win-06-01b \textsuperscript{3}He dataset that explicitly tracks the helium content of the ampoule between steps, rather than bounding it as in the main text's approach (\S\ref{sec:permeation-steps}, \S\ref{sec:bounding}). It is retained here solely as an internal verification of the bounding method used throughout this paper, not as the primary basis for the paper's results: the two methods' distilled \textsuperscript{3}He datasets and derived quantities agree, apart from the two ``attempted complete degas'' steps discussed in \S\ref{sec:discussion-bounding-direct}, corroborating the bounding method used in the main text. Because \textsuperscript{4}He permeation-step signals were blank level, no analogous direct check exists for \textsuperscript{4}He; \textsuperscript{4}He is therefore reduced exclusively by the bounding method throughout this paper and does not otherwise appear in this section. This section covers only the permeation step dataset and the step-by-step corrections applied to it; the isothermal-permeation-fit methodology and cooling-tube numerical model that establish the ampoule's elevated permeability -- the evidentiary basis for the conservative literature-permeability assumption used in the main text, and a prerequisite for the corrections applied below -- are described in \S\ref{sec:rate-constant} and \S\ref{finite-difference-diffusion-model-of-cooling-tube}.
 
 \subsection{Summary}
 
@@ -160,7 +160,7 @@ of permeation through silica glass, and therefore were used to estimate
 the amount of residual helium within the ampoule between
 high-temperature experimental steps. These corrections are carried out
 in the ``Raw Data and Corrections'' tab using permeability values
-derived internally within the experiment from the ``Naïve Apparent
+derived internally within the experiment from the ``Naive Apparent
 Lambdas'' tab. Diffusivities calculated using the equations of
 \citet{fechtigkalbitzer1966} for 3He and 4He can be found on the
 ``Diffusivities'' tab. During the step heat experiment, 116 measurements
@@ -394,7 +394,7 @@ Eq.~\eqref{eq:permlag} can be substituted into Eq.~\eqref{eq:permsol} to
 relate a measurement to \(n_{0}\). This equation is calculated in the
 column entitled ``3He n0 calc (pccSTP) (m/(1-e\^{}-$\lambda$t))''. Errors in the
 measured value \emph{m} and the permeability \emph{K} are propagated in
-quadrature. This is the informed-bracketing relation of
+quadrature. This is the permeation step relation of
 Eq.~\eqref{eq:n0perm}, expressed with
 Eq.~\eqref{eq:permsol}'s exponential form for \(^{He}F\):
 
@@ -408,19 +408,19 @@ in the subsequent column) for ultimate use in permeation corrections
 using Eq.~\eqref{eq:n0perm}. Depending on the step, this value is
 determined one of three ways.
 
-Most permeation steps in this study are ``Informed Bracket''
+Most permeation steps in this study are inventory-setting
 measurements, which set n\textsubscript{0} directly from their own
 measurement using Eq.~\eqref{eq:n0perm} -- calculated in the
 ``3He n0 calc (pccSTP) (m/(1-e\^{}-$\lambda$t))'' column.
 
-Permeation steps between Informed Bracket measurements instead track the
+Permeation steps between inventory-setting measurements instead track the
 decreasing value of n\textsubscript{0} by the default first-order decay
 of Eq.~\eqref{eq:permsol}: the calculated n\textsubscript{0} value for
 step \emph{i} is \(n_{0}^{i} = n_{0}^{i - 1}e^{- RG(KTt)_{i - 1}}\). This
 default treatment is used whenever the previous step's cooling time
 matched the \textasciitilde26-minute window used to calibrate the
 effective permeabilities themselves (\S\ref{sec:rate-constant}), and is
-generally preferred over re-inverting from an Informed Bracket
+generally preferred over re-inverting from an inventory-setting
 measurement because it lets n\textsubscript{0} be set by earlier
 measurements with larger signals, avoiding error inflation from
 near-blank permeation steps. Errors associated with \emph{K} and
@@ -441,24 +441,24 @@ as emptying the ampoule entirely, so that n\textsubscript{0} for the
 following row was set to 0 rather than inverted from Eq.~\eqref{eq:permsol}.
 
 One further complication affects two adjacent high-temperature steps
-(195°C/1106 min and 185°C/740 min): the Informed Bracket measurement
+(195°C/1106 min and 185°C/740 min): the inventory-setting permeation step
 bracketing them cooled to room temperature and continued permeating for
 far longer (\textasciitilde13 hours) than the \textasciitilde26-minute
 window used to calibrate every other step's effective permeability, and
 so would have needed a one-off, separately calibrated room-temperature
 permeability not used anywhere else in this reduction. Rather than build
 a special-case correction around two points, these two steps are instead
-excluded from the fitted Stage 1 regression (\S\ref{sec:si-distilled-naive})
+excluded from the fitted Stage 1 regression (\S\ref{sec:si-distilled-permstep})
 and the diffusivity comparison of \S\ref{sec:discussion-bounding-direct}
 (Fig.~\ref{fig:si-diffusivity-comparison}), and marked (not derived)
-with ``$^\dagger$'' in Table~\ref{tab:si-naive-3he} below: their
+with ``$^\dagger$'' in Table~\ref{tab:si-permstep-3he} below: their
 differing cooling time, rather than their signal strength, is the reason
 for the exclusion.
 
 
-\subsection{Na\"ive-Method Isothermal Permeability Dataset}\label{sec:si-naive-lambdas}
+\subsection{In-Situ Rate Constant Dataset}\label{sec:si-rate-constant-data}
 
-The effective permeability coefficients used by the informed bracketing method below -- and the isothermal-permeation-fit methodology, cooling-tube numerical model, and Arrhenius regression used to determine them -- are described in full above (\S\ref{sec:rate-constant}). The complete fitted dataset underlying that regression is reported here: Table~\ref{tab:ch2-naive-isothermal-raw} gives the raw per-step data for all 10 isothermal sequences, and Table~\ref{tab:ch2-naive-isothermal-fits} gives the lambda/$n_0$ fit to each sequence (Fig.~\ref{fig:permeation-fits}) that together define the Arrhenius regression of Fig.~\ref{fig:ampoule-permeability}.
+The effective permeability coefficients used by the permeation step method below -- and the isothermal-permeation-fit methodology, cooling-tube numerical model, and Arrhenius regression used to determine them -- are described in full above (\S\ref{sec:rate-constant}). The complete fitted dataset underlying that regression is reported here: Table~\ref{tab:ch2-naive-isothermal-raw} gives the raw per-step data for all 10 isothermal sequences, and Table~\ref{tab:ch2-naive-isothermal-fits} gives the lambda/$n_0$ fit to each sequence (Fig.~\ref{fig:permeation-fits}) that together define the Arrhenius regression of Fig.~\ref{fig:ampoule-permeability}.
 
 \ChTwoNaiveRawTable
 
@@ -466,20 +466,20 @@ The effective permeability coefficients used by the informed bracketing method b
 
 \ChTwoNaiveFitTable
 
-\subsubsection{Na\"ive-Method Step-Heat Dataset}\label{sec:si-distilled-naive}
+\subsubsection{Permeation Step Method Step-Heat Dataset}\label{sec:si-distilled-permstep}
 
-The complete corrected step-heat dataset underlying the na\"ive bracketing
+The complete corrected step-heat dataset underlying the permeation step
 method's apparent permeabilities (Fig.~\ref{fig:ampoule-permeability}) is reported
-in Table~\ref{tab:si-naive-3he}, reporting the central value and
+in Table~\ref{tab:si-permstep-3he}, reporting the central value and
 2$\sigma$ uncertainty for each quantity, analogous to
 Table~\ref{tab:winsor-3he} in the
-main text for the informed bracketing (``treatment as uncertainty'')
-method. 4He is not treated by the na\"ive/informed bracketing method: 4He
+main text for the bounding (``treatment as uncertainty'')
+method. 4He is not treated by the permeation step method: 4He
 permeation-step signals were blank level (\nameref{helium-4-blank-corrections}),
 so no direct, step-by-step quantification of the ampoule's 4He inventory was
 possible, and 4He throughout this paper is instead reduced exclusively by
 the bounding method of the main text (\S\ref{sec:bounding}). The
-na\"ive/informed bracketing dataset reported here is retained only for 3He,
+permeation step dataset reported here is retained only for 3He,
 as the internal check on the bounding method discussed in
 \S\ref{sec:discussion-bounding-direct}. ``--'' denotes steps for which a quantity could not
 be determined (see \S\ref{finite-difference-diffusion-model-of-cooling-tube}
@@ -492,12 +492,12 @@ above).
 % both depended on the "Permeation Lag Corrections for 4He" reduction removed
 % above. 4He is reduced exclusively by the bounding method in the main text.
 
-Beyond the ampoule's residual helium content itself (\S\ref{sec:discussion-bounding-direct}), the two methods' derived apparent diffusivities agree just as closely. Fig.~\ref{fig:si-diffusivity-comparison} compares $\ln(D/a^2)$ from the permeation-step method against the bounding method's central value for every step in the experiment, with the bounding method's own ``treatment as uncertainty'' spread on one axis and the permeation-step method's propagated uncertainty on the other; the two steps marked ``$^\dagger$'' in Table~\ref{tab:si-naive-3he} above are excluded for the reason given there. Fitting the permeation-step method's own diffusivities with the same Stage 1 procedure used for the bounding method in the main text (Fig.~\ref{fig:si-bracket-arrhenius-zoom}) yields an activation energy of \ChTwoBracketEa$\pm$\ChTwoBracketEaErr\ kJ/mol (R\textsuperscript{2}=\ChTwoBracketRtwo, n=\ChTwoBracketN) and a closure temperature of \ChTwoBracketTc$\pm$\ChTwoBracketTcErr\textdegree C, indistinguishable from the bounding method's own \ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol and \ChTwoTc$\pm$\ChTwoTcErr\textdegree C (\S\ref{sec:results-goethite}).
+Beyond the ampoule's residual helium content itself (\S\ref{sec:discussion-bounding-direct}), the two methods' derived apparent diffusivities agree just as closely. Fig.~\ref{fig:si-diffusivity-comparison} compares $\ln(D/a^2)$ from the permeation-step method against the bounding method's central value for every step in the experiment, with the bounding method's own ``treatment as uncertainty'' spread on one axis and the permeation-step method's propagated uncertainty on the other; the two steps marked ``$^\dagger$'' in Table~\ref{tab:si-permstep-3he} above are excluded for the reason given there. Fitting the permeation-step method's own diffusivities with the same Stage 1 procedure used for the bounding method in the main text (Fig.~\ref{fig:si-bracket-arrhenius-zoom}) yields an activation energy of \ChTwoBracketEa$\pm$\ChTwoBracketEaErr\ kJ/mol (R\textsuperscript{2}=\ChTwoBracketRtwo, n=\ChTwoBracketN) and a closure temperature of \ChTwoBracketTc$\pm$\ChTwoBracketTcErr\textdegree C, indistinguishable from the bounding method's own \ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol and \ChTwoTc$\pm$\ChTwoTcErr\textdegree C (\S\ref{sec:results-goethite}).
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{Winsor_diffusivity_naive_vs_bounding.pdf}
-\caption{Apparent \textsuperscript{3}He diffusivities for HT-Win-06-01b from the permeation-step method ($y$-axis) against the bounding method's central value ($x$-axis, Eq.~\eqref{eq:steadystate}), with the bounding method's ``treatment as uncertainty'' LB/UB spread and the permeation-step method's own propagated uncertainty plotted on their respective axes. The dashed line is 1:1. Two steps (195\textdegree C/1106 min and 185\textdegree C/740 min) are excluded for the reason given in Table~\ref{tab:si-naive-3he}'s caption.}
+\caption{Apparent \textsuperscript{3}He diffusivities for HT-Win-06-01b from the permeation-step method ($y$-axis) against the bounding method's central value ($x$-axis, Eq.~\eqref{eq:steadystate}), with the bounding method's ``treatment as uncertainty'' LB/UB spread and the permeation-step method's own propagated uncertainty plotted on their respective axes. The dashed line is 1:1. Two steps (195\textdegree C/1106 min and 185\textdegree C/740 min) are excluded for the reason given in Table~\ref{tab:si-permstep-3he}'s caption.}
 \label{fig:si-diffusivity-comparison}
 \end{figure}
 
@@ -524,7 +524,7 @@ necessary to calculate uncertainty in the diffusivities using quadrature
 are tabulated to the right of the sheet. The Stage 1 reference-line linear regression (Fig.~\ref{fig:arrhenius-zoom}),
 its statistics, and the treatment of total-yield uncertainty in the regression are described in the main text
 (\S\ref{sec:results-goethite}); the same regression underlies both the main text's bounding-method results
-and the naive-bracketing dataset reported here.
+and the permeation step dataset reported here.
 
 \subsection{Totals}\label{sec:si-totals}
 

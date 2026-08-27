@@ -92,7 +92,7 @@ def lambda_to_K(lam, T_K):
 # Load raw per-step data and fit each of the 10 sequences, using only the
 # first N_FIT_POINTS measurements of each for the fit itself.
 # ---------------------------------------------------------------------------
-raw = pd.read_excel(XLSX, sheet_name='Naive Apparent Lambdas', header=None, skiprows=39)
+raw = pd.read_excel(XLSX, sheet_name='Fit Lambdas', header=None, skiprows=39)
 raw.columns = raw.iloc[0]
 _meas_idx = list(raw.columns).index('3He measured (pccSTP)')
 raw.columns.values[_meas_idx + 1] = '3He measured 2sigma'

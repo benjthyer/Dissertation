@@ -26,8 +26,10 @@ initial guess scaled to the first step's yield (same approach as
 diffusion_utils.KenColdInversion/KenColdInversion1).
 
 Reads: Win0601bHT_data_and_reduction.xlsx
-  - Sheet 'Naive Apparent Lambdas': raw per-step 3He yields (and their 2-sigma
-    uncertainties) for the 10 sequences. Series ID is only populated on each
+  - Sheet 'Fit Lambdas' (formerly 'Naive Apparent Lambdas'): raw per-step 3He
+    yields (and their 2-sigma uncertainties) for the 10 sequences, alongside
+    the workbook's own in-sheet fit of each (not used here -- see the module
+    docstring's second paragraph). Series ID is only populated on each
     block's first row (blocks of 3-4 rows separated by blank rows, starting
     row 40), so it is forward-filled here. The sheet has several duplicate
     "2σ" column headers (one per derived quantity); the one immediately
@@ -37,18 +39,29 @@ Reads: Win0601bHT_data_and_reduction.xlsx
     G = 2/(ln(OD/ID)*(ID/2)^2), averaged the same way the spreadsheet's
     own 'G (cm^-1)' constant is, used to convert fitted lambda (s^-1) to
     permeability K (atoms/(sec*cm*atm)) via K = lambda/(G*Ratoms*T).
-  - Sheet 'DistilledNaiveLambdas': Ben's hand-curated, publication-ready cut
-    of the same 10 sequences (just Temperature, Nominal Time, Cooling Time,
-    3He measured, and its 2-sigma -- none of the internal bookkeeping
-    columns 'Naive Apparent Lambdas' carries, like Series ID/HeRefNo/Name/
-    Type/Sensitivity). Not used for fitting (that still reads 'Naive Apparent
-    Lambdas' above, unchanged) -- read only as a cross-check that the two
-    sheets agree, immediately before writing the raw-data table below, so
-    the published table and the fits/plots above can never silently drift
-    out of sync with each other.
+  - Sheet 'Raw Data and Corrections' again, this time its own per-measurement
+    rows (matched to 'Fit Lambdas' by the shared 'Time (Pump out)' timestamp,
+    a unique key for every measurement in the run): read only as a
+    cross-check, immediately before writing the raw-data table below, that
+    Temperature/step time/3He yield in 'Fit Lambdas' were carried over
+    correctly from this master sheet -- so the published table and the
+    fits/plots above can never silently drift out of sync with it. (2-sigma
+    is not part of this check: 'Raw Data and Corrections' reports each
+    measurement's own counting/sensitivity uncertainty, while 'Fit Lambdas'
+    additionally propagates blank/calibration uncertainty into a larger
+    2-sigma, so the two are legitimately different, not a copy of each
+    other.)
 
 Outputs:
-  NaiveIsothermalFits_Grid.pdf              - one panel per sequence (5x2)
+  NaiveIsothermalFits_Grid.pdf              - one panel per sequence (5x2); used in the
+                                               dissertation (Chapter 2)
+  NaiveIsothermalFits_Grid_Top4.pdf         - same panels/fits as above, just the first
+                                               4 sequences (top two rows of the 5x2 grid),
+                                               as a smaller example figure for the GCA
+                                               manuscript, whose Supporting Information
+                                               carries the complete 10-sequence raw/fit
+                                               tables (\ChTwoNaiveRawTable/\ChTwoNaiveFitTable
+                                               below) for readers who want the rest
   NaiveIsothermalFits_150min_byTemp.pdf     - 150-minute-step sequences, superimposed
   NaiveIsothermalFits_120min_byTemp.pdf     - 120-minute-step sequences, superimposed
   NaiveLambda_Arrhenius.pdf                 - ln(K) vs 10^4/T, built from these fits,
@@ -75,7 +88,8 @@ Outputs:
                                                (\\ChTwoPermLamMin/\\ChTwoPermLamMax).
   ../chapter2_naive_isothermal_tables.tex   - \\newcommand macros \\ChTwoNaiveRawTable
                                                (the 10-sequence raw step-heat dataset,
-                                               i.e. 'DistilledNaiveLambdas') and
+                                               from 'Fit Lambdas', cross-checked against
+                                               'Raw Data and Corrections' above) and
                                                \\ChTwoNaiveFitTable (per-sequence fitted
                                                lambda/n0 +/- 2-sigma from the fits above),
                                                each expanding to a complete table
@@ -145,7 +159,7 @@ def lambda_to_K(lam, T_K):
 # ---------------------------------------------------------------------------
 # Load raw per-step data and fit each of the 10 sequences
 # ---------------------------------------------------------------------------
-raw = pd.read_excel(XLSX, sheet_name='Naive Apparent Lambdas', header=None, skiprows=39)
+raw = pd.read_excel(XLSX, sheet_name='Fit Lambdas', header=None, skiprows=39)
 raw.columns = raw.iloc[0]
 # The sheet has several duplicate "2σ" column headers (one per derived
 # quantity); rename the one immediately following "3He measured (pccSTP)"
@@ -171,6 +185,7 @@ for series_id, group in raw.groupby('Series ID', sort=True):
         'nominal_min': float(group['Nominal (Heated) Time (Minutes)'].iloc[0]),
         'cooling_min': float(group['Cooling Time (seconds)'].iloc[0]) / 60,
         't': t, 'He': He, 'He_2sigma': He_2sigma,
+        'timestamps': group['Time (Pump out)'].to_numpy(),  # cross-check join key, see below
         'lam': lam, 'n0': n0, 'lam_sigma': lam_sigma, 'n0_sigma': n0_sigma,
     })
 sequences.sort(key=lambda s: s['id'])
@@ -192,6 +207,28 @@ fig.supylabel(r'$m_{cum}$ $^3$He (pccSTP)')
 fig.suptitle('Win-06-01b Isothermal Step-Heat Naive Permeability Fits')
 fig.tight_layout()
 fig.savefig(os.path.join(OUTDIR, 'NaiveIsothermalFits_Grid.pdf'), dpi=300)
+plt.close(fig)
+
+# ---------------------------------------------------------------------------
+# 2x2 grid: just the first 4 sequences (top two rows of the 5x2 grid above),
+# as a smaller example figure for the GCA manuscript main text -- the full
+# 10-sequence figure above is used in the dissertation instead. Same fits,
+# same panel content, just fewer panels/smaller figure.
+# ---------------------------------------------------------------------------
+fig, axes = plt.subplots(2, 2, figsize=(7, 6.5))
+for seq, ax in zip(sequences[:4], axes.flat):
+    cumt_hr = accumulate(seq['t']) / 3600
+    cumHe = accumulate(seq['He'])
+    longt_hr = np.linspace(0, cumt_hr[-1], 500)
+    ax.plot(longt_hr, forward_permeate(longt_hr * 3600, seq['lam'], seq['n0']), color='red', linestyle='--', label='Naive Fit')
+    ax.scatter(cumt_hr, cumHe, color='black', zorder=5)
+    ax.set_title(f"{seq['T_C']:.0f}°C, {seq['nominal_min']:.0f} min\n"
+                 f"λ={seq['lam']:.2e} s⁻¹, n0={seq['n0']:.3f} pccSTP", fontsize=12)
+fig.supxlabel('Cumulative Time (hours)')
+fig.supylabel(r'$m_{cum}$ $^3$He (pccSTP)')
+fig.suptitle('Win-06-01b Isothermal Step-Heat Naive Permeability Fits\n(4 of 10 sequences)')
+fig.tight_layout()
+fig.savefig(os.path.join(OUTDIR, 'NaiveIsothermalFits_Grid_Top4.pdf'), dpi=300)
 plt.close(fig)
 
 # ---------------------------------------------------------------------------
@@ -364,41 +401,40 @@ def fmt_sci(x, sig=2):
     return rf"\({mant:.{sig - 1}f}\!\times\!10^{{{exp}}}\)"
 
 
-# --- Cross-check: 'DistilledNaiveLambdas' (Ben's hand-curated, publication-
-# ready cut of this same raw dataset -- Temperature, Nominal Time, Cooling
-# Time, 3He measured, and its 2-sigma; none of 'Naive Apparent Lambdas'
-# internal bookkeeping columns) should be numerically identical, row for
-# row and series for series, to the data already fit above. This is not
-# itself used for the fit -- it only confirms the two sheets haven't
-# drifted out of sync before the raw-data table below is built from them.
-distilled = pd.read_excel(XLSX, sheet_name='DistilledNaiveLambdas', header=None, skiprows=1)
-distilled.columns = ['T_C', 'nominal_min', 'cooling_min', 'He', 'He_2sigma']
-distilled_blocks, _current = [], []
-for _, row in distilled.iterrows():
-    if row.isna().all():
-        if _current:
-            distilled_blocks.append(pd.DataFrame(_current))
-            _current = []
-    else:
-        _current.append(row)
-if _current:
-    distilled_blocks.append(pd.DataFrame(_current))
+# --- Cross-check: every measurement in 'Fit Lambdas' should carry the same
+# Temperature/step time/3He yield as the corresponding row of 'Raw Data and
+# Corrections' (the master per-measurement sheet), matched by their shared
+# 'Time (Pump out)' timestamp -- a unique key per measurement in the run.
+# 2-sigma is deliberately not compared: 'Raw Data and Corrections' reports
+# each measurement's own counting/sensitivity uncertainty, while 'Fit
+# Lambdas' additionally propagates blank/calibration uncertainty into a
+# larger 2-sigma, so the two are legitimately different, not a copy of each
+# other. This is not itself used for the fit -- it only confirms 'Fit
+# Lambdas' hasn't drifted from the master sheet before the raw-data table
+# below is built from it.
+master = pd.read_excel(XLSX, sheet_name='Raw Data and Corrections', header=1)
+master = master.dropna(subset=['Time (Pump out)']).set_index('Time (Pump out)')
+if master.index.duplicated().any():
+    raise ValueError("'Raw Data and Corrections' has duplicate 'Time (Pump out)' "
+                      "timestamps -- not a safe join key; fix the workbook before "
+                      "regenerating tables.")
 
-if len(distilled_blocks) != len(sequences):
-    raise ValueError(
-        f"'DistilledNaiveLambdas' has {len(distilled_blocks)} series-blocks, but "
-        f"'Naive Apparent Lambdas' Series ID grouping has {len(sequences)} sequences -- "
-        "the two sheets are out of sync; fix the workbook before regenerating tables.")
-for seq, block in zip(sequences, distilled_blocks):
-    ok = (np.allclose(block['T_C'].astype(float), seq['T_C_each'], atol=0.02)
-          and np.allclose(block['He'].astype(float), seq['He'], rtol=1E-6)
-          and np.allclose(block['He_2sigma'].astype(float), seq['He_2sigma'], rtol=1E-6))
+for seq in sequences:
+    missing = [ts for ts in seq['timestamps'] if ts not in master.index]
+    if missing:
+        raise ValueError(
+            f"Series {seq['id']}: timestamp(s) {missing} from 'Fit Lambdas' not found "
+            "in 'Raw Data and Corrections' -- the two sheets are out of sync.")
+    ref = master.loc[seq['timestamps']]
+    ok = (np.allclose(ref['Temperature (C)'].astype(float), seq['T_C_each'], atol=0.02)
+          and np.allclose(ref['Nominal (Heated) Time (seconds)'].astype(float), seq['t'], atol=0.02)
+          and np.allclose(ref['3He measured (pccSTP)'].astype(float), seq['He'], rtol=1E-6))
     if not ok:
         raise ValueError(
-            f"Series {seq['id']}: 'DistilledNaiveLambdas' values don't match 'Naive "
-            "Apparent Lambdas' for this series -- the two sheets are out of sync.")
-print(f"'DistilledNaiveLambdas' cross-check OK: {len(sequences)} series match "
-      "'Naive Apparent Lambdas' exactly.")
+            f"Series {seq['id']}: 'Fit Lambdas' values don't match 'Raw Data and "
+            "Corrections' for this series -- the two sheets are out of sync.")
+print(f"'Raw Data and Corrections' cross-check OK: {len(sequences)} series match "
+      "'Fit Lambdas' exactly (Temperature, step time, 3He yield).")
 
 # --- Raw-data table (\ChTwoNaiveRawTable) ---------------------------------
 raw_rows = []
@@ -412,7 +448,7 @@ raw_rows = raw_rows[:-1]  # drop the trailing \midrule after the last series
 
 raw_table = r"""\begin{footnotesize}
 \begin{longtable}{c c c c c c}
-\caption{Raw step-heat data (\uppercase{`}DistilledNaiveLambdas\uppercase{'} sheet) for the 10 isothermal 3He permeation sequences used to determine the ampoule's apparent permeability (Fig.~\ref{fig:ch2-naive-cumulative-yield}, Fig.~\ref{fig:ch2-naive-arrhenius}). Series are separated by horizontal rules; within a series, steps are listed in the order measured.}\label{tab:ch2-naive-isothermal-raw}\\
+\caption{Raw step-heat data (\uppercase{`}Fit Lambdas\uppercase{'} sheet, cross-checked against \uppercase{`}Raw Data and Corrections\uppercase{'}) for the 10 isothermal 3He permeation sequences used to determine the ampoule's apparent permeability (Fig.~\ref{fig:ch2-naive-cumulative-yield}, Fig.~\ref{fig:ch2-naive-arrhenius}). Series are separated by horizontal rules; within a series, steps are listed in the order measured.}\label{tab:ch2-naive-isothermal-raw}\\
 \toprule
 Series & Temp & Nominal Time & Cooling Time & $^3$He measured & $\pm2\sigma$ \\
  & (\textdegree C) & (min) & (min) & (pccSTP) & \\
@@ -468,9 +504,9 @@ with open(TABLES_OUT_PATH, 'w') as f:
         "% =============================================================\n"
         "%  chapter2_naive_isothermal_tables.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.\n"
         "%  Written by Figures/fig_naive_isothermal_fits.py from\n"
-        "%  Win0601bHT_data_and_reduction.xlsx ('DistilledNaiveLambdas' sheet for the\n"
-        "%  raw data, cross-checked against 'Naive Apparent Lambdas' -- the same sheet\n"
-        "%  this script already fits -- for the per-sequence lambda/n0 fits).\n"
+        "%  Win0601bHT_data_and_reduction.xlsx ('Fit Lambdas' sheet for the raw data\n"
+        "%  and the per-sequence lambda/n0 fits, cross-checked against 'Raw Data and\n"
+        "%  Corrections' -- the workbook's master per-measurement sheet).\n"
         "%\n"
         "%  Regenerate after any change to either sheet:\n"
         "%    python3 Figures/fig_naive_isothermal_fits.py\n"

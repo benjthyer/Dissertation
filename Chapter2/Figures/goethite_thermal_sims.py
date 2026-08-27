@@ -42,17 +42,6 @@ Ts = np.array([90, 95, 100, 105, 110])+273 # C-> K
 times = np.array([120,150,180])*60 # minutes -> seconds
 
 
-# a, b are the (mean) tube ID/OD *diameters* (cm) -- same measurements as
-# fig_naive_isothermal_fits.py's ID_cm/OD_cm (mean of two independent
-# measurements: ID ~ [0.0505, 0.054], OD ~ [0.0787, 0.0832]). permeation_sim
-# takes a/b as the inner/outer *radius* (see its docstring in
-# diffusion_utils.py, and the original prototyping notebook's convention,
-# e.g. `a = 0.054/2`), so both are halved here before use -- an earlier
-# version of this script passed the raw diameters straight through as
-# radii, silently doubling the modeled wall thickness (b-a) and therefore
-# the diffusive path length, which suppressed the fitted lambda/K by
-# roughly (2x)^2 = 4x (consistent with the simulated K values plotting
-# noticeably below the actual experimental fits on NaiveLambda_Arrhenius.pdf).
 a = 0.053 / 2
 b = 0.081 / 2
 G = 2 / (np.log(b / a) * a ** 2)

@@ -4,10 +4,7 @@
 %  Submission wrapper (elsarticle class, per Geochimica et Cosmochimica
 %  Acta's guide for authors) for the merged Chapter 1 + Chapter 2
 %  manuscript. Shares its actual content with
-%  hydrothermal_goethite_abstract.tex and hydrothermal_goethite_body.tex
-%  -- edit those, not this file, to change text, equations, figures, or
-%  citations. See hydrothermal_goethite_body.tex's header comment for
-%  the narrative rationale (K. Farley review, 2026-08-08).
+%  hydrothermal_goethite_abstract.tex and hydrothermal_goethite_body.tex. 
 %
 %  Author list/affiliation are carried over from the Chapter 1 method
 %  paper (Chapter1/Writing/TubeMethodPaper.tex), since this manuscript
@@ -15,12 +12,24 @@
 %  \author/\affiliation below if the actual author list for this
 %  submission differs.
 %
-%  Citations use \citep/\citet against the same shared references.bib
-%  as the rest of the dissertation, via biblatex in natbib-compatible
-%  mode. elsarticle's own natbib loading is disabled (`nonatbib` class
-%  option) to avoid a conflict between the two packages.
+%  Citations use \citep/\citet, formatted per GCA's actual house style:
+%  elsarticle's own natbib (loaded automatically since `nonatbib` is NOT
+%  passed below) with the `authoryear` class option, typeset against
+%  elsarticle-harv.bst (Elsevier's official Harvard/author-year style,
+%  vendored in elsarticle/elsarticle-harv.bst alongside this file) via
+%  classic BibTeX, reading from the local references.bib (see the
+%  "Self-contained sources" note below). See \bibliographystyle/
+%  \bibliography at the end of this file.
+%
+%  Layout: single-column, line-numbered submission format per GCA's
+%  guide for authors, using elsarticle's `preprint`/`review` layout
+%  rather than the `1p` "final print" option (both remain valid choices
+%  for a review submission; `review` was kept to minimize unrelated
+%  changes when the bibliography backend switched from biblatex to
+%  natbib+BibTeX). Numbered lines come from lineno (\linenumbers below),
+%  loaded before hyperref as usual practice.
 % =============================================================
-\documentclass[preprint,12pt,nonatbib]{elsarticle}
+\documentclass[preprint,12pt,review,authoryear]{elsarticle}
 
 \journal{Geochimica et Cosmochimica Acta}
 
@@ -33,8 +42,16 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{array}
+\usepackage{lineno} % numbered lines for review submission; \linenumbers below
 \usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
 \usepackage{todonotes} % \todo{} margin notes for draft review comments
+\usepackage{xcolor}
+% \hl{} highlights placeholder text (e.g. the data-repository link, to be
+% filled in once the Zenodo DOI is assigned) so it stands out for revision
+% before submission, the same way \todo{} flags margin comments. Defined
+% locally rather than via the `soul` package so it has no extra
+% dependency; \providecommand won't clash if soul is loaded elsewhere.
+\providecommand{\hl}[1]{\colorbox{yellow}{#1}}
 \usepackage{booktabs}
 \usepackage{longtable}
 % Winsor data tables (Tables 1 and 2) and the SI Durango table are wide
@@ -43,37 +60,37 @@
 % Two-panel ampoule figure (Fig. 1) uses subfigure/\subref.
 \usepackage{subcaption}
 
-% --- Bibliography (shared references.bib, same config as dissertation_preamble.tex) ---
-\usepackage[
-  backend    = biber,
-  style      = authoryear,
-  sorting    = nyt,
-  maxnames   = 2,
-  minnames   = 1,
-  maxbibnames = 99,
-  uniquelist = true,
-  giveninits = true,
-  uniquename = init,
-  natbib     = true,
-]{biblatex}
-\addbibresource{../../references.bib}
+% --- Bibliography: elsarticle-harv.bst via classic BibTeX (see header note) ---
+% natbib itself is loaded by elsarticle.cls (the `authoryear` class option
+% above sets its [round,authoryear] options to match elsarticle-harv.bst);
+% no \usepackage{natbib} needed here.
 
-% Chapter1/Figures/source/ is required for the pyrite and arsenopyrite
-% SEM panels in Fig. 1 (LVPY_*, Asp_*, asp_*).
-\graphicspath{{../../Chapter1/Figures/generated/}{../../Chapter1/Figures/source/}{../../Chapter2/Figures/generated/}{../../Chapter2/Figures/source/}}
+% --- Self-contained sources -------------------------------------------
+% figures/, references.bib, and chapter2_derived_values.tex below are
+% local copies written by copy_manuscript_sources.py: figures/ from
+% Chapter1/2's own Figures/{generated,source}/, references.bib trimmed
+% from the dissertation's shared ../../references.bib down to only the
+% entries this manuscript+SI actually \cite, and chapter2_derived_values.tex
+% from ../../Chapter2/Writing/ -- so this whole directory can be zipped up
+% and submitted standalone, with nothing reaching outside it. Regenerate
+% with `python copy_manuscript_sources.py` after changing any figure,
+% citation, or the upstream macro file; do not hand-edit references.bib or
+% chapter2_derived_values.tex here.
+\graphicspath{{figures/}}
 
 % Numeric macros used in the body (\ChTwoEa etc.)
-\input{../../Chapter2/Writing/chapter2_derived_values.tex}
+\input{chapter2_derived_values.tex}
 
 \providecommand{\tophline}{\toprule}
 \providecommand{\middlehline}{\midrule}
 \providecommand{\bottomhline}{\bottomrule}
 
 \begin{document}
+\linenumbers
 
 \begin{frontmatter}
 
-\title{High Helium Retentivity in Goethite under Hydrothermal Conditions Measured by Step-Heat Experiments in Silica Glass Ampoules}
+\title{Hydrothermal Helium Step Heats Reveal High Helium Retentivity and Multiple Diffusion Domain Systematics in Goethite}
 
 \author[caltech]{Ben J. Thyer\corref{cor1}}
 \ead{bthyer@caltech.edu}
@@ -99,6 +116,7 @@ goethite \sep U-Th/He geochronology \sep helium diffusion \sep hydrothermal \sep
 
 \input{hydrothermal_goethite_body}
 
-\printbibliography[title={References}]
+\bibliographystyle{elsarticle/elsarticle-harv}
+\bibliography{references}
 
 \end{document}

@@ -124,6 +124,11 @@ if __name__ == '__main__':
         perm = json.load(f)
     perm_ea_str, perm_ea_err_str = format_value_and_stderr(
         perm['Ea_cal_mol'], perm['Ea_cal_mol_2se'])
+    # Same permeation activation energy expressed in kJ/mol (1 cal = 4.184 J),
+    # for prose that quotes SI units instead of cal/mol.
+    CAL_TO_KJ = 4.184 / 1000.0
+    perm_ea_kj_str, perm_ea_kj_err_str = format_value_and_stderr(
+        perm['Ea_cal_mol'] * CAL_TO_KJ, perm['Ea_cal_mol_2se'] * CAL_TO_KJ)
     perm_r2_str = f"{perm['r2']:.3f}"
     perm_n_str = str(perm['n_points'])
     perm_lam_min_str = format_sci_mathmode(perm['lam_min'])
@@ -168,6 +173,7 @@ if __name__ == '__main__':
         "%  generated/data/naive_lambda_arrhenius_cache.json, n={} sequences, R2={:.4f}):\n".format(
             perm['n_points'], perm['r2']),
         "%    ChTwoPermEa/ChTwoPermEaErr : activation energy, 2 s.e. (cal/mol)\n",
+        "%    ChTwoPermEakJ/ChTwoPermEaErrkJ : the same, in kJ/mol (1 cal = 4.184 J)\n",
         "%    ChTwoPermRtwo/ChTwoPermN   : regression R^2 and number of sequences\n",
         "%    ChTwoPermLamMin/ChTwoPermLamMax : range of the 10 per-series fitted\n",
         "%      rate constants themselves (s^-1), math-mode, e.g. \"$1.2\\times10^{-6}$\"\n",
@@ -192,6 +198,8 @@ if __name__ == '__main__':
         newcommand('ChTwoN', n_str),
         newcommand('ChTwoPermEa', perm_ea_str),
         newcommand('ChTwoPermEaErr', perm_ea_err_str),
+        newcommand('ChTwoPermEakJ', perm_ea_kj_str),
+        newcommand('ChTwoPermEaErrkJ', perm_ea_kj_err_str),
         newcommand('ChTwoPermRtwo', perm_r2_str),
         newcommand('ChTwoPermN', perm_n_str),
         newcommand('ChTwoPermLamMin', perm_lam_min_str),
@@ -210,7 +218,8 @@ if __name__ == '__main__':
     print(f"Ea = {ea_str} +/- {ea_err_str} kJ/mol")
     print(f"Tc = {tc_str} +/- {tc_err_str} degC (intercept-only)")
     print(f"R2 = {r2_str}, n = {n_str}")
-    print(f"Isothermal permeation: Ea = {perm_ea_str} +/- {perm_ea_err_str} cal/mol, "
+    print(f"Isothermal permeation: Ea = {perm_ea_str} +/- {perm_ea_err_str} cal/mol "
+          f"({perm_ea_kj_str} +/- {perm_ea_kj_err_str} kJ/mol), "
           f"R2 = {perm_r2_str}, n = {perm_n_str}")
     print(f"Isothermal permeation: lambda spans {perm_lam_min_str} to {perm_lam_max_str} s^-1")
     print(f"Naive/informed bracketing Stage 1: Ea = {bracket_ea_str} +/- {bracket_ea_err_str} kJ/mol, "

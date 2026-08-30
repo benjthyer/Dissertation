@@ -171,19 +171,23 @@ class permeation_sim:
             self.S *= Jones('S', self.T)
             self.D *= Jones('D', self.T)
             self.K *= Jones('K', self.T)
-        self.nglass = self.nt / ( # Eq. 1.35 of BJT's dissertation
-            1 + (((self.S * 2 * Ratoms * self.T / (self.a ** 2 * np.log(self.a / self.b)))
-                  * ((0.5 * self.a ** 2 * (np.log(self.b / self.a) + 0.5)) - self.b ** 2 / 4)) ** -1))
-        self.ngas = self.nt - self.nglass
         self.h = 1
-        self.c = (self.S * self.ngas * Ratoms * self.T / (np.pi * self.a ** 2 * self.h)) * (
-            np.log(self.r / self.b) / np.log(self.a / self.b)) # Eq. 1.32 of BJT's dissertation
+        # Initialize with a fresh charge held entirely in the gas phase
+        # (empty glass), then numerically burn in to the steady-state
+        # concentration profile by holding the boundary conditions fixed
+        # and letting the FDM relax (see stabilize_profile()), rather than
+        # initializing directly from the analytical closed-form steady-state
+        # solution.
+        self.ngas = self.nt
+        self.nglass = 0.0
+        self.c = np.zeros_like(self.r)
         self.out = 0
-        self.reportmatrix = np.array([['Initial', self.T - 273, 0, 0, self.n0, self.nt, 0]])
         self.dt = 0.5 * self.dr ** 2 / self.D
+        self.EQMshortcut = EQMshortcut
+        self.stabilize_profile(verbose=False)
+        self.reportmatrix = np.array([['Initial', self.T - 273, 0, 0, self.n0, self.nt, 0]])
         self.firstderiv = (self.c[2:] - self.c[:-2]) / (2 * self.dr)
         self.J = -self.D * self.firstderiv * self.dt * np.pi * self.r[1:-1] * 2 * self.h
-        self.EQMshortcut = EQMshortcut
 
     def record_sim(self, Type, T, t, m, n0, nt):
         appK = np.log(nt / n0) / (-self.G * t * Ratoms * T)
@@ -329,20 +333,28 @@ class permeation_sim:
         self.nt = n0
         self.T = T
         self.S = swets('S', self.T)
+        self.D = swets('D', self.T)
+        self.K = swets('K', self.T)
         if self.He == '3':
             self.S *= Jones('S', self.T)
-        self.nglass = self.nt / (
-            1 + (((self.S * 2 * Ratoms * self.T / (self.a ** 2 * np.log(self.a / self.b)))
-                  * ((0.5 * self.a ** 2 * (np.log(self.b / self.a) + 0.5))
-                     - self.b ** 2 / 4)) ** -1))
-        self.ngas = self.nt - self.nglass
-        self.c = (self.S * self.ngas * Ratoms * self.T / (np.pi * self.a ** 2 * self.h)) * (
-            np.log(self.r / self.b) / np.log(self.a / self.b))
+            self.D *= Jones('D', self.T)
+            self.K *= Jones('K', self.T)
+        # Burn-in initialization (see stabilize_profile()), matching __init__.
+        self.ngas = self.nt
+        self.nglass = 0.0
+        self.c = np.zeros_like(self.r)
         self.out = 0
+        self.stabilize_profile(verbose=False)
 
-    def stabilize_profile(self):
+    def stabilize_profile(self, verbose=True):
+        """Numerically relax the concentration profile to steady state:
+        hold the boundary conditions fixed at their current values and let
+        the FDM run for one diffusive equilibration timescale
+        (tauD = (b-a)**2/D), rather than initializing from the closed-form
+        analytical steady-state solution. Does not log to reportmatrix
+        (record=False) since this is initialization, not a real step."""
         tauD = (self.b - self.a) ** 2 / self.D
-        self.hold_T(self.T, tauD, verbose=True)
+        self.hold_T(self.T, tauD, record=False, verbose=verbose)
         self.c /= self.nt / self.n0
         self.nglass = np.sum(self.c * self.dr * self.h * self.r * 2 * np.pi)
         self.nt = self.n0

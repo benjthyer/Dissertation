@@ -1,0 +1,61 @@
+% =============================================================
+%  main_xrefs.tex
+%
+%  Macros that resolve section/figure/equation NUMBERS from the main
+%  manuscript (hydrothermal_goethite_GCA.tex) for use in the SI body.
+%  Requires \usepackage{xr} and \externaldocument{hydrothermal_goethite_GCA}
+%  to be loaded first (see hydrothermal_goethite_GCA_SI.tex) -- xr reads
+%  the main manuscript's label -> number mapping from its .aux file, so
+%  the main manuscript must have been compiled at least once, and its
+%  .aux must be current: recompile hydrothermal_goethite_GCA.tex, THEN
+%  this SI, whenever the main text's section/figure/equation order
+%  changes. If hydrothermal_goethite_GCA.aux doesn't exist yet, these
+%  print "??" instead of failing outright.
+%
+%  Each macro is wrapped in \NoHyper...\endNoHyper (from hyperref) so it
+%  prints as a plain, unlinked number -- the main manuscript and this SI
+%  are submitted as separate files, so a hyperlink to a label defined in
+%  the OTHER file's PDF would not resolve to anything for the reader.
+%
+%  IMPORTANT: \NoHyper...\endNoHyper must be wrapped in its OWN {...}
+%  group here. \NoHyper turns off hyperref's linking by locally \let-ing
+%  a couple of its internal commands (\hyper@linkstart among them), but
+%  \endNoHyper only restores ONE of them (\hyper@link) globally -- it does
+%  NOT restore the others. Without an enclosing group of our own, those
+%  local \let's have no group boundary to revert at, so the first use of
+%  one of these macros in the document silently disables ALL hyperlinking
+%  (including ordinary in-document \ref/\eqref elsewhere in the SI) for
+%  everything that follows it. Confirmed by test compile: omitting the
+%  outer {...} here drops every link annotation in the whole SI PDF to
+%  zero, not just these seven.
+%
+%  Add a new macro here (following this file's naming/pattern) rather
+%  than writing \ref{}/\eqref{} directly against a main-text label in the
+%  SI body, so every main-text dependency the SI has stays visible and
+%  fixable in one place.
+% =============================================================
+
+% \S\ref{sec:bounding} -- "Bounding the residual helium for long steps"
+% subsubsection; used with a literal "\S" already in the SI prose, so
+% this macro provides only the number.
+\newcommand{\MainRefBounding}{{\NoHyper\ref{sec:bounding}\endNoHyper}}
+
+% Eq.~\eqref{eq:permlag} -- the permeation lag equation.
+\newcommand{\MainEqPermlag}{{\NoHyper\eqref{eq:permlag}\endNoHyper}}
+
+% Eq.~\eqref{eq:permode} -- the first-order ODE for n(t) with a source term.
+\newcommand{\MainEqPermode}{{\NoHyper\eqref{eq:permode}\endNoHyper}}
+
+% Eq.~\eqref{eq:steadystate} -- the steady-state permeation approximation,
+% n_ss = m / (lambda*t - 1).
+\newcommand{\MainEqSteadystate}{{\NoHyper\eqref{eq:steadystate}\endNoHyper}}
+
+% Fig.~\ref{fig:arrhenius-zoom} -- zoomed Arrhenius plot, main text.
+\newcommand{\MainFigArrheniusZoom}{{\NoHyper\ref{fig:arrhenius-zoom}\endNoHyper}}
+
+% Fig.~\ref{fig:delta-zoom} -- "Delta" diffusivity plot, main text.
+\newcommand{\MainFigDeltaZoom}{{\NoHyper\ref{fig:delta-zoom}\endNoHyper}}
+
+% Fig.~\ref{fig:ampoule-permeability} -- measured vs. literature ampoule
+% permeability, main text.
+\newcommand{\MainFigAmpoulePermeability}{{\NoHyper\ref{fig:ampoule-permeability}\endNoHyper}}

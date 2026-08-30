@@ -1,48 +1,157 @@
-% =============================================================
-%  hydrothermal_goethite_SI_body.tex
-%  Supplementary Information for the merged (Ch1 + Ch2) GCA manuscript.
-%
-%  Class-agnostic body, same convention as the main body. \input{}
-%  from an SI wrapper. Requires longtable, booktabs, lscape.
-%
-%  CONTENTS: the encapsulated Durango apatite step-heat dataset, and the
-%  permeation step method verification of the
-%  bounding method for HT-Win-06-01b 3He (\S\ref{sec:si-permeation-step}). The Winsor
-%  goethite bounding-method datasets stay in the main text (Tables 1 and 2),
-%  since they underpin the paper's own conclusions.
-%
-%  SIG FIGS: this table is reproduced verbatim from chapter1_body.tex
-%  so no digit has been retyped or altered. Farley's comment #126
-%  ("carrying too many significant figures ... very cluttered") still
-%  applies and should be addressed in the generating script rather
-%  than by hand-editing here. He also suggested dropping the
-%  He-F_Tube column as near-constant and superfluous (#126).
-%
-%  \S\ref{sec:si-permeation-step} (the permeation step verification) is
-%  ported from Chapter2/Writing/chapter2goethite_SI_body.tex of the
-%  dissertation, which remains the authoritative source for that reduction
-%  -- edit there first, then re-port, rather than diverging the two copies.
-%  4He is not treated by that method (blank-level permeation-step signals);
-%  see \S\ref{sec:si-permeation-step} for why. The distilled 3He table it reports
-%  lives in tables/winsor_3he_naive.tex, alongside the existing
-%  tables/winsor_3he.tex and tables/winsor_4he.tex (bounding-method,
-%  main text). The \ChTwoNaiveRawTable/\ChTwoNaiveFitTable macros it calls
-%  are defined by Chapter2/Writing/chapter2_naive_isothermal_tables.tex,
-%  \input by the GCA wrapper alongside chapter2_derived_values.tex.
-% =============================================================
 
-\section{Analytical Methods for Hydrothermal Goethite}
+\section{Derivations for Bounding Method Equations}\label{estimate-permeation-lag-uncertainty-for-uncorrected-long-heating-steps}
+
+The uncertainty of the helium evolution of the encapsulated natural
+material during a heating step (\(\omega\)) due to permeation lag
+correction can be estimated by calculating the maximum possible helium
+residing in the tube between steps, i.e. for the values for
+\emph{n\textsubscript{0, }}and \emph{n\textsubscript{t}}: \(n_{0}^{UB}\)
+and \(n_{t}^{UB}.\ \)From the permeation lag equation (main text Eq.~\MainEqPermlag), upper bound estimates for
+\emph{n\textsubscript{0, }}and \emph{n\textsubscript{t}} bound the
+encapsulated material contribution \(\omega\) within:
+
+\begin{equation}
+m - n_{0}^{UB} \leq \omega \leq m + n_{t}^{UB}
+\label{eq:s6-1}
+\end{equation}
+
+Upper bounds for \emph{n\textsubscript{t}} for a given high temperature
+experimental step can be calculated if step heats are long enough to
+assume steady-state permeation, assuming G and K are known or can be
+conservatively estimated. To proceed, one must make the generally
+conservative assumption that the production rate of helium within the
+ampoule due to degassing of the encapsulated natural sample
+(\(\Omega = \frac{\omega}{t}\)) is constant over time at a given
+temperature. In reality, \(\Omega\) will decrease over time for helium
+loss governed by first order processes \citep{yakubovich2010,wilson1973} or diffusion (except for the case of initially
+inhomogeneous distributions, the memory of which is often erased early
+in any diffusion experiment: \citealp{shuster2004}). Eq.~\eqref{eq:s6-3}, given
+below, shows that the amount of helium trapped in the tube (\(n_{t}\))
+is proportional to the rate of helium outgassing from the natural
+encapsulated sample (\(\Omega\)), so the approximation that this rate is
+constant will overestimate the amount of unanalyzed helium remaining in
+the ampoule after a high temperature experimental step. The rate of
+helium degassing over time will decrease for degassing controlled by
+second-order volume diffusion \emph{except} for the minor case of the
+alpha-ejection effect at low He-release fractions \citep{farley1996,ketcham2011} or for the more serious effects of radiation
+damage annealing \citep{goldsmith2020} and mineral decomposition
+\citep{farley2024}. In any case, sequential isothermal steps
+immediately reveal when \(\frac{\omega}{t}\) increases over time.
+
+A new first order differential equation like Eq.~\MainEqPermode\ is formulated, now
+incorporating a constant source term (\(\Omega\)) to conservatively
+approximate the helium influx into the ampoule from the degassing
+natural sample.
+
+\begin{equation}
+\frac{dn}{dt} = \Omega - \lambda n
+\label{eq:s6-2}
+\end{equation}
+
+Where \(\Omega = \frac{\omega}{t}\) and \(\lambda = KGRT\). Immediately,
+the steady-state quantity of helium atoms (\(n_{ss}\)) present in the
+ampoule can be found by solving Eq.~\eqref{eq:s6-2} for the steady-state condition
+where \(\frac{dn}{dt} = 0\).
+
+\begin{equation}
+n_{ss} = \frac{\Omega}{\lambda} = \frac{\omega}{\lambda t}
+\label{eq:s6-3}
+\end{equation}
+
+Additionally, the helium concentration within the ampoule during the
+approach to the steady-state concentration can be solved for by
+integrating Eq.~\eqref{eq:s6-2} with respect to \emph{t}. First, the integrating
+factor for Eq.~\eqref{eq:s6-2} is identified: \(I = e^{\lambda t}\), which is
+multiplied to both sides to yield Eq.~\eqref{eq:s6-4}.
+
+\begin{equation}
+e^{\lambda t}\frac{dn}{dt} + e^{\lambda t}\lambda n = e^{\lambda t}\Omega\
+\label{eq:s6-4}
+\end{equation}
+
+Then both sides are integrated with respect to \emph{t:}
+
+\[\int_{}^{}\left( e^{\lambda t}\frac{dn}{dt} + e^{\lambda t}\lambda n \right)dt = \int_{}^{}{e^{\lambda t}\Omega}dt\]
+
+Because
+\({\frac{d}{dt}(ne^{\lambda t}) = e}^{\lambda t}\frac{dn}{dt} + e^{\lambda t}\lambda n\)
+by the product rule Eq.~\eqref{eq:s6-4} reduces to:
+
+\begin{equation}
+n_{t}e^{\lambda t} = \frac{\Omega}{\lambda}e^{\lambda t} + C
+\label{eq:s6-5}
+\end{equation}
+
+Where \emph{C} is an unknown constant introduced by indefinite
+integration. This expression becomes more intuitive when both sides are
+divided by the integration factor and by substituting the steady-state
+concentration from Eq.~\eqref{eq:s6-3}.
+
+\begin{equation}
+n_{t} = n_{ss} + Ce^{- \lambda t}
+\label{eq:s6-6}
+\end{equation}
+
+The integration constant \emph{C} can be solved by enforcing the
+condition that \(n_{t}(t = 0) = n_{0}\), leading to:
+
+\begin{equation}
+n_{0} = n_{ss} + C
+\label{eq:s6-7}
+\end{equation}
+
+Solving Eq.~\eqref{eq:s6-7} for \emph{C} and substituting into Eq.~\eqref{eq:s6-6} yields
+Eq.~\eqref{eq:s6-8}. Now an inequality is assigned to the equation to reflect the
+initial assumption that the isothermal helium outgassing rate
+(\(\Omega\)) is constant \emph{or decreasing}.
+
+\begin{equation}
+n_{t} \leq \ n_{ss} + \left( n_{0} - n_{ss} \right)e^{- \lambda t}
+\label{eq:s6-8}
+\end{equation}
+
+For long timescales (i.e. when \(e^{- \lambda t} \approx 0\)), Eq.~\eqref{eq:s6-8}
+reduces to \(n_{t} \leq \ n_{ss}\). This is effectively true for steps
+long enough such that \(t \geq \frac{5}{\lambda}\), for which
+\(e^{- \lambda t} \leq 0.007.\) It is advisable to only consider the
+Approximation with Uncertainty method for steps of sufficiently long duration such that
+\(t \geq \frac{5}{\lambda}\) so that the estimation for \(n_{t}\) can be
+reduced to simply the steady-state value and not be dependent upon the
+estimation for \(n_{0}\) or its uncertainties. 
+
+To estimate the upper bound on the permeation lag (\(n_{t}^{UB}\)), one
+must consider the circumstances that would produce the highest possible
+value for \(n_{t}\). In addition, the constraint that
+\(t \geq \frac{5}{\lambda}\) is enforced so that previous heating steps
+are not significant, simplifying the problem significantly. Because
+\(n_{t}\) scales with $\omega$ by Eq.~\eqref{eq:s6-3}, the upper bound estimate
+\(n_{t}^{UB}\) must assume the upper bound estimate for $\omega$, which is
+given in Eq.~\eqref{eq:s6-1} as \({m + n}_{t}^{UB}\). Substituting
+\(\omega^{UB} = {m + n}_{t}^{UB}\) into Eq.~\eqref{eq:s6-3} to express
+\(n_{t}^{UB}\) in terms of the measured value \emph{m}:
+
+\[
+n_{t}^{UB} = n_{ss}(\omega = m + n_{t}^{UB}) = \frac{m + n_{t}^{UB}}{\lambda t}
+\]
+
+Solving for \(n_{t}^{UB}\) yields Eq.~\eqref{eq:6}:
+
+\begin{equation}
+n_{t}^{UB} = \frac{m}{\lambda t - 1}
+\label{eq:6}
+\end{equation}
+
+\section{Analytical Methods for Hydrothermal Goethite Step Heat Experiment}\label{sec:si-analytical-methods}
 
 \subsection{Uncertainty Quantification for Bounding Method}
 
 \paragraph{Helium-in-Goethite Diffusivity Inversions}\label{helium-in-goethite-diffusivity-inversions}
 
-
-Apparent values of D/a\textsuperscript{2} for 3He and 4He were
+Apparent values of D/a\textsuperscript{2} for \textsuperscript{3}He and \textsuperscript{4}He were
 calculated from times and cumulative measured yields using the equations of \citet{fechtigkalbitzer1966}. 
 Lower and upper bounds for diffusivity were calculated 
 using the upper bound for the helium contents of the 
-ampoules before and after each step, evaluated using \eqref{eq:steadystate}. 
+ampoules before and after each step, evaluated using \MainEqSteadystate.
 Diffusivity for step $i$ is a function of the cumulative fractional yield for step i 
 $\Sigma ^{i}F$ and the cumulative fractional yield of the previous step $\Sigma ^{i-1}F$. The diffusivity
 is maximized when the difference between the fractional yields is largest, and minimized when the difference is smallest. 
@@ -58,11 +167,11 @@ with the maximum amount of permeation lag $\left(_{SS}^{i}n_t\right)$, whereas t
 \end{gathered}
 \end{equation}
 
-For the 3He diffusivities, a linear regression was fit to the steps with cumulative 3He fractional
-yield $\geq$7\% (\ChTwoN\ steps, Fig.~\ref{fig:ch2-arrhenius-zoom}),
+For the \textsuperscript{3}He diffusivities, a linear regression was fit to the steps with cumulative \textsuperscript{3}He fractional
+yield $\geq$7\% (\ChTwoN\ steps, Fig.~\MainFigArrheniusZoom),
 yielding an R\textsuperscript{2} statistic of \ChTwoRtwo. The fit's slope and intercept are used as a reference line to
-calculate ``Delta'' values for the diffusivities of 3He and 4He (Fig.~\ref{fig:ch2-delta-zoom}). No uncertainty on
-the total amounts of 3He and 4He is propagated into the diffusivities
+calculate ``Delta'' values for the diffusivities of \textsuperscript{3}He and \textsuperscript{4}He (Fig.~\MainFigDeltaZoom). No uncertainty on
+the total amounts of \textsuperscript{3}He and \textsuperscript{4}He are propagated into the diffusivities
 because the experiment operated at low cumulative yields where this
 error affects all diffusivities approximately homogeneously, so it is only
 relevant for the y-intercept of the regression and the corresponding
@@ -73,8 +182,8 @@ neglected.
 
 \paragraph{Helium Isotope Ratio Uncertainty}\label{helium-isotope-ratio-uncertainty}
 
-The upper and lower bounds of the $\frac{^4He}{^3He}$ isotope ratios for each heating step are taken as the maximum and minimum  $\frac{^4He}{^3He}$ 
-isotope ratio calculated out of the 4 hypothetical end-member permeation scenarios, which would have been experienced by both helium isotopes systems:
+The upper and lower bounds of the $\frac{^4He}{^3He}$ isotope ratios for each heating step are taken as the maximum and minimum $\frac{^4He}{^3He}$
+isotope ratio calculated out of the 4 hypothetical end-member permeation scenarios, which would have been experienced by both helium isotope systems:
 
 \begin{enumerate}
 \item $n_t = 0,\ n_0 = 0$
@@ -84,12 +193,11 @@ isotope ratio calculated out of the 4 hypothetical end-member permeation scenari
 \end{enumerate}
 
 Intuitively, higher differential permeability between the two helium isotopes ($\delta = \frac{K_{3He}}{K_{4He}}$ here) will result in greater isotope fractionation between the measured $\left(\frac{m_{4}}{m_{3}}\right)$ and true $\left(\frac{\omega_{4}}{\omega_{3}}\right)$.
-Furthermore, lower absolute permeabilities will result in stronger permeation lag, additionally producing higher isotope fractionation in the measured value. The 4He permeability is thus conservatively taken to be identical to \citet{swets1961}, an anhydrous
-literature value which this experiment's own isothermal 3He permeation measurements show to underestimate the ampoule's true permeability (Fig.~\ref{fig:ch2-naive-arrhenius}); 4He permeability itself could not be independently measured in this experiment
-(supplement, \nameref{helium-4-blank-corrections}). For the purposes of evaluating the measured isotope ratios, the relative 3He/4He permeability ($\delta$) is taken to be 1.29, the 2$\sigma$ upper bound of the value measured independently for a water-filled ampoule in Chapter~\ref{ch:apparatus} \citep{thyer2026}:
-1.10 $\pm$ 0.19 (2$\sigma$). 1.29 is in great excess of realistic values of the relative 3He/4He permeability, which is expected to be between 1.06-1.11 for the temperature range relevant to this experiment \citep{jones1953}. These
+Furthermore, lower absolute permeabilities will result in stronger permeation lag, additionally producing higher isotope fractionation in the measured value. The \textsuperscript{4}He permeability is thus conservatively taken to be identical to \citet{swets1961}, an anhydrous
+literature value which this experiment's own isothermal \textsuperscript{3}He permeation measurements show to underestimate the ampoule's true permeability (Fig.~\MainFigAmpoulePermeability); \textsuperscript{4}He permeability itself could not be independently measured in this experiment. For the purposes of evaluating the measured isotope ratios, the relative \textsuperscript{3}He/\textsuperscript{4}He permeability ($\delta$) is taken to be 1.29, the 2$\sigma$ upper bound of the value measured independently for a helium-soaked water-filled ampoule:
+1.10 $\pm$ 0.19 (2$\sigma$). 1.29 is in great excess of realistic values of the relative \textsuperscript{3}He/\textsuperscript{4}He permeability, which is expected to be between 1.06--1.11 for the temperature range relevant to this experiment \citep{jones1953}. These
 conservative assumptions taken together guarantee that the calculated upper and lower bounds for the isotope ratios accurately constrain the true value. The upper bounds of the
-ampoule contents are calculated using the steady-state approximation of Eq.~\eqref{eq:steadystate} (Chapter~\ref{ch:apparatus}): $n_{ss} = \frac{m}{\lambda t - 1}$. For the four extreme cases listed above, the following equations apply:
+ampoule contents are calculated using the steady-state approximation of Eq.~\MainEqSteadystate\ (main text \S\MainRefBounding): $n_{ss} = \frac{m}{\lambda t - 1}$. For the four extreme cases listed above, the following equations apply:
 
 \begin{enumerate}
 \item \scalebox{1.5}{$\frac{\omega_{4}}{\omega_{3}} = \frac{m_{4}}{m_{3}}$}
@@ -98,31 +206,205 @@ ampoule contents are calculated using the steady-state approximation of Eq.~\eqr
 \item \scalebox{1.5}{$\frac{\omega_{4}}{\omega_{3}} = \frac{m_{4} - \frac{m_4^{i-1}}{\left(\lambda t\right)^{i-1} - 1}}{m_{3} - \frac{m_3^{i-1}}{\delta\left(\lambda t\right)^{i-1} - 1}}$}
 \end{enumerate}
 
-Where $m_{x}^{i-1}$ and $\left(\lambda t \right)^{i-1}$ refer to the measured helium content and $\lambda t$ of the previous step, respectively. $\lambda$ here applies explicitly to 4He, whereas $\delta \lambda$ applies to 3He. The upper and lower bounds of the isotope ratios are then taken to be the maximum and minimum of these four extreme cases.
+Where $m_{x}^{i-1}$ and $\left(\lambda t \right)^{i-1}$ refer to the measured helium content and $\lambda t$ of the previous step, respectively. $\lambda$ here applies explicitly to \textsuperscript{4}He, whereas $\delta \lambda$ applies to \textsuperscript{3}He. The upper and lower bounds of the isotope ratios are then taken to be the maximum and minimum of these four extreme cases.
 
 
-\subsection{Finite Difference Diffusion Model of Cooling Tube}\label{finite-difference-diffusion-model-of-cooling-tube}
+\subsection{Sensitivity and Uncertainty Calculations}\label{sec:si-sensitivity-uncertainty}
 
-One potential concern about the results of the internally measured permeabilities is that some additional helium was permeated 
+\textsuperscript{3}He and \textsuperscript{4}He sensitivities were calculated for each analysis of the MM
+standard gas, assuming that each standard aliquot contained
+157.50 $\pm$ 0.41 (2$\sigma$) nccSTP \textsuperscript{4}He and 3.567 $\pm$ 0.040 (2$\sigma$) pccSTP \textsuperscript{3}He. These values
+were obtained from sensitivities from a known amount of a standard gas
+with similar helium abundances and from the signals from 10 aliquots of
+the new MM standard tank in June 2023.
+
+1$\sigma$ uncertainties related to internal reproducibility were estimated
+for each sensitivity calculation as the rolling standard deviation of
+sensitivities calculated from 5 MM standards. In other words, the
+internal reproducibility of the sensitivity was estimated as the
+standard deviation of each calculated sensitivity and the 2
+sensitivities immediately before and after. Uncertainties related to
+external reproducibility from the amount of \textsuperscript{3}He and \textsuperscript{4}He in each standard
+aliquot were added to the total uncertainty as well.
+
+Sensitivities and their uncertainties were interpolated to times between
+standard analyses using a Piecewise Cubic Hermite Interpolating
+Polynomial (PCHIP) from the SciPy package in python. These interpolated
+sensitivities and uncertainties were used to convert the \textsuperscript{3}He and \textsuperscript{4}He
+signals (cps and fA respectively) to absolute atomic abundances and
+uncertainties in units of pccSTP and nccSTP respectively. The
+sensitivities and interpolations are graphically displayed in the
+``STDs'' tab in a plot generated using the Matplotlib package in python.
+
+\section{Finite Difference Diffusion Model of Cooling Tube}\label{sec:finite-difference-diffusion-model-of-cooling-tube}
+
+\subsection{Numerical Methods}\label{sec:numerical-methods}
+
+A numerical model to estimate diffusive permeation is invaluable, as it
+provides a flexible way to estimate the permeation fraction
+\(\left( \frac{m}{n_{0}} \right)\) even when the required assumptions
+for the analytical solutions are not met. For example, a numerical
+approach can calculate the expected permeation fraction for a
+non-isothermal time-temperature history, and it needn't obey the
+assumption that the helium concentration profile in the glass is in
+diffusive equilibrium with the partial pressure of helium in the
+encapsulated gas phase. As will be investigated below, the equilibrium
+concentration profile assumption is ephemerally broken when temperatures
+are changed, and for ampoules with high glass/gas ratios it is never
+true.
+
+\citet{carslawjaeger1959} give the equation for the change in
+concentration by diffusion in a cylinder (eqn. 5, page 17, second
+edition), expressed here in terms of concentration and diffusivity.
+
+\begin{equation}
+\frac{dC}{dt} = D\left\lbrack \frac{\partial^{2}C}{\partial r^{2}} + \frac{1}{r}\frac{\partial C}{\partial r} + \frac{1}{r^{2}}\frac{\partial^{2}C}{\partial\theta^{2}} + \frac{\partial^{2}C}{\partial z^{2}} \right\rbrack
+\label{eq:s4-1}
+\end{equation}
+
+For typical ampoules used in this work, the surface area of the top and
+bottom together is about 5--10\% of the surface area of the walls, but
+they are neglected here for simplicity. Assuming that the concentration
+profiles are radially symmetrical and uniform with height (z), Eq.~\eqref{eq:s4-1}
+is reduced to the form used throughout this section:
+
+\begin{equation}
+\frac{dC}{dt} = D\left\lbrack \frac{\partial^{2}C}{\partial r^{2}} + \frac{1}{r}\frac{\partial C}{\partial r} \right\rbrack
+\label{eq:s4-2}
+\end{equation}
+
+We numerically solve Eq.~\eqref{eq:s4-2} using the Forward-Time Central-Space (FTCS) Finite Difference
+Method (FDM) along a radial transect of a model ampoule of arbitrary
+geometry for small, discrete time intervals. The system is spatially
+discretized into 100 cells along a radial transect, and numerical
+stability was ensured by solving for the time interval of a single step,
+$\Delta t$, such that \(\frac{D\Delta t}{\Delta r^{2}} = 0.5\), satisfying the
+Courant-Friedrichs-Lewy (CFL) condition.
+
+Helium concentrations along the transect (except for the boundaries,
+where r = a and r = b) are updated at each step using an FTCS
+discretization of the radially symmetric diffusion equation for a
+cylinder (Eq.~\eqref{eq:s4-2}), repeated below for reference before its
+discretized form:
+
+\[\frac{dC_{r}}{dt} = D\left\lbrack \frac{\partial^{2}C}{\partial r^{2}} + \frac{1}{r}\frac{\partial C}{\partial r} \right\rbrack\]
+
+\begin{equation}
+\Delta C_{r} \approx \Delta t\  \bullet D\left\lbrack \frac{C_{r - \Delta r} - 2C_{r} + C_{r + \Delta r}}{\Delta r^{2}} + \frac{1}{r}\frac{C_{r + \Delta r} - C_{r - \Delta r}}{2\Delta r}\  \right\rbrack
+\label{eq:s5-0}
+\end{equation}
+
+Dirichlet boundary conditions were enforced at the inner and outer
+boundaries. The concentration at the model ampoule's outer boundary
+(where r = b) was held at 0, while the concentration at the inner
+boundary (where r = a) was calculated at each discrete step by
+multiplying the solubility (in units of
+\(\frac{atoms}{atm \times cm^{3}}\)) by the helium partial pressure
+within the ampoule, according to Eq.~\eqref{eq:s5-1} or \eqref{eq:s5-1a}.
+
+\begin{equation}
+C_{He}^{glass} = S(T) \bullet P_{He}^{gas}
+\label{eq:s5-1}
+\end{equation}
+
+Eq.~\eqref{eq:s5-1} can be related to the atomic abundance of helium in the gas
+phase using the ideal gas law and the formula for the volume of a
+cylinder:
+
+\[P_{He}^{gas} = \frac{n_{gas}RT}{V_{gas}}\]
+
+\[V_{gas} = \pi a^{2}h\]
+
+\begin{equation}
+C_{He}^{glass} = S(T) \bullet \frac{n_{gas}RT}{\pi a^{2}h}
+\label{eq:s5-1a}
+\end{equation}
+
+For helium permeation out of glass ampoules, the internal pressure is not constant. \(n_{gas}\)
+changes after every step and Eq.~\eqref{eq:s5-1} is reapplied to the inner
+boundary cell where r = a. While the helium concentrations in the glass
+and in the encapsulated gas phase are both dependent on the length of
+the ampoule (\emph{h}), they compensate for one another such that the
+absolute atom flux into and out of the ampoule is not a function of
+\emph{h}. 
+
+In order to simulate permeation, the atomic abundances of helium within
+the gas phases both outside the ampoule (at high vacuum) and inside the
+ampoule must be tracked, as do the fluxes between the glass and these
+two gas phases. These fluxes were calculated simply as the diffusive
+flux in \(\frac{atoms}{s \bullet cm^{2}}\) as is given by Fick's law. 
+For spatially discrete cells throughout the ampoule at any
+radius except for the boundaries, the diffusive flux can be approximated
+with the finite difference:
+
+\begin{equation}
+J_{r} = - D\frac{\partial C_{r}}{\partial r} \approx \  - D\frac{C_{r + \Delta r} - C_{r - \Delta r}}{2\Delta r}
+\label{eq:s5-3}
+\end{equation}
+
+However, Eq.~\eqref{eq:s5-3} cannot be applied at the ampoule's inner wall when r
+= a or outer wall when r = b because there is no remaining glass on one
+side of the cell. In that case, second order terms from Taylor
+expansions centered at \(a + \Delta r\ \)and \(b - \Delta r\) can be
+used to better approximate the \(\frac{\partial C_{a}}{\partial r}\) and
+\(\frac{\partial C_{b}}{\partial r}\) terms. Letting
+\(f(r) = \ \frac{\partial C_{r}}{\partial r}\) and
+\(f'(r) = \ \frac{\partial^{2}C_{r}}{\partial r^{2}}\):
+
+\begin{equation}
+\resizebox{0.98\linewidth}{!}{$\displaystyle
+J_{a} = - D\frac{\partial C_{a}}{\partial r} \approx \  - D\left( \frac{\partial C_{a + \Delta r}}{\partial r} + \frac{\partial^{2}C_{a + \Delta r}}{\partial r^{2}}\Delta r \right) \approx - D\left( \ \frac{C_{a + 2\Delta r} - C_{a}}{2\Delta r} + \frac{C_{a} - {2C_{a + \Delta r} + C}_{a + 2\Delta r}}{2\Delta r^{2}}\Delta r \right)\
+$}
+\label{eq:s5-3a}
+\end{equation}
+
+\begin{equation}
+\resizebox{0.98\linewidth}{!}{$\displaystyle
+J_{b} = - D\frac{\partial C_{b}}{\partial r} \approx \  - D\left( \frac{\partial C_{b - \Delta r}}{\partial r} - \frac{\partial^{2}C_{b - \Delta r}}{\partial r^{2}}\Delta r \right) \approx - D\left( \frac{C_{b} - C_{b - 2\Delta r}}{2\Delta r} - \frac{C_{b} - {2C_{b - \Delta r} + C}_{b - 2\Delta r}}{2\Delta r^{2}}\Delta r\  \right)\
+$}
+\label{eq:s5-3b}
+\end{equation}
+
+The helium contents in the measurable (external, high vacuum) reservoir
+and the inner encapsulated gas phase are updated every step using fluxes
+determined from Eq.~\eqref{eq:s5-3b} and \eqref{eq:s5-3a} respectively. To convert these
+area-normalized fluxes into absolute atomic abundances, these fluxes are
+multiplied by the time increment ($\Delta t$) and the surface area of the
+cylinder at the outer and inner walls respectively.
+
+Simulations require an initial helium concentration profile in the glass
+appropriate for a fresh charge of helium at a given temperature. Rather
+than deriving a closed-form analytical solution for this profile, it is
+obtained numerically: the inner and outer boundary conditions are held
+fixed at their values for that charge and temperature (Eq.~\eqref{eq:s5-1a}
+and 0, respectively) while the model iterates Eq.~\eqref{eq:s5-0} until the
+concentration profile no longer changes, i.e.\ a numerical `burn-in' to
+steady state. This produces the same result as solving Eq.~\eqref{eq:s4-2}
+analytically for the steady-state profile, without requiring a separate
+closed-form derivation.
+
+\subsection{A Parameterized Cooling Rate of the HT-Win-06-01b Ampoule}\label{sec:si-ampoule-cooling-rate}
+
+One potential concern about the results of the internally measured permeabilities is that some additional helium was permeated
 during the cooling period after each permeation step. In order to evaluate the significance of 
 this effect, a finite difference model was built in python to simulate diffusion, influx, and
-outflux of helium across a hollow glass cylinder containing an
-arbitrary amount of helium gas within a helium-free chamber using the procedure described in \citep{thyer2026}. The glass
+outflux of helium across a hollow glass cylinder. The glass
 cylinder was given the same dimensions of the ampoule used in the
 Win-06-01b hydrothermal experiment, and was subjected to the same
 heating and cooling schedule as the hydrothermal experiment's permeation
 steps. The tube was charged with 100 arbitrary units of helium atoms at
-the end of each experimental step and a steady state concentration
-profile was assumed for the new arbitrary charge at T = 24°. Permeability
-values for 3He were assumed as the product of the 4He permeability
-values given by \citet{swets1961} and the 3He/4He relative
+the end of each experimental step, and the concentration profile for
+the new arbitrary charge was initialized at T = 24\textdegree C using the
+numerical burn-in procedure described in \S\ref{sec:numerical-methods}. Permeability
+values for \textsuperscript{3}He were assumed as the product of the \textsuperscript{4}He permeability
+values given by \citet{swets1961} and the \textsuperscript{3}He/\textsuperscript{4}He relative
 permeabilities given by \citet{jones1953}.
 
 To simulate cooling, a cooling rate had to be assumed. To most
 accurately simulate the cooling of the experimental ampoule, Watlow temperature records
 of the experimental ampoule during cooling steps were used to calculate the cooling rate dT/dt for discrete time intervals.
 A quadratic function was fit to these data points to model the cooling rate as a function of temperature with a single root at 
-T = 24°C such that the temperature would stabilize at T = 24°C by design.
+T = 24\textdegree C such that the temperature would stabilize at T = 24\textdegree C by design.
 \[
 \frac{dT}{dt} = -\left(9.23081\times10^{-6}\right)(T-24)^{2} - \left(7.74304\times10^{-4}\right)(T-24)
 \]
@@ -134,429 +416,3 @@ T = 24°C such that the temperature would stabilize at T = 24°C by design.
 \caption{Discrete cooling rate (dT/dt) values calculated from the Watlow temperature record for the Winsor Goethite experiment, plotted against temperature, with the quadratic fit used to simulate cooling in the finite difference diffusion model overlain.}
 \label{fig:ch2-goethite-cooling-rate}
 \end{figure}
-
-
-\section{Verification of the Bounding Method for HT-Win-06-01b Using the Permeation Step Method}\label{sec:si-permeation-step}
-
-This section documents the permeation step method applied to this dataset: an independent, step-by-step treatment of the HT-Win-06-01b \textsuperscript{3}He dataset that explicitly tracks the helium content of the ampoule between steps, rather than bounding it as in the main text's approach (\S\ref{sec:permeation-steps}, \S\ref{sec:bounding}). It is retained here solely as an internal verification of the bounding method used throughout this paper, not as the primary basis for the paper's results: the two methods' distilled \textsuperscript{3}He datasets and derived quantities agree, apart from the two ``attempted complete degas'' steps discussed in \S\ref{sec:discussion-bounding-direct}, corroborating the bounding method used in the main text. Because \textsuperscript{4}He permeation-step signals were blank level, no analogous direct check exists for \textsuperscript{4}He; \textsuperscript{4}He is therefore reduced exclusively by the bounding method throughout this paper and does not otherwise appear in this section. This section covers only the permeation step dataset and the step-by-step corrections applied to it; the isothermal-permeation-fit methodology and cooling-tube numerical model that establish the ampoule's elevated permeability -- the evidentiary basis for the conservative literature-permeability assumption used in the main text, and a prerequisite for the corrections applied below -- are described in \S\ref{sec:rate-constant} and \S\ref{finite-difference-diffusion-model-of-cooling-tube}.
-
-\subsection{Summary}
-
-Helium isotope measurements of evolved gasses from hydrothermal steps
-heats of glass-encapsulated irradiated HT-Win-06-01b goethite of the
-Flinders Ranges \citep{monteiro2017}, were acquired at Caltech on a Thermo
-Fisher Helix-MC-Plus\textsuperscript{10K} mass spectrometer in peak
-hopping mode from January 31\textsuperscript{st}, 2024 to March
-13\textsuperscript{th}, 2024. Raw data from these measurements are found
-on the first tab ``Raw Data and Corrections'' of the
-``IrrWin0601bTube012624FullDataBJT.xlsx'' file. Because the sample was
-encapsulated in an imperfectly helium-transmissive silica glass ampoule,
-experimental steps at temperatures at or above 170°C were bracketed by
-low temperature (\textless120°C ) steps where the helium in goethite at
-high pH2O was effectively immobile for experimental timescales. For 3He,
-the resulting low-temperature measurements were above blank for the
-majority of the experiment and were entirely controlled by the process
-of permeation through silica glass, and therefore were used to estimate
-the amount of residual helium within the ampoule between
-high-temperature experimental steps. These corrections are carried out
-in the ``Raw Data and Corrections'' tab using permeability values
-derived internally within the experiment from the ``Naive Apparent
-Lambdas'' tab. Diffusivities calculated using the equations of
-\citet{fechtigkalbitzer1966} for 3He and 4He can be found on the
-``Diffusivities'' tab. During the step heat experiment, 116 measurements
-of high 3He MM gas standard were analyzed to track instrumental drift of
-3He and 4He sensitivities and to quantify internal uncertainties using
-reproducibility. For the final step, the glass ampoule was broken and
-the remainder of the helium was degassed in a resistance furnace at
-1100°C. Data from this final step can be found on the ``Totals'' tab of
-``IrrWin0601bTube012624FullDataBJT1.xlsx''.
-
-\subsection{Raw Data and Corrections Columns}\label{sec:si-raw-data-corrections}
-
-\subsubsection{Raw Data}\label{sec:si-raw-data}
-
-``Nominal (Heated) Time'' refers to the time programmed for the step
-heat. These times are used for both calculating apparent diffusivities
-with the equations of \citet{fechtigkalbitzer1966} and for permeation lag
-corrections.
-
-The ``Watlow Time'' column gives the last timestamp recorded in the
-Watlow temperature log at the target temperature. It is always slightly
-higher than the nominal time because the recorded time includes the
-initial time required to heat the sample up to the programmed
-temperature: typically around 30 seconds to two minutes. This column was
-generated by a python script that read these values from the Watlow text
-file temperature records. It was used in early stages of data analysis
-to identify when Watlow errors within Labview had held the sample for
-longer than the programmed step duration. When these discrepancies were
-identified, the ``Nominal Time'' was updated to reflect the time the
-sample was held at the programmed temperature. These times are not
-directly used for any of the data reduction.
-
-The ``Total Time'' column is the difference between the analysis
-timestamp and the previous analysis timestamp. These timestamps are
-recorded during the inlet of evolved, purified Helium into the
-Helix-MC-Plus\textsuperscript{10K}, which immediately precedes the pump
-out of the lamp cell chamber to the turbo pump. Therefore, the ``Total
-Time'' represents the total amount of time that helium was allowed to
-permeate through the silica glass ampoule into the UHV lamp cell,
-including both the time the sample spent ``at temperature'' and the time
-that the sample was cooling to or at room temperature (24-26°C). Since
-the pump out times were only 1 minute and always occurred when the
-sample was coolest (and permeation was slowest), permeation from the
-ampoule during pump out is neglected in the data reduction. Less than
-one thousandth of the helium remaining in the ampoule would permeate out
-within one minute at room temperature (Eq.~\eqref{eq:permsol}, with log
-permeability (ln(K)) at 26°C of 23.88 ln(atoms/cm*atm*s)). Due to the
-formatting of the time stamps, these values have a 1-minute resolution.
-
-The ``Cooling Time'' is the difference between the ``Total Time'' and
-``Nominal Time''. It is greater than or equal to the time to purify
-evolved gas in preparation for analysis: \textasciitilde26 minutes. This
-value is used for permeation corrections when low-temperature permeation
-steps with cooling times greater than 26 minutes are used.
-
-\subsubsection{Abundances, 4He Blank Corrections, Measured 4He/3He}\label{sec:si-abundances}
-
-\paragraph{Sensitivity and Uncertainty Calculations}\label{sec:si-sensitivity-uncertainty}
-
-3He and 4He sensitivities were calculated for each analysis of the MM
-standard gas, assuming that each standard aliquot contained
-157.50±0.41(2$\sigma$) nccSTP 4He and 3.567±0.040(2$\sigma$) pccSTP 3He. These values
-were obtained from sensitivities from a known amount of a standard gas
-with similar helium abundances and with the signals from 10 aliquots of
-the new MM standard tank in June 2023.
-
-1 sigma uncertainties related to internal reproducibility were estimated
-for each sensitivity calculation as the rolling standard deviation of
-sensitivities calculated from 5 MM standards. In other words, the
-internal reproducibility of the sensitivity was estimated as the
-standard deviation of each calculated sensitivity and the 2
-sensitivities immediately before and after. Uncertainties related to
-external reproducibility from the amount of 3He and 4He in each standard
-aliquot were added to the total uncertainty as well.
-
-Sensitivities and their uncertainties were interpolated to times between
-standard analyses using a Piecewise Cubic Hermite Interpolating
-Polynomial (PCHIP) from the SciPy package in python. These interpolated
-sensitivities and uncertainties were used to convert the 3He and 4He
-signals (cps and fA respectively) to absolute atomic abundances and
-uncertainties in units of pccSTP and nccSTP respectively. The
-sensitivities and interpolations are graphically displayed in the
-``STDs'' tab in a plot generated using the Matplotlib package in python.
-
-\paragraph{Helium-4 Blank Corrections}\label{helium-4-blank-corrections}
-
-Throughout the experiment, low temperature permeation steps yielded
-unpredictable 4He signals that did not exponentially decay like the 3He
-signals did. This effect is most obvious when considering analyses where
-cooling times were constant (\textasciitilde1560 seconds). In these
-cases, 3He signals always decreased exponentially whereas the 4He
-signals often increased (or decreased) erratically. A blank was measured
-at the beginning of the experiment and showed negligible blank for 3He
-(regressing to below 0 cps at the inlet time) and a very low value for
-4He (4.84x10\textsuperscript{-2} fA). Low temperature permeation steps
-sometimes yielded much higher signals despite failing to conform to the
-expectation of exponential decay that is observed in the same steps' 3He
-measurements. For instance, the 4He signal in a cool permeation step at
-105°C from reference file He30509.txt was 7.93x10\textsuperscript{0} fA,
-even when the high temperature experimental step preceding it
-(He30502.txt) yielded a similar value: 8.28x10\textsuperscript{0} fA.
-For the same pair of analyses, the 3He signal matched expectations and
-varied by two orders of magnitude. 4He from permeation steps never fit
-the equation for cumulative permeation, \(m_{cum} = n_{0}\left( 1 - e^{- \lambda t} \right)\)
-(Eq.~\eqref{eq:incyield}),
-and thus could not be used to infer the permeability for 4He or for the
-residual amount of 4He remaining in the ampoule (\(n_{0}\)). For
-comparison, the same equation always fit the low temperature permeation
-steps well for 3He when the cooling time of each analysis was constant.
-
-The erratic behavior in the 4He data is best explained by a shifting
-blank during the experiment, which was not measured or quantified
-directly. It was largest in the middle of the experiment and returned to
-low values by the end of the experiment that were similar to the blank
-measured before the experiment. Because the blank for 4He was not well
-controlled and appeared to have affected many of the values observed
-even in the high temperature experimental steps, a blank correction was
-deemed necessary. The 4He data of the permeation steps are interpreted
-here to be dominated by blanks, so high temperature experimental steps
-were coarsely blank corrected by subtracting the average 4He signal of
-the subsequent permeation steps. The entirety of this correction was
-conservatively added to the 2$\sigma$ uncertainty of the experimental data for
-4He. One blank corrected measurement was within error of zero after
-permeation corrections and was not plotted. The permeation lag was
-estimated for the 4He data using the 3He data and assuming that the 4He
-permeability was 0.91357±0.14603 (2$\sigma$) that of the 3He permeability.
-These relative permeability values for 3He and 4He were measured at
-Caltech for a similar silica glass ampoule half-filled with water and
-equilibrated with \textasciitilde{} 0.1 torr of tank helium. This
-process is described in greater detail in the Permeation Lag Corrections
-section.
-
-Some 3He permeation steps that followed especially low-yield
-experimental steps were within error of baseline 3He cps values
-(similarly to the measured blank at the beginning of the experiment).
-These low measurements always preceded by measurements where 3He was
-quantified above blank, so permeation lag corrections were calculated
-using those values instead. In these cases, uncertainty from the
-permeation lag corrections dominate the uncertainty of the
-diffusivities, but do not affect the interpretation of the dataset.
-
-\paragraph{Bracketing Method Ratios}\label{sec:si-ratios}
-
-4He/3He ratios are presented with reference to the irradiated Winsor
-Goethite bulk ratio (\textasciitilde1000 or \textasciitilde1000 Ra) and
-as standalone values. Uncertainties are propagated in quadrature from
-the measured 3He and 4He abundances and from the bulk ratio, when
-applicable. The blank and permeation corrected ratios have the same
-general shape as the uncorrected ratios. The ratios plateau around a
-cumulative 3He fraction of 0.06 at a bulk normalized 4He/3He ratio of
-0.75. The early plateau in 4He/3He ratios with 3He fraction occurs
-similarly in the vacuum step heat experiments of the same sample, in
-agreement with previous studies \citep{monteiro2017,farley2024},
-suggesting a relatively low loss of radiogenic helium for the Winsor
-Goethite. The vacuum and hydrothermal experiments differ in the
-bulk-normalized 4He/3He ratio at the plateau, with the hydrothermal
-experiment plateauing at a lower 4He/3He ratio of 0.75 times the bulk
-ratio, whereas the vacuum experiments plateau at the bulk ratio. This
-could be explained by a 4He-retentive inclusion in the hydrothermal
-experiment of this work similar to those discussed by \citet{vasconcelos2013}, or may reflect trapping of 3He in newly formed hematite
-during the early steps of the vacuum experiment.
-
-\subsubsection{Permeation Lag Corrections for 3He}\label{sec:si-permeation-lag-3he}
-
-Helium evolved from the irradiated goethite must first permeate through
-the silica glass ampoule into the high vacuum of the lamp cell to be
-analyzed, a process which is non-instantaneous. Measurements can
-therefore underestimate the helium production of the sample during a
-step, as some of the produced helium will remain within the ampoule
-after a high temperature step, and measurements can also overestimate
-the amount of produced helium if there is some amount of helium
-remaining from previous step heats within the ampoule at the beginning
-of a new experimental step. To address this effect, we quantify the
-amount of helium remaining within the ampoule between high temperature
-experimental steps, and apply corrections using the rearranged form of
-Eq.~\eqref{eq:permlag}, solved for \(m\):
-
-\[\begin{array}{r}
-m = n_{0} + \omega - n_{t}
-\end{array}\]
-
-Where \(\omega\) is the true helium production of the sample in a high
-temperature experimental step, \(n_{0}\) is the amount of helium within
-the ampoule at the beginning of the step, \(n_{t}\) is the amount of
-helium within the ampoule at the end of the experiment, and \emph{m} is
-the amount measured. Values of \(\omega\) and \emph{m} are most often
-within 10\% of one another but differ by up to 47.2\% for 3He within
-this dataset. \(n_{0}\) and \(n_{t}\) are tracked in the ``3He \(n_{0}\)
-(pccSTP)'' column, where \(n_{t}\) for any measurement is the \(n_{0}\)
-value of the next row.
-
-At low temperatures (\textless120°C), when no new helium is evolved from
-the sample, the measured value is simply the difference between the
-helium contents of the ampoule before the measurement and after
-(Eq.~\eqref{eq:permlag} with \(\omega = 0\)):
-
-\[\begin{array}{r}
-m = n_{0} - n_{t}
-\end{array}\]
-
-In this case, all the helium measured is a result of helium permeation
-through the silica glass ampoule. Helium permeation is a first order
-process that follows Eq.~\eqref{eq:permsol},
-with \(\lambda = KGRT\):
-
-\[\begin{array}{r}
-n_{t} = n_{0}e^{- KGRTt}
-\end{array}\]
-
-Where \emph{K} is the temperature-dependent permeability coefficient,
-\emph{G} is a geometric factor which can be determined through
-measurements of the ampoule's inner and outer diameter, \emph{R} is the
-gas constant, \emph{T} is the temperature in Kelvin, and \emph{t} is the
-time in seconds. For a cylindrical ampoule, the value of G can be
-calculated with measurements of the inner and outer radii using
-Eq.~\eqref{eq:geomfactor}.
-Inner and outer radii were measured using the amscope program at 11x
-zoom setting. These radii were both measured on opposing sides of the
-ampoule where there were air bubbles, allowing for the accurate sighting
-of the inner walls of ampoule. The inner diameter, \emph{(2a)} was
-measured at 505 and 540 microns; the outer diameter \emph{(2b)} was
-measured at 787 and 832 microns. The geometric factor \emph{G}
-was calculated for both pairs of measurements and averaged to give a
-value of \emph{G} of 6708.6 cm\textsuperscript{-1}.
-
-
-For permeation steps, Eqs.~\eqref{eq:permlag} (with \(\omega=0\)) and
-\eqref{eq:permsol} apply because the temperature is too low to evolve any
-helium from the sample, and the \(\omega=0\) form of
-Eq.~\eqref{eq:permlag} can be substituted into Eq.~\eqref{eq:permsol} to
-relate a measurement to \(n_{0}\). This equation is calculated in the
-column entitled ``3He n0 calc (pccSTP) (m/(1-e\^{}-$\lambda$t))''. Errors in the
-measured value \emph{m} and the permeability \emph{K} are propagated in
-quadrature. This is the permeation step relation of
-Eq.~\eqref{eq:n0perm}, expressed with
-Eq.~\eqref{eq:permsol}'s exponential form for \(^{He}F\):
-
-\[\begin{array}{r}
-n_{0} = \frac{m}{\left( 1 - e^{- KGRT} \right)}
-\end{array}\]
-
-The ``3He \(n_{0}\) (pccSTP)'' column tracks the accepted value of
-n\textsubscript{0} (and n\textsubscript{t}, which is n\textsubscript{0}
-in the subsequent column) for ultimate use in permeation corrections
-using Eq.~\eqref{eq:n0perm}. Depending on the step, this value is
-determined one of three ways.
-
-Most permeation steps in this study are inventory-setting
-measurements, which set n\textsubscript{0} directly from their own
-measurement using Eq.~\eqref{eq:n0perm} -- calculated in the
-``3He n0 calc (pccSTP) (m/(1-e\^{}-$\lambda$t))'' column.
-
-Permeation steps between inventory-setting measurements instead track the
-decreasing value of n\textsubscript{0} by the default first-order decay
-of Eq.~\eqref{eq:permsol}: the calculated n\textsubscript{0} value for
-step \emph{i} is \(n_{0}^{i} = n_{0}^{i - 1}e^{- RG(KTt)_{i - 1}}\). This
-default treatment is used whenever the previous step's cooling time
-matched the \textasciitilde26-minute window used to calibrate the
-effective permeabilities themselves (\S\ref{sec:rate-constant}), and is
-generally preferred over re-inverting from an inventory-setting
-measurement because it lets n\textsubscript{0} be set by earlier
-measurements with larger signals, avoiding error inflation from
-near-blank permeation steps. Errors associated with \emph{K} and
-\(n_{0}^{i - 1}\) are propagated through Eq.~\eqref{eq:permsol} in
-quadrature.
-
-A small number of near-blank permeation steps, whose own signal was too
-close to baseline to invert reliably, instead had n\textsubscript{0} set
-by direct mass balance from an adjacent, reliably determined step:
-forward, by subtracting that step's own measured amount \emph{m} from
-the following step's n\textsubscript{0}; or backward, by adding it to
-the preceding step's n\textsubscript{0}.
-
-Finally, some permeation steps and series -- including the arbitrarily
-long ``complete purge'' steps at the end of the experiment discussed in
-\S\ref{sec:discussion-bounding-direct} -- were long enough to be treated
-as emptying the ampoule entirely, so that n\textsubscript{0} for the
-following row was set to 0 rather than inverted from Eq.~\eqref{eq:permsol}.
-
-One further complication affects two adjacent high-temperature steps
-(195°C/1106 min and 185°C/740 min): the inventory-setting permeation step
-bracketing them cooled to room temperature and continued permeating for
-far longer (\textasciitilde13 hours) than the \textasciitilde26-minute
-window used to calibrate every other step's effective permeability, and
-so would have needed a one-off, separately calibrated room-temperature
-permeability not used anywhere else in this reduction. Rather than build
-a special-case correction around two points, these two steps are instead
-excluded from the fitted Stage 1 regression (\S\ref{sec:si-distilled-permstep})
-and the diffusivity comparison of \S\ref{sec:discussion-bounding-direct}
-(Fig.~\ref{fig:si-diffusivity-comparison}), and marked (not derived)
-with ``$^\dagger$'' in Table~\ref{tab:si-permstep-3he} below: their
-differing cooling time, rather than their signal strength, is the reason
-for the exclusion.
-
-
-\subsection{In-Situ Rate Constant Dataset}\label{sec:si-rate-constant-data}
-
-The effective permeability coefficients used by the permeation step method below -- and the isothermal-permeation-fit methodology, cooling-tube numerical model, and Arrhenius regression used to determine them -- are described in full above (\S\ref{sec:rate-constant}). The complete fitted dataset underlying that regression is reported here: Table~\ref{tab:ch2-naive-isothermal-raw} gives the raw per-step data for all 10 isothermal sequences, and Table~\ref{tab:ch2-naive-isothermal-fits} gives the lambda/$n_0$ fit to each sequence (Fig.~\ref{fig:permeation-fits}) that together define the Arrhenius regression of Fig.~\ref{fig:ampoule-permeability}.
-
-\ChTwoNaiveRawTable
-
-\clearpage
-
-\ChTwoNaiveFitTable
-
-\subsubsection{Permeation Step Method Step-Heat Dataset}\label{sec:si-distilled-permstep}
-
-The complete corrected step-heat dataset underlying the permeation step
-method's apparent permeabilities (Fig.~\ref{fig:ampoule-permeability}) is reported
-in Table~\ref{tab:si-permstep-3he}, reporting the central value and
-2$\sigma$ uncertainty for each quantity, analogous to
-Table~\ref{tab:winsor-3he} in the
-main text for the bounding (``treatment as uncertainty'')
-method. 4He is not treated by the permeation step method: 4He
-permeation-step signals were blank level (\nameref{helium-4-blank-corrections}),
-so no direct, step-by-step quantification of the ampoule's 4He inventory was
-possible, and 4He throughout this paper is instead reduced exclusively by
-the bounding method of the main text (\S\ref{sec:bounding}). The
-permeation step dataset reported here is retained only for 3He,
-as the internal check on the bounding method discussed in
-\S\ref{sec:discussion-bounding-direct}. ``--'' denotes steps for which a quantity could not
-be determined (see \S\ref{finite-difference-diffusion-model-of-cooling-tube}
-above).
-
-\input{tables/winsor_3he_naive.tex}
-
-% 4He na\"ive-bracketing step-heat table (tab:ch2-distilled-naive-4he) and the
-% derived 4He/3He ratio table (tab:ch2-distilled-naive-ratios) removed here:
-% both depended on the "Permeation Lag Corrections for 4He" reduction removed
-% above. 4He is reduced exclusively by the bounding method in the main text.
-
-Beyond the ampoule's residual helium content itself (\S\ref{sec:discussion-bounding-direct}), the two methods' derived apparent diffusivities agree just as closely. Fig.~\ref{fig:si-diffusivity-comparison} compares $\ln(D/a^2)$ from the permeation-step method against the bounding method's central value for every step in the experiment, with the bounding method's own ``treatment as uncertainty'' spread on one axis and the permeation-step method's propagated uncertainty on the other; the two steps marked ``$^\dagger$'' in Table~\ref{tab:si-permstep-3he} above are excluded for the reason given there. Fitting the permeation-step method's own diffusivities with the same Stage 1 procedure used for the bounding method in the main text (Fig.~\ref{fig:si-bracket-arrhenius-zoom}) yields an activation energy of \ChTwoBracketEa$\pm$\ChTwoBracketEaErr\ kJ/mol (R\textsuperscript{2}=\ChTwoBracketRtwo, n=\ChTwoBracketN) and a closure temperature of \ChTwoBracketTc$\pm$\ChTwoBracketTcErr\textdegree C, indistinguishable from the bounding method's own \ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol and \ChTwoTc$\pm$\ChTwoTcErr\textdegree C (\S\ref{sec:results-goethite}).
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.8\textwidth]{Winsor_diffusivity_naive_vs_bounding.pdf}
-\caption{Apparent \textsuperscript{3}He diffusivities for HT-Win-06-01b from the permeation-step method ($y$-axis) against the bounding method's central value ($x$-axis, Eq.~\eqref{eq:steadystate}), with the bounding method's ``treatment as uncertainty'' LB/UB spread and the permeation-step method's own propagated uncertainty plotted on their respective axes. The dashed line is 1:1. Two steps (195\textdegree C/1106 min and 185\textdegree C/740 min) are excluded for the reason given in Table~\ref{tab:si-permstep-3he}'s caption.}
-\label{fig:si-diffusivity-comparison}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.8\textwidth]{winsor_goethite_Diffusivities_Arrhenius_Zoomin_naive.pdf}
-\caption{Analogue of Fig.~\ref{fig:arrhenius-zoom} (main text) using the permeation-step method's own \textsuperscript{3}He diffusivities and its own Stage 1 linear regression, rather than the bounding method's. The resulting activation energy and closure temperature (\ChTwoBracketEa$\pm$\ChTwoBracketEaErr\ kJ/mol; \ChTwoBracketTc$\pm$\ChTwoBracketTcErr\textdegree C) agree closely with the bounding method's own (\ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol; \ChTwoTc$\pm$\ChTwoTcErr\textdegree C).}
-\label{fig:si-bracket-arrhenius-zoom}
-\end{figure}
-
-\clearpage
-
-The finite-difference numerical model used to evaluate the contribution of the 26-minute cooling period to these apparent permeabilities -- and to confirm that the ampoule's markedly elevated permeability is not an artifact of that cooling history -- is described in full above (\S\ref{finite-difference-diffusion-model-of-cooling-tube}).
-
-\subsection{Diffusivities}\label{sec:si-diffusivities}
-
-Apparent values of D/a\textsuperscript{2} for 3He and 4He were
-calculated from times and corrected cumulative yields using the
-equations of \citet{fechtigkalbitzer1966}. Uncertainties in the corrected
-values are propagated into the cumulative yield, and all errors are
-treated as uncorrelated for simplicity. Error bars plotted in the
-Arrhenius plots on this tab are likely exaggerated. Derivatives
-necessary to calculate uncertainty in the diffusivities using quadrature
-are tabulated to the right of the sheet. The Stage 1 reference-line linear regression (Fig.~\ref{fig:arrhenius-zoom}),
-its statistics, and the treatment of total-yield uncertainty in the regression are described in the main text
-(\S\ref{sec:results-goethite}); the same regression underlies both the main text's bounding-method results
-and the permeation step dataset reported here.
-
-\subsection{Totals}\label{sec:si-totals}
-
-The main text (\S\ref{sec:methods-goethite}) already summarizes this final furnace-fusion step and its blank/re-extract
-corrections; the additional spreadsheet-level detail below (volume-split calibration, standard-averaging convention)
-is retained here for completeness. For the final step, the glass ampoule was broken and the remainder of
-the helium was completely degassed in a resistance furnace at 1100°C.
-The gas from this final step was split within the vacuum line on
-calibrated volumes so that purified helium from less than 1\% of the
-evolved gas was inlet into a Thermo Fisher Helix SFT mass spectrometer.
-A gas standard with a known amount of 3He and 4He was measured twice
-preceding the final fusion measurement of the hydrothermal Win-06-01b,
-as was a split furnace hot blank. The gas standards were used to
-calculate sensitivities, which were taken to be the mean of the two
-measurements, with 1$\sigma$ uncertainty approximated by their standard
-deviation. After the split measurement of the Win-06-01b ampoule, the
-furnace was reheated to 1100°C to ensure complete extraction of the
-helium in the sample. The final step was then taken to be the measured
-value minus the hot blank, plus the re-extract, all divided by their
-respective volume split fractions and multiplied by the calculated
-sensitivity. Uncertainties were propagated in quadrature.
-
-
-
-
-
-\section{Encapsulated Durango apatite step-heat data}\label{sec:si-durango}
-
-The following table gives the complete step-heat dataset for the silica glass encapsulated Durango apatite experiment described in \S\ref{sec:methods-apatite} and plotted in Fig.~\ref{fig:durango-arrhenius}. Permeation lag corrections follow the permeation-step route of \S\ref{sec:permeation-steps}: Eq.~\eqref{eq:n0perm} is applied to the permeation steps shown in \textbf{bold} to solve for the ampoule's helium content, and Eq.~\eqref{eq:permlag} propagates that content forward and backward in time to the neighbouring experimental steps.
-
-Only the last of each sequence of room-temperature measurements was used to solve for $n_{0}$, because the temperature records show that the ampoule had not yet cooled to room temperature when the first permeation step of each sequence began. Each pair of permeation steps nonetheless yielded values of $n_{0}$ within 2$\sigma$ of one another.
-
-Measurement uncertainties are estimated from the standard deviations of sensitivities and blanks determined by standards, and are propagated through Eqs.~\eqref{eq:permsol} and~\eqref{eq:permlag} in quadrature, together with a general 10\% uncertainty on the use of Eq.~\eqref{eq:permsol}. Uncertainty on a step's cumulative fractional yield is the sum of the uncertainty on its own fractional yield and those of all preceding steps, added in quadrature. The total yield is estimated from the measured mass of encapsulated apatite (3.18\,mg) and its helium concentration of 194.2\,nccSTP/mg \citep{farley2000}; no uncertainty on the total yield is propagated into the reported diffusivities.
-
-\input{tables/si_durango_stepheat.tex}

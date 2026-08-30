@@ -6,17 +6,25 @@
 %  matches the manuscript. Content lives in
 %  hydrothermal_goethite_SI_body.tex -- edit that, not this file.
 %
-%  NOTE: the SI body cross-references labels defined in the MAIN body
-%  (\S\ref{sec:methods-apatite}, Fig.~\ref{fig:durango-arrhenius},
-%  Eqs.~\eqref{eq:permlag}, \eqref{eq:permsol}, \eqref{eq:n0perm}).
-%  Compiled standalone, those render as "??" because the two documents
-%  do not share an .aux file. This is the same limitation Chapter 1's
-%  standalone paper/SI split already has. Options, in order of effort:
-%    1. Accept "??" in drafts and hard-code the numbers at submission
-%       (GCA wants the SI as a separate file anyway).
-%    2. Load `xr` here and \externaldocument{hydrothermal_goethite_GCA}
-%       after building the main document once -- resolves them
-%       automatically. Uncomment the two lines below to do that.
+%  NOTE: the SI body cross-references section/figure/equation NUMBERS
+%  defined in the MAIN body (currently \S\ref{sec:bounding} and
+%  Eqs./Figs. eq:permlag, eq:permode, eq:steadystate, fig:arrhenius-zoom,
+%  fig:delta-zoom, fig:ampoule-permeability). These are resolved via the
+%  `xr` package (loaded below) reading hydrothermal_goethite_GCA.aux, and
+%  printed through the macros in main_xrefs.tex (input below) rather than
+%  bare \ref{}/\eqref{} in the SI body -- see that file's own header for
+%  why (plain-text output, no hyperlink to a label in a separate PDF; one
+%  place to fix a label if it's ever renamed in the main body).
+%
+%  Build order matters: xr reads the main manuscript's LAST-COMPILED .aux
+%  file, not its live source, so recompile hydrothermal_goethite_GCA.tex
+%  first whenever the main body's section/figure/equation order changes,
+%  THEN recompile this SI -- otherwise the numbers printed here reflect
+%  whatever the main .aux said last, which may be stale. If
+%  hydrothermal_goethite_GCA.aux does not exist yet (e.g. a fresh checkout
+%  before the main manuscript has ever been compiled), xr prints "??" for
+%  every main-text reference and pdflatex emits "Warning: Label(s) may
+%  have changed" -- compile the main manuscript once and re-run this file.
 % =============================================================
 \documentclass[preprint,12pt,authoryear]{elsarticle}
 
@@ -37,8 +45,9 @@
 \usepackage{subcaption}
 
 % --- Cross-references into the main manuscript (see note above) ---
-% \usepackage{xr}
-% \externaldocument{hydrothermal_goethite_GCA}
+\usepackage{xr}
+\externaldocument{hydrothermal_goethite_GCA}
+\input{main_xrefs.tex}
 
 % --- Bibliography: elsarticle-harv.bst via classic BibTeX, matching the
 % main manuscript (see hydrothermal_goethite_GCA.tex's header note).

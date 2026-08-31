@@ -38,7 +38,7 @@ damage annealing \citep{goldsmith2020} and mineral decomposition
 \citep{farley2024}. In any case, sequential isothermal steps
 immediately reveal when \(\frac{\omega}{t}\) increases over time.
 
-A new first order differential equation like Eq.~\MainEqPermode\ is formulated, now
+A new first order differential equation like Eq.~\MainEqPermode\, main text, is formulated, now
 incorporating a constant source term (\(\Omega\)) to conservatively
 approximate the helium influx into the ampoule from the degassing
 natural sample.
@@ -113,28 +113,22 @@ n_{t} \leq \ n_{ss} + \left( n_{0} - n_{ss} \right)e^{- \lambda t}
 For long timescales (i.e. when \(e^{- \lambda t} \approx 0\)), Eq.~\eqref{eq:s6-8}
 reduces to \(n_{t} \leq \ n_{ss}\). This is effectively true for steps
 long enough such that \(t \geq \frac{5}{\lambda}\), for which
-\(e^{- \lambda t} \leq 0.007.\) It is advisable to only consider the
-Approximation with Uncertainty method for steps of sufficiently long duration such that
-\(t \geq \frac{5}{\lambda}\) so that the estimation for \(n_{t}\) can be
-reduced to simply the steady-state value and not be dependent upon the
-estimation for \(n_{0}\) or its uncertainties. 
+\(e^{- \lambda t} \leq 0.007.\) 
 
 To estimate the upper bound on the permeation lag (\(n_{t}^{UB}\)), one
 must consider the circumstances that would produce the highest possible
-value for \(n_{t}\). In addition, the constraint that
-\(t \geq \frac{5}{\lambda}\) is enforced so that previous heating steps
-are not significant, simplifying the problem significantly. Because
+value for \(n_{t}\). Because
 \(n_{t}\) scales with $\omega$ by Eq.~\eqref{eq:s6-3}, the upper bound estimate
 \(n_{t}^{UB}\) must assume the upper bound estimate for $\omega$, which is
-given in Eq.~\eqref{eq:s6-1} as \({m + n}_{t}^{UB}\). Substituting
-\(\omega^{UB} = {m + n}_{t}^{UB}\) into Eq.~\eqref{eq:s6-3} to express
+given in Eq.~\eqref{eq:s6-1} as \({m + n}_{t}^{UB}\). For cases where $t \geg \frac{5}{\lambda}$, \(\omega^{UB} = {m + n}_{t}^{UB}\) can be substituted into Eq.~\eqref{eq:s6-3} to express
 \(n_{t}^{UB}\) in terms of the measured value \emph{m}:
 
 \[
 n_{t}^{UB} = n_{ss}(\omega = m + n_{t}^{UB}) = \frac{m + n_{t}^{UB}}{\lambda t}
 \]
 
-Solving for \(n_{t}^{UB}\) yields Eq.~\eqref{eq:6}:
+Solving for \(n_{t}^{UB}\) yields Eq.~\eqref{eq:6}: 
+% Remap this to in-text equation! eq:steady-state
 
 \begin{equation}
 n_{t}^{UB} = \frac{m}{\lambda t - 1}
@@ -143,7 +137,7 @@ n_{t}^{UB} = \frac{m}{\lambda t - 1}
 
 \section{Analytical Methods for Hydrothermal Goethite Step Heat Experiment}\label{sec:si-analytical-methods}
 
-\subsection{Uncertainty Quantification for Bounding Method}
+\subsection{Quantification for Bounding Method}
 
 \paragraph{Helium-in-Goethite Diffusivity Inversions}\label{helium-in-goethite-diffusivity-inversions}
 
@@ -208,39 +202,11 @@ ampoule contents are calculated using the steady-state approximation of Eq.~\Mai
 
 Where $m_{x}^{i-1}$ and $\left(\lambda t \right)^{i-1}$ refer to the measured helium content and $\lambda t$ of the previous step, respectively. $\lambda$ here applies explicitly to \textsuperscript{4}He, whereas $\delta \lambda$ applies to \textsuperscript{3}He. The upper and lower bounds of the isotope ratios are then taken to be the maximum and minimum of these four extreme cases.
 
-
-\subsection{Sensitivity and Uncertainty Calculations}\label{sec:si-sensitivity-uncertainty}
-
-\textsuperscript{3}He and \textsuperscript{4}He sensitivities were calculated for each analysis of the MM
-standard gas, assuming that each standard aliquot contained
-157.50 $\pm$ 0.41 (2$\sigma$) nccSTP \textsuperscript{4}He and 3.567 $\pm$ 0.040 (2$\sigma$) pccSTP \textsuperscript{3}He. These values
-were obtained from sensitivities from a known amount of a standard gas
-with similar helium abundances and from the signals from 10 aliquots of
-the new MM standard tank in June 2023.
-
-1$\sigma$ uncertainties related to internal reproducibility were estimated
-for each sensitivity calculation as the rolling standard deviation of
-sensitivities calculated from 5 MM standards. In other words, the
-internal reproducibility of the sensitivity was estimated as the
-standard deviation of each calculated sensitivity and the 2
-sensitivities immediately before and after. Uncertainties related to
-external reproducibility from the amount of \textsuperscript{3}He and \textsuperscript{4}He in each standard
-aliquot were added to the total uncertainty as well.
-
-Sensitivities and their uncertainties were interpolated to times between
-standard analyses using a Piecewise Cubic Hermite Interpolating
-Polynomial (PCHIP) from the SciPy package in python. These interpolated
-sensitivities and uncertainties were used to convert the \textsuperscript{3}He and \textsuperscript{4}He
-signals (cps and fA respectively) to absolute atomic abundances and
-uncertainties in units of pccSTP and nccSTP respectively. The
-sensitivities and interpolations are graphically displayed in the
-``STDs'' tab in a plot generated using the Matplotlib package in python.
-
 \section{Finite Difference Diffusion Model of Cooling Tube}\label{sec:finite-difference-diffusion-model-of-cooling-tube}
 
 \subsection{Numerical Methods}\label{sec:numerical-methods}
 
-A numerical model to estimate diffusive permeation is invaluable, as it
+A numerical model of diffusive permeation in glass ampoules is invaluable, as it
 provides a flexible way to estimate the permeation fraction
 \(\left( \frac{m}{n_{0}} \right)\) even when the required assumptions
 for the analytical solutions are not met. For example, a numerical
@@ -248,25 +214,11 @@ approach can calculate the expected permeation fraction for a
 non-isothermal time-temperature history, and it needn't obey the
 assumption that the helium concentration profile in the glass is in
 diffusive equilibrium with the partial pressure of helium in the
-encapsulated gas phase. As will be investigated below, the equilibrium
-concentration profile assumption is ephemerally broken when temperatures
-are changed, and for ampoules with high glass/gas ratios it is never
-true.
+encapsulated gas phase.
 
-\citet{carslawjaeger1959} give the equation for the change in
-concentration by diffusion in a cylinder (eqn. 5, page 17, second
-edition), expressed here in terms of concentration and diffusivity.
-
-\begin{equation}
-\frac{dC}{dt} = D\left\lbrack \frac{\partial^{2}C}{\partial r^{2}} + \frac{1}{r}\frac{\partial C}{\partial r} + \frac{1}{r^{2}}\frac{\partial^{2}C}{\partial\theta^{2}} + \frac{\partial^{2}C}{\partial z^{2}} \right\rbrack
-\label{eq:s4-1}
-\end{equation}
-
-For typical ampoules used in this work, the surface area of the top and
-bottom together is about 5--10\% of the surface area of the walls, but
-they are neglected here for simplicity. Assuming that the concentration
-profiles are radially symmetrical and uniform with height (z), Eq.~\eqref{eq:s4-1}
-is reduced to the form used throughout this section:
+Assuming that the ampoule's concentration
+profile is radially symmetrical and uniform with height (z), Eq. 5, page 17 of citet{carslawjaeger1959}, second edition gives the equation for the change in
+concentration by diffusion in a cylinder:
 
 \begin{equation}
 \frac{dC}{dt} = D\left\lbrack \frac{\partial^{2}C}{\partial r^{2}} + \frac{1}{r}\frac{\partial C}{\partial r} \right\rbrack
@@ -284,10 +236,7 @@ Courant-Friedrichs-Lewy (CFL) condition.
 Helium concentrations along the transect (except for the boundaries,
 where r = a and r = b) are updated at each step using an FTCS
 discretization of the radially symmetric diffusion equation for a
-cylinder (Eq.~\eqref{eq:s4-2}), repeated below for reference before its
-discretized form:
-
-\[\frac{dC_{r}}{dt} = D\left\lbrack \frac{\partial^{2}C}{\partial r^{2}} + \frac{1}{r}\frac{\partial C}{\partial r} \right\rbrack\]
+cylinder.
 
 \begin{equation}
 \Delta C_{r} \approx \Delta t\  \bullet D\left\lbrack \frac{C_{r - \Delta r} - 2C_{r} + C_{r + \Delta r}}{\Delta r^{2}} + \frac{1}{r}\frac{C_{r + \Delta r} - C_{r - \Delta r}}{2\Delta r}\  \right\rbrack
@@ -300,19 +249,14 @@ boundaries. The concentration at the model ampoule's outer boundary
 boundary (where r = a) was calculated at each discrete step by
 multiplying the solubility (in units of
 \(\frac{atoms}{atm \times cm^{3}}\)) by the helium partial pressure
-within the ampoule, according to Eq.~\eqref{eq:s5-1} or \eqref{eq:s5-1a}.
-
-\begin{equation}
-C_{He}^{glass} = S(T) \bullet P_{He}^{gas}
-\label{eq:s5-1}
-\end{equation}
-
-Eq.~\eqref{eq:s5-1} can be related to the atomic abundance of helium in the gas
+within the ampoule, which can be related to the atomic abundance of helium in the gas
 phase using the ideal gas law and the formula for the volume of a
 cylinder:
 
-\[P_{He}^{gas} = \frac{n_{gas}RT}{V_{gas}}\]
+\[C_{He}^{glass} = S(T) \bullet P_{He}^{gas}\]
 
+\[P_{He}^{gas} = \frac{n_{gas}RT}{V_{gas}}\]
+A
 \[V_{gas} = \pi a^{2}h\]
 
 \begin{equation}
@@ -373,15 +317,12 @@ multiplied by the time increment ($\Delta t$) and the surface area of the
 cylinder at the outer and inner walls respectively.
 
 Simulations require an initial helium concentration profile in the glass
-appropriate for a fresh charge of helium at a given temperature. Rather
-than deriving a closed-form analytical solution for this profile, it is
-obtained numerically: the inner and outer boundary conditions are held
-fixed at their values for that charge and temperature (Eq.~\eqref{eq:s5-1a}
-and 0, respectively) while the model iterates Eq.~\eqref{eq:s5-0} until the
-concentration profile no longer changes, i.e.\ a numerical `burn-in' to
-steady state. This produces the same result as solving Eq.~\eqref{eq:s4-2}
-analytically for the steady-state profile, without requiring a separate
-closed-form derivation.
+appropriate for a fresh charge of helium at a given temperature. A closed-form analytical solution 
+for this profile is relatively easy to derive, but such a derivation is of little significance to this work and is too lengthy to include here. 
+Therefore, the steady state concentration profile is retrieved numerically: the inner and outer boundary conditions are held
+fixed while the model iterates Eq.~\eqref{eq:s5-0} until the
+concentration profile no longer changes. This produces the same result as solving Eq.~\eqref{eq:s4-2}
+analytically for the steady-state profile. 
 
 \subsection{A Parameterized Cooling Rate of the HT-Win-06-01b Ampoule}\label{sec:si-ampoule-cooling-rate}
 

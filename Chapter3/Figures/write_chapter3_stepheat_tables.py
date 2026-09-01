@@ -39,6 +39,11 @@ tail) are omitted rather than listed with a string of "--" placeholders,
 since the raw Diffusivities sheet's un-curated bound columns for those
 rows are not reliable (see above). This is noted in each table's caption.
 
+NOTE: rendered in portrait (no `landscape` wrapper) -- these 9-column
+tables fit the Caltech thesis's 5.5in text width at \scriptsize (the
+\longtable default this preamble sets), unlike Chapter 2's wider
+10-13 column distilled tables, which still need landscape.
+
 Output: Chapter3/Writing/chapter3_stepheat_tables.tex
     \\ChThreeStepHeatLVCOSmall    : LVCOPy230630 (Leadville pyrite, 200 um)
     \\ChThreeStepHeatLVCOBig      : BigLVCOPy230707 (Leadville pyrite, 400 um)
@@ -86,18 +91,17 @@ SAMPLES = [
     ('ChThreeStepHeatAsp', 'SalAspIrr', 'ch3-stepheat-asp',
      'Arsenopyrite, Mitterberg, Austria',
      'Fig.~\\ref{fig:ch3-sulfide-arrhenius-compilation} (Arrhenius) and '
-     'Fig.~\\ref{fig:ch3-si-stepheat-grid} (delta, row 5)'),
+     'Fig.~\\ref{fig:ch3-si-stepheat-grid-other} (delta, row 1)'),
 ]
 
 SI_SAMPLES = [
     ('ChThreeStepHeatGal', 'GalTS230630', 'ch3-stepheat-gal', 'Galena, Tri-State District, Missouri',
-     'Fig.~\\ref{fig:ch3-si-stepheat-grid} (row 6)'),
+     'Fig.~\\ref{fig:ch3-si-stepheat-grid-other} (row 2)'),
     ('ChThreeStepHeatCCp', 'CCpTS230630', 'ch3-stepheat-ccp', 'Chalcopyrite, Baxter Springs, Kansas',
-     'Fig.~\\ref{fig:ch3-si-stepheat-grid} (row 7)'),
+     'Fig.~\\ref{fig:ch3-si-stepheat-grid-other} (row 3)'),
 ]
 
-TABLE_PREAMBLE = r"""\begin{landscape}
-\begin{footnotesize}
+TABLE_PREAMBLE = r"""\begin{footnotesize}
 \begin{longtable}{r r r r r r r r r}
 \caption{%s}\label{%s}\\
 \toprule
@@ -117,8 +121,7 @@ TABLE_PREAMBLE = r"""\begin{landscape}
 """
 
 TABLE_END = r"""\end{longtable}
-\end{footnotesize}
-\end{landscape}"""
+\end{footnotesize}"""
 
 HEADER_ROW = (r'Step & Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{t,\mathrm{UB}}$ & '
               r'$\ln(D/a^2)_{\mathrm{LB}}$ & $\ln(D/a^2)_{m}$ & $\ln(D/a^2)_{\mathrm{UB}}$ \\'

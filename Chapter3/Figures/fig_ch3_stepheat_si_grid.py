@@ -1,14 +1,27 @@
 """
-Full-page SI compilation figure: one 7-row x 2-column grid (Arrhenius
-column, delta column) covering every plotable Chapter 3 sulfide
-step-heat experiment -- built at the user's request to replace the
-scattered per-sample citations to individual step_heat_regressions/*.pdf
-files with one single, comprehensive reference figure.
+Full-page SI compilation figures: two grids (Arrhenius column, delta
+column) covering every plotable Chapter 3 sulfide step-heat experiment --
+built at the user's request to replace the scattered per-sample citations
+to individual step_heat_regressions/*.pdf files with comprehensive
+reference figures.
 
-Row order (as specified): Rustenburg Pyrite, LVCOPy230630 (small,
-200 um), 112123LVCOPyIrr (sulfur-isolated), BigLVCOPy230707 (big,
-400 um), SalAspIrr (arsenopyrite), GalTS230630 (galena), CCpTS230630
-(chalcopyrite).
+Originally a single 7-row x 2-column grid; split into two figures (one
+per page) because the 7-row version ran off the bottom of the page even
+at [p]-float, textwidth/textheight scaling: a 4-row Pyrite grid (Rustenburg
+Pyrite, LVCOPy230630, 112123LVCOPyIrr, BigLVCOPy230707) and a 3-row Other
+Sulfides grid (SalAspIrr/arsenopyrite, GalTS230630/galena,
+CCpTS230630/chalcopyrite).
+
+Also: every subplot now gets its own x-axis tick labels AND x-axis title
+(previously only the bottom row of the 7-row grid had either) -- rows do
+NOT share a common x-axis scale (each sample's Arrhenius/delta data spans
+a different range), so labeling only the bottom row misleadingly implied
+a shared scale across all rows.
+
+Row order within each grid (as specified): Pyrite grid -- Rustenburg
+Pyrite, LVCOPy230630 (small, 200 um), 112123LVCOPyIrr (sulfur-isolated),
+BigLVCOPy230707 (big, 400 um). Other Sulfides grid -- SalAspIrr
+(arsenopyrite), GalTS230630 (galena), CCpTS230630 (chalcopyrite).
 
 Each row's plotting logic is deliberately the same as the existing
 per-sample figures in fig_ch3_step_heat_regressions.py (same cache,
@@ -24,7 +37,9 @@ Reads:
     Chapter3/Tables/plotable_sulfides_cache.pkl
     Chapter3/Figures/generated/data/ch3_regression_cache.json
 
-Output: Chapter3/Figures/generated/Sulfide_StepHeat_SI_Grid.pdf
+Output:
+    Chapter3/Figures/generated/Sulfide_StepHeat_SI_Grid_Pyrite.pdf
+    Chapter3/Figures/generated/Sulfide_StepHeat_SI_Grid_Other.pdf
 """
 import json
 import os
@@ -38,6 +53,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPT_DIR)
 from plot_style import diffusivity_errorbar  # noqa: E402
 import matplotlib as mpl  # noqa: E402
+from matplotlib.ticker import MaxNLocator  # noqa: E402
 
 CACHE_PKL = os.path.join(SCRIPT_DIR, '..', 'Tables', 'plotable_sulfides_cache.pkl')
 REGRESSION_JSON = os.path.join(SCRIPT_DIR, 'generated', 'data', 'ch3_regression_cache.json')
@@ -46,14 +62,16 @@ os.makedirs(OUTDIR, exist_ok=True)
 
 Ctemps = np.array([600, 500, 400])
 
-# Row order and per-sample plotting metadata, matching SAMPLE_META /
-# DELTA_REFERENCE in fig_ch3_step_heat_regressions.py /
-# prepare_ch3_regression_cache.py exactly (see module docstring).
-ROWS = [
+# Row metadata, matching SAMPLE_META / DELTA_REFERENCE in
+# fig_ch3_step_heat_regressions.py / prepare_ch3_regression_cache.py
+# exactly (see module docstring). Split into the two grids below.
+PYRITE_ROWS = [
     ('Rustenburg Pyrite', 'Rustenburg Pyrite', 'D', 'tab:orange', 'Rust'),
     ('LVCOPy230630', 'LVCOPy230630 (Leadville, small)', 'o', 'tab:blue', 'LVCO'),
     ('112123LVCOPyIrr', '112123LVCOPyIrr (Leadville, S-isolated)', 'o', 'tab:purple', 'LVCO'),
     ('BigLVCOPy230707', 'BigLVCOPy230707 (Leadville, big)', 'o', 'tab:cyan', 'LVCO'),
+]
+OTHER_ROWS = [
     ('SalAspIrr', 'SalAspIrr (Arsenopyrite)', 's', 'tab:green', 'LVCO'),
     ('GalTS230630', 'GalTS230630 (Galena)', 'X', 'tab:red', 'CCp'),
     ('CCpTS230630', 'CCpTS230630 (Chalcopyrite)', 'v', 'tab:brown', 'CCp'),
@@ -83,7 +101,7 @@ def _add_temp_axis(ax, xlim):
     return ax2
 
 
-def plot_row(ax_arr, ax_delta, sample, label, marker, color, ref_key, cache, regressions, is_top):
+def plot_row(ax_arr, ax_delta, sample, label, marker, color, ref_key, cache, regressions, is_top, max_xticks=None):
     df = cache[cache['sample'] == sample]
     x = df['10000/TK'].to_numpy(dtype=float)
     y = df['ln(d/a^2)'].to_numpy(dtype=float)
@@ -115,6 +133,12 @@ def plot_row(ax_arr, ax_delta, sample, label, marker, color, ref_key, cache, reg
     ax_arr.legend(fontsize=FONT['legend'], loc='lower left', framealpha=0.7, handlelength=1.2)
     ax_arr.tick_params(labelsize=FONT['tick'])
     ax_arr.set_ylabel(r'$\ln(D/a^2)$', fontsize=FONT['label'])
+    # Every row gets its own x-axis tick labels and title -- rows do NOT
+    # share a common x-axis scale, so labeling only the bottom row (as
+    # the original single 7-row grid did) misleadingly implied they did.
+    ax_arr.set_xlabel(r'$10^4/T$ (K)', fontsize=FONT['label'])
+    if max_xticks is not None:
+        ax_arr.xaxis.set_major_locator(MaxNLocator(nbins=max_xticks))
     ax_arr.text(0.02, 0.95, label, transform=ax_arr.transAxes, fontsize=FONT['rowlabel'],
                 fontweight='bold', va='top', ha='left',
                 bbox=dict(boxstyle='round,pad=0.15', fc='white', ec='none', alpha=0.75))
@@ -133,8 +157,43 @@ def plot_row(ax_arr, ax_delta, sample, label, marker, color, ref_key, cache, reg
     ax_delta.grid(alpha=0.25, linewidth=0.5)
     ax_delta.tick_params(labelsize=FONT['tick'])
     ax_delta.set_ylabel(r'$\Delta \ln(D/a^2)$', fontsize=FONT['label'])
+    ax_delta.set_xlabel(r'Cumulative He Yield, $F_i$', fontsize=FONT['label'])
+    if max_xticks is not None:
+        ax_delta.xaxis.set_major_locator(MaxNLocator(nbins=max_xticks))
     if is_top:
         ax_delta.set_title('Delta', fontsize=FONT['label'] + 1, pad=28)
+
+
+# Per-row figure height, in inches, at the matplotlib source size (before
+# LaTeX scales the PDF down to fit \textwidth). Bumped up from the
+# original 13.5/7 = 1.929 in/row once the SI captions were shortened
+# (HeInSulfides_SI_body.tex), freeing enough vertical room on the page
+# for larger plots: since \includegraphics uses
+# width=\textwidth,height=\textheight,keepaspectratio and the rendered
+# width (\textwidth=5.5in on this class's letter/1.5in-margin page) is
+# the binding constraint for both grids, a taller source figure directly
+# becomes a taller rendered image at the same width.
+ROW_HEIGHT_IN = 2.55
+
+
+def build_grid(rows, title, outname, cache, regressions, max_xticks=None):
+    """Build and save one N-row x 2-column grid figure for the given rows."""
+    n = len(rows)
+    fig, axes = plt.subplots(n, 2, figsize=(8.25, ROW_HEIGHT_IN * n))
+    if n == 1:
+        axes = axes.reshape(1, 2)
+
+    for i, (sample, label, marker, color, ref_key) in enumerate(rows):
+        plot_row(axes[i, 0], axes[i, 1], sample, label, marker, color, ref_key,
+                 cache, regressions, is_top=(i == 0), max_xticks=max_xticks)
+
+    fig.suptitle(title, fontsize=FONT['label'] + 3, y=0.995)
+    fig.tight_layout(rect=(0, 0, 1, 0.985), h_pad=1.6, w_pad=2.2)
+
+    outpath = os.path.join(OUTDIR, outname)
+    fig.savefig(outpath, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+    print(f"Wrote {outpath}")
 
 
 def main():
@@ -147,33 +206,20 @@ def main():
     with open(REGRESSION_JSON) as f:
         regressions = json.load(f)
 
-    # Sized to roughly match the printed page's usable portrait area
-    # (Caltech thesis class: 5.5in x ~9in text block, letter paper with
-    # 1.5in side / 1in top-bottom margins) so this is placed at
-    # \includegraphics[width=\textwidth,height=\textheight,keepaspectratio]
-    # on its own float page ([p]) and fills it without excessive
-    # letterboxing in either dimension.
     mpl.rcParams.update({'font.size': FONT['label']})
-    fig, axes = plt.subplots(7, 2, figsize=(8.25, 13.5))
 
-    for i, (sample, label, marker, color, ref_key) in enumerate(ROWS):
-        plot_row(axes[i, 0], axes[i, 1], sample, label, marker, color, ref_key,
-                 cache, regressions, is_top=(i == 0))
-        if i < 6:
-            axes[i, 0].set_xticklabels([])
-            axes[i, 1].set_xticklabels([])
-
-    axes[-1, 0].set_xlabel(r'$10^4/T$ (K)', fontsize=FONT['label'])
-    axes[-1, 1].set_xlabel(r'Cumulative He Yield, $F_i$', fontsize=FONT['label'])
-
-    fig.suptitle('Chapter 3 Sulfide Step-Heat Compilation: Arrhenius and Delta Plots, All Samples',
-                  fontsize=FONT['label'] + 3, y=0.995)
-    fig.tight_layout(rect=(0, 0, 1, 0.985), h_pad=1.6, w_pad=2.2)
-
-    outpath = os.path.join(OUTDIR, 'Sulfide_StepHeat_SI_Grid.pdf')
-    fig.savefig(outpath, dpi=300, bbox_inches='tight')
-    plt.close(fig)
-    print(f"Wrote {outpath}")
+    build_grid(
+        PYRITE_ROWS,
+        'Chapter 3 Sulfide Step-Heat Compilation: Arrhenius and Delta Plots, Pyrite Samples',
+        'Sulfide_StepHeat_SI_Grid_Pyrite.pdf',
+        cache, regressions, max_xticks=6,
+    )
+    build_grid(
+        OTHER_ROWS,
+        'Chapter 3 Sulfide Step-Heat Compilation: Arrhenius and Delta Plots, Other Sulfides',
+        'Sulfide_StepHeat_SI_Grid_Other.pdf',
+        cache, regressions,
+    )
 
 
 if __name__ == '__main__':

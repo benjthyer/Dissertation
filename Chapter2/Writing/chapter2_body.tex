@@ -129,7 +129,7 @@ chemical composition could affect helium mobility and retentivity in
 nature, enabling estimates of helium retention in previously untested
 natural samples.
 
-\section{Experimental Methods}\label{experimental-methods}
+\section{Experimental Methods}\label{ch2-experimental-methods}
 
 This study builds upon previous helium step heat studies of the dense
 colloform goethite sample Win-06-01b (occasionally referred to as
@@ -298,23 +298,23 @@ Because HT-Win-06-01b was encapsulated in an imperfectly
 helium-transmissive silica glass ampoule, permeation lag was an expected complication in these
 measurements. To address this, experimental steps at temperatures at or above 170°C were bracketed by low temperature
 (\textless120°C) steps where the helium in goethite at high pH2O was
-effectively immobile at experimental timescales, following Thyer et al., 2026. For 3He, measured
+effectively immobile at experimental timescales, following the permeation step method (Chapter~\ref{ch:apparatus}, \S\ref{permeation-step-method}). For 3He, measured
 signals at these low temperature permeation steps were entirely
 controlled by the process of permeation through silica glass, and
 therefore could be used to estimate the amount of residual 3He within the
 ampoule between high-temperature experimental steps. However, for 4He, 
 the measured signals at low temperature permeation steps were most often 
 indistinguishable from the blank, complicating the application of the Naive Bracketing
-approach as discussed in Thyer et al., 2026 to correct for permeation lag in this dataset. 
+approach discussed in Chapter~\ref{ch:apparatus} (\S\ref{permeation-step-method}) to correct for permeation lag in this dataset. 
 
-As a result, the permeation lag is instead addressed using the "Treatment as Uncertainty" approach described by Thyer et al., 2026.  
+As a result, the permeation lag is instead addressed using the "Treatment as Uncertainty" approach described in Chapter~\ref{ch:apparatus} (\S\ref{bounding-method}).  
 In this approach, an upper bound constraint for the helium content of the ampoule at the end of each high-temperature step was 
 calculated using Eq.~\eqref{eq:steadystate} (Chapter~\ref{ch:apparatus}). 
 
 The application of this equation requires knowledge of the lower-bound permeability of the system. The permeability of ampoules used in hydrothermal step heat experiments
 cannot reasonably be assumed to match literature values for anhydrous silica glass, and therefore
 the 3He permeability of the ampoule was determined using sequential isothermal permeation steps as described
-in the naive method outlined by Thyer et al., 2026.
+in the method outlined in Chapter~\ref{ch:apparatus} (\S\ref{in-situ-rate-constant}).
 
 10 series of 3-4 consecutive permeation steps held at a single
 temperature between 90-110°C for 120-180 minutes each with 26 minutes of
@@ -354,7 +354,7 @@ the only parameter of interest for this exercise:
 \end{figure}
 
 All measured apparent 3He permeabilities were equal to or in excess of the literature values for anhydrous silica glass (Fig.~\ref{fig:ch2-naive-arrhenius}), 
-similar to the observations of Thyer et al., 2026. 4He permeability itself could not be independently measured in this
+similar to observations discussed in Chapter~\ref{ch:apparatus} (\S\ref{resolving-the-paradoxically-high-apparent-helium-permeability-in-water-filled-tubes}). 4He permeability itself could not be independently measured in this
 experiment due to blank-level signals during the low temperature permeation steps and is assumed to similarly exceed the literature values for anhydrous silica glass.
 To evaluate the uncertainty due to the permeation lag, we use the literature values as a conservative (lower bound) estimate of the true permeability. 
 $\lambda t$ (where $\lambda = GRTK$) is estimated here using the 4He
@@ -368,7 +368,7 @@ from further analysis. Later experimental steps with values of $\lambda t$ lower
 using Eq.~\eqref{eq:s6-8} from the supplement to Chapter~\ref{ch:apparatus} because upper bounds on previous steps' residual helium 
 content could be evaluated.
 
-\section{Analytical Methods}\label{analytical-methods}
+\section{Analytical Methods}\label{ch2-analytical-methods}
 
 \paragraph{Finite Difference Diffusion Model of Cooling Tube}\label{finite-difference-diffusion-model-of-cooling-tube}
 
@@ -376,7 +376,7 @@ One potential concern about the results of the internally measured permeabilitie
 during the cooling period after each permeation step. In order to evaluate the significance of 
 this effect, a finite difference model was built in python to simulate diffusion, influx, and
 outflux of helium across a hollow glass cylinder containing an
-arbitrary amount of helium gas within a helium-free chamber using the procedure described in \citep{thyer2026}. The glass
+arbitrary amount of helium gas within a helium-free chamber using the procedure described in Chapter~\ref{ch:apparatus} (\S\ref{numerical-diffusive-permeation-model-for-arbitrary-thermally-history-and-diffusive-disequilibrium}). The glass
 cylinder was given the same dimensions of the ampoule used in the
 Win-06-01b hydrothermal experiment, and was subjected to the same
 heating and cooling schedule as the hydrothermal experiment's permeation
@@ -455,7 +455,7 @@ isotope ratio calculated out of the 4 hypothetical end-member permeation scenari
 Intuitively, higher differential permeability between the two helium isotopes ($\delta = \frac{K_{3He}}{K_{4He}}$ here) will result in greater isotope fractionation between the measured $\left(\frac{m_{4}}{m_{3}}\right)$ and true $\left(\frac{\omega_{4}}{\omega_{3}}\right)$.
 Furthermore, lower absolute permeabilities will result in stronger permeation lag, additionally producing higher isotope fractionation in the measured value. The 4He permeability is thus conservatively taken to be identical to \citet{swets1961}, an anhydrous
 literature value which this experiment's own isothermal 3He permeation measurements show to underestimate the ampoule's true permeability (Fig.~\ref{fig:ch2-naive-arrhenius}); 4He permeability itself could not be independently measured in this experiment
-(supplement, \nameref{helium-4-blank-corrections}). For the purposes of evaluating the measured isotope ratios, the relative 3He/4He permeability ($\delta$) is taken to be 1.29, the 2$\sigma$ upper bound of the value measured independently for a water-filled ampoule in Chapter~\ref{ch:apparatus} \citep{thyer2026}:
+(supplement, \nameref{helium-4-blank-corrections}). For the purposes of evaluating the measured isotope ratios, the relative 3He/4He permeability ($\delta$) is taken to be 1.29, the 2$\sigma$ upper bound of the value measured independently for a water-filled ampoule in Chapter~\ref{ch:apparatus} (\S\ref{results}):
 1.10 $\pm$ 0.19 (2$\sigma$). 1.29 is in great excess of realistic values of the relative 3He/4He permeability, which is expected to be between 1.06-1.11 for the temperature range relevant to this experiment \citep{jones1953}. These
 conservative assumptions taken together guarantee that the calculated upper and lower bounds for the isotope ratios accurately constrain the true value. The upper bounds of the
 ampoule contents are calculated using the steady-state approximation of Eq.~\eqref{eq:steadystate} (Chapter~\ref{ch:apparatus}): $n_{ss} = \frac{m}{\lambda t - 1}$. For the four extreme cases listed above, the following equations apply:
@@ -486,7 +486,7 @@ on Secondary Electron mode by the ZEISS 1550VP Field Emission SEM.
 
 The resistance-furnace degassing step is detailed further in the Supplementary Information, in its \nameref{totals} section. That same supplement also records, as a secondary and independent verification of the results and conclusions presented here, the na\"ive/informed bracketing method applied to this same dataset: an alternative treatment that explicitly tracks the ampoule's helium content step by step, using the isothermal-permeability fits established above, rather than bounding it as above.
 
-\section{\texorpdfstring{Results }{Results }}\label{results}
+\section{\texorpdfstring{Results }{Results }}\label{ch2-results}
 
 The complete corrected step-heat dataset underlying the diffusivities, delta plots, and Arrhenius regressions discussed below is distilled in Tables~\ref{tab:ch2-distilled-3he} and~\ref{tab:ch2-distilled-4he}, reporting the lower-bound, central, and upper-bound values from the ``treatment as uncertainty'' permeation-lag correction for $^3$He and $^4$He respectively.
 
@@ -673,7 +673,7 @@ encapsulated with water or gypsum did not form cracks (Fig.~\ref{fig:ch2-sem-gyp
 Goethite heat treated in open air turned red, whereas goethite heat
 treated in vacuum remained black.
 
-\section{Discussion}\label{discussion}
+\section{Discussion}\label{ch2-discussion}
 
 \paragraph{Measurement and Numerical Simulation of Apparent Permeability of Experimental Ampoule}\label{internal-measurement-of-ampoule-apparent-permeability}
 
@@ -704,7 +704,7 @@ temperatures \citep{tsuru2011}, under the common paradigm that ions such as (OH)
 space within the amorphous glassy network to slow permeation and decrease helium solubility
 \citep{norton1953,shackelford1999}. A similarly elevated permeability was independently observed at 100°C in a separate
 silica glass ampoule at Caltech partially filled with MilliQ water and equilibrated with \textasciitilde0.1 torr of
-tank helium, as reported by \citet{thyer2026}, who posit that the elevated permeability is due to the low solubility and high diffusivity
+tank helium, as discussed in Chapter~\ref{ch:apparatus} (\S\ref{resolving-the-paradoxically-high-apparent-helium-permeability-in-water-filled-tubes}), which posits that the elevated permeability is due to the low solubility and high diffusivity
 of helium in water, effectively shrinking the volume of the gas phase while maintaining equilibrium with the ampoule's interior throughout,
 leading to higher partial pressures of helium within the ampoule and therefore higher apparent permeabilities.
 

@@ -1,66 +1,50 @@
 % =============================================================
-%  Chapter 5 — nGibbs / ML Thermodynamics
-%  "New Frontiers in Thermodynamically Informed Geodynamic
-%   Modeling: a General Deep Learning Accelerated Free Energy
-%   Minimizer for Multicomponent Silicate Systems"
+%  Chapter 5 — Draaikraal Field Study
+%  "Field Studies Reveal Synmagmatic Deformation and Extensive
+%   Crustal Contamination of the Upper Critical Zone, Recessive
+%   Lower Main Zone, and Floor Rocks at the Margin of the
+%   Bushveld Complex at Draaikraal, Mpumalanga, South Africa"
 %
-%  This stub will be replaced with the full chapter text.
+%  Mirrors the Chapter 1 / Chapter 3 pattern: this wrapper \input{}s
+%  the shared content files in Chapter5/Writing/ -- chapter5_abstract.tex
+%  and chapter5_body.tex -- so the science is written and edited in
+%  exactly one place. Edit those files (or Chapter5/Figures/
+%  write_chapter5_data_table.py for the data tables), not this one, to
+%  change the text, figures, or tables.
+%
+%  Reorganized 2026-09-01 from the raw field-report text/data that had
+%  been dropped directly in Chapter5/ (Draaikraal 2023 BJT.tex/.xlsx,
+%  structural_map.pdf) into the Chapter1-3 Writing/Figures/Tables/
+%  Workspace layout; see chapter5_body.tex's own header comment for the
+%  full provenance/content-change notes. This chapter previously held a
+%  stub for the ML-thermodynamics ("nGibbs") chapter, which has moved to
+%  Chapter4/chapter4.tex (displacing DustMAP, now shelved at
+%  Manuscripts/DustMAP/ and out of the thesis) -- see Chapter4/chapter4.tex's
+%  header comment.
+%
+%  NOTE: Do NOT include \documentclass or \begin{document} here.
+%        This file is \input{} into dissertation.tex.
 % =============================================================
 
-\chapter{New Frontiers in Thermodynamically Informed Geodynamic Modeling: a General Deep Learning Accelerated Free Energy Minimizer for Multicomponent Silicate Systems}
-\label{ch:ngibbs}
+\chapter{Field Studies Reveal Synmagmatic Deformation and Extensive Crustal Contamination of the Upper Critical Zone, Recessive Lower Main Zone, and Floor Rocks at the Margin of the Bushveld Complex at Draaikraal, Mpumalanga, South Africa}
+\label{ch:draaikraal}
 
+% --- Chapter abstract / summary -----------------------------------------------
 \begin{quote}
   \itshape
-  \todo{One-paragraph chapter summary.}
+  \input{Chapter5/Writing/chapter5_abstract}
 \end{quote}
 
-\section{Introduction}
-\label{sec:ch5-intro}
-\todo{Motivate the need for fast thermodynamic forward models in geodynamics.
-Review current tools (Perple\_X, THERMOCALC, MAGEMin) and their computational
-bottlenecks. State the deep learning acceleration approach.}
+% --- Field-data table macros (auto-generated -- see the file header) ----------
+% \ChFiveFieldStationTable / \ChFiveStructuralMeasurementsTable. Defined here
+% (rather than only where first used) following the Chapter 3 pattern, so
+% they are available wherever chapter5_body.tex's Sample and Station Data
+% section (\S\ref{sec:ch5-sample-station-data}) invokes them. Regenerate via
+% Chapter5/Figures/write_chapter5_data_table.py after any change to
+% Tables/Draaikraal 2023 BJT.xlsx.
+\input{Chapter5/Writing/chapter5_data_table}
 
-\section{Background}
-\label{sec:ch5-background}
-
-\subsection{Gibbs Free Energy Minimization in Petrology}
-\todo{}
-
-\subsection{Machine Learning Surrogates for Physical Models}
-\todo{}
-
-\section{Model Architecture}
-\label{sec:ch5-architecture}
-
-\subsection{Training Data Generation}
-\todo{Describe the strategy for generating phase equilibrium training data
-from classical minimizers across relevant $P$--$T$--$X$ space.}
-
-\subsection{Neural Network Design}
-\todo{Describe the architecture: input/output spaces, layers, activation
-functions, loss function, training procedure.}
-
-\subsection{Uncertainty Quantification}
-\todo{}
-
-\section{Validation}
-\label{sec:ch5-validation}
-\todo{Benchmark speed and accuracy against classical minimizers on held-out
-$P$--$T$--$X$ points and on known phase diagrams.}
-
-\section{Application to Geodynamic Modeling}
-\label{sec:ch5-results}
-\todo{Demonstrate integration into a geodynamic simulation. Show a
-representative case study.}
-
-\section{Discussion}
-\label{sec:ch5-discussion}
-\todo{Discuss accuracy/speed tradeoffs, generalizability to other
-bulk compositions, and extension to systems relevant to the Bushveld
-Complex (foreshadow Appendix~\ref{app:bushveld} and the Conclusion).}
-
-\section{Conclusions}
-\label{sec:ch5-conclusions}
-\todo{Summarize the ML minimizer performance and implications for
-future thermodynamically coupled geodynamic models.}
+% --- Shared body (Introduction through Acknowledgments) ------------------------
+% Figures for this chapter live in Chapter5/Figures/{source,generated}/ (see
+% the \graphicspath entries in dissertation_preamble.tex).
+\input{Chapter5/Writing/chapter5_body}

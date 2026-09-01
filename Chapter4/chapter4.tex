@@ -1,14 +1,23 @@
 % =============================================================
-%  Chapter 4 — DustMAP
-%  "Chemically Mapping Saturn's Outer Rings with DustMAP:
-%   an Automated Mass Calibration and Categorization Pipeline
-%   for TOF Mass Spectra"
+%  Chapter 4 — nGibbs / ML Thermodynamics
+%  "New Frontiers in Thermodynamically Informed Geodynamic
+%   Modeling: a General Deep Learning Accelerated Free Energy
+%   Minimizer for Multicomponent Silicate Systems"
+%
+%  Relocated from Chapter5/chapter5.tex on 2026-09-01: DustMAP (the
+%  Cassini CDA/INMS pipeline chapter that previously occupied the
+%  Chapter4 slot) has been pulled from the thesis and shelved at
+%  Manuscripts/DustMAP/ as a standalone manuscript-in-progress instead.
+%  This nGibbs chapter moves up into Chapter4 as a result; Chapter5 is
+%  now the Draaikraal (Bushveld margin) field-study chapter. The
+%  \label{ch:ngibbs} below is unchanged, so ChapterA/chapterA.tex's
+%  \ref{ch:ngibbs} in its Conclusions still resolves correctly.
 %
 %  This stub will be replaced with the full chapter text.
 % =============================================================
 
-\chapter{Chemically Mapping Saturn's Outer Rings with DustMAP: an Automated Mass Calibration and Categorization Pipeline for TOF Mass Spectra}
-\label{ch:dustmap}
+\chapter{New Frontiers in Thermodynamically Informed Geodynamic Modeling: a General Deep Learning Accelerated Free Energy Minimizer for Multicomponent Silicate Systems}
+\label{ch:ngibbs}
 
 \begin{quote}
   \itshape
@@ -17,48 +26,50 @@
 
 \section{Introduction}
 \label{sec:ch4-intro}
-\todo{Introduce Cassini CDA and INMS context. State the challenge of
-mass-calibrating and categorizing large TOF spectral datasets. Motivate the
-need for an automated pipeline.}
+\todo{Motivate the need for fast thermodynamic forward models in geodynamics.
+Review current tools (Perple\_X, THERMOCALC, MAGEMin) and their computational
+bottlenecks. State the deep learning acceleration approach.}
 
 \section{Background}
 \label{sec:ch4-background}
 
-\subsection{TOF Mass Spectrometry in Space Science}
+\subsection{Gibbs Free Energy Minimization in Petrology}
 \todo{}
 
-\subsection{Prior Approaches to Spectral Calibration and Classification}
+\subsection{Machine Learning Surrogates for Physical Models}
 \todo{}
 
-\section{The DustMAP Pipeline}
-\label{sec:ch4-pipeline}
+\section{Model Architecture}
+\label{sec:ch4-architecture}
 
-\subsection{Automated Mass Calibration}
-\todo{Describe the calibration algorithm: reference peak identification,
-polynomial fitting, uncertainty estimation.}
+\subsection{Training Data Generation}
+\todo{Describe the strategy for generating phase equilibrium training data
+from classical minimizers across relevant $P$--$T$--$X$ space.}
 
-\subsection{Spectral Categorization}
-\todo{Describe the classification approach: clustering algorithm, feature
-space, category definitions.}
+\subsection{Neural Network Design}
+\todo{Describe the architecture: input/output spaces, layers, activation
+functions, loss function, training procedure.}
 
-\subsection{Implementation and Computational Environment}
+\subsection{Uncertainty Quantification}
 \todo{}
 
 \section{Validation}
 \label{sec:ch4-validation}
-\todo{Demonstrate calibration accuracy on known standards. Compare
-categorization results with manual classifications.}
+\todo{Benchmark speed and accuracy against classical minimizers on held-out
+$P$--$T$--$X$ points and on known phase diagrams.}
 
-\section{Application: Chemical Map of Saturn's Outer Rings}
+\section{Application to Geodynamic Modeling}
 \label{sec:ch4-results}
-\todo{Present ring chemical maps. Identify compositional gradients or
-distinct populations.}
+\todo{Demonstrate integration into a geodynamic simulation. Show a
+representative case study.}
 
 \section{Discussion}
 \label{sec:ch4-discussion}
-\todo{Interpret chemical structure of the rings. Discuss origin and evolution
-implications. Comment on pipeline generalizability to other TOF instruments.}
+\todo{Discuss accuracy/speed tradeoffs, generalizability to other
+bulk compositions, and extension to systems relevant to the Bushveld
+Complex (foreshadow Appendix~\ref{app:bushveld} and the Conclusion).}
 
 \section{Conclusions}
 \label{sec:ch4-conclusions}
-\todo{Summarize pipeline contributions and key ring chemistry findings.}
+\todo{Summarize the ML minimizer performance and implications for
+future thermodynamically coupled geodynamic models.}

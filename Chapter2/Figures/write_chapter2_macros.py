@@ -19,14 +19,14 @@ Run this AFTER prepare_regression_cache.py (it just reads that script's
 JSON output; it does not touch the workbook or refit anything itself).
 run_all_figures.py runs both, in order, automatically.
 
-Also reads generated/data/naive_lambda_arrhenius_cache.json (written by
-fig_naive_isothermal_fits.py) for the isothermal-permeation Arrhenius
+Also reads generated/data/permstep_lambda_arrhenius_cache.json (written by
+fig_permstep_isothermal_fits.py) for the isothermal-permeation Arrhenius
 regression's own activation energy/R^2 (\\ChTwoPermEa, \\ChTwoPermEaErr,
 \\ChTwoPermRtwo, \\ChTwoPermN) -- these numbers were previously hand-typed
 identically into both the main text and the SI ("R2 of 0.936, Ea of
 10190+/-1880 cal/mol"), with no script actually producing them (the old
 fitting code used an uncorrected/biased model and a bare np.polyfit with
-no R^2 or stderr at all). fig_naive_isothermal_fits.py now fits the
+no R^2 or stderr at all). fig_permstep_isothermal_fits.py now fits the
 bias-corrected model (Chapter 1's Eq.~\\eqref{eq:incyield}) and computes
 the regression properly; these macros expose that result the same way
 the Stage 1 macros above expose the diffusivity regression.
@@ -41,10 +41,10 @@ Also reads the 'naive' key of stage1_regression_cache.json: the same
 Stage 1 Arrhenius regression, fit instead to the na\"ive/informed
 bracketing (permeation-step) method's own direct-measurement 3He
 diffusivities, as a check on the bounding-method ('M') regression above.
-Exposed as \\ChTwoBracketEa/Err, \\ChTwoBracketTc/Err, \\ChTwoBracketRtwo,
-\\ChTwoBracketN. Do not confuse this with \\ChTwoPermEa above: that macro
+Exposed as \\ChTwoPermStepEa/Err, \\ChTwoPermStepTc/Err, \\ChTwoPermStepRtwo,
+\\ChTwoPermStepN. Do not confuse this with \\ChTwoPermEa above: that macro
 is the isothermal permeation-rate-constant (K) Arrhenius fit used to
-determine the ampoule's permeability; \\ChTwoBracketEa is a He
+determine the ampoule's permeability; \\ChTwoPermStepEa is a He
 diffusion-in-goethite activation energy, the same physical quantity as
 \\ChTwoEa, just from the other reduction method.
 
@@ -63,7 +63,7 @@ import os
 
 FIG_DIR = os.path.dirname(os.path.abspath(__file__))
 CACHE_PATH = os.path.join(FIG_DIR, 'generated', 'data', 'stage1_regression_cache.json')
-PERM_CACHE_PATH = os.path.join(FIG_DIR, 'generated', 'data', 'naive_lambda_arrhenius_cache.json')
+PERM_CACHE_PATH = os.path.join(FIG_DIR, 'generated', 'data', 'permstep_lambda_arrhenius_cache.json')
 OUT_PATH = os.path.join(FIG_DIR, '..', 'Writing', 'chapter2_derived_values.tex')
 
 # Which Tc uncertainty convention to expose as \ChTwoTcErr. The manuscript
@@ -170,7 +170,7 @@ if __name__ == '__main__':
         "%    ChTwoRtwo/ChTwoN   : regression R^2 and number of points\n",
         "%\n",
         "%  Isothermal 3He permeation Arrhenius regression (from\n",
-        "%  generated/data/naive_lambda_arrhenius_cache.json, n={} sequences, R2={:.4f}):\n".format(
+        "%  generated/data/permstep_lambda_arrhenius_cache.json, n={} sequences, R2={:.4f}):\n".format(
             perm['n_points'], perm['r2']),
         "%    ChTwoPermEa/ChTwoPermEaErr : activation energy, 2 s.e. (cal/mol)\n",
         "%    ChTwoPermEakJ/ChTwoPermEaErrkJ : the same, in kJ/mol (1 cal = 4.184 J)\n",
@@ -183,12 +183,12 @@ if __name__ == '__main__':
         "%  steps {} -- see load_diffusivities_HTWin0601b_naive docstring;\n".format(
             naive.get('excluded_steps', [])),
         "%  n={} points, R2={:.4f}):\n".format(naive['n_points'], naive['r2']),
-        "%    ChTwoBracketEa/ChTwoBracketEaErr : activation energy (kJ/mol)\n",
-        "%    ChTwoBracketTc/ChTwoBracketTcErr : Dodson (1973) closure temperature\n",
+        "%    ChTwoPermStepEa/ChTwoPermStepEaErr : activation energy (kJ/mol)\n",
+        "%    ChTwoPermStepTc/ChTwoPermStepTcErr : Dodson (1973) closure temperature\n",
         "%      (degC), intercept-only regression uncertainty, same convention as\n",
         "%      ChTwoTcErr. Joint slope+intercept uncertainty is +/- {:.1f} degC.\n".format(
             naive['Tc_C_stderr']),
-        "%    ChTwoBracketRtwo/ChTwoBracketN : regression R^2 and number of points\n",
+        "%    ChTwoPermStepRtwo/ChTwoPermStepN : regression R^2 and number of points\n",
         "% =============================================================\n",
         newcommand('ChTwoEa', ea_str),
         newcommand('ChTwoEaErr', ea_err_str),
@@ -204,12 +204,23 @@ if __name__ == '__main__':
         newcommand('ChTwoPermN', perm_n_str),
         newcommand('ChTwoPermLamMin', perm_lam_min_str),
         newcommand('ChTwoPermLamMax', perm_lam_max_str),
-        newcommand('ChTwoBracketEa', bracket_ea_str),
-        newcommand('ChTwoBracketEaErr', bracket_ea_err_str),
-        newcommand('ChTwoBracketTc', bracket_tc_str),
-        newcommand('ChTwoBracketTcErr', bracket_tc_err_str),
-        newcommand('ChTwoBracketRtwo', bracket_r2_str),
-        newcommand('ChTwoBracketN', bracket_n_str),
+        newcommand('ChTwoPermStepEa', bracket_ea_str),
+        newcommand('ChTwoPermStepEaErr', bracket_ea_err_str),
+        newcommand('ChTwoPermStepTc', bracket_tc_str),
+        newcommand('ChTwoPermStepTcErr', bracket_tc_err_str),
+        newcommand('ChTwoPermStepRtwo', bracket_r2_str),
+        newcommand('ChTwoPermStepN', bracket_n_str),
+        # Legacy aliases. The dissertation chapters now use the \\ChTwoPermStep*
+        # names above; the GCA manuscript still uses \\ChTwoBracket*, and its
+        # copy of this file is produced by copy_manuscript_sources.py from this
+        # same output. Emitting both keeps the manuscript compiling without
+        # editing it. Remove once the manuscript is renamed too.
+        "\\newcommand{\\ChTwoBracketEa}{\\ChTwoPermStepEa}\n",
+        "\\newcommand{\\ChTwoBracketEaErr}{\\ChTwoPermStepEaErr}\n",
+        "\\newcommand{\\ChTwoBracketTc}{\\ChTwoPermStepTc}\n",
+        "\\newcommand{\\ChTwoBracketTcErr}{\\ChTwoPermStepTcErr}\n",
+        "\\newcommand{\\ChTwoBracketRtwo}{\\ChTwoPermStepRtwo}\n",
+        "\\newcommand{\\ChTwoBracketN}{\\ChTwoPermStepN}\n",
     ]
 
     with open(OUT_PATH, 'w') as f:
@@ -222,7 +233,7 @@ if __name__ == '__main__':
           f"({perm_ea_kj_str} +/- {perm_ea_kj_err_str} kJ/mol), "
           f"R2 = {perm_r2_str}, n = {perm_n_str}")
     print(f"Isothermal permeation: lambda spans {perm_lam_min_str} to {perm_lam_max_str} s^-1")
-    print(f"Naive/informed bracketing Stage 1: Ea = {bracket_ea_str} +/- {bracket_ea_err_str} kJ/mol, "
+    print(f"Permeation step method Stage 1: Ea = {bracket_ea_str} +/- {bracket_ea_err_str} kJ/mol, "
           f"Tc = {bracket_tc_str} +/- {bracket_tc_err_str} degC (intercept-only), "
           f"R2 = {bracket_r2_str}, n = {bracket_n_str}")
     print(f"Wrote {OUT_PATH}")

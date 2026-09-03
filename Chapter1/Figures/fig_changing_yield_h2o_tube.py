@@ -13,7 +13,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from thermochr_utils import make_grid
 from plot_style import apply_style
 apply_style()
 
@@ -45,7 +44,7 @@ ax.plot(
     linewidth=2,
     label='Predicted by Cooling Model\nw/ 4He Permeabilities of Swets et al., 1961',
 )
-make_grid()
+ax.grid(True)
 ax.legend(loc='center left')
 ax.set_xlabel('Cumulative Hours at 100°C')
 ax.set_ylabel(r'Fractional Yield $\left(\frac{m}{n_0}\right)$')

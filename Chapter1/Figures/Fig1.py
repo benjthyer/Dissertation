@@ -319,6 +319,7 @@ plt.plot(np.arange(len(n0))/3600, m, linestyle = '--', color = 'red', label = r'
 plt.plot(np.arange(len(n0))/3600, w, color = 'black', label = r'Evolved Fractional Yield ($w$)')
 plt.xlabel('Time (hr)')
 plt.ylabel(r'Helium Fractional Yield of 150 $\mu$s Durango Apatite')
+plt.grid(True)
 plt.savefig(os.path.join(OUTDIR, 'Diffusion_Tube_Simulation1.0.pdf'), dpi=300)
 plt.close()
 

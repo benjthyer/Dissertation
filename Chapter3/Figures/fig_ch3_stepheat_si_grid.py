@@ -85,7 +85,7 @@ FIT_KEY = {
     'CCpTS230630': 'CCp',
 }
 
-FONT = dict(label=9, tick=7.5, legend=6, rowlabel=8.5)
+FONT = dict(label=11, tick=9.5, legend=6, rowlabel=10.5)  # label/tick/rowlabel bumped at user request (in-plot text too small); legend left as-is (reported fine)
 
 
 def _num(df, col):

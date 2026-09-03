@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from diffusion_utils import swets_S, swets_D, Ratoms, make_grid
+from diffusion_utils import swets_S, swets_D, Ratoms
 from plot_style import apply_style
 apply_style()
 
@@ -64,6 +64,7 @@ ax2.set_xticklabels(Ctemps)
 ax2.set_xlabel('Temperature (°C)')
 ax1.set_xlabel(r'$10^3/T$ (K$^{-1}$)')
 ax1.set_ylabel(r'$\ln(S)$ (atoms cm$^{-3}$ atm$^{-1}$)')
+ax1.grid(True)
 ax1.legend()
 ax1.set_title('Helium Solubility in Silica Glass')
 fig.tight_layout()
@@ -83,7 +84,7 @@ ax.plot(Ts2 - 273, NDglass2 / NDgas2)
 ax.set_title('Glass/Gas Partitioning of Helium\n(Swets et al. 1961)')
 ax.set_xlabel('Temperature (°C)')
 ax.set_ylabel(r'$C^{He}_{glass}$ /$C^{He}_{gas}$')
-make_grid()
+ax.grid(True)
 fig.tight_layout()
 fig.savefig(os.path.join(OUTDIR, 'Helium_Partitioning.pdf'), dpi=300)
 plt.close(fig)

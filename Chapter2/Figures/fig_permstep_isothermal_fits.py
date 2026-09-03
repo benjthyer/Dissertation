@@ -26,7 +26,7 @@ initial guess scaled to the first step's yield (same approach as
 diffusion_utils.KenColdInversion/KenColdInversion1).
 
 Reads: Win0601bHT_data_and_reduction.xlsx
-  - Sheet 'Fit Lambdas' (formerly 'Naive Apparent Lambdas'): raw per-step 3He
+  - Sheet 'Fit Lambdas' (formerly 'Apparent Permeation Rate Constants'): raw per-step 3He
     yields (and their 2-sigma uncertainties) for the 10 sequences, alongside
     the workbook's own in-sheet fit of each (not used here -- see the module
     docstring's second paragraph). Series ID is only populated on each
@@ -53,18 +53,18 @@ Reads: Win0601bHT_data_and_reduction.xlsx
     other.)
 
 Outputs:
-  NaiveIsothermalFits_Grid.pdf              - one panel per sequence (5x2); used in the
+  PermeationStepFits_Grid.pdf              - one panel per sequence (5x2); used in the
                                                dissertation (Chapter 2)
-  NaiveIsothermalFits_Grid_Top4.pdf         - same panels/fits as above, just the first
+  PermeationStepFits_Grid_Top4.pdf         - same panels/fits as above, just the first
                                                4 sequences (top two rows of the 5x2 grid),
                                                as a smaller example figure for the GCA
                                                manuscript, whose Supporting Information
                                                carries the complete 10-sequence raw/fit
-                                               tables (\ChTwoNaiveRawTable/\ChTwoNaiveFitTable
+                                               tables (\ChTwoPermStepRawTable/\ChTwoPermStepFitTable
                                                below) for readers who want the rest
-  NaiveIsothermalFits_150min_byTemp.pdf     - 150-minute-step sequences, superimposed
-  NaiveIsothermalFits_120min_byTemp.pdf     - 120-minute-step sequences, superimposed
-  NaiveLambda_Arrhenius.pdf                 - ln(K) vs 10^4/T, built from these fits,
+  PermeationStepFits_150min_byTemp.pdf     - 150-minute-step sequences, superimposed
+  PermeationStepFits_120min_byTemp.pdf     - 120-minute-step sequences, superimposed
+  AmpoulePermeability_Arrhenius.pdf                 - ln(K) vs 10^4/T, built from these fits,
                                                overlaid with the simulated lambda fits
                                                from goethite_thermal_sims.py (read from
                                                data/goethite_thermal_sim_lambdas.csv, if
@@ -75,7 +75,7 @@ Outputs:
                                                (Temperature) axis is ticked at exactly
                                                the simulation grid's own hold
                                                temperatures.
-  generated/data/naive_lambda_arrhenius_cache.json - slope/intercept/R^2/activation-energy
+  generated/data/permstep_lambda_arrhenius_cache.json - slope/intercept/R^2/activation-energy
                                                (with 2 s.e. uncertainty) of the ln(K)
                                                vs 10^4/T regression above, so the main
                                                text/SI can cite these numbers from a
@@ -86,18 +86,18 @@ Outputs:
                                                themselves (popt[0] of each fit_n0_lambda
                                                call above), quoted in the Results text
                                                (\\ChTwoPermLamMin/\\ChTwoPermLamMax).
-  ../chapter2_naive_isothermal_tables.tex   - \\newcommand macros \\ChTwoNaiveRawTable
+  ../chapter2_permstep_isothermal_tables.tex   - \\newcommand macros \\ChTwoPermStepRawTable
                                                (the 10-sequence raw step-heat dataset,
                                                from 'Fit Lambdas', cross-checked against
                                                'Raw Data and Corrections' above) and
-                                               \\ChTwoNaiveFitTable (per-sequence fitted
+                                               \\ChTwoPermStepFitTable (per-sequence fitted
                                                lambda/n0 +/- 2-sigma from the fits above),
                                                each expanding to a complete table
                                                environment. Same \\newcommand-macro
                                                pattern as write_chapter2_macros.py/
                                                chapter2_derived_values.tex, so
                                                chapter2goethite_SI_body.tex can
-                                               \\ChTwoNaiveRawTable/\\ChTwoNaiveFitTable
+                                               \\ChTwoPermStepRawTable/\\ChTwoPermStepFitTable
                                                rather than hand-copying these tables.
                                                \\input{} by chapter2goethite_SI.tex and
                                                chapter2.tex the same way
@@ -123,8 +123,8 @@ FIG_DIR = os.path.dirname(os.path.abspath(__file__))
 XLSX = os.path.join(FIG_DIR, '..', 'Tables', 'Win0601bHT_data_and_reduction.xlsx')
 OUTDIR = os.path.join(FIG_DIR, 'generated')
 os.makedirs(OUTDIR, exist_ok=True)
-CACHE_PATH = os.path.join(FIG_DIR, 'generated', 'data', 'naive_lambda_arrhenius_cache.json')
-TABLES_OUT_PATH = os.path.join(FIG_DIR, '..', 'Writing', 'chapter2_naive_isothermal_tables.tex')
+CACHE_PATH = os.path.join(FIG_DIR, 'generated', 'data', 'permstep_lambda_arrhenius_cache.json')
+TABLES_OUT_PATH = os.path.join(FIG_DIR, '..', 'Writing', 'chapter2_permstep_isothermal_tables.tex')
 
 TEMP_VMIN, TEMP_VMAX = 90, 110  # shared color scale between the two by-temperature plots
 
@@ -198,15 +198,15 @@ for seq, ax in zip(sequences, axes.flat):
     cumt_hr = accumulate(seq['t']) / 3600
     cumHe = accumulate(seq['He'])
     longt_hr = np.linspace(0, cumt_hr[-1], 500)
-    ax.plot(longt_hr, forward_permeate(longt_hr * 3600, seq['lam'], seq['n0']), color='red', linestyle='--', label='Naive Fit')
+    ax.plot(longt_hr, forward_permeate(longt_hr * 3600, seq['lam'], seq['n0']), color='red', linestyle='--', label='Permeation Fit')
     ax.scatter(cumt_hr, cumHe, color='black', zorder=5)
     ax.set_title(f"{seq['T_C']:.0f}°C, {seq['nominal_min']:.0f} min\n"
                  f"λ={seq['lam']:.2e} s⁻¹, n0={seq['n0']:.3f} pccSTP", fontsize=12)
 fig.supxlabel('Cumulative Time (hours)')
 fig.supylabel(r'$m_{cum}$ $^3$He (pccSTP)')
-fig.suptitle('Win-06-01b Isothermal Step-Heat Naive Permeability Fits')
+fig.suptitle('Win-06-01b Isothermal Step-Heat Permeation Rate Constant Fits')
 fig.tight_layout()
-fig.savefig(os.path.join(OUTDIR, 'NaiveIsothermalFits_Grid.pdf'), dpi=300)
+fig.savefig(os.path.join(OUTDIR, 'PermeationStepFits_Grid.pdf'), dpi=300)
 plt.close(fig)
 
 # ---------------------------------------------------------------------------
@@ -220,15 +220,15 @@ for seq, ax in zip(sequences[:4], axes.flat):
     cumt_hr = accumulate(seq['t']) / 3600
     cumHe = accumulate(seq['He'])
     longt_hr = np.linspace(0, cumt_hr[-1], 500)
-    ax.plot(longt_hr, forward_permeate(longt_hr * 3600, seq['lam'], seq['n0']), color='red', linestyle='--', label='Naive Fit')
+    ax.plot(longt_hr, forward_permeate(longt_hr * 3600, seq['lam'], seq['n0']), color='red', linestyle='--', label='Permeation Fit')
     ax.scatter(cumt_hr, cumHe, color='black', zorder=5)
     ax.set_title(f"{seq['T_C']:.0f}°C, {seq['nominal_min']:.0f} min\n"
                  f"λ={seq['lam']:.2e} s⁻¹, n0={seq['n0']:.3f} pccSTP", fontsize=12)
 fig.supxlabel('Cumulative Time (hours)')
 fig.supylabel(r'$m_{cum}$ $^3$He (pccSTP)')
-fig.suptitle('Win-06-01b Isothermal Step-Heat Naive Permeability Fits\n(4 of 10 sequences)')
+fig.suptitle('Win-06-01b Isothermal Step-Heat Permeation Rate Constant Fits\n(4 of 10 sequences)')
 fig.tight_layout()
-fig.savefig(os.path.join(OUTDIR, 'NaiveIsothermalFits_Grid_Top4.pdf'), dpi=300)
+fig.savefig(os.path.join(OUTDIR, 'PermeationStepFits_Grid_Top4.pdf'), dpi=300)
 plt.close(fig)
 
 # ---------------------------------------------------------------------------
@@ -237,8 +237,8 @@ plt.close(fig)
 cmap = mpl.cm.plasma
 norm = mpl.colors.Normalize(vmin=TEMP_VMIN, vmax=TEMP_VMAX)
 
-for nominal_min, outname in [(150, 'NaiveIsothermalFits_150min_byTemp.pdf'),
-                              (120, 'NaiveIsothermalFits_120min_byTemp.pdf')]:
+for nominal_min, outname in [(150, 'PermeationStepFits_150min_byTemp.pdf'),
+                              (120, 'PermeationStepFits_120min_byTemp.pdf')]:
     group_seqs = [s for s in sequences if s['nominal_min'] == nominal_min]
     fig, ax = plt.subplots()
     for seq in sorted(group_seqs, key=lambda s: s['T_C']):
@@ -251,7 +251,7 @@ for nominal_min, outname in [(150, 'NaiveIsothermalFits_150min_byTemp.pdf'),
         ax.scatter(cumt, cumHe, color=color, zorder=5)
     ax.set_xlabel('Cumulative Time (s)')
     ax.set_ylabel('Cumulative ³He (pccSTP)')
-    ax.set_title(f'Win-06-01b Naive Isothermal Fits, {nominal_min:.0f}-Minute Steps')
+    ax.set_title(f'Win-06-01b Isothermal Permeation Step Fits, {nominal_min:.0f}-Minute Steps')
     ax.legend(title='Temperature', fontsize=8)
     fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), ax=ax, label='Temperature (°C)')
     fig.tight_layout()
@@ -276,7 +276,7 @@ slope, intercept, r2 = reg.slope, reg.intercept, reg.rvalue ** 2
 # chapter's regressions) as a 2 s.e. uncertainty.
 Ea_cal_mol = -slope * Rcal * 1E4
 Ea_cal_mol_2se = 2 * reg.stderr * Rcal * 1E4
-print(f"Naive isothermal Arrhenius regression: ln(K) = {intercept:.3f} + {slope:.3f}*x, "
+print(f"Isothermal permeation Arrhenius regression: ln(K) = {intercept:.3f} + {slope:.3f}*x, "
       f"R^2 = {r2:.3f}, Ea = {Ea_cal_mol:.0f} +/- {abs(Ea_cal_mol_2se):.0f} (2 s.e.) cal/mol")
 lam_all = np.array([s['lam'] for s in sequences])
 os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
@@ -313,7 +313,7 @@ sim_cache = os.path.join(FIG_DIR, 'data', 'goethite_thermal_sim_lambdas.csv')
 sim = pd.read_csv(sim_cache) if os.path.exists(sim_cache) else None
 if sim is None:
     print(f"Note: {sim_cache} not found -- run goethite_thermal_sims.py first to add "
-          "the simulated-lambda overlay to NaiveLambda_Arrhenius.pdf.")
+          "the simulated-lambda overlay to AmpoulePermeability_Arrhenius.pdf.")
 
 ax1.errorbar(x, y, yerr=yerr, fmt='none', ecolor='black', capsize=4, zorder=4)
 cmap2 = mpl.cm.viridis
@@ -359,7 +359,7 @@ ax1.legend(fontsize=8)
 plt.sca(ax1)  # make_grid() grids whichever axes is current; twiny() left ax2 current
 make_grid()
 plt.tight_layout()
-fig.savefig(os.path.join(OUTDIR, 'NaiveLambda_Arrhenius.pdf'), dpi=300)
+fig.savefig(os.path.join(OUTDIR, 'AmpoulePermeability_Arrhenius.pdf'), dpi=300)
 plt.close(fig)
 
 # ---------------------------------------------------------------------------
@@ -368,8 +368,8 @@ plt.close(fig)
 # The grid plot above already shows this raw data and quotes each sequence's
 # fitted lambda/n0 in its subplot title, but neither was ever available
 # anywhere in the dissertation in citable, tabulated form. Both are written
-# here as auto-generated LaTeX macros -- \ChTwoNaiveRawTable and
-# \ChTwoNaiveFitTable, each expanding to a complete table environment --
+# here as auto-generated LaTeX macros -- \ChTwoPermStepRawTable and
+# \ChTwoPermStepFitTable, each expanding to a complete table environment --
 # following the exact \newcommand pattern write_chapter2_macros.py already
 # uses for scalar values (chapter2_derived_values.tex), so
 # chapter2goethite_SI_body.tex can invoke them by name instead of anyone
@@ -383,7 +383,7 @@ plt.close(fig)
 # depends on which wrapper is compiling it. Defining them as macros in each
 # wrapper's preamble (where the path back to this generated file is already
 # handled, exactly as chapter2_derived_values.tex is) means the shared body
-# can just invoke \ChTwoNaiveRawTable/\ChTwoNaiveFitTable by name, with no
+# can just invoke \ChTwoPermStepRawTable/\ChTwoPermStepFitTable by name, with no
 # path resolution required at the point of use. (Verified separately that
 # longtable/table environments compile correctly from inside a \newcommand
 # body.)
@@ -436,7 +436,7 @@ for seq in sequences:
 print(f"'Raw Data and Corrections' cross-check OK: {len(sequences)} series match "
       "'Fit Lambdas' exactly (Temperature, step time, 3He yield).")
 
-# --- Raw-data table (\ChTwoNaiveRawTable) ---------------------------------
+# --- Raw-data table (\ChTwoPermStepRawTable) ---------------------------------
 raw_rows = []
 for seq in sequences:
     for T_i, He_i, He2s_i in zip(seq['T_C_each'], seq['He'], seq['He_2sigma']):
@@ -448,7 +448,7 @@ raw_rows = raw_rows[:-1]  # drop the trailing \midrule after the last series
 
 raw_table = r"""\begin{footnotesize}
 \begin{longtable}{c c c c c c}
-\caption{Raw step-heat data (\uppercase{`}Fit Lambdas\uppercase{'} sheet, cross-checked against \uppercase{`}Raw Data and Corrections\uppercase{'}) for the 10 isothermal 3He permeation sequences used to determine the ampoule's apparent permeability (Fig.~\ref{fig:ch2-naive-cumulative-yield}, Fig.~\ref{fig:ch2-naive-arrhenius}). Series are separated by horizontal rules; within a series, steps are listed in the order measured.}\label{tab:ch2-naive-isothermal-raw}\\
+\caption{Raw step-heat data (\uppercase{`}Fit Lambdas\uppercase{'} sheet, cross-checked against \uppercase{`}Raw Data and Corrections\uppercase{'}) for the 10 isothermal 3He permeation sequences used to determine the ampoule's apparent permeability (Fig.~\ref{fig:ch2-permeation-fits}, Fig.~\ref{fig:ch2-ampoule-permeability}). Series are separated by horizontal rules; within a series, steps are listed in the order measured.}\label{tab:ch2-permeation-isothermal-raw}\\
 \toprule
 Series & Temp & Nominal Time & Cooling Time & $^3$He measured & $\pm2\sigma$ \\
  & (\textdegree C) & (min) & (min) & (pccSTP) & \\
@@ -467,7 +467,7 @@ Series & Temp & Nominal Time & Cooling Time & $^3$He measured & $\pm2\sigma$ \\
 \endlastfoot
 """ + "\n".join(raw_rows) + "\n\\end{longtable}\n\\end{footnotesize}"
 
-# --- Fit-results table (\ChTwoNaiveFitTable) ------------------------------
+# --- Fit-results table (\ChTwoPermStepFitTable) ------------------------------
 fit_rows = []
 for seq in sequences:
     fit_rows.append(
@@ -478,7 +478,7 @@ for seq in sequences:
 fit_table = r"""\begin{footnotesize}
 \begin{table}[htbp]
 \centering
-\caption{Fitted $\lambda$ (permeation rate constant) and $n_0$ (residual helium at the start of the series) for each of the 10 isothermal sequences in Table~\ref{tab:ch2-naive-isothermal-raw}, from the weighted non-linear least-squares fit of Eq.~\eqref{eq:incyield} (Chapter~\ref{ch:apparatus}) described in the main text (\S\ref{experimental-methods}). $n$ is the number of steps in the sequence. These are the same per-sequence fits plotted in Fig.~\ref{fig:ch2-naive-cumulative-yield} and used to build the Arrhenius regression in Fig.~\ref{fig:ch2-naive-arrhenius}.}\label{tab:ch2-naive-isothermal-fits}
+\caption{Fitted $\lambda$ (permeation rate constant) and $n_0$ (residual helium at the start of the series) for each of the 10 isothermal sequences in Table~\ref{tab:ch2-permeation-isothermal-raw}, from the weighted non-linear least-squares fit of Eq.~\eqref{eq:incyield} (Chapter~\ref{ch:apparatus}) described in the main text (\S\ref{experimental-methods}). $n$ is the number of steps in the sequence. These are the same per-sequence fits plotted in Fig.~\ref{fig:ch2-permeation-fits} and used to build the Arrhenius regression in Fig.~\ref{fig:ch2-ampoule-permeability}.}\label{tab:ch2-permeation-isothermal-fits}
 \begin{tabular}{c c c c c c c c}
 \toprule
 Series & Temp (\textdegree C) & Duration (min) & $n$ & $\lambda$ (s$^{-1}$) & $\pm2\sigma$ & $n_0$ (pccSTP) & $\pm2\sigma$ \\
@@ -502,26 +502,26 @@ def _check_newcommand_safe(tex):
 with open(TABLES_OUT_PATH, 'w') as f:
     f.write(
         "% =============================================================\n"
-        "%  chapter2_naive_isothermal_tables.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.\n"
-        "%  Written by Figures/fig_naive_isothermal_fits.py from\n"
+        "%  chapter2_permstep_isothermal_tables.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.\n"
+        "%  Written by Figures/fig_permstep_isothermal_fits.py from\n"
         "%  Win0601bHT_data_and_reduction.xlsx ('Fit Lambdas' sheet for the raw data\n"
         "%  and the per-sequence lambda/n0 fits, cross-checked against 'Raw Data and\n"
         "%  Corrections' -- the workbook's master per-measurement sheet).\n"
         "%\n"
         "%  Regenerate after any change to either sheet:\n"
-        "%    python3 Figures/fig_naive_isothermal_fits.py\n"
+        "%    python3 Figures/fig_permstep_isothermal_fits.py\n"
         "%  (run_all_figures.py does this automatically, before write_chapter2_macros.py.)\n"
         "%\n"
         "%  \\input{} by chapter2goethite_SI.tex (standalone) and chapter2.tex\n"
         "%  (dissertation -- defined early enough for chapter2_SI.tex, input later,\n"
         "%  to use), same pattern as chapter2_derived_values.tex.\n"
         "%\n"
-        "%  \\ChTwoNaiveRawTable : Table~\\ref{tab:ch2-naive-isothermal-raw}, the raw\n"
+        "%  \\ChTwoPermStepRawTable : Table~\\ref{tab:ch2-permeation-isothermal-raw}, the raw\n"
         "%    per-step dataset for all 10 isothermal sequences.\n"
-        "%  \\ChTwoNaiveFitTable : Table~\\ref{tab:ch2-naive-isothermal-fits}, the fitted\n"
+        "%  \\ChTwoPermStepFitTable : Table~\\ref{tab:ch2-permeation-isothermal-fits}, the fitted\n"
         "%    lambda/n0 (+/- 2 sigma) for each of those 10 sequences.\n"
         "% =============================================================\n"
-        f"\\newcommand{{\\ChTwoNaiveRawTable}}{{{_check_newcommand_safe(raw_table)}}}\n\n"
-        f"\\newcommand{{\\ChTwoNaiveFitTable}}{{{_check_newcommand_safe(fit_table)}}}\n"
+        f"\\newcommand{{\\ChTwoPermStepRawTable}}{{{_check_newcommand_safe(raw_table)}}}\n\n"
+        f"\\newcommand{{\\ChTwoPermStepFitTable}}{{{_check_newcommand_safe(fit_table)}}}\n"
     )
 print(f"Wrote {TABLES_OUT_PATH}")

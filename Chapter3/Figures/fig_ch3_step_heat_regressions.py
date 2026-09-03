@@ -97,7 +97,7 @@ def _add_temp_axis(ax1):
 
 def _line_label(key, m, regressions):
     return (f"{regressions[key]['sample']} regression "
-            f"(Ea={m['Ea_kcal_mol']:.1f} kcal/mol, R²={m['r2']:.3f}, n={m['n_points']})")
+            f"(Ea={m['Ea_kcal_mol']:.1f} kcal/mol, R²={m['r2']:.3f})")
 
 
 def plot_sample_arrhenius(df, sample, meta, ref_key, regressions):
@@ -127,15 +127,15 @@ def plot_sample_arrhenius(df, sample, meta, ref_key, regressions):
     xfit = np.array(xlim)
     yfit = m['intercept'] + m['slope'] * xfit
     linestyle = '-' if meta['fit_key'] is not None else '--'
-    ax1.plot(xfit, yfit, color='black', linestyle=linestyle, linewidth=1.5,
-             label=_line_label(ref_key, m, regressions))
+    ax1.plot(xfit, yfit, color='black', linestyle=linestyle, linewidth=1.5)
+             #label=_line_label(ref_key, m, regressions))
     ax1.set_xlim(xlim)
 
     _add_temp_axis(ax1)
     ax1.set_xlabel(r'$10^4/T$ (K)')
     ax1.set_ylabel(r'$\ln(D/a^2)$ (s$^{-1}$)')
     ax1.grid(alpha=0.3)
-    ax1.legend(fontsize=7)
+    ax1.legend(fontsize=10)
     ax1.set_title(f'{sample}: Apparent 3He Diffusivity')
     fig.tight_layout()
     fig.savefig(os.path.join(OUTDIR, f'{_safe_name(sample)}_arrhenius.pdf'), dpi=300, bbox_inches='tight')
@@ -175,7 +175,7 @@ def plot_sample_delta(df, sample, meta, ref_key, regressions):
 
 def plot_pyrite_delta_compilation(cache, regressions):
     ref_fit = regressions['LVCO']['M']
-    fig, ax = plt.subplots(figsize=(7, 5))
+    fig, ax = plt.subplots()#figsize=(7, 5))
     for sample in PYRITE_SAMPLES:
         meta = SAMPLE_META[sample]
         df = cache[cache['sample'] == sample]
@@ -190,7 +190,7 @@ def plot_pyrite_delta_compilation(cache, regressions):
     ax.set_xlabel(r'Cumulative $^3$He Yield, $F_i$')
     ax.set_ylabel(r'$\Delta = \ln(D/a^2)_\mathrm{meas} - \ln(D/a^2)_\mathrm{LVCO\ ref}$')
     ax.grid(alpha=0.3)
-    ax.legend(fontsize=8)
+    ax.legend(fontsize=10)
     ax.set_title('Pyrite Delta Plot Compilation\n(all referenced to the LVCOPy230630 regression line)')
     fig.tight_layout()
     outpath = os.path.join(OUTDIR, 'Pyrite_delta_compilation.pdf')

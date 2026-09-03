@@ -10,7 +10,7 @@ sheet, not from the derived DistilledNaiveMethod sheet: for every row typed
 -- and its 2 sigma -- of the very next row, i.e. n0 of the permeation step
 measured immediately after that step (n0 is NOT the same quantity as nt;
 nt of step i is n0 of step i+1). This independently reproduces the nt
-column already reported in the SI's naive-bracketing table (cross-checked
+column already reported in the SI's permeation-step table (cross-checked
 below), rather than trusting that derived sheet outright.
 
 ntSS is read from the DistilledUncertaintyTreatment sheet's 'ntUB 3He
@@ -125,7 +125,7 @@ assert len(nt) == len(ntSS), (
 assert np.allclose(temps, pd.to_numeric(bound.iloc[:, 0], errors='coerce').to_numpy(), atol=0.2), \
     "row order mismatch between the two sheets (Temp columns don't line up)"
 
-# Cross-check against the SI's already-published naive-bracketing 'nt 3He'
+# Cross-check against the SI's already-published permeation-step 'nt 3He'
 # column (DistilledNaiveMethod sheet, the source of tab:ch2-distilled-naive-3he).
 naive = pd.read_excel(MASTER_XLSX, sheet_name='DistilledNaiveMethod', header=0)
 naive = naive[pd.to_numeric(naive.iloc[:, 0], errors='coerce').notna()].reset_index(drop=True)

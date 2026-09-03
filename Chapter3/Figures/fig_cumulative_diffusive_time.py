@@ -142,9 +142,9 @@ SULFIDE_GROUPS = {
     'Arsenopyrite': ('green', 's', [
         ('SalAspIrr', 'Reduced01_112123SalAspIrr.xlsx'),
     ]),
-    'Galena': ('silver', 'X', [
-        ('GalTS230630', 'Reduced01_GalTS230630.xlsx'),
-    ]),
+    #'Galena': ('silver', 'X', [
+    #    ('GalTS230630', 'Reduced01_GalTS230630.xlsx'),
+    #]),
 }
 
 
@@ -265,14 +265,19 @@ def make_plot(outname):
         mpl.lines.Line2D([0], [0], marker='.', color='teal', label='Zircon', markerfacecolor='teal'),
         mpl.lines.Line2D([0], [0], marker='+', color='hotpink', label='Pyrite', markerfacecolor='hotpink'),
         mpl.lines.Line2D([0], [0], marker='s', color='green', label='Arsenopyrite', markerfacecolor='green'),
-        mpl.lines.Line2D([0], [0], marker='X', color='silver', label='Galena', markerfacecolor='silver'),
+        #mpl.lines.Line2D([0], [0], marker='X', color='silver', label='Galena', markerfacecolor='silver'),
         mpl.lines.Line2D([0], [0], color='black', linestyle='--', label='1 $\\mu m$ Single-Crystal Hematite'),
         mpl.lines.Line2D([0], [0], marker='.', color='purple', label='Monazite (phosphate)', markerfacecolor='purple'),
 
     ]
 
+    # 3-line split (was 2) -- at the larger Chapter-3 TITLE_SIZE (see
+    # plot_style.py), the old 2nd line ("Hematite, Goethite, Zircon, and
+    # Monazite with Diffusive Time") overran the axes width and collided
+    # with the y-axis label.
     ax.set_title('Helium Degassing of Sulfides Compared to\n'
-                  'Hematite, Goethite, Zircon, and Monazite with Diffusive Time')
+                  'Hematite, Goethite, Zircon,\n'
+                  'and Monazite with Diffusive Time')
     ax.set_xlabel(r'Cumulative Diffusive Time $\left(\frac{t}{\tau}\right)$: 1 $\mu m$ Hematite reference')
     ax.set_ylabel(r'$\Sigma F_{He}$ Cumulative Fractional He Yield')
     ax.set_xlim((10 ** -10, 10 ** 4))

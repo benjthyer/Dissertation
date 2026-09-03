@@ -19,6 +19,24 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage{microtype}        % improved justification
+\usepackage{textcomp}         % \textperthousand (per mille, U+2030) below --
+                               % most other common unicode punctuation (curly
+                               % quotes, en/em dash, degree, plus-minus,
+                               % ellipsis) is already handled by inputenc's
+                               % utf8 definitions and needs nothing extra.
+
+% A few characters straight from pasted/pandoc-converted source text (e.g.
+% Chapter 5's field-report content, which uses literal Greek delta for
+% isotope notation like the literal characters "delta-18-O" rather than $\delta^{18}$O) aren't
+% in inputenc's default utf8 active-character table and would otherwise be a
+% fatal "Unicode character ... not set up for use with LaTeX" error. Map them
+% here once, globally, rather than hand-converting every instance in the
+% source text (safer -- avoids silently mistyping a value while
+% converting).
+\usepackage{newunicodechar}
+\newunicodechar{δ}{\ensuremath{\delta}}
+\newunicodechar{Δ}{\ensuremath{\Delta}}
+\newunicodechar{‰}{\textperthousand}
 
 % --- Math --------------------------------------------------------------------
 \usepackage{amsmath, amssymb, amsthm}
@@ -102,6 +120,8 @@
   {Chapter3/Figures/generated/step_heat_regressions/}
   {Chapter4/Figures/}
   {Chapter5/Figures/}
+  {Chapter5/Figures/source/}
+  {Chapter5/Figures/generated/}
   {ChapterA/Figures/}
 }
 

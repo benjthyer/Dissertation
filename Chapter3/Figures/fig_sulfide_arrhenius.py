@@ -95,9 +95,9 @@ def main():
 
     m = regressions['LVCO']['M']
     yfit = m['intercept'] + m['slope'] * xfit
-    ax1.plot(xfit, yfit, color='black', linestyle='-', linewidth=1.5,
-             label=f"{regressions['LVCO']['sample']} regression "
-                   f"(Ea={m['Ea_kcal_mol']:.1f} kcal/mol, R²={m['r2']:.3f})")
+    ax1.plot(xfit, yfit, color='black', linestyle='-', linewidth=1.5)
+             #label=f"{regressions['LVCO']['sample']} regression "
+             #      f"(Ea={m['Ea_kcal_mol']:.1f} kcal/mol, R²={m['r2']:.3f})")
 
     """# Durango apatite reference line, r = 150 um (Farley 2000)
     ax1.plot(xfit, np.log(((10 ** 1.5) / (0.015 ** 2)) * np.exp(-33000 * xfit / (1.987 * 10000))),
@@ -112,7 +112,7 @@ def main():
     ax1.set_xlabel(r'$10^4/T$ (K)')
     ax1.set_ylabel(r'$\ln(D/a^2)$ (s$^{-1}$)')
     ax1.grid(alpha=0.3)
-    ax1.legend(fontsize=7, loc='lower right')
+    ax1.legend(fontsize=10, loc='lower left')
     ax1.set_title('Irradiated Encapsulated Leadville Pyrite and Arsenopyrite\n3He Apparent Diffusivity Compilation')
     fig.tight_layout()
     outpath = os.path.join(OUTDIR, 'Sulfide_compilation_Arr.pdf')

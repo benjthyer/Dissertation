@@ -16,7 +16,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from diffusion_utils import swets, Ratoms, make_grid
+from diffusion_utils import swets, Ratoms
 from plot_style import apply_style
 apply_style()
 
@@ -55,7 +55,7 @@ ax.legend()
 ax.set_xlabel('Time (minutes)')
 ax.set_ylabel(r'Relative Error in Predicted $^{He}F$ (%)')
 ax.set_title(r'Error in Predicted Fractional Yield ($^{He}F$)'+'\nAfter Thermal Perturbation')
-make_grid()
+ax.grid(True)
 fig.tight_layout()
 fig.savefig(os.path.join(OUTDIR, 'Thermal_Perturbation_Error.pdf'), dpi=300)
 plt.close(fig)
@@ -81,7 +81,7 @@ ax.legend(loc='best')
 ax.set_xlabel('Temperature (°C)')
 ax.set_ylabel('He in Glass at EQM (%)')
 ax.set_title(f'Portion of Ampoule He Within Glass\nat EQM (G = {G:.1f})')
-make_grid()
+ax.grid(True)
 fig.tight_layout()
 fig.savefig(os.path.join(OUTDIR, 'PercentHeInGlass.pdf'), dpi=300)
 plt.close(fig)

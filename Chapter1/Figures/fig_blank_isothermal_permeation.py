@@ -79,6 +79,7 @@ for r in range(np.shape(DATA)[0]):
             ax.set_title(f'{iso} Isothermal Permeation: T = {T - 273:.0f}°C')
             ax.set_xlabel('Time (s)')
             ax.set_ylabel(ylabel)
+            ax.grid(True)
             ax.legend()
             fig.tight_layout()
             fname = os.path.join(OUTDIR, 'Blanks', f'{iso}_{name}.pdf')

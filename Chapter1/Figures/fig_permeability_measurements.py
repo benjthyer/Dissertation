@@ -80,6 +80,7 @@ ax2.set_xticklabels(Ctemps)
 ax2.set_xlabel('Temperature (C)')
 ax1.set_xlabel(r'$\frac{10000}{T^{ }(K)}$')
 ax1.set_ylabel(r'ln(K) $\left(\frac{atoms}{s⁡*cm*atm}\right)$')
+ax1.grid(True)
 ax1.legend(fontsize=LEGEND_SIZE * 0.75)  # crowded legend, kept smaller than the standard size
 plt.title('Measured Helium Permeability of Empty Silica Glass Ampoules')
 fig.tight_layout()

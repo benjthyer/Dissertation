@@ -206,8 +206,8 @@ def plot_kidd_creek_th_he():
     # the reference band means the same thing on both and a second copy
     # of the same label on the right would just be clutter.
     trans = ax_th.get_yaxis_transform()
-    ax_th.text(0.04, 392 + 32, 'Regional apatite cooling age:\n392 $\\pm$ 32 Ma (Sturrock et al., 2024)',
-               transform=trans, ha='left', va='bottom', fontsize=7,
+    ax_th.text(0.04, 392 + 32, '392 $\\pm$ 32 Ma (Sturrock et al., 2024)',
+               transform=trans, ha='left', va='bottom', fontsize=10,
                bbox=dict(facecolor='white', edgecolor='none', alpha=0.85, pad=1.5))
 
     fig.suptitle('Kidd Creek Pyrite: Age vs. Th and He Content')
@@ -249,10 +249,10 @@ def plot_gympie():
     # directly behind it.
     trans = ax.get_yaxis_transform()
     label_box = dict(facecolor='white', edgecolor='none', alpha=0.85, pad=1.5)
-    ax.text(0.02, 235, 'K/Ar, syntectonic quartz veins: 235 Ma\n(Cuneen, 1994; Holcombe et al., 1997)',
-            transform=trans, ha='left', va='center', fontsize=7, color='black')
+    ax.text(0.02, 235, 'syntectonic quartz veins:\n235 Ma(Cuneen, 1994)',
+            transform=trans, ha='left', va='center', fontsize=10, color='black')
     ax.text(0.98, 307, 'Ar/Ar, regional plutonism: 307 Ma\n(Little et al., 1995)',
-            transform=trans, ha='right', va='center', fontsize=7, color='black')
+            transform=trans, ha='right', va='center', fontsize=10, color='black')
 
     ax.set_xlabel('eU (ppm)')
     ax.set_ylabel('Age (Ma, atm. corrected)')

@@ -110,6 +110,7 @@ def tube_FDM(T1, T2, x):
         f'He Concentration Profile Evolution\nafter {current_t / 60:.1f} min '
         f'at {T2}°C'
     )
+    ax.grid(True)
     ax.legend()
     fig.tight_layout()
     return fig

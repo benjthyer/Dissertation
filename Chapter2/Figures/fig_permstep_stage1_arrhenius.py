@@ -23,7 +23,7 @@ Reads:
       script complains it's missing)
 
 Outputs:
-  winsor_goethite_Diffusivities_Arrhenius_Zoomin_naive.pdf
+  winsor_goethite_Diffusivities_Arrhenius_Zoomin_permstep.pdf
 
 Two steps (Temp/Minutes 195/1106 and 185/740) are excluded by
 load_diffusivities_HTWin0601b_naive's default -- see that function's
@@ -65,7 +65,7 @@ ax2 = ax1.twiny()
 
 xlim = [1E4 / (273 + 275), 1E4 / (273 + 150)]
 Ea_kJmol = fit['Ea_cal_mol'] * 4.184 / 1000
-print(f"Stage 1 reference line (naive/informed bracketing): Ea = {Ea_kJmol:.1f} kJ/mol, "
+print(f"Stage 1 reference line (permeation step method): Ea = {Ea_kJmol:.1f} kJ/mol, "
       f"intercept = {fit['intercept']:.2f}, R^2 = {fit['r2']:.3f}, n = {fit['n_points']}")
 ax1.plot(xlim, (fit['slope'] * np.array(xlim)) + fit['intercept'],
          label=f"Stage 1 Reference: Ea {Ea_kJmol:.0f} kJ/mol", color='green', alpha=0.5)
@@ -94,6 +94,6 @@ ax1.set_ylabel(r'$ln\left(\frac{D}{a^2}\right) \left(sec^{-1}\right)$')
 ax1.legend(loc='lower left', fontsize=8)
 plt.title('Win-06-01b Goethite He Diffusivities\n(Permeation-Step Method)')
 fig.tight_layout()
-fig.savefig(os.path.join(OUTDIR, 'winsor_goethite_Diffusivities_Arrhenius_Zoomin_naive.pdf'), dpi=300)
+fig.savefig(os.path.join(OUTDIR, 'winsor_goethite_Diffusivities_Arrhenius_Zoomin_permstep.pdf'), dpi=300)
 plt.close(fig)
-print(f"Wrote {os.path.join(OUTDIR, 'winsor_goethite_Diffusivities_Arrhenius_Zoomin_naive.pdf')}")
+print(f"Wrote {os.path.join(OUTDIR, 'winsor_goethite_Diffusivities_Arrhenius_Zoomin_permstep.pdf')}")

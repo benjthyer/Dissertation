@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from diffusion_utils import swets, swets_D, Ratoms, make_grid
+from diffusion_utils import make_grid, swets, swets_D, Ratoms
 from plot_style import apply_style
 apply_style()
 
@@ -32,6 +32,7 @@ for i, T in enumerate(Ts):
     S = swets('S', T)
     tauR = S * Ratoms * T * VR * ((-1 + VP) / (1 + VP)) * (2 / np.log(VP))
     ax.loglog(VR, tauR, label=f'T = {T - 273}°C', color=colors[i])
+#ax.grid(True)
 make_grid()
 ax.legend()
 ax.set_xlabel(r'Glass/Gas Volume Ratio $V_\mathrm{glass/gas}$')
@@ -54,7 +55,7 @@ for j, L in enumerate(Ls):
     tau_min = (L ** 2 / Ds) / 60
     ax.plot(Ts_range, tau_min, color=clrs[j],
             label=f'L = {int(L * 1E4)} µm')
-make_grid()
+ax.grid(True)
 ax.set_title('Timescales to Establish EQM He Profile in Glass')
 ax.set_xlabel('Temperature (°C)')
 ax.set_ylabel('Time (minutes)')

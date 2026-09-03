@@ -16,40 +16,38 @@
 %  equations, figures, or citations.
 % =============================================================
 
-\section{Na\"ive-Method Isothermal Permeability Dataset}\label{sec:ch2-si-detailed-methods}
-\markright{\MakeUppercase{Na\"ive-Method Isothermal Permeability Dataset}}
+\section{Goethite Permeation Rate Constant Dataset}\label{sec:ch2-si-detailed-methods}
+\markright{\MakeUppercase{In-Experiment Permeation Rate Constant Dataset}}
 
-The effective permeability coefficients used by the informed bracketing method below -- and the isothermal-permeation-fit methodology, cooling-tube numerical model, and Arrhenius regression used to determine them -- are described in full in the main text (\S\ref{ch2-experimental-methods}). The complete fitted dataset underlying that regression is reported here: Table~\ref{tab:ch2-naive-isothermal-raw} gives the raw per-step data for all 10 isothermal sequences, and Table~\ref{tab:ch2-naive-isothermal-fits} gives the lambda/$n_0$ fit to each sequence (Fig.~\ref{fig:ch2-naive-cumulative-yield}) that together define the Arrhenius regression of Fig.~\ref{fig:ch2-naive-arrhenius}.
+The in-experiment permeation rate constants used by the permeation step method below -- and the isothermal-permeation-fit methodology, cooling-tube numerical model, and Arrhenius regression used to determine them -- are described in full in the main text (\S\ref{ch2-experimental-methods}). The complete fitted dataset underlying that regression is reported here: Table~\ref{tab:ch2-permeation-isothermal-raw} gives the raw per-step data for all 10 isothermal sequences, and Table~\ref{tab:ch2-permeation-isothermal-fits} gives the lambda/$n_0$ fit to each sequence (Fig.~\ref{fig:ch2-permeation-fits}) that together define the Arrhenius regression of Fig.~\ref{fig:ch2-ampoule-permeability}.
 
-\ChTwoNaiveRawTable
+\ChTwoPermStepRawTable
 
 \clearpage
 
-\ChTwoNaiveFitTable
+\ChTwoPermStepFitTable
 
-\subsection*{Na\"ive-Method Step-Heat Dataset}\label{ch2-si-distilled-naive}
+\subsection*{Permeation Step Method Step-Heat Dataset}\label{ch2-si-distilled-permstep}
 
-The complete corrected step-heat dataset underlying the na\"ive bracketing
-method's apparent permeabilities (Fig.~\ref{fig:ch2-naive-arrhenius}) is reported
-in Table~\ref{tab:ch2-distilled-naive-3he}, reporting the central value and
+The complete corrected step-heat dataset produced by the permeation step
+method, using the in-experiment rate constants above
+(Fig.~\ref{fig:ch2-ampoule-permeability}), is reported in
+Table~\ref{tab:ch2-distilled-permstep-3he}, giving the central value and
 2$\sigma$ uncertainty for each quantity, analogous to
-Table~\ref{tab:ch2-distilled-3he} in the
-main text for the informed bracketing (``treatment as uncertainty'')
-method. 4He is not treated by the na\"ive/informed bracketing method: 4He
-permeation-step signals were blank level (\nameref{helium-4-blank-corrections}),
+Table~\ref{tab:ch2-distilled-3he} in the main text for the bounding method.
+4He is not treated by the permeation step method here: 4He
+permeation-step signals were blank level,
 so no direct, step-by-step quantification of the ampoule's 4He inventory was
 possible, and 4He throughout this chapter is instead reduced exclusively by
 the bounding method of the main text (\S\ref{ch2-analytical-methods}). The
-na\"ive/informed bracketing dataset reported here is retained only for 3He,
+permeation step dataset reported here is retained only for 3He,
 as the internal check on the bounding method discussed in
-\S\ref{complete-degas-test}. ``--'' denotes steps for which a quantity could not
-be determined (see \S\ref{finite-difference-diffusion-model-of-cooling-tube}
-in the main text).
+\S\ref{complete-degas-test}. 
 
 \begin{landscape}
 \begin{footnotesize}
 \begin{longtable}{@{\extracolsep{\fill}}r r r r r r r r r r r r}
-\caption{$^3$He step-heat dataset for HT-Win-06-01b under the na\"ive bracketing method: measured and cumulative $^3$He, the initial and residual ampoule content ($n_{0}$, $n_{t}$), the true step production ($\omega$), and the apparent diffusivity $\ln(D/a^2)$, each with its 2$\sigma$ uncertainty. Six rows have derived values marked with ``$^*$'': these steps have measured $^3$He $<0.1$ pccSTP and are excluded as low-signal, as in Table~\ref{tab:ch2-distilled-3he}. Two of those six (195\textdegree C/1106 min and 185\textdegree C/740 min) are additionally marked ``$^\dagger$'': their $n_0$ depended on an atypically long room-temperature permeation rather than the standard cooling window used to calibrate the effective permeability (\S\ref{sec:ch2-si-detailed-methods}), so they are excluded (independently of the low-signal exclusion) from the fitted Stage 1 regression, Fig.~\ref{fig:ch2-bracket-arrhenius-zoom}, and Fig.~\ref{fig:ch2-diffusivity-comparison}.}\label{tab:ch2-distilled-naive-3he}\\
+\caption{$^3$He step-heat dataset for HT-Win-06-01b under the permeation step method: measured and cumulative $^3$He, the initial and residual ampoule content ($n_{0}$, $n_{t}$), the true step production ($\omega$), and the apparent diffusivity $\ln(D/a^2)$, each with its 2$\sigma$ uncertainty. Six rows have derived values marked with ``$^*$'': these steps have measured $^3$He $<0.1$ pccSTP and are excluded as low-signal, as in Table~\ref{tab:ch2-distilled-3he}.}\label{tab:ch2-distilled-permstep-3he}\\
 \toprule
 Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{0}$ & $\pm2\sigma$ & $n_{t}$ & $\pm2\sigma$ & $\omega$ & $\pm2\sigma$ & $\ln(D/a^2)$ & $\pm2\sigma$ \\
 (°C) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & & (pccSTP) & & (pccSTP) & & & \\
@@ -76,8 +74,8 @@ Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{0}$ & $\pm2\sigma$ & $n_{t}$ & $\
 225 & 908 & 0.7513 & 4.8885 & \(1.95\!\times\!10^{-2}\) & \(2.45\!\times\!10^{-3}\) & 0.0420 & \(4.94\!\times\!10^{-3}\) & 0.7738 & \(1.42\!\times\!10^{-2}\) & -21.200 & 0.121 \\
 215 & 450 & 0.1415 & 5.6842 & \(1.31\!\times\!10^{-2}\) & \(1.85\!\times\!10^{-3}\) & 0.0278 & \(3.54\!\times\!10^{-3}\) & 0.1563 & \(6.48\!\times\!10^{-3}\) & -22.015 & 0.316 \\
 205 & 520 & 0.0763 & 5.8529 & \(7.18\!\times\!10^{-3}\)$^*$ & \(1.23\!\times\!10^{-3}\)$^*$ & 0.0125$^*$ & \(1.63\!\times\!10^{-3}\)$^*$ & 0.0816$^*$ & \(8.10\!\times\!10^{-3}\)$^*$ & -22.788$^*$ & 0.829$^*$ \\
-195 & 1106 & 0.0670 & 5.9491 & \(2.12\!\times\!10^{-3}\)$^{*\dagger}$ & \(4.02\!\times\!10^{-4}\)$^{*\dagger}$ & 0.0307$^{*\dagger}$ & \(2.86\!\times\!10^{-3}\)$^{*\dagger}$ & 0.0956$^{*\dagger}$ & \(3.23\!\times\!10^{-3}\)$^{*\dagger}$ & -23.370$^{*\dagger}$ & 1.094$^{*\dagger}$ \\
-185 & 740 & 0.0227 & 6.0246 & \(1.25\!\times\!10^{-2}\)$^{*\dagger}$ & \(1.64\!\times\!10^{-3}\)$^{*\dagger}$ & 0.0090$^{*\dagger}$ & \(1.06\!\times\!10^{-3}\)$^{*\dagger}$ & 0.0192$^{*\dagger}$ & \(2.00\!\times\!10^{-3}\)$^{*\dagger}$ & -24.567$^{*\dagger}$ & 2.822$^{*\dagger}$ \\
+195 & 1106 & 0.0670 & 5.9491 & \(2.12\!\times\!10^{-3}\)$^*$ & \(4.02\!\times\!10^{-4}\)$^*$ & 0.0307$^*$ & \(2.86\!\times\!10^{-3}\)$^*$ & 0.0956$^*$ & \(3.23\!\times\!10^{-3}\)$^*$ & -23.370$^*$ & 1.094$^*$ \\
+185 & 740 & 0.0227 & 6.0246 & \(1.25\!\times\!10^{-2}\)$^*$ & \(1.64\!\times\!10^{-3}\)$^*$ & 0.0090$^*$ & \(1.06\!\times\!10^{-3}\)$^*$ & 0.0192$^*$ & \(2.00\!\times\!10^{-3}\)$^*$ & -24.567$^*$ & 2.822$^*$ \\
 175 & 920 & 0.0180 & 6.0610 & \(3.68\!\times\!10^{-3}\)$^*$ & \(5.02\!\times\!10^{-4}\)$^*$ & 0.0045$^*$ & \(4.42\!\times\!10^{-4}\)$^*$ & 0.0189$^*$ & \(7.42\!\times\!10^{-4}\)$^*$ & -24.796$^*$ & 3.797$^*$ \\
 200 & 260 & 0.0224 & 6.0814 & \(6.53\!\times\!10^{-4}\)$^*$ & \(1.17\!\times\!10^{-4}\)$^*$ & 0.0095$^*$ & \(1.23\!\times\!10^{-3}\)$^*$ & 0.0313$^*$ & \(1.65\!\times\!10^{-3}\)$^*$ & -23.022$^*$ & 1.495$^*$ \\
 210 & 520 & 0.0812 & 6.1081 & \(7.48\!\times\!10^{-3}\)$^*$ & \(9.98\!\times\!10^{-4}\)$^*$ & 0.0145$^*$ & \(1.32\!\times\!10^{-3}\)$^*$ & 0.0882$^*$ & \(3.85\!\times\!10^{-3}\)$^*$ & -22.669$^*$ & 1.135$^*$ \\
@@ -106,31 +104,20 @@ Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{0}$ & $\pm2\sigma$ & $n_{t}$ & $\
 \end{footnotesize}
 \end{landscape}
 
-\subsection{Helium-4 Blank-Level Corrections}\label{helium-4-blank-corrections}
+\subsection{Permeation Step Approach and Concordance with Bounding Approach}\label{si:permlag-concordance}
 
-\todo{Write up the 4He blank-correction methodology and values for HT-Win-06-01b in full here. Summary of the established facts this section needs to formalize: 4He permeation-step signals for this experiment were indistinguishable from blank level (main text, \S\ref{ch2-experimental-methods}), which is why 4He could not be reduced by the na\"ive/informed bracketing method above and is instead reduced exclusively by the bounding method (main text, \S\ref{ch2-analytical-methods}) throughout this chapter.}
-
-% 4He na\"ive-bracketing step-heat table (tab:ch2-distilled-naive-4he) and the
-% derived 4He/3He ratio table (tab:ch2-distilled-naive-ratios) removed here:
-% both depended on the "Permeation Lag Corrections for 4He" reduction removed
-% above. 4He is reduced exclusively by the bounding method in the main text.
-
-Beyond the ampoule's residual helium content itself (\S\ref{complete-degas-test}), the two methods' derived apparent diffusivities agree just as closely. Fig.~\ref{fig:ch2-diffusivity-comparison} compares $\ln(D/a^2)$ from the permeation-step method against the bounding method's central value for every step in the experiment, with the bounding method's own ``treatment as uncertainty'' spread on one axis and the permeation-step method's propagated uncertainty on the other; the two steps marked ``$^\dagger$'' in Table~\ref{tab:ch2-distilled-naive-3he} above are excluded for the reason given there. The two diffusivity datasets track the 1:1 line within uncertainty across the full range of the experiment. Fitting the permeation-step method's own diffusivities with the same Stage 1 procedure used for the bounding method in the main text (Fig.~\ref{fig:ch2-bracket-arrhenius-zoom}) yields an activation energy of \ChTwoBracketEa$\pm$\ChTwoBracketEaErr\ kJ/mol (R\textsuperscript{2}=\ChTwoBracketRtwo, n=\ChTwoBracketN) and a closure temperature of \ChTwoBracketTc$\pm$\ChTwoBracketTcErr\textdegree C, indistinguishable from the bounding method's own \ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol and \ChTwoTc$\pm$\ChTwoTcErr\textdegree C (Fig.~\ref{fig:ch2-arrhenius-zoom}, main text).
+Beyond the ampoule's residual helium content itself (\S\ref{complete-degas-test}), the two methods' derived apparent diffusivities agree just as closely. Fig.~\ref{fig:ch2-diffusivity-comparison} compares $\ln(D/a^2)$ from the permeation-step method against the bounding method's central value for every step in the experiment, with the bounding method's own lower- and upper-bound spread on one axis and the permeation step method's propagated uncertainty on the other; the two steps marked ``$^\dagger$'' in Table~\ref{tab:ch2-distilled-permstep-3he} above are excluded for the reason given there. The two diffusivity datasets track the 1:1 line within uncertainty across the full range of the experiment. Fitting the permeation-step method's own diffusivities with the same Stage 1 procedure used for the bounding method in the main text (Fig.~\ref{fig:ch2-permstep-arrhenius-zoom}) yields an activation energy of \ChTwoPermStepEa$\pm$\ChTwoPermStepEaErr\ kJ/mol (R\textsuperscript{2}=\ChTwoPermStepRtwo, n=\ChTwoPermStepN) and a closure temperature of \ChTwoPermStepTc$\pm$\ChTwoPermStepTcErr\textdegree C, indistinguishable from the bounding method's own \ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol and \ChTwoTc$\pm$\ChTwoTcErr\textdegree C (Fig.~\ref{fig:ch2-arrhenius-zoom}, main text).
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.8\textwidth]{Winsor_diffusivity_naive_vs_bounding.pdf}
-\caption{Apparent \textsuperscript{3}He diffusivities for HT-Win-06-01b from the permeation-step method ($y$-axis) against the bounding method's central value ($x$-axis, Eq.~\eqref{eq:steadystate}), with the bounding method's ``treatment as uncertainty'' LB/UB spread and the permeation-step method's own propagated uncertainty plotted on their respective axes. The dashed line is 1:1. Two steps (195\textdegree C/1106 min and 185\textdegree C/740 min) are excluded for the reason given in Table~\ref{tab:ch2-distilled-naive-3he}'s caption.}
+\includegraphics[width=0.8\textwidth]{Winsor_diffusivity_permstep_vs_bounding.pdf}
+\caption{Apparent \textsuperscript{3}He diffusivities for HT-Win-06-01b from the permeation-step method ($y$-axis) against the bounding method's central value ($x$-axis, Eq.~\eqref{eq:steadystate}), with the bounding method's lower/upper-bound spread and the permeation step method's own propagated uncertainty plotted on their respective axes. The dashed line is 1:1. Two steps (195\textdegree C/1106 min and 185\textdegree C/740 min) are excluded for the reason given in Table~\ref{tab:ch2-distilled-permstep-3he}'s caption.}
 \label{fig:ch2-diffusivity-comparison}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.8\textwidth]{winsor_goethite_Diffusivities_Arrhenius_Zoomin_naive.pdf}
-\caption{Analogue of Fig.~\ref{fig:ch2-arrhenius-zoom} (main text) using the permeation-step method's own \textsuperscript{3}He diffusivities and its own Stage 1 linear regression, rather than the bounding method's. The resulting activation energy and closure temperature (\ChTwoBracketEa$\pm$\ChTwoBracketEaErr\ kJ/mol; \ChTwoBracketTc$\pm$\ChTwoBracketTcErr\textdegree C) agree closely with the bounding method's own (\ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol; \ChTwoTc$\pm$\ChTwoTcErr\textdegree C).}
-\label{fig:ch2-bracket-arrhenius-zoom}
+\includegraphics[width=0.8\textwidth]{winsor_goethite_Diffusivities_Arrhenius_Zoomin_permstep.pdf}
+\caption{Analogue of Fig.~\ref{fig:ch2-arrhenius-zoom} (main text) using the permeation-step method's own \textsuperscript{3}He diffusivities and its own Stage 1 linear regression, rather than the bounding method's. The resulting activation energy and closure temperature (\ChTwoPermStepEa$\pm$\ChTwoPermStepEaErr\ kJ/mol; \ChTwoPermStepTc$\pm$\ChTwoPermStepTcErr\textdegree C) agree closely with the bounding method's own (\ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol; \ChTwoTc$\pm$\ChTwoTcErr\textdegree C).}
+\label{fig:ch2-permstep-arrhenius-zoom}
 \end{figure}
-
-\section{Totals}\label{totals}
-
-\todo{Write up the resistance-furnace total-degassing (``totals'') step in full here: procedure, blank/re-extract treatment, and the recovered total 3He/4He budget for HT-Win-06-01b, referenced from the main text's description of the final resistance-furnace step (\S\ref{ch2-experimental-methods}).}

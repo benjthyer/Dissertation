@@ -607,13 +607,13 @@ def low_signal_HTWin0601b_mask(xlsx_path, threshold=0.1):
     diffusivity or isotope-ratio determination, e.g. Temp/Minutes 205/520,
     195/1106, 185/740, 175/920, 200/260, and 210/520 at the default 0.1
     pccSTP threshold. Read from the master workbook's
-    DistilledUncertaintyTreatment sheet ('3He Measured (pccSTP)' column),
+    DistilledBoundingMethod sheet ('3He Measured (pccSTP)' column),
     which shares the same step order as the diffusivitiesHTWin0601b{M,UB,LB}
     sheets (verified by Temp/Minutes match) but is not itself split by bound,
     so this one mask applies to all three.
 
     True = low-signal (exclude); use `~mask` to select the reliable steps."""
-    sheet = pd.read_excel(xlsx_path, sheet_name='DistilledUncertaintyTreatment', header=0)
+    sheet = pd.read_excel(xlsx_path, sheet_name='DistilledBoundingMethod', header=0)
     sheet = sheet[pd.to_numeric(sheet.iloc[:, 0], errors='coerce').notna()]
     he3_measured = pd.to_numeric(sheet.iloc[:, 3], errors='coerce').to_numpy()
     return he3_measured < threshold

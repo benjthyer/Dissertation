@@ -28,7 +28,7 @@ direct-measurement check on the bounding method's M/UB/LB regression
 above -- via load_diffusivities_HTWin0601b_naive(), caching the result
 under the 'naive' key (no LB/UB split: the permeation-step method
 propagates its own single 2-sigma per point rather than an explicit
-bound pair). Used by fig_naive_stage1_arrhenius.py and referenced in
+bound pair). Used by fig_permstep_stage1_arrhenius.py and referenced in
 \\S\\ref{sec:discussion-bounding-direct} (manuscript) /
 Chapter 2's complete-degas discussion.
 
@@ -129,7 +129,7 @@ if __name__ == '__main__':
         COOLING_RATE_C_PER_MYR, A=DODSON_A)
     naive_fit['excluded_steps'] = [11, 12]
     cache['naive'] = naive_fit
-    print(f"\nStage 1 reference (naive/informed bracketing, direct-measurement check): "
+    print(f"\nStage 1 reference (permeation step method, direct-measurement check): "
           f"slope={naive_fit['slope']:.4f}+/-{naive_fit['slope_stderr']:.4f}  "
           f"intercept={naive_fit['intercept']:.4f}+/-{naive_fit['intercept_stderr']:.4f}  "
           f"Ea={naive_fit['Ea_kJ_mol']:.1f}+/-{naive_fit['Ea_kJ_mol_stderr']:.1f} kJ/mol  "

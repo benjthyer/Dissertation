@@ -30,10 +30,10 @@ the regression. Re-run this wrapper (not just a single fig_*.py script)
 after any change to the workbook's diffusivity reduction so the cache
 doesn't go stale.
 
-Next, fig_naive_isothermal_fits.py runs (it IS a fig_*.py script by name,
+Next, fig_permstep_isothermal_fits.py runs (it IS a fig_*.py script by name,
 but is pinned to run here, before write_chapter2_macros.py, rather than
 in its alphabetical slot below). It fits the isothermal 3He permeation
-sequences and writes generated/data/naive_lambda_arrhenius_cache.json -- and
+sequences and writes generated/data/permstep_lambda_arrhenius_cache.json -- and
 write_chapter2_macros.py (next) needs that cache to already exist.
 
 Immediately after that, write_chapter2_macros.py runs (also not a
@@ -98,7 +98,7 @@ PREP_SCRIPT = "prepare_regression_cache.py"
 # depends on the cache it writes, so it's pulled out of the normal
 # alphabetical fig_*.py loop and run here instead -- it is NOT run a
 # second time in that loop (see main()).
-ISOTHERMAL_FIT_SCRIPT = "fig_naive_isothermal_fits.py"
+ISOTHERMAL_FIT_SCRIPT = "fig_permstep_isothermal_fits.py"
 
 # Always run immediately after ISOTHERMAL_FIT_SCRIPT, before any other
 # fig_*.py script (see module docstring). Not a fig_*.py script itself.

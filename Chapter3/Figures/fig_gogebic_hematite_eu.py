@@ -269,22 +269,11 @@ def main():
                 xytext=(10, -18), textcoords='offset points', fontsize=7,
                 arrowprops=dict(arrowstyle='->', color='black', lw=0.8))
 
-    # Process-direction arrows, anchored at the main cluster's centroid (all
-    # aliquots except the MG16b outlier), which sits in the upper right
-    # between the two reference lines. The upward arrow is long enough that
-    # its tip and label clear the upper (Hofmann et al. 2020) line rather
-    # than sitting on it.
-    cluster = [p for p in pts if p['name'] != MG16B_OUTLIER]
-    cx = float(np.mean([p['eu'] for p in cluster]))
-    # Nudged above the raw centroid so the arrow start doesn't overlap a
-    # marker/error bar that happens to sit right at the centroid.
-    cy = float(np.mean([p['he'] for p in cluster])) + 25
-    ax.annotate('', xy=(cx - 2.2, cy), xytext=(cx, cy),
-                arrowprops=dict(arrowstyle='-|>', color='black', lw=1.3))
-    ax.text(cx - 2.3, cy, 'U-loss', fontsize=8, ha='right', va='center')
-    ax.annotate('', xy=(cx, cy + 150), xytext=(cx, cy),
-                arrowprops=dict(arrowstyle='-|>', color='black', lw=1.3))
-    ax.text(cx, cy + 158, 'Incomplete dissolution', fontsize=8, ha='center', va='bottom')
+    # NOTE: the process-direction arrows ("U-loss" / "Incomplete
+    # dissolution") previously annotated here, anchored at the main
+    # cluster's centroid, were removed at the user's request (2026-09-01)
+    # to declutter the plot; the U-loss interpretation of the MG16b
+    # outlier is still made in the caption/body text.
 
     outpath = os.path.join(OUTDIR, 'Gogebic_He_vs_eU.pdf')
     fig.savefig(outpath, dpi=300, bbox_inches='tight')

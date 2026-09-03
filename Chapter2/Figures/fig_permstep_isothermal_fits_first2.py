@@ -1,12 +1,12 @@
 """
-EXPERIMENTAL variant of fig_naive_isothermal_fits.py: fits the n0/lambda
+EXPERIMENTAL variant of fig_permstep_isothermal_fits.py: fits the n0/lambda
 exponential model to only the FIRST TWO measurements of each of the 10
 isothermal sequences (instead of all steps), to see whether an early
 2-point fit still predicts the rest of the sequence well.
 
 Everything else -- data loading, the forward_permeate1 fit model, the tube
 geometry / lambda->K conversion, and the Arrhenius regression -- is
-unchanged from fig_naive_isothermal_fits.py. See that script's docstring
+unchanged from fig_permstep_isothermal_fits.py. See that script's docstring
 for the full data-provenance notes.
 
 Note on fitting exactly 2 points to a 2-parameter (lambda, n0) model: this
@@ -19,24 +19,24 @@ in the grid plot below.
 
 This is an exploratory/diagnostic script, not part of the dissertation
 build: it deliberately writes to its own output filenames and its own
-cache file, and does NOT touch chapter2_naive_isothermal_tables.tex or
-naive_lambda_arrhenius_cache.json (the real per-step table and Arrhenius
+cache file, and does NOT touch chapter2_permstep_isothermal_tables.tex or
+permstep_lambda_arrhenius_cache.json (the real per-step table and Arrhenius
 cache cited in the dissertation text), so it can be run freely without
 affecting any citable numbers.
 
 Outputs (all suffixed _First2 / _first2 to keep them separate from the
 real figures):
-  NaiveIsothermalFits_Grid_First2.pdf          - one panel per sequence (5x2);
+  PermeationStepFits_Grid_First2.pdf          - one panel per sequence (5x2);
                                                   black = all measured points,
                                                   red open circles = the two
                                                   points actually used for the
                                                   fit, dashed line = fit
                                                   extrapolated across the full
                                                   sequence.
-  NaiveIsothermalFits_150min_byTemp_First2.pdf
-  NaiveIsothermalFits_120min_byTemp_First2.pdf
-  NaiveLambda_Arrhenius_First2.pdf
-  generated/data/naive_lambda_arrhenius_cache_first2.json
+  PermeationStepFits_150min_byTemp_First2.pdf
+  PermeationStepFits_120min_byTemp_First2.pdf
+  AmpoulePermeability_Arrhenius_First2.pdf
+  generated/data/permstep_lambda_arrhenius_cache_first2.json
 """
 import json
 import os
@@ -58,7 +58,7 @@ FIG_DIR = os.path.dirname(os.path.abspath(__file__))
 XLSX = os.path.join(FIG_DIR, '..', 'Tables', 'Win0601bHT_data_and_reduction.xlsx')
 OUTDIR = os.path.join(FIG_DIR, 'generated')
 os.makedirs(OUTDIR, exist_ok=True)
-CACHE_PATH = os.path.join(FIG_DIR, 'generated', 'data', 'naive_lambda_arrhenius_cache_first2.json')
+CACHE_PATH = os.path.join(FIG_DIR, 'generated', 'data', 'permstep_lambda_arrhenius_cache_first2.json')
 
 TEMP_VMIN, TEMP_VMAX = 90, 110  # shared color scale between the two by-temperature plots
 N_FIT_POINTS = 2  # only the first N_FIT_POINTS measurements of each sequence are fit
@@ -145,7 +145,7 @@ fig.supxlabel('Cumulative Time (hours)')
 fig.supylabel(r'$m_{cum}$ $^3$He (pccSTP)')
 fig.suptitle(f'Win-06-01b Isothermal Step-Heat Fits Using Only First {N_FIT_POINTS} Measurements')
 fig.tight_layout()
-fig.savefig(os.path.join(OUTDIR, 'NaiveIsothermalFits_Grid_First2.pdf'), dpi=300)
+fig.savefig(os.path.join(OUTDIR, 'PermeationStepFits_Grid_First2.pdf'), dpi=300)
 plt.close(fig)
 
 # ---------------------------------------------------------------------------
@@ -154,8 +154,8 @@ plt.close(fig)
 cmap = mpl.cm.plasma
 norm = mpl.colors.Normalize(vmin=TEMP_VMIN, vmax=TEMP_VMAX)
 
-for nominal_min, outname in [(150, 'NaiveIsothermalFits_150min_byTemp_First2.pdf'),
-                              (120, 'NaiveIsothermalFits_120min_byTemp_First2.pdf')]:
+for nominal_min, outname in [(150, 'PermeationStepFits_150min_byTemp_First2.pdf'),
+                              (120, 'PermeationStepFits_120min_byTemp_First2.pdf')]:
     group_seqs = [s for s in sequences if s['nominal_min'] == nominal_min]
     fig, ax = plt.subplots()
     for seq in sorted(group_seqs, key=lambda s: s['T_C']):
@@ -190,7 +190,7 @@ reg = scipy.stats.linregress(x, y)
 slope, intercept, r2 = reg.slope, reg.intercept, reg.rvalue ** 2
 Ea_cal_mol = -slope * Rcal * 1E4
 Ea_cal_mol_2se = 2 * reg.stderr * Rcal * 1E4
-print(f"[First-{N_FIT_POINTS}-only] Naive isothermal Arrhenius regression: "
+print(f"[First-{N_FIT_POINTS}-only] Isothermal permeation Arrhenius regression: "
       f"ln(K) = {intercept:.3f} + {slope:.3f}*x, R^2 = {r2:.3f}, "
       f"Ea = {Ea_cal_mol:.0f} +/- {abs(Ea_cal_mol_2se):.0f} (2 s.e.) cal/mol")
 os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
@@ -234,5 +234,5 @@ ax1.legend(fontsize=8)
 plt.sca(ax1)  # make_grid() grids whichever axes is current; twiny() left ax2 current
 make_grid()
 plt.tight_layout()
-fig.savefig(os.path.join(OUTDIR, 'NaiveLambda_Arrhenius_First2.pdf'), dpi=300)
+fig.savefig(os.path.join(OUTDIR, 'AmpoulePermeability_Arrhenius_First2.pdf'), dpi=300)
 plt.close(fig)

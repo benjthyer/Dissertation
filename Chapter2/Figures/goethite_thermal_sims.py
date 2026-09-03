@@ -4,15 +4,15 @@ goethite tube geometry, across a 5x3 grid of hold temperatures (90/95/100/105/11
 and hold durations (120/150/180 min). Each grid cell fits a (lambda, n0)
 permeation model to the simulated 3-step-heat sequence (KenColdInversion1),
 the same model used to fit the actual naive-bracketed isothermal sequences in
-fig_naive_isothermal_fits.py, so the two lambda populations are directly
+fig_permstep_isothermal_fits.py, so the two lambda populations are directly
 comparable.
 
 Outputs:
   goethite_diff_sims/*.csv          - per-combination sim step records
   data/goethite_thermal_sim_lambdas.csv
       - T_C, T_K, hold_min, lam for all 12 grid cells; read by
-        fig_naive_isothermal_fits.py to overlay these simulated fits on
-        NaiveLambda_Arrhenius.pdf alongside the actual experimental fits
+        fig_permstep_isothermal_fits.py to overlay these simulated fits on
+        AmpoulePermeability_Arrhenius.pdf alongside the actual experimental fits
   GoethiteThermalSimFits_Grid.pdf   - per-combination fit-quality diagnostic
                                        (cumulative He vs. cumulative *held*
                                        time, with the fitted lambda/n0 curve),
@@ -51,7 +51,7 @@ tall = []
 naive_errors = []
 informed_errors = []
 lambda_errors = []
-sim_lambdas = []  # T_C, T_K, hold_min, lam -- cached below so fig_naive_isothermal_fits.py
+sim_lambdas = []  # T_C, T_K, hold_min, lam -- cached below so fig_permstep_isothermal_fits.py
                   # can overlay these simulated permeability fits on the Arrhenius plot
 sim_records = []  # per-combination raw (t, He) step records, for the fit-quality
                   # diagnostic grid plotted below (GoethiteThermalSimFits_Grid.pdf)
@@ -102,8 +102,8 @@ for T in Ts:
 
 
 # ---------------------------------------------------------------------------
-# Cache the simulated (T, hold_min) -> lambda fits so fig_naive_isothermal_fits.py
-# can overlay them on NaiveLambda_Arrhenius.pdf alongside the actual experimental
+# Cache the simulated (T, hold_min) -> lambda fits so fig_permstep_isothermal_fits.py
+# can overlay them on AmpoulePermeability_Arrhenius.pdf alongside the actual experimental
 # fits, without needing to re-run this (much more expensive) simulation script.
 # ---------------------------------------------------------------------------
 sim_df = pd.DataFrame(sim_lambdas)
@@ -111,7 +111,7 @@ sim_df.to_csv(os.path.join(FIG_DIR, 'data', 'goethite_thermal_sim_lambdas.csv'),
 
 # ---------------------------------------------------------------------------
 # Diagnostic grid: per-combination lambda/n0 fit quality, one panel per T/hold
-# -duration cell (5x3), mirroring fig_naive_isothermal_fits.py's Figure 1 grid
+# -duration cell (5x3), mirroring fig_permstep_isothermal_fits.py's Figure 1 grid
 # for the actual experimental sequences. Each panel's x-axis is cumulative
 # *held* time only -- cooling periods contribute no time to the fit's x-axis,
 # even though the He that diffuses out during cooling is folded into the
@@ -156,7 +156,7 @@ T_labels = [f'{int(T - 273)}°C' for T in Ts]
 t_labels = [f'{int(t / 60)} min' for t in times]
 
 panels = [
-    (naive_grid, 'Naive $n_0$ Error (%)'),
+    (naive_grid, 'Fitted $n_0$ Error (%)'),
     (informed_grid, 'Informed $n_0$ Error (%)'),
     (lambda_grid, 'Permeability Error (%)\n(Swets $K$ vs. Fitted $K$)'),
 ]

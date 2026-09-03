@@ -1,26 +1,26 @@
 % =============================================================
-%  chapter2_naive_isothermal_tables.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.
-%  Written by Figures/fig_naive_isothermal_fits.py from
+%  chapter2_permstep_isothermal_tables.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.
+%  Written by Figures/fig_permstep_isothermal_fits.py from
 %  Win0601bHT_data_and_reduction.xlsx ('Fit Lambdas' sheet for the raw data
 %  and the per-sequence lambda/n0 fits, cross-checked against 'Raw Data and
 %  Corrections' -- the workbook's master per-measurement sheet).
 %
 %  Regenerate after any change to either sheet:
-%    python3 Figures/fig_naive_isothermal_fits.py
+%    python3 Figures/fig_permstep_isothermal_fits.py
 %  (run_all_figures.py does this automatically, before write_chapter2_macros.py.)
 %
 %  \input{} by chapter2goethite_SI.tex (standalone) and chapter2.tex
 %  (dissertation -- defined early enough for chapter2_SI.tex, input later,
 %  to use), same pattern as chapter2_derived_values.tex.
 %
-%  \ChTwoNaiveRawTable : Table~\ref{tab:ch2-naive-isothermal-raw}, the raw
+%  \ChTwoPermStepRawTable : Table~\ref{tab:ch2-permeation-isothermal-raw}, the raw
 %    per-step dataset for all 10 isothermal sequences.
-%  \ChTwoNaiveFitTable : Table~\ref{tab:ch2-naive-isothermal-fits}, the fitted
+%  \ChTwoPermStepFitTable : Table~\ref{tab:ch2-permeation-isothermal-fits}, the fitted
 %    lambda/n0 (+/- 2 sigma) for each of those 10 sequences.
 % =============================================================
-\newcommand{\ChTwoNaiveRawTable}{\begin{footnotesize}
+\newcommand{\ChTwoPermStepRawTable}{\begin{footnotesize}
 \begin{longtable}{c c c c c c}
-\caption{Raw step-heat data (\uppercase{`}Fit Lambdas\uppercase{'} sheet, cross-checked against \uppercase{`}Raw Data and Corrections\uppercase{'}) for the 10 isothermal 3He permeation sequences used to determine the ampoule's apparent permeability (Fig.~\ref{fig:ch2-naive-cumulative-yield}, Fig.~\ref{fig:ch2-naive-arrhenius}). Series are separated by horizontal rules; within a series, steps are listed in the order measured.}\label{tab:ch2-naive-isothermal-raw}\\
+\caption{Raw step-heat data (\uppercase{`}Fit Lambdas\uppercase{'} sheet, cross-checked against \uppercase{`}Raw Data and Corrections\uppercase{'}) for the 10 isothermal 3He permeation sequences used to determine the ampoule's apparent permeability (Fig.~\ref{fig:ch2-permeation-fits}, Fig.~\ref{fig:ch2-ampoule-permeability}). Series are separated by horizontal rules; within a series, steps are listed in the order measured.}\label{tab:ch2-permeation-isothermal-raw}\\
 \toprule
 Series & Temp & Nominal Time & Cooling Time & $^3$He measured & $\pm2\sigma$ \\
  & (\textdegree C) & (min) & (min) & (pccSTP) & \\
@@ -80,10 +80,10 @@ Series & Temp & Nominal Time & Cooling Time & $^3$He measured & $\pm2\sigma$ \\
 \end{longtable}
 \end{footnotesize}}
 
-\newcommand{\ChTwoNaiveFitTable}{\begin{footnotesize}
+\newcommand{\ChTwoPermStepFitTable}{\begin{footnotesize}
 \begin{table}[htbp]
 \centering
-\caption{Fitted $\lambda$ (permeation rate constant) and $n_0$ (residual helium at the start of the series) for each of the 10 isothermal sequences in Table~\ref{tab:ch2-naive-isothermal-raw}, from the weighted non-linear least-squares fit of Eq.~\eqref{eq:incyield} (Chapter~\ref{ch:apparatus}) described in the main text (\S\ref{ch2-experimental-methods}). $n$ is the number of steps in the sequence. These are the same per-sequence fits plotted in Fig.~\ref{fig:ch2-naive-cumulative-yield} and used to build the Arrhenius regression in Fig.~\ref{fig:ch2-naive-arrhenius}.}\label{tab:ch2-naive-isothermal-fits}
+\caption{Fitted $\lambda$ (permeation rate constant) and $n_0$ (residual helium at the start of the series) for each of the 10 isothermal sequences in Table~\ref{tab:ch2-permeation-isothermal-raw}, from the weighted non-linear least-squares fit of Eq.~\eqref{eq:incyield} (Chapter~\ref{ch:apparatus}) described in the main text (\S\ref{ch2-experimental-methods}). $n$ is the number of steps in the sequence. These are the same per-sequence fits plotted in Fig.~\ref{fig:ch2-permeation-fits} and used to build the Arrhenius regression in Fig.~\ref{fig:ch2-ampoule-permeability}.}\label{tab:ch2-permeation-isothermal-fits}
 \begin{tabular}{c c c c c c c c}
 \toprule
 Series & Temp (\textdegree C) & Duration (min) & $n$ & $\lambda$ (s$^{-1}$) & $\pm2\sigma$ & $n_0$ (pccSTP) & $\pm2\sigma$ \\

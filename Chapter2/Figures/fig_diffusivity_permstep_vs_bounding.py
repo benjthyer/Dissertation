@@ -28,7 +28,7 @@ Reads:
       and 'diffusivitiesHTWin0601bNaive'
 
 Outputs:
-  generated/Winsor_diffusivity_naive_vs_bounding.pdf
+  generated/Winsor_diffusivity_permstep_vs_bounding.pdf
 """
 import os
 import sys
@@ -92,7 +92,7 @@ legend_elems = [Line2D([0], [0], linestyle='--', color='black', alpha=0.4, label
 ax.legend(handles=legend_elems, loc='upper left')
 
 fig.tight_layout()
-outpath = os.path.join(OUTDIR, 'Winsor_diffusivity_naive_vs_bounding.pdf')
+outpath = os.path.join(OUTDIR, 'Winsor_diffusivity_permstep_vs_bounding.pdf')
 fig.savefig(outpath, dpi=300)
 plt.close(fig)
 print(f"Wrote {outpath}")

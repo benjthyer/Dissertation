@@ -23,7 +23,7 @@
 %    ChTwoRtwo/ChTwoN   : regression R^2 and number of points
 %
 %  Isothermal 3He permeation Arrhenius regression (from
-%  generated/data/naive_lambda_arrhenius_cache.json, n=10 sequences, R2=0.9362):
+%  generated/data/permstep_lambda_arrhenius_cache.json, n=10 sequences, R2=0.9362):
 %    ChTwoPermEa/ChTwoPermEaErr : activation energy, 2 s.e. (cal/mol)
 %    ChTwoPermEakJ/ChTwoPermEaErrkJ : the same, in kJ/mol (1 cal = 4.184 J)
 %    ChTwoPermRtwo/ChTwoPermN   : regression R^2 and number of sequences
@@ -32,13 +32,13 @@
 %
 %  Stage 1 reference line, na\"ive/informed bracketing (permeation-step)
 %  method (direct-measurement check on ChTwoEa/ChTwoTc above; excludes
-%  steps [11, 12] -- see load_diffusivities_HTWin0601b_naive docstring;
+%  steps [11, 12] -- see load_diffusivities_HTWin0601b_permstep docstring;
 %  n=12 points, R2=0.9909):
-%    ChTwoBracketEa/ChTwoBracketEaErr : activation energy (kJ/mol)
-%    ChTwoBracketTc/ChTwoBracketTcErr : Dodson (1973) closure temperature
+%    ChTwoPermStepEa/ChTwoPermStepEaErr : activation energy (kJ/mol)
+%    ChTwoPermStepTc/ChTwoPermStepTcErr : Dodson (1973) closure temperature
 %      (degC), intercept-only regression uncertainty, same convention as
 %      ChTwoTcErr. Joint slope+intercept uncertainty is +/- 13.5 degC.
-%    ChTwoBracketRtwo/ChTwoBracketN : regression R^2 and number of points
+%    ChTwoPermStepRtwo/ChTwoPermStepN : regression R^2 and number of points
 % =============================================================
 \newcommand{\ChTwoEa}{157.1}
 \newcommand{\ChTwoEaErr}{5.3}
@@ -54,9 +54,16 @@
 \newcommand{\ChTwoPermN}{10}
 \newcommand{\ChTwoPermLamMin}{$2.7\times10^{-5}$}
 \newcommand{\ChTwoPermLamMax}{$6.3\times10^{-5}$}
-\newcommand{\ChTwoBracketEa}{157.0}
-\newcommand{\ChTwoBracketEaErr}{4.8}
-\newcommand{\ChTwoBracketTc}{97.5}
-\newcommand{\ChTwoBracketTcErr}{7.8}
-\newcommand{\ChTwoBracketRtwo}{0.991}
-\newcommand{\ChTwoBracketN}{12}
+\newcommand{\ChTwoPermStepEa}{157.0}
+\newcommand{\ChTwoPermStepEaErr}{4.8}
+\newcommand{\ChTwoPermStepTc}{97.5}
+\newcommand{\ChTwoPermStepTcErr}{7.8}
+\newcommand{\ChTwoPermStepRtwo}{0.991}
+\newcommand{\ChTwoPermStepN}{12}
+% Legacy aliases: the GCA manuscript still uses the \ChTwoBracket* names.
+\newcommand{\ChTwoBracketEa}{\ChTwoPermStepEa}
+\newcommand{\ChTwoBracketEaErr}{\ChTwoPermStepEaErr}
+\newcommand{\ChTwoBracketTc}{\ChTwoPermStepTc}
+\newcommand{\ChTwoBracketTcErr}{\ChTwoPermStepTcErr}
+\newcommand{\ChTwoBracketRtwo}{\ChTwoPermStepRtwo}
+\newcommand{\ChTwoBracketN}{\ChTwoPermStepN}

@@ -9,6 +9,15 @@ If you tune the sizes below, copy the updated file into every chapter
 that uses it (currently Chapter1/Figures, Chapter2/Figures,
 and Chapter3/Figures) so the whole dissertation stays visually consistent.
 
+NOTE (this copy only): at the user's request, this Chapter3/Figures copy
+was deliberately bumped to larger non-legend sizes than Chapter1/Figures
+and Chapter2/Figures's copies (Ch3's in-plot text -- titles, axis labels,
+tick labels -- was reported too small; legends were reported fine and are
+unchanged). Chapter 1 and 2's copies were intentionally left at the
+original sizes below. Do NOT copy this file's sizes back into those
+chapters without checking with the user first -- the three copies are no
+longer expected to be identical.
+
 All figures using this style are generated at matplotlib's default
 figure size (6.4 x 4.8 in, i.e. a bare `plt.subplots()`/`plt.figure()`
 call with no `figsize=` argument) and are then placed in the LaTeX
@@ -42,11 +51,14 @@ BASE_FIGWIDTH_IN = 6.4  # matplotlib default figure width, used as the
 
 # Sizes (points) tuned to be legible once printed at 8.3 cm width from
 # a 6.4 x 4.8 in default-sized figure.
-TITLE_SIZE = 16
-LABEL_SIZE = 14
-TICK_SIZE = 12
+# Chapter 3 only (see NOTE above): TITLE/LABEL/TICK/SUPTITLE bumped up from
+# the original 16/14/12/16 at the user's request; LEGEND_SIZE left at its
+# original value since legends were reported as already fine.
+TITLE_SIZE = 20
+LABEL_SIZE = 17
+TICK_SIZE = 15
 LEGEND_SIZE = 11
-SUPTITLE_SIZE = 16
+SUPTITLE_SIZE = 20
 
 
 def apply_style(scale: float = 1.0) -> None:

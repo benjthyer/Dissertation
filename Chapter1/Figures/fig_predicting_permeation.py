@@ -130,8 +130,8 @@ for i, (table_name, table) in enumerate(predDat.items()):
     axes[i].axvspan(mean - sd2, mean + sd2, color=colors[i], alpha=0.2)
     axes[i].axvspan(mean - sd2/2, mean + sd2/2, color=colors[i], alpha=0.4)
     axes[i].axvline(0, color='black', linewidth=3, zorder=4)
-    for xv in [-10, 10, 20, 30, 40]:
-        axes[i].axvline(xv, linestyle='--', color='black', alpha=0.5)
+    axes[i].set_axisbelow(True)
+    axes[i].grid(True)
     axes[i].set_title(f'{labels[i]}: mean = {mean:.1f}%, ±{sd2:.1f}% (2σ)')
     axes[i].yaxis.set_major_locator(mpl.ticker.MaxNLocator(nbins=5, integer=True))
 plt.xlabel(r'% Difference in Predicted and Measured $n_0$ $\left(\frac{n_0^P - n_0}{n_0} \times 100\right)$')
@@ -160,8 +160,8 @@ for i, (table_name, table) in enumerate(predDat.items()):
     axes[k].axvspan(mean - sd2, mean + sd2, color=colors3[k], alpha=0.2)
     axes[k].axvspan(mean - sd2/2, mean + sd2/2, color=colors3[k], alpha=0.4)
     axes[k].axvline(0, color='black', linewidth=3, zorder=4)
-    for xv in [-20, -10, 10, 20, 30, 40]:
-        axes[k].axvline(xv, linestyle='--', color='black', alpha=0.5)
+    axes[k].set_axisbelow(True)
+    axes[k].grid(True)
     axes[k].set_title(f'{labels[i]}: mean = {mean:.1f}%, ±{sd2:.1f}% (2σ)')
     axes[k].yaxis.set_major_locator(mpl.ticker.MaxNLocator(nbins=5, integer=True))
     k += 1

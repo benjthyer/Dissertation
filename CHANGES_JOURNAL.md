@@ -1121,3 +1121,189 @@ marker, not a dashed artifact.
 - The other scripts could not be executed here (no SciPy). The edits are
   one-line grid calls and import removals, but a `make figures-ch1` on your
   machine is the real check.
+
+
+---
+
+# 2026-09-03 -- Kidd Creek reinterpreted as pyrite+arsenopyrite (not all pyrite); Gympie relabeled arsenopyrite
+
+Prompted by your observation that most/all of the Gympie suite and much of
+the Kidd Creek suite is probably arsenopyrite or As-rich pyrite rather than
+pure pyrite. Grounded this in the trace-element data already in
+`Chapter3/Tables/geochronology_compilation_BJT.xlsx` (`KiddCreekDistilled`
+and `GympieDistilled` sheets, `As (ppm)` column) before touching any prose:
+
+- Of the 12 dated Kidd Creek aliquots, 11 form the coherent
+  age-vs-Th/He array discussed throughout the chapter. Seven of those 11
+  have measured As of ~1,600-410,000 ppm -- clearly arsenopyrite, not
+  pyrite; the other four (an earlier "2211" prep batch) have no As
+  measurement but the same age/Th-He systematics, so are treated as part
+  of the same population.
+- The 12th, oldest aliquot (`011123KCPyST05C`, 1596 +/- 46 Ma) has As =
+  49 ppm -- by far the lowest in the suite, and consistent with the
+  "golden pyrite cube" aliquots picked out by eye during sample
+  preparation. This is the one aliquot now interpreted as genuine pyrite.
+- Two Gympie aliquots (`230625GyPyUnAbr`, `230628GyPyHClab`) have As
+  1-2 orders of magnitude above the rest of the Gympie suite; flagged in
+  the text as unreliable rather than taken at face value.
+
+Note: a literal `0` (not blank/`None`) in this workbook's As column is
+this early KiddCreek batch's convention for "not measured", confirmed by
+direct cell inspection -- `fig_geochronology_ages.py`'s loader now treats
+0 the same as a blank cell for this field.
+
+## Text changes
+
+- `Chapter3/Writing/HeInSulfides_Main_Body.tex`: 15 mechanical renames
+  (Gympie "pyrite" -> "arsenopyrite" throughout, including both Results
+  subsection titles; Kidd Creek "pyrite" -> "pyrite/arsenopyrite" in
+  intro/methods mentions). Full rewrite of the
+  "Interpretation of Kidd Creek Pyrite/Arsenopyrite Ages" discussion
+  section (`ch3-discussion-kiddcreek-ages`): reframes the 11-aliquot
+  arsenopyrite array and the 12th aliquot as low-As pyrite rather than an
+  outlier, ties the ~1.6 Ga closed-system prediction at the observed
+  ~30 um inclusion size to the pyrite date, adds the golden-pyrite-cube
+  and Gympie-As-reliability caveats, and the "only one pyrite date, not
+  proof, but internally consistent" qualifier, citing the step-heat
+  retentivity comparison (`fig:ch3-sulfide-arrhenius-compilation`,
+  `fig:ch3-fo-comparison`). Both figure captions
+  (`fig:ch3-he-age-vs-inclusion-size`, `fig:ch3-kiddcreek-age-th-he`)
+  rewritten to match the new figure content (below). Conclusions
+  paragraph rewritten to state the same reinterpretation: Kidd Creek
+  arsenopyrite requires open-system He loss, the single pyrite aliquot is
+  consistent with closed-system behavior.
+- `Chapter3/Writing/HeInSulfides_abstract.tex`: "gympie sulfides" ->
+  "Gympie arsenopyrite"; mean age corrected 253 +/- 21 Ma -> 258 +/- 35 Ma
+  (matches the body's actual computed mean -- these didn't agree before);
+  fixed a stray "the the country rock" typo; replaced the Kidd Creek
+  closed/open-system sentence with the new framing (arsenopyrite lost He,
+  the one low-As pyrite aliquot is closed-system).
+- `Chapter3/Writing/HeInSulfides_SI_body.tex`: one rename, "Gympie pyrite
+  suite" -> "Gympie arsenopyrite suite".
+
+## Figure changes
+
+- `Chapter3/Figures/fig_geochronology_ages.py`
+  (`KiddCreek_Age_vs_Th_and_He.pdf`, `fig:ch3-kiddcreek-age-th-he`):
+  `_load_distilled_sheet()` now also reads `As (ppm)` (with the 0=not-
+  measured handling above). `plot_kidd_creek_th_he()` now colors each
+  point by log10(As) via a shared colorbar instead of one flat color;
+  aliquots with no As measurement plot grey with a legend entry. The
+  lowest-As (oldest, pyrite) point renders clearly as the darkest-colored
+  outlier at the top of both panels.
+- `Chapter3/Figures/fig_alpha_stopping_distances.py`
+  (`He_Age_vs_Apatite_Inclusion_Size.pdf`,
+  `fig:ch3-he-age-vs-inclusion-size`): the reference band label changed
+  from "(Arseno)pyrite U-Th/He ages" to "Arsenopyrite". The shared
+  0-30 um teal band (`_add_observed_inclusion_band`, still used as-is by
+  the unrelated, unreferenced `plot_sulfide_fraction`/
+  `Fraction_Sulfide_Hosted_He_vs_Apatite_Inclusion_Size.pdf`) was
+  replaced, only within `plot_helium_age()`, by a single vertical line at
+  the observed 30 um inclusion half-width. Added a "Pyrite" point with a
+  2-sigma error bar at (R=30 um, age=1596+/-46 Ma) -- it lands right at
+  the model curve's crossing of that line, which is the "elegant"
+  intersection you were expecting.
+
+Both figures regenerated and visually checked (rendered pages, not just
+console output).
+
+## Judgment calls (flagged, not agonized over)
+
+- Left the individual SEM figure captions (`fig:ch3-kcpy-groundmass`,
+  `fig:ch3-kcpy-aspy`, `fig:ch3-kcpy-apatites`, `fig:ch3-gympie-
+  inclusions`) saying "pyrite" unchanged -- these describe specific
+  photographed grains, and grain-level mineral identity isn't something
+  the bulk trace-element data can confirm or deny for that particular
+  imaged material.
+- Left the generic, literature-sourced "Gold-bearing pyrite-quartz
+  mineralization at Gympie occurs..." deposit-description sentence
+  unchanged -- that's describing the deposit type in the literature, not
+  making a claim about the specific analyzed aliquots.
+
+## Verification
+
+Full clean rebuild (`latexmk -C` then rebuild): 225 pages, zero errors,
+zero multiply-defined labels, zero new overfull-hbox warnings (none fall
+within any of the edited passages). One undefined citation,
+`\citep{hurley1941}` (Main Body line ~1399, in the Gympie Carboniferous-
+age paragraph) -- this is unrelated to this change, from your own
+concurrent edit to that section; `hurley1941` has no entry in
+`references.bib`. Flagged for you to supply or remove, same as prior
+undefined-citation entries in this journal.
+
+
+---
+
+# 2026-09-04 -- Walked back the As-based pyrite/arsenopyrite split for Kidd Creek
+
+Follow-on correction to the 2026-09-03 entry above, per your feedback: the
+As-content, mass-balance, and optical-habit lines of evidence used there to
+argue that most Kidd Creek aliquots are arsenopyrite and one is pyrite don't
+actually agree with each other closely enough to support that split. Backed
+this off specifically for Kidd Creek (the Gympie "arsenopyrite" renaming
+from the prior entry stands -- you didn't ask to revisit that one).
+
+## Text changes
+
+`Chapter3/Writing/HeInSulfides_Main_Body.tex`, Kidd Creek interpretation
+section (`ch3-discussion-kiddcreek-ages`): added a new paragraph explaining
+how pyrite vs. arsenopyrite was meant to be told apart here -- optical habit
+during sample picking, direct As measurement
+(Table `tab:ch3-main-geochron-trace`), and an independent mass-balance
+estimate of arsenopyrite content from each aliquot's pre-digestion weighed
+mass vs. its ICP-measured Fe content under a two-phase pyrite-arsenopyrite
+mixing constraint ($N_{py}MM_{py} + N_{AsPy}MM_{AsPy} = $ measured mass) --
+and states that these three lines of evidence don't agree with each other for
+either suite. Cites that measured As is generally far below the
+~460,000 ppm expected for stoichiometric FeAsS (only 1 of 8 As-measured
+Kidd Creek aliquots comes close). Conclusion: individual Kidd Creek
+aliquots can't be reliably split into pyrite vs. arsenopyrite, so the
+"11 arsenopyrite + 1 pyrite" framing from the prior entry is dropped in
+favor of treating the whole suite as pyrite/arsenopyrite together.
+
+The rest of the section (the age array, the two-component mixing model, the
+30 um / 1.6 Ga closed-system prediction) is kept, since that data pattern is
+independent of mineral identity, but every place that previously said
+"arsenopyrite-dominated aliquots" now reads "the eleven-aliquot array" or
+similar. The paragraph on 011123KCPyST05C is rewritten to no longer claim it
+is confirmed pyrite: its old age matching the closed-system prediction is
+now explicitly presented as one of two equally-plausible readings --
+genuine near-total closed-system retention, or an anomalously old age from
+incomplete acid digestion (a known failure mode already discussed elsewhere
+in this chapter for the Gogebic hematite outlier) -- without preferring
+either. The step-heat pyrite-more-retentive-than-arsenopyrite argument is
+kept but explicitly hedged as only relevant "if" this aliquot is confirmed
+pyrite, which it can't be.
+
+Cascaded the same correction to `HeInSulfides_abstract.tex` and the
+Conclusions paragraph in `HeInSulfides_Main_Body.tex`, since both restated
+the "eleven arsenopyrite / one pyrite" framing.
+
+## Figure changes
+
+- `Chapter3/Figures/fig_geochronology_ages.py`
+  (`KiddCreek_Age_vs_Th_and_He.pdf`, `fig:ch3-kiddcreek-age-th-he`):
+  reverted `plot_kidd_creek_th_he()` to a single flat color (no more
+  log(As) colorbar/grey-for-unmeasured coloring from the prior entry).
+- `Chapter3/Figures/fig_alpha_stopping_distances.py`
+  (`He_Age_vs_Apatite_Inclusion_Size.pdf`,
+  `fig:ch3-he-age-vs-inclusion-size`): removed the "Arsenopyrite"-labeled
+  reference band and the single "Pyrite" point. In their place,
+  `plot_helium_age()` now imports `_load_distilled_sheet` from
+  `fig_geochronology_ages.py` and plots all twelve measured Kidd Creek
+  dates (with their 2-sigma error bars) at the observed 30 um inclusion
+  half-width, all in one color/marker -- no mineral-based distinction.
+  Eleven cluster well below the model's closed-system curve; the twelfth
+  sits right on it. Nudged the "Observed inclusion half-width" text label
+  up out of the new point cluster so it doesn't overlap the markers.
+
+Both figures regenerated and visually checked.
+
+## Verification
+
+Full clean rebuild (`latexmk -C` then rebuild, including a fresh
+`references.bib` sync -- the previous `hurley1941` undefined-citation flag
+was just a stale `.bbl` on my end, not a real gap; it now resolves):
+225 pages, zero errors, zero undefined references/citations, zero
+multiply-defined labels, identical overfull-hbox set to the prior entry
+(48, none in the edited passages).

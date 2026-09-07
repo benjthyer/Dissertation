@@ -96,6 +96,7 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPT_DIR)
 from thermochr_utils import He_forward, isotope_fraction
 from plot_style import apply_style
+from fig_geochronology_ages import _load_distilled_sheet
 apply_style()
 
 DATA_CSV = os.path.join(SCRIPT_DIR, 'data', 'alpha_stopping_distances.csv')
@@ -122,11 +123,13 @@ MC_SEED = 0
 AGE_INCLUSION_MYR = 2700.0  # inclusion source/crystallization age (Ma)
 COOLING_AGE_MYR = 380.0     # apatite's own He-retention (cooling) age (Ma)
 
-# Range of accepted Kidd Creek pyrite U-Th/He dates (KiddCreek_Age_vs_Th*
-# in fig_geochronology_ages.py), shown as a reference band for comparison
-# against this model's predicted apparent age.
-PYRITE_AGE_MIN_MYR = 465.0
-PYRITE_AGE_MAX_MYR = 860.0
+# All twelve measured Kidd Creek U-Th/He dates (fig_geochronology_ages.py
+# KiddCreekDistilled) are plotted at the observed ~30 um inclusion
+# half-width (OBSERVED_R_MAX_UM) for comparison against the model curve.
+# As measurements, mass-balance stoichiometry, and optical habit turned
+# out to be mutually inconsistent for this suite (per chat), so
+# individual aliquots are no longer split into "pyrite" vs
+# "arsenopyrite" here -- all twelve are shown the same way.
 
 
 def _sample_unit_ball(n, rng):
@@ -247,18 +250,42 @@ def plot_helium_age(R, ft):
     chosen_R = R[np.argmin(np.abs(ages_Ma - chosen_age))]
     print(f"Closest R to {chosen_age:.0f} Ma: R={chosen_R:.1f} um")
 
+    kc_rows = _load_distilled_sheet('KiddCreekDistilled')
+    kc_rows = [r for r in kc_rows if r['age_corr'] is not None]
+    kc_ages = [r['age_corr'] for r in kc_rows]
+    kc_errs = [r['age_corr_err'] for r in kc_rows]
+
     fig, ax = plt.subplots()
     ax.plot(R, ages_Ma, color='tab:blue', linewidth=2)
     #ax.plot(R, naive_ages_Ma, color='tab:blue', linewidth=1.2, linestyle=':', alpha=0.6)
     ax.axhline(AGE_INCLUSION_MYR, color='gray', linestyle='-.', linewidth=1)
     ax.axhline(COOLING_AGE_MYR, color='gray', linestyle='-.', linewidth=1)
-    ax.axhspan(PYRITE_AGE_MIN_MYR, PYRITE_AGE_MAX_MYR, color='tab:orange', alpha=0.15, zorder=0)
     ax.set_xlim(0, R_MAX_UM)
-    _add_observed_inclusion_band(ax)
+    # A single vertical line at the observed ~30 um apatite inclusion
+    # half-width, rather than the 0-30 um shaded band used elsewhere
+    # (_add_observed_inclusion_band, still used as-is by
+    # plot_sulfide_fraction) -- this is the inclusion size all twelve
+    # measured Kidd Creek dates below are plotted at, and a line reads
+    # more precisely against it than a band would.
+    ax.axvline(OBSERVED_R_MAX_UM, color='teal', linestyle='--', linewidth=1.2, zorder=1)
+    trans_x = ax.get_xaxis_transform()
+    ax.text(OBSERVED_R_MAX_UM, 0.5, f'Observed inclusion\nhalf-width ({OBSERVED_R_MAX_UM:.0f} µm)',
+            transform=trans_x, rotation=90, ha='right', va='bottom', fontsize=8,
+            color='teal', bbox=dict(facecolor='white', edgecolor='none', alpha=0.75, pad=1.5))
+    # All twelve measured Kidd Creek dates, plotted at the one observed
+    # inclusion size -- one color/marker for all twelve, since we can't
+    # reliably split this suite into pyrite vs. arsenopyrite (see chat/
+    # HeInSulfides_Main_Body.tex, ch3-discussion-kiddcreek-ages).
+    ax.errorbar([OBSERVED_R_MAX_UM] * len(kc_ages), kc_ages, yerr=kc_errs,
+                fmt='D', color='tab:orange', ecolor='tab:orange', capsize=4,
+                markersize=6, markeredgecolor='black', markeredgewidth=0.5,
+                alpha=0.85, linestyle='none', zorder=4,
+                label='Kidd Creek pyrite/arsenopyrite dates (n=%d)' % len(kc_ages))
     ax.set_xlabel('Apatite Inclusion Half-Prism Width (µm)')
     ax.set_ylabel('Apparent Bulk He Age (Ma)')
-    ax.set_title('Inclusion Size Age Effect For Kidd Creek (Arseno)Pyrite')
+    ax.set_title('Inclusion Size Age Effect For Kidd Creek Pyrite/Arsenopyrite')
     ax.grid(alpha=0.3)
+    ax.legend(fontsize=9, loc='center right')
 
     # Everything labeled directly on the plot instead of via a legend --
     # the two reference lines with a white background box (so they stay
@@ -272,7 +299,7 @@ def plot_helium_age(R, ft):
     trans = ax.get_yaxis_transform()
     label_box = dict(facecolor='white', edgecolor='none', alpha=0.85, pad=1.5)
 
-    ax.text(0.97, AGE_INCLUSION_MYR, f'Inclusion crystallization age ({AGE_INCLUSION_MYR:.0f} Ma)',
+    ax.text(0.97, AGE_INCLUSION_MYR, f'crystallization age ({AGE_INCLUSION_MYR:.0f} Ma)',
             transform=trans, ha='right', va='center', fontsize=8, bbox=label_box)
     ax.text(0.97, COOLING_AGE_MYR, f'Apatite cooling age ({COOLING_AGE_MYR:.0f} Ma)',
             transform=trans, ha='right', va='center', fontsize=8, bbox=label_box)
@@ -280,8 +307,6 @@ def plot_helium_age(R, ft):
     # entirely above it (crosses in at R~90 um, never gets back down to
     # the band's own lower edge within the plotted R range) -- no need
     # for a white box there since the curve never crosses through it.
-    ax.text(0.45, (PYRITE_AGE_MIN_MYR + PYRITE_AGE_MAX_MYR) / 2, '(Arseno)pyrite U-Th/He ages',
-            transform=trans, ha='center', va='center', fontsize=8, color='tab:orange', bbox=dict(facecolor='white', edgecolor='none', alpha=0.75, pad=1.5))
 
     label_R = 0.72 * R_MAX_UM
     """ax.annotate('Full treatment\n(He-domain mixing)', xy=(label_R, np.interp(label_R, R, ages_Ma)),

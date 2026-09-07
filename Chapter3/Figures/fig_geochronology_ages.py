@@ -92,9 +92,18 @@ def _load_distilled_sheet(sheet_name):
     sm_err_col = sm_col + 1
     Th_col = col('Th ppm')
     Th_err_col = Th_col + 1
+    As_col = col('As (ppm)')
+    As_err_col = As_col + 1
 
     def num(v):
         return float(v) if isinstance(v, (int, float)) else None
+
+    def num_as(v):
+        # A literal 0 in this column is this workbook's convention for
+        # "As not measured" for an early KiddCreek prep batch, not a real
+        # zero-ppm measurement -- treat it the same as a blank/None cell.
+        x = num(v)
+        return None if x == 0 else x
 
     rows = []
     for r in range(2, ws.max_row + 1):
@@ -113,6 +122,8 @@ def _load_distilled_sheet(sheet_name):
             Sm_err=num(ws.cell(row=r, column=sm_err_col).value),
             Th=num(ws.cell(row=r, column=Th_col).value),
             Th_err=num(ws.cell(row=r, column=Th_err_col).value),
+            As=num_as(ws.cell(row=r, column=As_col).value),
+            As_err=num(ws.cell(row=r, column=As_err_col).value),
         ))
     return rows
 
@@ -180,15 +191,21 @@ def plot_kidd_creek_th_he():
     """Two-column companion to plot_kidd_creek(): Th (left panel) and 4He
     (right panel) each vs. Age, sharing one Age y-axis (sharey=True, with
     the right panel's tick labels suppressed) so the two proxies read as
-    one figure instead of two separate plots."""
+    one figure instead of two separate plots.
+
+    Previously colored points by measured As content to distinguish
+    pyrite from arsenopyrite -- reverted (per chat) because As
+    measurements, mass-balance stoichiometry, and optical habit turned
+    out to be mutually inconsistent for this suite, so individual
+    aliquots can't be reliably split by mineral; back to one color."""
     rows = _load_distilled_sheet('KiddCreekDistilled')
     rows = [r for r in rows if r['Th'] is not None and r['He4_nccmg'] is not None
             and r['age_corr'] is not None]
 
     fig, (ax_th, ax_he) = plt.subplots(1, 2, sharey=True, figsize=(9, 5))
 
-    _errorbar(ax_th, rows, 'Th', 'Th_err', 'steelblue', 'o', 'Kidd Creek VMS Pyrite')
-    _errorbar(ax_he, rows, 'He4_nccmg', None, 'steelblue', 'o', 'Kidd Creek VMS Pyrite')
+    _errorbar(ax_th, rows, 'Th', 'Th_err', 'steelblue', 'o', 'Kidd Creek Pyrite/Arsenopyrite')
+    _errorbar(ax_he, rows, 'He4_nccmg', None, 'steelblue', 'o', 'Kidd Creek Pyrite/Arsenopyrite')
 
     for ax in (ax_th, ax_he):
         ax.axhspan(392 - 32, 392 + 32, color='black', alpha=0.12, zorder=0)
@@ -210,7 +227,7 @@ def plot_kidd_creek_th_he():
                transform=trans, ha='left', va='bottom', fontsize=10,
                bbox=dict(facecolor='white', edgecolor='none', alpha=0.85, pad=1.5))
 
-    fig.suptitle('Kidd Creek Pyrite: Age vs. Th and He Content')
+    fig.suptitle('Kidd Creek Pyrite/Arsenopyrite: Age vs. Th and He Content')
     fig.tight_layout()
     outpath = os.path.join(OUTDIR, 'KiddCreek_Age_vs_Th_and_He.pdf')
     fig.savefig(outpath, dpi=300, bbox_inches='tight')

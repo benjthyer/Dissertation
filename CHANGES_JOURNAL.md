@@ -1307,3 +1307,118 @@ was just a stale `.bbl` on my end, not a real gap; it now resolves):
 225 pages, zero errors, zero undefined references/citations, zero
 multiply-defined labels, identical overfull-hbox set to the prior entry
 (48, none in the edited passages).
+
+
+---
+
+# 2026-09-07 -- Chapter 3 proofreading pass (grammar, spelling, typos, consistency)
+
+Full proofreading pass over all of Chapter 3's prose (`HeInSulfides_Main_Body.tex`,
+`HeInSulfides_abstract.tex`, `HeInSulfides_SI_body.tex`, and the table captions
+in `chapter3_geochron_tables.tex`), at your request. About 100 fixes applied;
+verified with a full clean rebuild (225 pages, zero errors, zero undefined
+refs/citations, same 48-overfull-hbox baseline). Grouped below rather than
+listed file-by-file/line-by-line.
+
+## Spelling and typos fixed
+mathmatically/mathmatical -> mathematically/mathematical; additionaly ->
+additional; delievered -> delivered; montiored -> monitored; abundaces ->
+abundances; acivation -> activation (and pluralized to "activation energies"
+to fix the subject-verb agreement it was tangled up in); aginst -> against;
+assymetric -> asymmetric; cumlative -> cumulative; incorperated ->
+incorporated; interogated -> interrogated; retentively -> retentivity;
+reexisting -> pre-existing; realtively -> relatively; arsonpyrite ->
+arsenopyrite; Leavldville -> Leadville; Compliment -> Complement (section
+heading -- wrong word, not a typo of spelling); monzonite-structure ->
+monazite-structure (abstract -- monzonite is an igneous rock, not the
+phosphate mineral structure meant here); Rustenberg -> Rustenburg
+(3 places, including one table header that had it flagged "(?)" -- this
+is consistently "Rustenburg" everywhere else in the chapter); U/Ph -> U/Pb;
+orU-Th -> or U-Th (missing space).
+
+## Grammar
+Several subject-verb agreement fixes ("Pyrite and arsenopyrite ... was
+collected" -> "were collected"; "the precise timing and mechanism ... is
+not fully understood" -> "are"; "Radiogenic helium evolution ... show" ->
+"shows"; "there exists many copper-bearing sulfide phases" -> "exist";
+"the data ... was consistent" -> "were", matching this document's own
+"these data are/do not" convention elsewhere; "differences ... is
+discussed" -> "are"; "the identity, size distribution, and digestion
+behavior ... is a property" -> "are properties" / "differs" -> "differ").
+Fixed a doubled/garbled phrase ("single-jump mechanistic single-jumps" ->
+"single-jump mechanisms"), a dangling clause missing "which" before
+"leaves the diffusion/migration physics... undercharacterized", a
+duplicated "which for which" (Bushveld sentence), a sentence with no verb
+("this aliquot's contained U-Th-Sm rich inclusions near or on surface of
+the sulfide grains" -> "...U-Th-Sm-rich inclusions sat near or on the
+surface..."), a "Step heat data step heat experiments" duplication (SI),
+and a handful of missing/misplaced commas, plus one stray sentence-initial
+lowercase "the" after a period.
+
+## Consistency
+- Capitalized "Gympie" where it had lowercased mid-sentence (6 places,
+  careful to leave the `\label`/`\ref` identifiers like
+  `fig:ch3-gympie-...` alone, since those are case-sensitive).
+- Capitalized "Arrhenius" where lowercased in running prose (4 places;
+  again left the `arrhenius` inside figure label/ref identifiers alone).
+- "Re/Os" and "Rb/Sr" -> "Re-Os"/"Rb-Sr" to match this chapter's
+  established hyphenated convention (used ~80 times elsewhere).
+- "atmospheric-corrected" -> "atmospherically corrected" (1 outlier vs.
+  4 correct uses); "isotope-dilution quantified" ->
+  "isotope-dilution-quantified" to match the fully-hyphenated form used
+  elsewhere; "early permian"/"carboniferous" -> "Early Permian"/
+  "Carboniferous" (formal period names, capitalized everywhere else);
+  "Gympie block" -> "Gympie Block" (2 of 3 uses already capitalized).
+- Fixed three sample-name typos in the Leadville grain-size subsection
+  where the third experiment was twice called "112123LVCOPy" (dropping
+  the "Irr" suffix used everywhere else) and the big-grain experiment was
+  once called plain "LVCOPy230707" instead of "BigLVCOPy230707" -- as
+  written these would have read as a fourth, nonexistent sample.
+- "section \ref{...}" -> "\S\ref{...}" and "Sec.~\ref{...}" -> "\S\ref{...}"
+  (3 places) to match the "\S\ref" convention used ~50 other times;
+  likewise added a missing "\S" to three bare "\ref{sem-imaging-of...}"
+  cross-references, and a missing "Table~" before one bare
+  "(\ref{tab:ch3-step-heat-tubes})".
+- Normalized a few other doubled/inconsistent hyphenations
+  ("short circuit" -> "short-circuit", "multiple domain volume diffusion"
+  -> "multiple-domain volume diffusion", "high vacuum, high temperature"
+  -> "high-vacuum, high-temperature", "U-Th bearing" -> "U-Th-bearing").
+- Raw "±" characters -> "$\pm$" (LaTeX macro, matching the ~100 other
+  uses) in two places.
+- Expanded the document's one contraction ("don't" -> "do not") to match
+  the formal register used everywhere else.
+- \subsubsection*{Sphalerite} (was: unlabeled \emph{Sphalerite}, the only
+  one of three parallel Results subheadings in the SI not using
+  \subsubsection*).
+
+## Corrected an inverted causal claim
+"an anomalously old U-Th/He age is also the expected signature of
+incomplete acid digestion, which would leave some U-Th-Sm-bearing residue
+undissolved, **underestimating** the apparent age" -- undissolved
+U-Th-Sm residue means the measured parent-isotope budget is too *low*,
+which makes the calculated age too *old* (overestimated), not
+underestimated. Changed "underestimating" -> "overestimating" so the
+sentence supports the point it's making (that incomplete digestion is a
+plausible explanation for an anomalously *old* date).
+
+## Flagged, not changed -- please take a look
+A few things a proofread can catch but shouldn't silently "fix" because
+they're substantive, not typos:
+1. **Cumulative fractional yield ceiling stated three different ways.**
+   The same claim ("no pyrite or arsenopyrite step heat experiment
+   exceeded X% cumulative fractional yield") appears with three different
+   numbers: 6% in Results (§3.3), 7% in Discussion §3.4.1, 5% in the
+   Conclusions. I don't have the raw yield totals to know which is right.
+2. **Abstract's Kidd Creek paragraph doesn't match the Discussion/
+   Conclusions.** The abstract still frames the old aliquot's age as
+   confirmed evidence of "a perfectly retentive 2.7 Ga sulfide host" with
+   no hedge, while the Discussion and Conclusions both now present that
+   as one of two equally-plausible readings (genuine retention vs.
+   incomplete digestion). The abstract also cites the reference apatite
+   cooling age as "~370 Ma" where the Discussion/Conclusions use
+   "392 ± 32 Ma" throughout -- worth reconciling both the number and the
+   framing.
+3. **`\hl{Tube Photo}` placeholder still in the SI text** (Chalcopyrite/
+   Chalcocite results, right before "Although permeation lag..." -- I
+   only added the missing period before it, not touched the placeholder
+   itself).

@@ -269,8 +269,8 @@ def plot_helium_age(R, ft):
     # more precisely against it than a band would.
     ax.axvline(OBSERVED_R_MAX_UM, color='teal', linestyle='--', linewidth=1.2, zorder=1)
     trans_x = ax.get_xaxis_transform()
-    ax.text(OBSERVED_R_MAX_UM, 0.5, f'Observed inclusion\nhalf-width ({OBSERVED_R_MAX_UM:.0f} µm)',
-            transform=trans_x, rotation=90, ha='right', va='bottom', fontsize=8,
+    ax.text(OBSERVED_R_MAX_UM, 0.5+0.1, f'Observed inclusion\nhalf-width ({OBSERVED_R_MAX_UM:.0f} µm)',
+            transform=trans_x, rotation=90, ha='left', va='bottom', fontsize=8,
             color='teal', bbox=dict(facecolor='white', edgecolor='none', alpha=0.75, pad=1.5))
     # All twelve measured Kidd Creek dates, plotted at the one observed
     # inclusion size -- one color/marker for all twelve, since we can't
@@ -283,7 +283,7 @@ def plot_helium_age(R, ft):
                 label='Kidd Creek pyrite/arsenopyrite dates (n=%d)' % len(kc_ages))
     ax.set_xlabel('Apatite Inclusion Half-Prism Width (µm)')
     ax.set_ylabel('Apparent Bulk He Age (Ma)')
-    ax.set_title('Inclusion Size Age Effect For Kidd Creek Pyrite/Arsenopyrite')
+    ax.set_title('Inclusion Size Age Effect\nKidd Creek Pyrite/Arsenopyrite')
     ax.grid(alpha=0.3)
     ax.legend(fontsize=9, loc='center right')
 

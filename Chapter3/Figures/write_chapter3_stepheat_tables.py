@@ -197,14 +197,11 @@ def build_table(macro, sample, tab_key, label, fig_note, caption_extra=''):
     tab_label = f'tab:{tab_key}'
     caption = (
         rf"$^3$He step-heat dataset for {label} (sample {sample.replace('_', chr(92) + '_')}), "
-        rf"under the ``treatment as uncertainty'' method "
-        rf"(\S\ref{{sec:ch3-analytical-methods}}): measured and cumulative $^3$He, the "
+        rf"under the uncertainty bounding method (\S\ref{{bounding-method}}). "
+        rf"The measured and cumulative $^3$He, "
         rf"upper-bound residual ampoule content ($n_{{t,\mathrm{{UB}}}}$), and the "
-        rf"corresponding lower-bound, central, and upper-bound apparent diffusivities "
-        rf"plotted in {fig_note}. Only steps meeting the $\lambda t \geq 4$ plotability "
-        rf"threshold are listed (\S\ref{{sec:ch3-analytical-methods}}); earlier "
-        rf"equilibration/permeation steps and any steps manually excluded as unreliable "
-        rf"are omitted rather than shown with undetermined bounds. "
+        rf"corresponding lower-bound, central, and upper-bound apparent diffusivities are "
+        rf"plotted in {fig_note}. "
         rf"$\ln(D/a^2)_{{\mathrm{{LB}}}}$ is left blank where the lower bound is "
         rf"unconstrained (\S\ref{{sec:ch3-analytical-methods}}).{caption_extra}"
     )

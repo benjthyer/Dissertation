@@ -67,8 +67,23 @@ SEARCH_DIRS = [
 # local basename once copied here -- see those files' own comments).
 EXTERNAL_TEX_INPUTS = [
     REPO_ROOT / 'Chapter2' / 'Writing' / 'chapter2_derived_values.tex',
-    REPO_ROOT / 'Chapter2' / 'Writing' / 'chapter2_naive_isothermal_tables.tex',
+    REPO_ROOT / 'Chapter2' / 'Writing' / 'chapter2_permstep_isothermal_tables.tex',
 ]
+
+# The dissertation chapters renamed the "naive"/"informed"/"treatment as
+# uncertainty" method figures to the permeation-step / bounding names, and the
+# generated PDFs were renamed with them. The manuscript still \includegraphics
+# the old basenames and is deliberately left untouched, so map each legacy
+# basename onto its current source file here. Drop an entry once the manuscript
+# itself is renamed.
+LEGACY_FIGURE_ALIASES = {
+    'NaiveIsothermalFits_Grid_Top4.pdf': 'PermeationStepFits_Grid_Top4.pdf',
+    'NaiveIsothermalFits_Grid.pdf': 'PermeationStepFits_Grid.pdf',
+    'NaiveLambda_Arrhenius.pdf': 'AmpoulePermeability_Arrhenius.pdf',
+    'Winsor_diffusivity_naive_vs_bounding.pdf': 'Winsor_diffusivity_permstep_vs_bounding.pdf',
+    'winsor_goethite_Diffusivities_Arrhenius_Zoomin_naive.pdf':
+        'winsor_goethite_Diffusivities_Arrhenius_Zoomin_permstep.pdf',
+}
 
 INCLUDEGRAPHICS_RE = re.compile(r'\\includegraphics(?:\[[^\]]*\])?\{([^}]+)\}')
 CITE_RE = re.compile(r'\\cite[tp]\*?(?:\[[^\]]*\])?(?:\[[^\]]*\])?\{([^}]+)\}')
@@ -97,7 +112,8 @@ def copy_figures():
 
     copied, missing = [], []
     for name in referenced:
-        src = next((d / name for d in SEARCH_DIRS if (d / name).exists()), None)
+        src_name = LEGACY_FIGURE_ALIASES.get(name, name)
+        src = next((d / src_name for d in SEARCH_DIRS if (d / src_name).exists()), None)
         if src is None:
             missing.append(name)
             continue

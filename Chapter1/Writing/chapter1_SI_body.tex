@@ -615,7 +615,7 @@ We numerically solve the radial diffusion equation for cylinders (Eq.~\eqref{eq:
 Method (FDM) along a radial transect of a model ampoule of arbitrary
 geometry for small, discrete time intervals. The system is spatially
 discretized into 100 cells along a radial transect, and numerical
-stability was insured by solving for the time interval of a single step,
+stability was ensured by solving for the time interval of a single step,
 $\Delta t$, such that \(\frac{D\Delta t}{\Delta x^{2}} = 0.5\), satisfying the
 Courant-Friedrichs-Lewy (CFL) condition.
 
@@ -1164,7 +1164,7 @@ For long timescales (i.e. when \(e^{- \lambda t} \approx 0\)), Eq.~\eqref{eq:s6-
 reduces to \(n_{t} \leq \ n_{ss}\). This is effectively true for steps
 long enough such that \(t \geq \frac{5}{\lambda}\), for which
 \(e^{- \lambda t} \leq 0.007.\) It is advisable to only consider the
-Approximation with Uncertainty method for steps of sufficiently long duration such that
+bounding method for steps of sufficiently long duration such that
 \(t \geq \frac{5}{\lambda}\) so that the estimation for \(n_{t}\) can be
 reduced to simply the steady state value and not be dependent upon the
 estimation for \(n_{0}\) or its uncertainties. The timescales required

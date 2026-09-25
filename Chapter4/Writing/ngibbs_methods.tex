@@ -1,0 +1,1058 @@
+% =====================================================================
+%  nGibbs -- Methods
+%  Draft v1, 2026-09-09
+%
+%  Required packages:
+%    \usepackage{amsmath,amssymb,bm}
+%    \usepackage{booktabs}
+%    \usepackage{siunitx}
+%    \usepackage{graphicx}
+%    \usepackage[round]{natbib}   % or biblatex; \citep/\citet used below
+%
+%  Promote \section -> \chapter and \subsection -> \section if this is
+%  used as a standalone thesis chapter.
+%
+%  Notation note: the network's per-phase saturation variable is g_phi.
+%  The pyroxene reparameterization in Sec. 2.4 uses r_i and u_i; the
+%  internal memo called the latter g_i, renamed here to avoid collision.
+% =====================================================================
+
+\section{Methods}
+\label{sec:ngibbs-methods}
+
+\subsection{Overview and design rationale}
+\label{sec:overview}
+
+\subsubsection{The computational problem}
+
+Thermodynamic equilibrium in a multicomponent silicate system is obtained by
+minimizing the Gibbs free energy of the system at fixed pressure, temperature and
+bulk composition, subject to mass balance on every element. The minimization is
+iterative, the stable assemblage is not known in advance, and the solution at one
+state provides only a starting guess for the next; consequently the calculation is
+inherently sequential along a pressure--temperature path and does not vectorize.
+For the two reference codes used here, \textsc{MELTS} and its variants
+\citep{Ghiorso1995,Asimow1998,Ghiorso2002} for crustal and lithospheric melting and
+crystallization, and \textsc{HeFESTo} \citep{StixrudeLithgowBertelloni2005,
+StixrudeLithgowBertelloni2011,StixrudeLithgowBertelloni2022} for whole-mantle solid phase equilibria,
+a single equilibrium state costs on the order of
+$10^{-2}$ to $10^{0}$~s.
+
+That cost is acceptable for a single geotherm but prohibitive for many applications
+that benefit most strongly from equilibrium thermodynamics: inversion of seismic structure for mantle
+composition, Monte Carlo propagation of compositional uncertainty, coupled
+geodynamic models that require an equation of state at every cell and every
+timestep, and systematic exploration of multivariate parameter space. Such work may require
+billions of equilibrium evaluations, and is therefore computationally prohibitive.  \emph{nGibbs} is a neural-network
+emulator of these equilibrium map that is designed to make that regime accessible.
+Absolute throughput and accuracy are reported in Section~\ref{sec:results}.
+
+\subsubsection{What is emulated}
+
+ \emph{nGibbs} emulates only the
+\emph{chemical} solution of the minimization: which phases are present, in what
+molar abundance, and with what endmember compositions. It does not predict density,
+seismic wave speeds, elastic moduli, heat capacities, or any other physical
+property.
+
+This restriction is deliberate. Physical properties are algebraic consequences of
+the assemblage through the equations of state of the constituent phases; those
+equations are exact, inexpensive to evaluate, and already implemented in the
+MELTS and HeFESTo. Learning them in addition to the assemblage would duplicate
+information the assemblage already carries, would permit thermodynamically
+inconsistent output and would forfeit the ability to propagate the reference code's own
+equation-of-state parameters through to the result. Predicting the assemblage and
+then evaluating properties deterministically keeps the emulator's output simple and interpretable.
+
+However, there is one exception. For the isentropic models, whose inputs are pressure
+and specific entropy, temperature is not recoverable from the assemblage without an
+inner iteration; temperature is therefore predicted by a small auxiliary network
+(Section~\ref{sec:temperature}). This is done purely for speed, and temperature is
+the only learned quantity in \emph{nGibbs} that is not part of the equilibrium
+assemblage. No other non-chemical property is learned in any released model.
+
+\subsubsection{Emulator families}
+
+\emph{nGibbs} subdivides thermodynamic models into a family of
+independently trained closed-system isothermal $(P,T,\mathbf{X})$, closed-system isentropic
+$(P,S,\mathbf{X})$, and oxygen-buffered $(P,T,f_{\mathrm{O}_2},\mathbf{X})$ emulators (Table~\ref{tab:families}). 
+For MELTS simulations, the inclusion of chromium in the bulk composition greatly influences the phase 
+assemblage because only melt and spinel contain chromium, leading to pathological stabilization of spinel. Therefore, separate 
+models are trained with and without chromium. 
+Training separate models allows each problem to be fit well on its own terms, rather than forcing the optimizer to trade accuracy in
+one regime against the other.
+
+\begin{table}[t]
+\centering
+\caption{Released emulator families. Each entry is an independently trained model.}
+\label{tab:families}
+\begin{tabular}{llll}
+\toprule
+Reference code & Input set & Conserved & Cr variants \\
+\midrule
+\textsc{MELTS} & $(P,T,\mathbf{X})$                    & Fe$^{3+}$ & Cr, no-Cr \\
+\textsc{MELTS} & $(P,S,\mathbf{X})$                    & Fe$^{3+}$ & Cr, no-Cr \\
+\textsc{MELTS} & $(P,T,f_{\mathrm{O}_2},\mathbf{X})$   & ---       & Cr, no-Cr \\
+\textsc{HeFESTo} & $(P,T,\mathbf{X})$                  & Fe$^{3+}$ & --- \\
+\textsc{HeFESTo} & $(P,S,\mathbf{X})$                  & Fe$^{3+}$ & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% -- FIGURE PLACEHOLDER -------------------------------------------------
+% \begin{figure}[t] \centering \includegraphics{fig_pipeline}
+% \caption{Schematic of the nGibbs pipeline: reference-code simulations,
+% compiled training tables, network training, and inference coupled to the
+% deterministic equation-of-state engine.} \label{fig:pipeline} \end{figure}
+% -----------------------------------------------------------------------
+
+\subsection{Problem formulation}
+\label{sec:formulation}
+
+\subsubsection{Inputs}
+
+Each emulator takes pressure and one further intensive variable (temperature
+for the isothermal models, specific entropy for the isentropic models) and a bulk
+composition as inputs. The emulators are trained on and expect the same units for pressure, temperature, and entropy that
+the real thermodynamic MELTS and HeFESTo use: Kelvin and GPa for HeFESTo, and Celcius and bars for MELTS. Both expect specific 
+entropy in units of J/g/K. nGibbs recieves as input normalized cation atomic abundances, following  $\mathbf{b}\in\mathbb{R}^{E}$ with $\sum_e b_e = 1$. Compositions are supplied by the user either as oxide weight percents or as element
+molar abundances for any model; oxide inputs are automatically converted internally to the normalized cation abundances expected by nGibbs.
+
+Entropy is offered as a useful alternative to temperature because isentropic paths are the
+natural coordinate for the convecting mantle \citep{Davies1977,Brown1981,Asimow1997,Asimow2001,Ganguly2005,Tirone2016}. Supplying $S$ directly removes an inner iteration for $T$ at every pressure step, which is the dominant cost of constructing
+an adiabat by conventional means.
+
+\paragraph{Redox state.} \emph{nGibbs} models closed systems that conserve oxygen content, as well as open systems where oxygen fugacity is imposed. Iron is the major redox-active element in \emph{nGibbs}. Every element besides iron is tracked at a single, fixed oxidation state and therefore the oxygen content of the system is fully specified by the ferric-to-total iron ratio. The only other redox-active element is carbon in \textsc{MELTS} 1.2 emulators, wherein carbon exists as an oxide in melt, fluid, and calcite, and as reduced carbon in graphite. Carbon is only represented as an oxide (CO\textsubscript{2}) in nGibbs, so graphite is represented as C(FeO)\textsubscript{4}(Fe\textsubscript{2}O\textsubscript{3})\textsubscript{-2} in oxide space in order to conserve oxygen. Similarly, native iron phases are represented as (FeO)\textsubscript{3}(Fe\textsubscript{2}O\textsubscript{3})\textsubscript{-1} in oxide space in \emph{nGibbs}.
+
+One of two things must be supplied at inference: an explicit Fe$^{2+}$/Fe$^{3+}$
+partitioning (equivalently, both FeO and Fe$_2$O$_3$), which the closed-system models
+conserve; or an oxygen fugacity (\emph{f}O\textsubscript{2}) in log unit offset from the fayalite-magnetite-quartz buffer ($\Delta$FMQ), which the open-system models impose. Oxygen buffering is neither available in \textsc{HeFESTo} or its \emph{nGibbs} emulator. In these open models, only cation mass is conserved: cations are represented by their elemental form, and the oxygen contents of the system is a consequence of the predicted phase assemblage. 
+
+\subsubsection{Outputs}
+
+In earlier editions of \emph{nGibbs} models, the phase assemblage was determined first through a binary phase saturation model before the phase abundances and chemistries were determined. While such three-stage models were easy to train, lightweight, and generally yielded good results, they suffered from non-physical abrupt jumps and drops in phase abundances across saturation surfaces because of the artificial decoupling of phase abundance and saturation state. Current models address this by combining the abundance and saturation predictions into a single output, enforcing by construction that phases start and end at exactly zero abundance at their saturation surfaces.
+
+\emph{nGibbs} predicts, for each phase $\phi$,
+\begin{enumerate}
+  \item a molar abundance $n_\phi \ge 0$, and
+  \item for compositionally variable phases, a vector of endmember mole fractions
+        $\mathbf{y}_\phi$ lying on the simplex.
+\end{enumerate}
+
+A phase is present exactly when $n_\phi > 0$, a property of the architecture developed in
+Section~\ref{sec:continuous}. 
+
+These two predictions combine into the vector of
+species moles
+\begin{equation}
+  \mathbf{n} \;=\; \bigoplus_\phi n_\phi\, \mathbf{y}_\phi \;\in\;\mathbb{R}^{C},
+  \label{eq:assembly}
+\end{equation}
+where $\oplus$ denotes concatenation over phases and compositionally fixed phases
+contribute their constant composition vectors. Equation~\eqref{eq:assembly} is the
+quantity on which mass balance acts (Section~\ref{sec:massbalance}) and the quantity
+consumed by the equation-of-state engine (Section~\ref{sec:eos}), so the two
+predictions are constrained jointly rather than independently.
+
+\subsubsection{Compositional bases}
+
+Three bases are used. \emph{Components} are the endmembers of the reference code's
+solution models ($C$ in total across all phases); \emph{oxides} ($O$) are the
+conventional analytical basis; and \emph{elements} ($E$) are the conserved
+quantities. Because ferric and ferrous iron are distinguished as oxides but not as
+elements, $O = E+1$. Conversion between bases is exact stoichiometry, expressed as
+fixed matrices---component-to-oxide $\mathsf{U}\in\mathbb{R}^{C\times O}$ and
+oxide-to-element $\mathsf{V}\in\mathbb{R}^{O\times E}$---whose product
+\begin{equation}
+  \mathsf{A} \;=\; \mathsf{U}\mathsf{V} \;\in\; \mathbb{R}^{C\times E}
+  \label{eq:stoich}
+\end{equation}
+maps component moles directly to element moles. These matrices are model constants,
+not fitted parameters.
+
+\subsubsection{A non-negative, closure-preserving reparameterization of the
+pyroxene and spinel components of the \textsc{MELTS} models}
+\label{sec:pxsp}
+
+Each compositionally variable phase's composition is predicted with a softmax
+activation over its endmembers (Section~\ref{sec:chemheads}). Softmax guarantees by
+construction that its outputs are strictly positive and sum to one, so the network
+cannot emit a thermodynamically illegal composition regardless of its unconstrained
+raw output. That guarantee is only useful, however, if the \emph{training targets}
+can themselves be expressed exactly and invertibly in a basis with the same
+non-negative, unit-sum structure.
+
+The \textsc{MELTS} pyroxene and spinel solution models do not have this property
+natively. Their compositions are expressed as mole fractions of a fixed set of seven pyroxene 
+components and five spinel components that are individually unbounded
+below zero. Only certain linear combinations of them, corresponding to real
+crystallographic site occupancies, are constrained to physically sensible ranges. An
+exact, invertible change of basis is therefore required for each of these solutions,
+mapping every physically legal composition to a vector that is non-negative and sums
+to unity. We were able to analytically derive a solution for pyroxene, but spinel was instead solved
+numerically. All other \textsc{MELTS} solutions, and all \textsc{HeFESTo}
+solutions, are already non-negative in their native component bases, for which the
+transform below reduces to the identity.
+
+\paragraph{Pyroxene.} We write the mole fractions of the seven \textsc{MELTS} pyroxene
+components (diopside, clinoenstatite, hedenbergite, alumino-buffonite, buffonite,
+essenite, jadeite) as $x_0,\dots,x_6$. Pyroxene has the general formula
+M2\,M1\,T$_2$O$_6$, with one large octahedral site (M2), one small octahedral site
+(M1), and two tetrahedral sites (T); the site occupancies of the seven components
+follow \citet{SackGhiorso1994} and are given in Table~\ref{tab:pxsites}. The
+atoms-per-formula-unit totals implied by that table are
+\begin{align}
+  \mathrm{Ca} &= x_0+x_2+x_3+x_4+x_5, &
+  \mathrm{Na} &= x_6, \nonumber\\
+  \mathrm{Mg} &= x_0+2x_1+\tfrac12(x_3+x_4), &
+  \mathrm{Al} &= x_3+x_5+x_6, \label{eq:pxapfu}\\
+  \mathrm{Fe}^{3+} &= x_4+x_5, &
+  \mathrm{Ti} &= \tfrac12(x_3+x_4). \nonumber
+\end{align}
+
+\begin{table}[t]
+\centering
+\caption{Site occupancies of the seven \textsc{MELTS} pyroxene components
+\citep{SackGhiorso1994}.}
+\label{tab:pxsites}
+\begin{tabular}{llll}
+\toprule
+Component & M2 & M1 & T,\,T \\
+\midrule
+diopside ($x_0$)            & Ca & Mg                            & Si, Si \\
+clinoenstatite ($x_1$)      & Mg & Mg                            & Si, Si \\
+hedenbergite ($x_2$)        & Ca & Fe$^{2+}$                     & Si, Si \\
+alumino-buffonite ($x_3$)   & Ca & $\tfrac12$Mg\,$+\,\tfrac12$Ti & Al, Si \\
+buffonite ($x_4$)           & Ca & $\tfrac12$Mg\,$+\,\tfrac12$Ti & Fe$^{3+}$, Si \\
+essenite ($x_5$)            & Ca & Fe$^{3+}$                     & Al, Si \\
+jadeite ($x_6$)             & Na & Al                            & Si, Si \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Seven components subject to closure leave six independent directions. These separate
+naturally into three groups. Three elements are carried by exactly one component
+each and can be read off directly: Fe$^{2+}$ (hedenbergite), Na (jadeite), and Mg on
+the M2 site specifically (clinoenstatite, the Mg--Ca exchange vector distinct from
+the M1 magnesium already carried by diopside). Three further elements---Fe$^{3+}$,
+Al and Ti---are each split across two or three components, so no single component
+fraction stands in for them; the corresponding coordinates are obtained by requiring
+their pairwise sums to equal the element totals of Eq.~\eqref{eq:pxapfu},
+\begin{equation}
+  r_1+r_3 = \mathrm{Al}, \qquad r_2+r_3 = \mathrm{Fe}^{3+}, \qquad
+  r_1+r_2 = 2\,\mathrm{Ti},
+\end{equation}
+which is a $3\times3$ system with the unique solution given below. The remaining two
+quantities, Ca and Si, are never tracked directly; they are pinned by requiring each
+crystallographic site to be exactly full---a second, local layer of closure nested
+inside the overall constraint $\sum_i x_i = 1$. Collecting these,
+\begin{equation}
+  r_0=x_2,\quad r_1=x_3+\tfrac12 x_6,\quad r_2=x_4-\tfrac12 x_6,\quad
+  r_3=x_5+\tfrac12 x_6,\quad r_4=x_6,\quad r_5=x_1 .
+  \label{eq:pxr}
+\end{equation}
+Each $r_i$ is bounded for any physically legal pyroxene, but not on $[0,1]$.
+Rescaling and recombining gives six quantities that are individually bounded on
+$[0,1]$:
+\begin{equation}
+  u_0=\tfrac12 r_0,\quad u_1=\tfrac12(r_1+r_2),\quad u_2=\tfrac12(r_1+r_3),\quad
+  u_3=\tfrac12(r_2+r_3),\quad u_4=\tfrac12 r_4,\quad u_5=\tfrac12 r_4+r_5 .
+  \label{eq:pxu}
+\end{equation}
+
+The even split of the jadeite content $r_4$ between $u_4$ and $u_5$ in
+Eq.~\eqref{eq:pxu} is not arbitrary. Back-substitution shows that the calcium budget
+takes the form $\mathrm{Ca} = 1-u_4-u_5$ only under this split; alternative
+formulations that assign $r_4$ entirely to $u_4$ carry larger coefficients on
+$u_4,u_5$ in that expression and can therefore formally drive Ca negative even when
+$u_4,u_5\in[0,1]$. With the split as written, non-negativity and closure of the full
+transformed vector are by themselves sufficient to guarantee $\mathrm{Ca}\ge0$.
+
+It is worth separating two claims here. That the individual $u_i$ lie in $[0,1]$
+follows from physical necessity: a legal crystal cannot have a negative atom count,
+and each site holds at most one atom, so every element total is both non-negative
+and capped. Unit-sum closure of the full transformed vector is a separate matter and
+does \emph{not} follow from site positivity. Adjoining the trivial identity
+$u_C\equiv1$ recovered from $\sum_i x_i=1$ gives a seven-element vector
+$(u_C,u_0,\dots,u_5)$ that is non-negative for any legal pyroxene but does not sum to
+one. Closure was imposed by evaluating the linear map of
+Eqs.~\eqref{eq:pxr}--\eqref{eq:pxu} at each of the seven pure endmembers and dividing
+each resulting row by its own row sum, yielding the fixed matrix
+$\mathsf{T}_{\mathrm{px}}$ of Table~\ref{tab:pxmatrix}, in which every row is
+individually non-negative and sums to unity.
+
+\begin{table}[t]
+\centering
+\caption{The pyroxene reparameterization matrix $\mathsf{T}_{\mathrm{px}}$. Rows are
+the seven \textsc{MELTS} pyroxene components; columns are the transformed
+coordinates. Every row is non-negative and sums to unity. The same matrix is applied
+to both the orthopyroxene and clinopyroxene solutions.}
+\label{tab:pxmatrix}
+\begin{tabular}{lccccccc}
+\toprule
+Component & $u_C$ & $u_0$ & $u_1$ & $u_2$ & $u_3$ & $u_4$ & $u_5$ \\
+\midrule
+diopside          & 1   & 0   & 0   & 0   & 0   & 0   & 0 \\
+clinoenstatite    & 1/2 & 0   & 0   & 0   & 0   & 0   & 1/2 \\
+hedenbergite      & 2/3 & 1/3 & 0   & 0   & 0   & 0   & 0 \\
+alumino-buffonite & 1/2 & 0   & 1/4 & 1/4 & 0   & 0   & 0 \\
+buffonite         & 1/2 & 0   & 1/4 & 0   & 1/4 & 0   & 0 \\
+essenite          & 1/2 & 0   & 0   & 1/4 & 1/4 & 0   & 0 \\
+jadeite           & 2/5 & 0   & 0   & 1/5 & 0   & 1/5 & 1/5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Because closure was imposed by endmember normalization rather than derived from the
+site-occupancy argument, its validity for a general (non-endmember) composition is
+not guaranteed \emph{a priori}, and was instead established empirically: applying
+$\mathsf{T}_{\mathrm{px}}$ to the full set of \textsc{MELTS}-computed pyroxene
+compositions in the training data yields vectors that are non-negative and sum to
+unity, and $\mathsf{T}_{\mathrm{px}}^{-1}$ recovers the original mole fractions 
+within numeric precision.
+
+\paragraph{Spinel.} The spinel solution (chromite, hercynite, magnetite, spinel
+\emph{sensu stricto}, ulv\"ospinel) does not reduce to a comparably clean set of
+site-occupancy inequalities: the binding constraints couple several components
+together, so that, for example, the combined abundance of chromite, magnetite and
+ulv\"ospinel must be at least as positive as hercynite is negative. No analogous
+analytic transform was therefore pursued. Instead a masked, invertible linear
+transform $\mathsf{T}_{\mathrm{sp}}$ was fit numerically.
+
+The matrix was parameterized as lower triangular, which guarantees invertibility for
+any non-zero diagonal. Chromite, whose mole fraction is already non-negative, was
+mapped onto its own dedicated output coordinate and excluded from the fit. Excluding 
+chromite from the component remapping was done so that chromium-free spinel compositions 
+could be faithfully recasted by chromium-free emulators using the same matrix. The
+remaining entries were optimized by gradient descent (Adam; PyTorch) against
+approximately $3\times10^{6}$ \textsc{MELTS} spinel compositions drawn from the
+training data, minimizing a two-term objective: a mean-squared term driving each
+transformed composition's row sum toward unity, and a leaky-ReLU penalty on negative
+transformed entries driving them toward zero. The learning rate was annealed by a
+factor of ten every 2{,}500 of 10{,}000 steps; the diagonal was reset to unity
+whenever it decayed toward zero, preserving invertibility; and coefficients falling
+below $0.05$ in magnitude were periodically hard-thresholded to zero to keep the
+fitted matrix sparse. The solution satisfyingly converged to one that can be expressed 
+in terms of relatively simple fractions.
+
+\begin{table}[t]
+\centering
+\caption{The spinel reparameterization matrix $\mathsf{T}_{\mathrm{sp}}$. Rows are
+the four (non-chromite) \textsc{MELTS} spinel components; columns are the transformed
+coordinates. Every row is non-negative and sums to unity.}
+\label{tab:spmatrix}
+\begin{tabular}{lcccc}
+\toprule
+Component & $u_C$ & $u_0$ & $u_1$ & $u_2$ \\
+\midrule
+Hercynite          & 1   & 0   & 0   & 0 \\
+Magnetite    & 2/5 & 3/5   & 0   & 0 \\
+Spinel      & 19/20 & 0  & 1/20   & 0 \\
+Ulv\"ospinel & 1/5 & 0   & 0  & 4/5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The resulting matrix and its analytic inverse were validated in the same way as the
+pyroxene transform: by histogramming the transformed compositions and their row
+sums, checking their extrema, and comparing round-tripped compositions against the
+originals across the full training set. Original compositions are recovered within numeric precision and the transformed components are confined almost entirely to $[0,1]$.
+
+\todo{Describe Analytic NN corrections during inference that push negative illegal compositions for both phases to 0. Include equations. (NN.py)}
+
+\subsubsection{Normalization}
+
+The full non-compositional feature vector (i.e. pressure, temperature, entropy, \emph{f}O\textsubscript{2}) is min--max normalized to $[0,1]$. The minima and maxima used for these normalizations are fit on the
+training data, and are carried by the emulator and automatically applied during inference.
+This avoids presenting the network with inputs on a
+different scale than the one it was trained on, leading to errors that would be difficult to diagnose.
+
+The neural networks driving \emph{nGibbs} expect that the input composition vector sum to a total of one. During inference, this is explicitly enforced by a renormalization so that, similarly to \textsc{MELTS} and \textsc{HeFESTo}, the user can supply a composition that sums to values other than one for convenience. The outputs of \emph{nGIbbs}, however, are not rescaled and will always map to a cation sum of one regardless of user input.
+
+\subsection{Training data generation}
+\label{sec:datagen}
+
+\subsubsection{Bulk composition sampling}
+
+Bulk compositions are sampled from whole-rock analyses in the GEOROC and PetDB
+databases \citep{GEOROC,PetDB}, preferentially weighting the compositional range
+the emulator is intended to serve. Whole rock analyses from GEOROC in particular are weighted towards more evolved compositions, so mafic and ultramafic compostions were more heavily weighted in the  \emph{nGibbs} training datasets than in the original source datasets.  For the \textsc{HeFESTo} models, one fifth of the training data are drawn from the population of compositions between 5 and 20 wt\% MgO, three tenths of the data are drawn from the population of compositions with greater than 20 wt\% MgO, and the remaining half is a mixture of these two mafic and ultramafic populations in random proportions. These base compositions were substantially randomly altered so that \emph{nGibbs} would perform well in a wider variety of parameter spaces, including rock compositions that are uncommon or unknown on Earth's surface. For the Earth model, one quarter of the compositions are not perturbed. For the \textsc{MELTS} emulators, half of the training data is generated from any composition in the compiled database, one fifth of the data are pulled from ultramafic compositions with greater than 25 wt\% MgO, and three tenths of the data are pulled from compositions with greater than 5  wt\% MgO. These bulk compositions are perturbed by guassian noise with a standard deviation of 5\%, a substantially more modest perturbation that that applied to the \textsc{HeFESTo} emulator training data.  
+
+For volatile-focused \textsc{MELTS} 1.2.0 emulators in particular, 35\% of the training and validation datasets are drawn from sedimentary compositions within the Gard database \citep{Gard2019}. Of these sedimentary bulk compositions, about one quarter are drawn from carbonate rich compositions, with CO\textsubscript{2} contents greater than 10 wt\%, whereas the remaining sedimentary compositions contain less than 10 wt\% CO\textsubscript{2}. The remaining 65\% of the training data were drawn from
+igneous whole rock data from GEOROC and PetDB, similarly to the other models \citep{GEOROC,PetDB}. 
+
+In order to train emulators that perform well in a variety of redox conditions, 
+each sampled composition is randomly assigned an oxygen fugacity from -5 to +5 log$_{10}\Delta$FMQ for \textsc{MELTS} training data, or -7 to +3 log$_{10}\Delta$FMQ for \textsc{HeFESTo} training data. Open 
+system models simply carry this oxygen fugacity as a feature, whereas closed models translate this oxygen fugacity into a molar \textsuperscript{+3}Fe/\textsuperscript{+2}Fe ratio using an empirical parameterization. This is not meant to be explicitly correct; it is meant to generate training data with an appropriate distribution of molar \textsuperscript{+3}Fe/\textsuperscript{+2}Fe ratios.
+
+\begin{equation}
+^{+3}Fe/^{+2}Fe \approx 10^{\left(0.2 \times log$_{10}\Delta$FMQ \right) - 1}
+\label{eq:fO2ratio}
+\end{equation}
+
+Manganese and nickel are excluded from the compositional basis of all released
+models. Manganese and nickel are not handled by \textsc{HeFESTo}, and we have 
+observed that \textsc{MELTS} solutions that carry MnO and NiO frequently stabilize
+phases with compositions rarely observed in nature, and there is little value in
+emulating the regions of a model that are not themselves trusted. Excluding these
+oxides also removes two dimensions from the component basis at small cost to
+the applications the emulators target.
+
+\subsubsection{State-variable sampling}\label{stae-var-sampling}
+
+For the \textsc{MELTS} 1.0.2 and 1.2.0 emulator families, each sampled composition is isobarically cooled from 1800\textdegree C in 1\textdegree C increments at a random pressure between 1 and 12000 bars. These computed assemblages have well-defined entropies and therefore are acceptable for use in training isentropic models. 
+
+\textsc{HeFESTo} Earth and Mars models are each trained around a core of (approximately) adiabatic simulations at reasonable potential temperatures (1200--1650\textdegree C for Earth; 500--1750\textdegreeC for Mars). These adiabats are supplemented with cooler conditions due to a conductive lid at the surface, which is assumed to be between 0-250 km thick for Earth and 100-700 km thick for Mars.  \todo{Potential temperature citations?}. Similarly, warmer conditions are modeled at the approach to the core-mantle boundary (CMB) for the Earth model, which assume a mantle temperature between 3200--4700\textdegree C at the CMB and a 100-300km width conductive layer
+
+Although \textsc{HeFESTo} natively calculates isentropes, such a calculation requires an iteration of T at every step to retrieve the imposed entropy, which roughly doubles the computation time. Therefore, adiabatic PT paths were instead approximated to reduce computational expense in the generation of the training dataset. To accomplish this, a second-order linear regression of temperature as a function of specific entropy and pressure was fit to a dataset of dozens of \textsc{HeFESTo} isentropes at representative compositions and potential temperatures. A similar linear regression was fit for specific entropy as a function of temperature at P = 0 GPa on the same dataset to translate potential temperatures to specific entropy. Similarly to the iron speciation parameterization described in \S\ref{state-var-sampling}, this approach is not intended to be explicitly correct; it is intended to control the distribution of the training dataset in pressure-temperature-entropy space without unnecessary computational expense. These regressions are used to impose a roughly adiabatic pressure-temperature path for training data. These paths are pertubed with small random noise to prevent the emulators from learning relationships between composition and entropy. 
+
+
+
+\subsubsection{Execution}
+
+\textsc{MELTS} simulations are driven through \textsc{alphaMELTS}
+\citep{Smith2005} under shell-level parallelism. \textsc{HeFESTo} simulations are
+run on the Caltech High Performance Computing cluster as SLURM array jobs. 
+\todo{describe hefesto resampling procedure}
+
+% -- PLACEHOLDER: campaign scale ---------------------------------------------
+% Number of simulations and retained rows per released model.
+% Include MELTStable rows
+% For HeFESTo: Conductive vs adiabatic sims?
+% Attrition rates
+% Filtered rates
+% ----------------------------------------------------------------------------
+
+\subsubsection{Import and attrition}
+
+Reference-code output is parsed into a single wide table in which each row is one
+equilibrium state and columns follow a \texttt{quantity(phase)} convention. Retained
+per row are the state variables, the bulk composition, the phase assemblage, the
+per-phase component molar abundances, the per-phase masses, and the bulk physical
+properties reported by the reference code. The last of these are retained for
+validation only; consistent with Section~\ref{sec:overview}, they are never training
+targets.
+
+A fraction of simulations fail to converge or terminate without usable output. These
+are detected and discarded at import. Attrition differs sharply between codes and
+compositional domains, and is reported here because it determines the difference
+between the sampled and the achieved distribution: approximately $0.1\%$ for
+\textsc{HeFESTo}, approximately $15\%$ for \textsc{MELTS} on igneous bulk
+compositions, and approximately $40\%$ for \textsc{MELTS} 1.2 on sedimentary bulk
+compositions. The last figure reflects that \textsc{MELTS} 1.2 was applied near the
+edge of its calibration.
+
+\subsubsection{Coverage}
+
+The achieved envelope of each released model in pressure, temperature or entropy,
+and composition defines its domain of applicability.
+
+% -- FIGURE PLACEHOLDERS -----------------------------------------------------
+% \begin{figure}[t] ... \caption{Training-set density in P--T (or P--S) for each
+% released model.} \label{fig:coverage-pt} \end{figure}
+%
+% \begin{figure}[t] ... \caption{Bulk-composition coverage of the training sets,
+% projected onto Si--Mg, with the sampled database compositions for reference.}
+% \label{fig:coverage-comp} \end{figure}
+% ----------------------------------------------------------------------------
+
+The emulators are fits, not theories. No accuracy claim can be made for states outside
+the sampled envelope. Examples of the behaviour of each model on extrapolation are reported
+in Section~\ref{sec:results}. 
+
+\subsection{Data preparation}
+\label{sec:prep}
+
+Three operations are applied to prepare \textsc{MELTS} and \textsc{HeFESTo} outputs for training.
+
+\paragraph{Consistency filtering.} Rows are removed where the reference code's output
+is internally inconsistent, e.g. where the composition reconstructed from the
+reported assemblage disagrees with the stated bulk composition beyond tolerance. The fractions
+actually removed are reported in Table~\ref{tab:filters}.
+
+\paragraph{Rare-phase removal.} Phases occurring too infrequently in the training set
+to be effectively learned are removed from the component basis entirely to simplify the model.
+This operates on entire rows; assemblages with rare phases are discarded
+for containing a rare phase at any low modal proportion. It is presumed that this operation is minimally damaging, because very few assemblages are affected by design. 
+
+\paragraph{Rare-phase augmentation} The \textsc{MELTS} 1.2.0 emulator's training dataset upsampled phases containing rare phases like calcite that were especially desired so that they would surpass the removal threshold and be tracked by the emulator. To upsample, rows containing the rare phase would be duplicated, but with perturbed abundances of its phases, which shift the bulk composition for the same assemblage. This operation was only applied to the isothermal models to avoid invalidating the extensive entropy value natively reported by \textsc{MELTS}. For all models, modal imbalance is addressed through per-phase loss weighting (Section~\ref{sec:phaseweights}) during training, which incentivizes the emulator to learn rare phases that otherwise would have little affect on the loss function.
+
+% -- TABLE PLACEHOLDER ------------------------------------------------------- .... Maybe.... uhh maybe not.
+% \begin{table}[t] Rows entering and surviving each filter, per released model. 
+% \label{tab:filters} \end{table}
+% ----------------------------------------------------------------------------
+
+\subsubsection{Partitioning}
+\label{sec:split}
+
+Training and validation datasets are generated with the same pipelines, but are separated \emph{by unique bulk
+composition}. Bulk compositions were partitioned between training and validation datasets and are treated independently as separate datasets throughout the remainder of the processing pipeline. 
+
+This is the most consequential methodological choice in the preparation of the data.
+Successive states along one path are strongly autocorrelated, and a row-wise random
+split would place near-duplicates on both sides of the partition. The resulting
+held-out error would measure interpolation between adjacent states of a rock the
+model had already seen, rather than generalization to a rock it had not, and would be
+optimistic by a wide and unquantifiable margin. Splitting by composition, before the reference thermodynamic
+models were applied, makes the validation dataset's error track overfitting to the training dataset more faithfully. This overfitting metric is instrumental to develop an emulator that can be effectively applied to new data. 
+
+Compositions are assigned in the ratio 80:20 between training and validation. The validation partition is used every epoch for model selection, to tune adaptive regularization, and for early stopping. The performance of the emulator on these datasets appear in Section~\ref{sec:results}.
+
+\subsection{Network architecture}
+\label{sec:continuous}
+
+\subsubsection{Motivation: the discontinuity problem}
+\label{sec:continuous-motivation}
+
+The original \emph{nGibbs} architecture predicts phase presence with a classifier
+and phase abundance with a regressor, multiplying the two so that the predicted
+abundance is the regressed magnitude gated by a thresholded presence probability. 
+This reproduces data with the same fundamental structure as the native \textsc{MELTS} and \textsc{HeFESTo}
+outputs: phases absent in an assemblage do not contain any abundance information or metastable chemistry. This gated model was simple and easy to train, but it has a structural defect.
+Because the gate and the magnitude are functions of different internal variables,
+nothing ties the magnitude to zero as the gate closes. Therefore, when the presence probability of a phase
+crosses its threshold, the predicted abundance jumps discontinuously from a finite
+value to exactly zero, which is unnexpected and near-impossible behavior for a mixed system.
+
+Nature is made up of complex, chemically-mixed systems. These systems, and the thermodyanamic models that describe them, behave continuously. \textsc{MELTS} and \textsc{HeFESTo} track each phases' chemical affinity, which is a continuous quality that is positive when a phase is present, and is directly related the phase abundance. Even when the phase is absent, the chemical affinity remains meaningful: it describes how 'close' a system is to being saturated with the phase. \todo{find some citation for topology in thermodynamics: talk to Paul} At a phase-out boundary the abundance of the departing
+phase goes to zero smoothly, linearly in reaction progress. A gated model is
+therefore structurally wrong precisely at the phase boundaries that constitute the most
+interesting content of a phase diagram, and its error there tracks the size
+of this jump rather than by the quality of the fit.
+
+The architecture used for all released models removes the defect by making the gate
+and the magnitude the same variable, analogously to a prediction of chemical affinity.
+
+\subsubsection{The saturation variable} %%%%%%%%%%%START HERE%%%%%%%%
+\label{sec:saturation}
+
+For each phase $\phi$ the network emits a single unactivated scalar $g_\phi$, from
+which two further quantities follow:
+\begin{align}
+  m_\phi &= \operatorname{leaky}_\lambda(g_\phi)
+          = \begin{cases} g_\phi, & g_\phi \ge 0 \\
+                          \lambda g_\phi, & g_\phi < 0 \end{cases}
+          \label{eq:m}\\[2pt]
+  n_\phi &= \max(m_\phi, 0).
+  \label{eq:n}
+\end{align}
+The signed saturation $m_\phi$ is the quantity the abundance loss regresses; the
+molar abundance $n_\phi$ is the quantity all downstream physics uses. Because the
+leaky branch passes through the origin, the composition
+$n_\phi = \max(\operatorname{leaky}_\lambda(g_\phi),0)$ is continuous at $g_\phi=0$:
+a phase leaving the assemblage produces a kink rather than a step. At the same time
+$n_\phi$ attains \emph{exact} zeros, so the predicted assemblage is exactly sparse
+and phase presence is a well-defined predicate rather than a thresholded
+probability.
+
+The construction is more than a smoothing device. Reading $g_\phi$ as an affinity,
+the equilibrium condition for a phase that may or may not be present is the
+complementarity condition
+\todo{get AI to explain complementarity. If it's not natural, I need to reword this.}
+\todo{Temperature and softmax: No more leaky ReLU, right? It's not present in my mental model}
+\begin{equation}
+  n_\phi \ge 0, \qquad A_\phi \ge 0, \qquad n_\phi A_\phi = 0,
+  \label{eq:complementarity}
+\end{equation}
+which states that a phase is either present with zero affinity or absent with
+positive affinity. Equations~\eqref{eq:m}--\eqref{eq:n} are exactly what a rectifier
+encodes, so the architecture parameterizes the thermodynamic condition directly
+rather than approximating its consequences. The leak $\lambda$ preserves gradient
+below zero, so an absent phase is still supervised---toward a confidently negative
+affinity---rather than being detached from the loss.
+
+Training labels are converted to linear molar abundance before use, rather than the
+network being asked to reproduce a logarithmic target that is undefined at zero. Zero
+is the one value at which this architecture's behaviour is the point.
+
+\todo{rewrite this.\^\^\^}
+ 
+\subsubsection{Encoder and shared representation}
+
+Inputs pass through a fully connected encoder with leaky-ReLU activations, an
+expanding then contracting layer geometry, and optional layer normalization and
+dropout, whose depth and width are hyperparameters (Section~\ref{sec:hpsearch}). The
+working representation is the encoder output concatenated with the raw input,
+\begin{equation}
+  \mathbf{h} = \big[\,\mathrm{Enc}(\mathbf{x});\ \mathbf{x}\,\big],
+\end{equation}
+so that the heads retain direct access to pressure, the second intensive variable,
+and the bulk composition rather than only to a learned summary of them. There is no
+separate saturation sub-network; that is the direct consequence of
+Section~\ref{sec:saturation}.
+
+\todo{rewrite this.\^\^\^}
+
+\subsubsection{Chemistry heads}
+\label{sec:chemheads}
+
+Each compositionally variable phase has its own head producing a softmax over that
+phase's endmembers in the reparameterized basis of Section~\ref{sec:pxsp}. Softmax
+is the correct parameterization because the target is a point on a simplex, and
+Section~\ref{sec:pxsp} is what makes the target expressible on that simplex in the
+first place.
+
+Endmembers requiring an element absent from the bulk composition are masked out
+before the softmax, so that the network is never asked to learn a constraint that is
+known exactly from the input. The mask is constructed from the zero entries of
+$\mathbf{b}$ propagated through the stoichiometry of Eq.~\eqref{eq:stoich}.
+
+\subsubsection{Abundance heads}
+\label{sec:moleheads}
+
+Each phase has an independent fully connected branch mapping the shared
+representation to the single scalar $g_\phi$ of Eq.~\eqref{eq:m}, with no output
+activation.
+
+These branches receive the predicted endmember fractions alongside the shared
+representation. The reason is Eq.~\eqref{eq:assembly} together with mass balance:
+given the endmember compositions and the bulk, the phase abundances are nearly
+determined by the linear system $\mathsf{A}^{\!\top}\mathbf{n} = \mathbf{b}$, so
+supplying the chemistry allows the abundance branches to approximate that solve
+rather than rediscovering it from the raw state. The chemistry is concatenated, not
+substituted, so a branch is free to ignore it.
+
+\subsubsection{Numerical precision}
+
+Training uses reduced-precision arithmetic in the encoder and chemistry heads. The
+abundance branches, and the boundary-temperature arithmetic of
+Section~\ref{sec:annealing}, are evaluated in single precision regardless of the
+ambient precision context. The reason is specific: the annealed smoothing width
+descends to a small fraction of an already small per-phase scale, and the
+quantization step of a reduced-precision $g_\phi$ would exceed that width before the
+schedule completes---destroying exactly the behaviour the scheme exists to control.
+
+\subsection{Mass balance}
+\label{sec:massbalance}
+
+\subsubsection{The constraint}
+
+The element totals implied by the predicted component moles must reproduce the input
+bulk composition. Since the bulk is supplied normalized, only the direction is
+constrained:
+\begin{equation}
+  \frac{\mathsf{A}^{\!\top}\mathbf{n}}
+       {\mathbf{1}^{\!\top}\mathsf{A}^{\!\top}\mathbf{n}} \;=\; \mathbf{b}.
+  \label{eq:mbconstraint}
+\end{equation}
+Mass conservation is not a soft preference that may be satisfied on average. A user
+integrating an emulated assemblage into a geodynamic calculation requires that it
+hold pointwise, and the architecture of Section~\ref{sec:continuous} does not
+enforce it: the chemistry and abundance heads are separately parameterized, and their
+product satisfies Eq.~\eqref{eq:mbconstraint} only to the accuracy of the fit.
+Equation~\eqref{eq:mbconstraint} is therefore imposed explicitly, as a projection
+applied to the network's raw output.
+
+\subsubsection{The projection operator}
+\label{sec:projection}
+
+Let $\mathbf{n}^{(0)}$ be the raw component moles from Eq.~\eqref{eq:assembly}. For
+$k=0,\dots,K-1$, define the current element totals and their sum,
+\begin{equation}
+  \mathbf{c}^{(k)} = \mathsf{A}^{\!\top}\mathbf{n}^{(k)}, \qquad
+  t^{(k)} = \max\!\big(\mathbf{1}^{\!\top}\mathbf{c}^{(k)},\ \varepsilon\big),
+\end{equation}
+and the residual against the target rebuilt on the current scale,
+\begin{equation}
+  \mathbf{r}^{(k)} = t^{(k)}\,\mathbf{b} \;-\; \mathbf{c}^{(k)}
+  \;\in\;\mathbb{R}^{E}.
+  \label{eq:residual}
+\end{equation}
+Rebuilding the target scale at every iteration, rather than fixing it once, is
+necessary: each clamp in Eq.~\eqref{eq:update} changes the element total, and holding
+$t$ fixed across iterations makes the residual non-monotone.
+
+Let $\Omega^{(k)} = \{\,c : n^{(k)}_c > 0\,\}$ be the active support and
+$\mathsf{P}_{\Omega^{(k)}}$ the diagonal indicator of that support. Define the
+support-restricted stoichiometry
+\begin{equation}
+  \mathsf{A}_\Omega^{(k)} \;=\; \mathsf{A}^{\!\top}\mathsf{P}_{\Omega^{(k)}}
+  \;\in\;\mathbb{R}^{E\times C},
+\end{equation}
+that is, $\mathsf{A}^{\!\top}$ with the columns of absent components set to zero. The
+correction is the minimum-norm solution of the underdetermined system
+$\mathsf{A}_\Omega^{(k)}\bm{\delta} = \mathbf{r}^{(k)}$,
+\begin{equation}
+  \bm{\delta}^{(k)} \;=\;
+  \big(\mathsf{A}_\Omega^{(k)}\big)^{\!\top}
+  \Big[\,\mathsf{A}_\Omega^{(k)}\big(\mathsf{A}_\Omega^{(k)}\big)^{\!\top}
+        + \tau\,\mathsf{I}_E \Big]^{-1}\mathbf{r}^{(k)},
+  \label{eq:delta}
+\end{equation}
+with $\tau$ a Tikhonov regularizer, followed by a damped, clamped update
+\begin{equation}
+  \mathbf{n}^{(k+1)} \;=\; \max\!\big(\mathbf{n}^{(k)}
+                     + \eta\,\bm{\delta}^{(k)},\ 0\big).
+  \label{eq:update}
+\end{equation}
+The returned residual, reported as a diagnostic at inference, is
+\begin{equation}
+  \rho \;=\; \Big\|\,
+    \tfrac{\mathsf{A}^{\!\top}\mathbf{n}^{(K)}}
+          {\mathbf{1}^{\!\top}\mathsf{A}^{\!\top}\mathbf{n}^{(K)}}
+    - \mathbf{b}\,\Big\|_2 .
+\end{equation}
+
+Two properties of this operator are worth stating explicitly.
+
+\emph{Support restriction is physical.} A phase that has left the assemblage must not
+participate in a mass-balance reaction. Restricting the correction to
+$\Omega^{(k)}$ enforces this, so that repairing mass balance can redistribute
+material among the phases that are present but cannot resurrect a phase the network
+has predicted absent.
+
+\emph{The iteration terminates rather than merely converging.} Because
+Eq.~\eqref{eq:update} clamps at zero and Eq.~\eqref{eq:delta} is confined to the
+active support, components can leave $\Omega^{(k)}$ but never re-enter it. The
+support is therefore monotonically non-increasing and the iteration reaches a fixed
+point in finitely many steps. This distinguishes the operator from generic
+alternating projection between the non-negative orthant and the mass-balance
+hyperplane, whose convergence rate degrades precisely where a phase is going out---
+which is the region of interest.
+
+The linear solve in Eq.~\eqref{eq:delta} is $E\times E$, with $E$ the number of
+elements, and is batched across samples; its cost is negligible relative to the
+forward pass. It is evaluated in double precision from the regularizer onward,
+because $\tau$ is small enough that adding it in single precision rounds it away on
+exactly the near-degenerate rows it exists to rescue.
+
+\subsubsection{Where the projection is applied}
+
+The projection is applied at inference, on every forward pass. During training the
+network is scored on its \emph{pre-projection} output, with the mass-balance residual
+of Eq.~\eqref{eq:mbconstraint} entering the objective as a penalty
+(Section~\ref{sec:objective}). The reason is that the post-projection residual is
+zero by construction and therefore carries no gradient; scoring it would teach the
+network nothing. Penalizing the pre-projection residual instead pulls the raw heads
+toward the feasible manifold, reducing the magnitude of the correction the projector
+must apply at inference and, with it, the extent to which the deployed model relies
+on a post-hoc repair.
+
+\subsection{Objective}
+\label{sec:objective}
+
+\subsubsection{Loss terms}
+
+The objective comprises four terms. Let $\mathbf{y},\hat{\mathbf{y}}$ denote true and
+predicted endmember fractions, $m,\hat m$ the true and predicted signed saturations,
+and $\hat{\mathbf{b}}$ the pre-projection bulk direction.
+
+\paragraph{Chemistry.} A symmetric relative $L_2$ discrepancy on the endmember
+fractions, masked to admissible components,
+\begin{equation}
+  \mathcal{L}_{\mathrm{chem}} =
+  \Big\langle \frac{(\hat y - y)^2}{|\hat y| + |y| + \epsilon} \Big\rangle_{\text{admissible}} .
+\end{equation}
+A relative measure is used because endmember fractions within a phase span orders of
+magnitude; an absolute error would be dominated by the major endmember and would
+leave minor endmembers---which frequently carry the petrologically interesting
+signal---effectively unsupervised.
+
+\paragraph{Abundance.} A Huber loss on the signed saturation $m$ of
+Eq.~\eqref{eq:m}. Crucially, and in contrast to the gated architecture, absent phases
+are supervised \emph{toward zero} rather than excluded from the loss. The behaviour
+at and below zero is the entire content of Section~\ref{sec:saturation}, and cannot
+be learned from present phases alone.
+
+\paragraph{Presence.} A binary cross-entropy on $g_\phi$ treated as a logit. This term
+is retained despite abundance being supervised directly, because the Huber loss is
+minimized \emph{at} zero and therefore provides almost no gradient distinguishing a
+confidently absent phase from a marginally absent one. Without it the decision
+boundary is soft and easily flipped by noise.
+
+\paragraph{Bulk residual.} A symmetric relative $L_2$ discrepancy between
+$\hat{\mathbf{b}}$ and the input bulk direction, as motivated in
+Section~\ref{sec:massbalance}. This term is numerically delicate and is enabled only
+in the final training stage, once the abundance branches are trained; before that it
+has no meaningful gradient.
+
+The total is a fixed weighted sum, uniformly rescaled for optimizer conditioning:
+\begin{equation}
+  \mathcal{L} = \kappa\big(
+      \alpha_{\mathrm{chem}}\mathcal{L}_{\mathrm{chem}}
+    + \alpha_{\mathrm{mole}}\mathcal{L}_{\mathrm{mole}}
+    + \alpha_{\mathrm{sat}}\mathcal{L}_{\mathrm{sat}}
+    + \alpha_{\mathrm{bulk}}\mathcal{L}_{\mathrm{bulk}} \big).
+\end{equation}
+
+% -- TABLE PLACEHOLDER: loss weights per training stage, per model family -----
+
+\subsubsection{Boundary-temperature annealing}
+\label{sec:annealing}
+
+Near a phase boundary both the abundance and presence terms are at their weakest: the
+Huber loss has vanishing gradient in the neighbourhood of its minimum, and the
+cross-entropy is contending with the kink in Eq.~\eqref{eq:n} at $g_\phi=0$. The
+losses are least informative exactly where the model's accuracy matters most. This is
+addressed by annealed smoothing of the objective---not of the model, which remains
+the hard construction of Eqs.~\eqref{eq:m}--\eqref{eq:n} at inference.
+
+Define a per-phase reference scale $T_{0,\phi}$ as the fifth percentile of the
+distribution of phase $\phi$'s \emph{non-zero} molar abundance across the training
+set: the abundance below which the data effectively calls the phase absent, estimated
+per phase from the data rather than assumed globally. This is essential because
+abundances span roughly three orders of magnitude between a dominant mantle phase and
+a trace one, so any single global smoothing width is wrong for most phases.
+$T_{0,\phi}$ is a training-time quantity only. It is computed once, after filtering,
+from the final training labels, and it does not enter the forward pass at
+inference; it therefore shapes the trained weights but does not appear in the
+deployed model's output path.
+
+The smoothing width is annealed within each training stage as $T_\phi = a\,T_{0,\phi}$
+with $a$ decreasing linearly from a soft start to a sharp end. Three coupled
+substitutions are made while $a > 0$:
+
+\begin{enumerate}
+\item The regressed abundance becomes a temperature-scaled softplus in place of the
+hard rectifier,
+\begin{equation}
+  \tilde m_\phi = T_\phi\,\operatorname{softplus}(g_\phi/T_\phi),
+  \label{eq:softmole}
+\end{equation}
+whose derivative $\partial \tilde m_\phi/\partial g_\phi = \sigma(g_\phi/T_\phi)$ is
+well conditioned near the boundary and \emph{vanishes} for $g_\phi \ll -T_\phi$, so
+the loss ceases to pull a confidently absent phase back toward zero. The bias against
+the hard target,
+\begin{equation}
+  \tilde m_\phi - \max(g_\phi,0) = T_\phi\operatorname{softplus}(-|g_\phi|/T_\phi),
+\end{equation}
+is symmetric, peaks at $T_\phi\ln 2$ at $g_\phi=0$, is negligible beyond
+$|g_\phi| > 3T_\phi$, and shrinks with $T_\phi$; it is therefore annealed away by
+construction rather than being a separate error requiring correction.
+
+\item The presence logit is rescaled by the \emph{fixed} $T_{0,\phi}$ rather than the
+annealed $T_\phi$,
+\begin{equation}
+  \ell_\phi = 5\,g_\phi / T_{0,\phi},
+\end{equation}
+so that the classifier's absolute confidence calibration means the same thing at every
+point in the schedule: $\sigma(\ell)\approx1$ is reached at $g_\phi = T_{0,\phi}$
+throughout.
+
+\item The presence term carries an additional per-sample weight
+$|\tanh(g_\phi/T_\phi)|$, using the \emph{annealed} $T_\phi$. It vanishes at the
+boundary and saturates within a few $T_\phi$.
+\end{enumerate}
+
+The division of labour these produce is the point of the scheme. The abundance loss,
+now well conditioned near $g_\phi=0$, owns fine calibration at the boundary; the
+cross-entropy, weighted away from the boundary, owns dragging back samples that are
+confidently wrong far from it. Because both widths are tied to the same annealing
+schedule, their coverage hands off continuously rather than opening a growing gap in
+which neither term supplies gradient.
+
+\subsubsection{Per-phase weighting}
+\label{sec:phaseweights}
+
+Rare phases receive gradient in proportion to their rarity, which for the least
+common phases is not enough to learn them. Because the released models train on the
+achieved data distribution without resampling (Section~\ref{sec:prep}), imbalance is
+handled entirely through per-phase loss weights, applied to the abundance, presence
+and chemistry terms. The bulk residual is unweighted, having no per-phase structure.
+
+On the presence term the weights are applied only to the ground-truth-positive
+contribution. Upweighting a rare phase's negatives---which are already numerous---
+would rescale the loss without changing the direction in which the network is pushed.
+
+% -- TABLE PLACEHOLDER: upweighted phases and weights per model family --------
+
+\subsection{Training}
+\label{sec:training}
+
+\subsubsection{Staged training}
+
+The outputs are strongly coupled but not equally learnable, and the argument of
+Section~\ref{sec:moleheads}---that the abundance branches approximate a mass-balance
+solve conditioned on the chemistry---means the abundance problem is only well posed
+once the chemistry heads are informative. Training therefore proceeds in four stages,
+each initialized from the best model of the previous one:
+
+\begin{enumerate}
+  \item the encoder and chemistry heads, with the abundance branches held fixed;
+  \item the abundance branches, on the now-fixed chemistry representation;
+  \item all parameters jointly, without the bulk-residual term;
+  \item all parameters jointly, with the bulk-residual term enabled.
+\end{enumerate}
+
+\subsubsection{Optimization}
+
+AdamW is used throughout. Weight decay is routed by which part of the model a
+parameter belongs to: the encoder and the chemistry heads carry independent decay
+settings, and the abundance branches are held at zero decay in every stage. Decay on
+a branch whose output is a signed affinity biases the location of the phase boundary
+itself, which is not a regularization effect one wants.
+
+Learning-rate schedules are cosine annealing within a stage, with one-cycle schedules
+used between stages less for convergence than as deliberate stochastic perturbation
+to escape local minima carried over from the previous stage.
+
+\subsubsection{Adaptive regularization}
+
+Dropout rate is adjusted during training by a controller: raised when validation loss
+exceeds training loss by a set margin, lowered when it falls below, within bounds
+declared per stage. Input noise is adjusted only once dropout has reached its ceiling
+or floor. Dropout layers are present in the graph at rate zero from initialization, so
+that the rate can change without altering layer shapes or invalidating a warm start.
+A consequence worth stating plainly is that the effective regularization is a function
+of the training trajectory rather than a fixed hyperparameter, and is therefore
+reported per run.
+
+\subsubsection{Model selection}
+
+Validation loss is evaluated every epoch on the composition-disjoint validation
+partition (Section~\ref{sec:split}), under the same annealing temperature at which the
+epoch trained. The incoming model is evaluated before training begins and treated as
+the epoch-zero candidate, so that a stage which never improves on its own starting
+point cannot overwrite a better checkpoint. Training stops on a per-stage patience,
+and the best epoch's weights are restored.
+
+Two diagnostics are recorded each epoch: the distribution of the normalized affinity
+$g_\phi/T_{0,\phi}$ pooled across phases, which measures how confidently the network
+separates present from absent; and the residual between predicted and true abundance
+restricted to samples within $2T_{0,\phi}$ of a phase boundary. Normalization by
+$T_{0,\phi}$ is necessary before pooling, since the same absolute $g_\phi$ is
+decisive for a phase with small $T_0$ and marginal for one with large $T_0$.
+
+\subsubsection{Hyperparameter search}
+\label{sec:hpsearch}
+
+Hyperparameters are selected by a greedy coordinate search rather than a random or
+Bayesian search. Parameters are visited in turn; each candidate value is trained from
+a common anchor checkpoint; the best is locked before the next parameter is
+considered. Two kinds of parameter are searched separately: layer geometry, with
+candidates ordered by complexity and the current configuration always included as an
+origin; and regularization, weight decay and input noise.
+
+This is a deliberate trade. A single training stage costs hours to days on the
+datasets used here, the hyperparameters are few and largely separable, and a
+warm-startable greedy search that reuses an anchor makes better use of a fixed compute
+budget than an independent-trial search. Its limitation is that candidate losses are
+comparable only within a single sweep against a common baseline, and not across
+stages with different objectives or loss weights.
+
+\subsubsection{Computational environment}
+
+% -- PLACEHOLDER: hardware, versions, wall-clock --------------------------------
+% Training GPU and host; cluster specification for data generation.
+% Versions: Python, PyTorch, CUDA, alphaMELTS, HeFESTo.
+% Wall-clock for a full four-stage training campaign per model.
+% ------------------------------------------------------------------------------
+
+\subsection{Temperature prediction for isentropic models}
+\label{sec:temperature}
+
+The isentropic models take $(P,S,\mathbf{X})$ as input, but users require
+temperature, which is not recoverable from the assemblage without an inner solve.
+Temperature is therefore predicted by a small auxiliary network. This is the only
+learned quantity in \emph{nGibbs} that is not part of the equilibrium assemblage, and
+it exists for speed alone: the alternative is an iteration at every state, which would
+reintroduce the cost the emulator is built to remove.
+
+The network regresses a \emph{residual} against the analytic reference adiabat of
+Eq.~\eqref{eq:getT}:
+\begin{equation}
+  \Delta T = T_{\mathrm{true}} - T_{\mathrm{ref}}(P,S),
+\end{equation}
+rather than temperature itself. The reference already captures the leading-order
+behaviour across the whole mantle pressure range, so the network learns a small,
+well-scaled correction; the error is bounded by the magnitude of that correction
+rather than by the absolute temperature; and where the correction is poorly
+constrained the prediction degrades toward a physically sensible adiabat rather than
+toward an arbitrary value.
+
+The input is the state variables together with the predicted assemblage---molar
+abundances and intensive compositions---so that the correction is conditioned on the
+mineralogy that actually sets it. The architecture is a fully connected regressor of
+configurable geometry, trained with the same adaptive-regularization, early-stopping
+and model-selection machinery as the main network.
+
+Two variants are trained. The deployed model takes the emulator's own predicted
+assemblage as input and therefore inherits the emulator's error; a second is trained
+on ground-truth assemblages. The second is not released, but it bounds how much of
+the temperature error is attributable to the temperature network alone, which is what
+makes the error budget of Section~\ref{sec:results} decomposable.
+
+\subsection{Inference}
+\label{sec:inference}
+
+\subsubsection{Forward pass}
+
+A forward pass evaluates the network of Section~\ref{sec:continuous} and applies the
+mass-balance projection of Section~\ref{sec:projection}, returning an assemblage that
+conserves mass to solver tolerance. All results reported in this chapter use this
+path.
+
+\subsubsection{Input handling and model selection}
+
+Input columns are identified by header, and the appropriate model is selected
+deterministically from the input itself. The presence of chromium selects between the
+Cr-bearing and Cr-free families; the second intensive variable, temperature or
+entropy, selects between the isothermal and isentropic models; and the presence of a
+specified oxygen fugacity selects the buffered family. Oxide weight percents are
+converted internally to element moles, with iron speciated as described in
+Section~\ref{sec:formulation}.
+
+Because the models are partitioned rather than general, an input is always routed to a
+network whose training distribution contains the relevant dimension. Units differ
+between the \textsc{MELTS} and \textsc{HeFESTo} families and are given in
+Table~\ref{tab:units}.
+
+% -- TABLE PLACEHOLDER: accepted input headers and units per family ------------
+
+\subsubsection{Isentrope construction}
+
+A full adiabatic profile is assembled from the components above. For a bulk
+composition and a set of potential temperatures, entropy follows from
+Eq.~\eqref{eq:getS}; the isentropic network is evaluated over a pressure grid;
+temperature is supplied by the residual network of Section~\ref{sec:temperature}; and
+aggregate physical properties follow from Section~\ref{sec:eos}. This is the point at
+which the separately trained components compose, and each contributes to the profile's
+error budget; that decomposition is reported in Section~\ref{sec:results}.
+
+\subsubsection{Deterministic property evaluation}
+\label{sec:eos}
+
+Physical properties are computed from the predicted assemblage by a direct Python
+translation of \textsc{HeFESTo}'s own thermodynamic routines---not a learned model and
+not a refit---operating on component moles at given $(P,T)$ and aggregating over
+phases by Voigt--Reuss--Hill averaging. Available properties are listed in
+Table~\ref{tab:properties}: density, compressional, shear and bulk sound speeds,
+specific heats at constant pressure and volume, thermal expansivity, the Gr\"uneisen
+parameter, Voigt, Reuss and Hill bulk and shear moduli, entropy, enthalpy, and Debye
+temperature. The implementation is vectorized over states.
+
+Component moles reach this engine by either of two routes: imported directly from
+\textsc{HeFESTo} output, or predicted by the emulator. The first route is what permits
+the engine to be validated independently of the network, and the separation of the two
+is what makes the error attribution in Section~\ref{sec:results} possible.
+
+The engine is currently implemented for \textsc{HeFESTo} only. An equivalent
+vectorized calculator for the \textsc{MELTS} phase set is a planned extension; until
+it exists, the \textsc{MELTS} emulators return assemblages and phase compositions
+rather than aggregate physical properties.
+
+% -- TABLE PLACEHOLDER: properties, symbols, units -----------------------------
+
+\subsection{Software and data availability}
+\label{sec:availability}
+
+\emph{nGibbs} is distributed in two tiers. A lightweight inference package,
+installable from PyPI, contains the trained model weights, the deterministic
+equation-of-state engine, and the user-facing API; this is sufficient to use the
+emulators. The full development repository additionally contains the data-generation
+workflows, the processing pipeline, and the training infrastructure, and is required
+only to generate new training data or to retrain.
+
+% -- PLACEHOLDER: repository URL, license, archived release DOI ----------------
+
+Each released model is distributed as a self-describing package containing its
+weights, its architecture configuration, its compositional basis and normalizer, and
+the processing and training configurations that produced it, so that any number
+reported here is traceable to the configuration that generated it.
+
+% -- PLACEHOLDER: disposition of generated simulation output and training sets --
+
+Random seeds are fixed where they are consequential---the composition-level
+partitioning above all. Run-to-run variation nonetheless remains, from the trajectory
+dependence of the adaptive regularization controller and from non-deterministic GPU
+kernels; its magnitude is reported in Section~\ref{sec:results}.

@@ -1422,3 +1422,308 @@ they're substantive, not typos:
    Chalcocite results, right before "Although permeation lag..." -- I
    only added the missing period before it, not touched the placeholder
    itself).
+
+
+---
+
+# 2026-09-25 -- Integrating the goethite thermodynamic/kinetic analysis into Chapter 2 and the GCA manuscript
+
+Source: `Chapter2/Writing/ch2_goethite_stability_sections.tex` (standalone draft of
+goethite stability, dehydroxylation kinetics and the controls on 3He release). The chapter gets
+the full treatment; the manuscript gets a condensed main-text version with details in the SI.
+Existing text was edited only where needed for consistency or to avoid redundancy; every such
+edit is listed below. A pre-change snapshot is the git commit "Before integrating Goethite
+thermodynamics" (35caf37).
+
+Rules applied to numbers: auto-generated macros (`\ChTwo*`) take priority, then values already
+in the paper, then values from the new draft.
+
+## 1. Figure scripts (Chapter2/Figures)
+
+- Renamed so `run_all_figures.py` (glob `fig_*.py`) picks them up:
+  `goethite_hematite_phase_diagram.py` -> `fig_goethite_hematite_phase_diagram.py`,
+  `goethite_vacuum_kinetics.py` -> `fig_goethite_vacuum_kinetics.py`,
+  `goethite_hydrothermal_tests.py` -> `fig_goethite_hydrothermal_tests.py`
+  (git mv for the two tracked ones). The `importlib` paths between them were updated.
+  `goethite_thermal_sims.py` (a simulation script, deliberately excluded from the runner) was
+  NOT renamed.
+- **Hydrothermal data now use the bounding method throughout.** `load_ht()` in
+  `fig_goethite_vacuum_kinetics.py` previously used the raw measured cumulative 3He. It now reads
+  the bounding-method table (`data/Win0601bHT_distilled.csv`): cumulative F bounded by
+  [Sigma, Sigma + n_t,UB], central = midpoint; ln(D/a^2) LB/central/UB straight from the table;
+  steps without bounds or with measured 3He < 0.1 pccSTP excluded (same rule as every other
+  Ch. 2 plot). New helper `ht_lnk_bounds()` gives first-order ln k bounds.
+  The hydrothermal points in `arrhenius_reaction_vs_diffusion` and `first_order_delta_lnk` now
+  carry bounding-method error bars and exclude low-signal steps.
+- `fig_goethite_hydrothermal_tests.py` rewritten on the bounding method:
+  - Test 1 (history dependence) now reports offsets from a line through the first prograde sweep
+    (fitted separately to LB/central/UB) and a conservative offset (step UB minus LB line), plus
+    retrograde-vs-prograde agreement in the last cycle.
+  - Test 2 (250 C holds) calibrates diffusion on the mean LB/central/UB ln(D/a^2) of the three
+    5 h steps, and the constant-rate reaction on the bounded release over the 15 h window
+    [dSigma - n_t,UB(before), dSigma + n_t,UB(end)] (dSigma includes intervening permeation-step
+    yields -- the same convention as the table's ln(D/a^2)).
+  - Writes `generated/data/hydrothermal_tests_summary.json`.
+- Vacuum dataset label "HM" -> "HDM" in plot labels/legends (matches existing figure names such
+  as `...VacuumHDMKAF`); internal key renamed likewise.
+- All three scripts were run; new outputs in `generated/`: `goethite_hematite_Ph2o_T_hydrated`,
+  `size_basis_sensitivity`, `arrhenius_reaction_vs_diffusion`, `vacuum_kinetics_KAF_to_HM`
+  (+ `_fits.csv`), `first_order_delta_lnk`, `hydrothermal_translation`,
+  `hydrothermal_diffusion_vs_conversion`, `synthetic_degeneracy_test.csv` (plus the older
+  phase-diagram outputs the script also writes).
+- Note: scipy and CoolProp were installed into the Cowork VM to run them; make sure they are in
+  your Windows conda env before `make figures`.
+
+### Resulting number changes vs. the draft (bounding method)
+| Quantity | Draft | Now |
+|---|---|---|
+| Test 1, first-cycle drop | 1.3--1.6 ln units at 200/210 C (low-signal steps) | 0.45 / 0.86 at 225 / 215 C retrograde (>= 0.18 / 0.47 at bounds); 220 C re-visit 0.58 (>= 0.32); low-signal steps 1.3--2.1 lower |
+| Test 1, last cycle | 0.06--0.45 | 0.07--0.45, bounds overlap |
+| Final-segment Ea | 157 +/- 3 | `\ChTwoEa` +/- `\ChTwoEaErr` (Stage 1 regression macro) |
+| Test 2, F0 / observed F | 0.0872 / 0.1460 | 0.0872--0.0877 / 0.1460--0.1463 |
+| Test 2, diffusion | 0.1482 | 0.148 (0.139--0.158) |
+| Test 2, constant-rate reaction | 0.1672 (+36%) | 0.170--0.180 (+39--60% in long-step release) |
+| HT vs vacuum line (reaction rep.) | up to 2.8 orders, median 2.3; retro 2--4 ln below | 1.3--2.8, median 2.4; retro 0.7--1.5 ln below |
+| HT residuals vs wet prediction | 30--101 (0.16); 20--68 (0.14); 53--169 (0.19) | 30--62; 20--41; 53--105 |
+| Total 3He released | 14.8% | 14.7% (value already in paper) |
+| Observed apparent alpha | 0.148/0.888 = 0.17 | 0.147/0.888 = 0.17 |
+
+Vacuum-only numbers (Ea 121.4 +/- 4.4, phi 0.112, gamma_eff, etc.) are unchanged and were
+re-verified by re-running the scripts.
+
+## 2. references.bib (root)
+Added `majzlan2003a`, `berman1985`, `voigt1981`, `wagner2002`, `bell2014`, `mampel1940`.
+Draft keys mapped to existing ones: `majzlan2003b` -> `majzlan2003`, `fechtig1966` ->
+`fechtigkalbitzer1966`. **`voigt1981` has a placeholder title "TODO: verify title"** -- I could
+not verify it online. `robie1995` was not added (it was only in a TODO comment).
+
+## 3. Chapter 2 (`Chapter2/Writing/`)
+
+### chapter2_body.tex -- new material
+- Analytical Methods, before "SEM Study...": new `\paragraph{Thermodynamic Model of Goethite
+  Dehydroxylation}` (`sec:gt_thermo_methods`; Eqs. gt_rxn ... gt_dmu_shift, Table
+  `tab:gt_thermo_data`) and `\paragraph{Kinetic Analysis of Vacuum Step Heats}`
+  (`sec:gt_kinetics_methods`; KAF = Farley et al. 2024, HDM = Monteiro et al. 2017; Eqs.
+  gt_F1 ... gt_FK; states that the hydrothermal data use the bounding method).
+- Analytical Methods, after "SEM Study...": new `\paragraph{Hydrothermal Treatment of Synthetic
+  Goethite Pigment}` (`sec:gt_pigment_methods`) -- explicitly qualitative, per your description
+  (>= 5 large ampoules, excess water, fused at ambient pressure, manually regulated oven,
+  200--250 C, ~1 day). TODOs: pigment product/grade; SEM instrument/prep for these images.
+- Discussion, inserted immediately before "Goethite Dehydration and/or Recrystallization...":
+  `sec:gt_thermo` (P-T figure, driving-force table), `sec:gt_vacuum` (vacuum = conversion; links
+  phi plateau / conversion to Farley 2024's Stage 3 / Stage 2; keeps the 4He/3He whole-grain
+  paragraph), `sec:gt_hydro` (Tests 1 and 2 on the bounding method, Table `tab:gt_hold`),
+  `sec:gt_nucleation` (nucleation barrier, gamma_eff calibration, translation to saturation,
+  residuals, assumptions).
+- Discussion, inserted immediately before "High Helium Retentivity...": `sec:gt_pigment` with
+  the new two-panel figure `fig:gt_pigment` (subfigures `goe_pig_treatedRed19.pdf`,
+  `goe_pig_treatedYellow37.pdf`) and the nucleation-limited / all-or-nothing interpretation.
+- Heading levels demoted to the chapter's `\paragraph` style; inner run-in headings became
+  italic lead-ins. Labels keep the draft's `gt_` prefix. `Eq.~\ref` -> `Eq.~\eqref`,
+  `Section~\ref` -> `\S\ref`, figures/tables given `[htbp]`.
+- Layout-only changes vs. the draft: Cp integrals, FK, nucleation-rate and residual equations
+  split over two lines; thermo-data table restructured (one Cp coefficient per row, notes in a
+  minipage) -- all to remove overfull boxes.
+
+### chapter2_body.tex -- edits to existing text
+1. Introduction, end of last paragraph: +1 sentence pointing to the new analysis.
+2. Fig. `ch2-arrhenius-full` caption: removed "A diffusive domain corresponding to the Stage 2
+   reference line would have a closure temperature of about 45 C..." (your decision).
+3. Fig. `ch2-arrhenius-zoom` caption: "the last 11 measurements" -> "the last `\ChTwoN`"
+   (macro = 12; macro-priority rule).
+4. "Consistency with MDD Systematics": +1 sentence forward reference to the new sections.
+5. "Goethite Dehydration and/or Recrystallization": added "(\S\ref{sec:gt_thermo})" after the
+   majzlan2003 citation; replaced the "Dehydration processes may be responsible for some or all
+   ... even if dehydration completely controls ..." passage with a statement that the kinetic
+   analysis shows solid-state dehydration contributed negligibly, keeping the conditional
+   upper-bound sentence.
+6. "High Helium Retentivity": removed the two Stage 2 / 45 C closure-temperature sentences.
+7. Fig. `ch2-fourier-win0601b` caption: "Whether or not the frequency factor ... is unclear."
+   -> "We interpret this Stage 2 process as first-order conversion of goethite to hematite
+   rather than volume diffusion (\S\ref{sec:gt_vacuum})."
+8. 4He/3He section: +1 sentence linking the interpretation to \S gt_vacuum--gt_hydro.
+9. Conclusions, last paragraph: "we cannot exclude the possibility that subtle dehydration or
+   recrystallization occurred..." replaced by a summary of the new result, keeping fluid-mediated
+   conversion and recrystallization as open possibilities and the upper-bound sentence.
+
+### Other Chapter 2 files
+- `chapter2_abstract.tex`: +1 sentence summarizing the thermodynamic/nucleation result.
+- `chapter2goethite_SI_body.tex`: appended three SI sections from the draft's supplement
+  (`sec:gt_supp_mech`, `sec:gt_supp_basis`, `sec:gt_supp_barrier`), HM -> HDM; mechanism-forms
+  table wrapped in `\resizebox`.
+- `chapter2goethite.tex` (standalone wrapper): `\usepackage{subcaption}` for the pigment figure.
+- `ch2_goethite_stability_sections.tex`: header note only (superseded; kept for reference).
+
+## 4. GCA manuscript (`Manuscripts/HydrothermalGoethite/`)
+Legacy method names in the manuscript were left untouched.
+- `hydrothermal_goethite_body.tex`:
+  - New `\subsection{Thermodynamic and kinetic analysis of goethite dehydroxylation}`
+    (`sec:methods-kinetics`) after the SEM methods subsection (condensed; Eqs. gt_rxn, gt_F1,
+    gt_stepk).
+  - New `\subsection{Hydrothermal helium release is diffusive, not dehydroxylation}`
+    (`sec:discussion-conversion`) before "Dehydration and recrystallization"; two figures
+    (`fig:gt_arrhenius`, `fig:gt_hydro_tests`), Eqs. gt_line, gt_barrier, gt_translate; one
+    paragraph on the pigment result (details and SEM figure in SI).
+  - Edits to existing text: "Dehydration or recrystallization could therefore contribute ... and
+    neither can be excluded" -> solid-state dehydration too slow (ref), subtle dehydration /
+    recrystallization / fluid-mediated conversion not excluded; removed the Stage 2 / 45 C
+    closure-temperature sentences; +1 clause in the 4He/3He paragraph; Conclusions last
+    paragraph rewritten as in the chapter.
+- `hydrothermal_goethite_abstract.tex`: +2 sentences on the vacuum reanalysis / nucleation result.
+- `hydrothermal_goethite_SI_body.tex`: appended five sections (thermodynamic model incl.
+  surface-area basis; vacuum kinetics incl. mechanism tests; hydrothermal tests with the hold
+  table; nucleation model incl. barrier ratio and residuals; synthetic pigment methods + the
+  two-panel SEM figure). SI-only labels use a `gtsi_` prefix so they cannot collide with the
+  main-text labels that `xr` imports.
+- `main_xrefs.tex`: +7 macros (`\MainRefMethodsGoethite`, `\MainRefMethodsSEM`,
+  `\MainRefMethodsKinetics`, `\MainRefDiscussionMDD`, `\MainRefDiscussionConversion`,
+  `\MainFigGtArrhenius`, `\MainFigGtHydroTests`).
+- `hydrothermal_goethite_GCA_SI.tex`: header comment updated with the new main-text dependencies.
+- `copy_manuscript_sources.py` needed no change; re-run it (done once) to pick up the new
+  figures and bib entries.
+
+## 5. Verification
+- Full `dissertation.tex` build (latexmk/biber): 0 errors; the only undefined reference is the
+  pre-existing `app:bushveld`; no new overfull boxes (one fewer than before). 222 -> 244 pages.
+- `hydrothermal_goethite_GCA.tex` and `_GCA_SI.tex` (bibtex): 0 errors, 0 undefined references.
+  The SI's "Citation multiply defined" natbib warnings come from `xr` importing the main text's
+  citations and were already present.
+- Standalone `chapter2goethite(.tex/_SI.tex)`: build; their undefined cross-chapter references
+  are of the same kind as before.
+- Pages with the new tables, the pigment figure and the hold-test table were rendered and checked.
+
+## 6. Open items for you
+- `voigt1981` title (placeholder in references.bib).
+- Hematite Maier--Kelley coefficient source (TODO comment kept).
+- Manometer day-boundary artifact (TODO kept: confirm with the line operator).
+- Pigment product data sheet; SEM instrument/prep for the pigment images.
+- The red product is identified as hematite by color and habit only (no XRD); the text says so.
+- In the manuscript the pigment SEM figure is in the SI (to keep the main text brief); move it
+  to the main text if you prefer.
+
+
+---
+
+# 2026-09-25b -- Merged the revised goethite stability draft into Chapter 2
+
+Source: the revised `Chapter2/Writing/ch2_goethite_stability_sections.tex` (same file now on
+disk). Its changes relative to the draft integrated earlier today were merged into
+`chapter2_body.tex` and `chapter2goethite_SI_body.tex`. The draft's numbers still come from the
+raw (not permeation-lag-corrected) hydrothermal data, so wherever the draft and the chapter
+disagreed on a hydrothermal number, the chapter's bounding-method value (or macro) was kept or
+recomputed. The GCA manuscript was not touched.
+
+## Figure scripts (Chapter2/Figures)
+The three `fig_goethite_*.py` files on disk had been replaced by copies from outside the repo:
+old import names (`goethite_*.py`), data paths without `data/`, the "HM" labels, and none of the
+bounding-method changes -- as written they would not have run. Fixes:
+- `fig_goethite_vacuum_kinetics.py`: re-applied the `data/` paths, the `fig_` import name, the
+  HDM labels, the bounding-method `load_ht()` / `ht_lnk_bounds()`, and the bounding-method
+  hydrothermal points in `arrhenius_reaction_vs_diffusion` and `first_order_delta_lnk`.
+- `fig_goethite_hydrothermal_tests.py`: kept the draft's new `hold_projection()` (each model
+  calibrated on the three 5 h steps and projected through the 170.8 h step), now with a `col`
+  argument for the central / lower-bound / upper-bound series. New single-panel figure
+  `hydrothermal_hold_projection.pdf` (Chapter 2, `fig:gt_hold`) with bounds bars and bands. The
+  earlier two-panel `hydrothermal_diffusion_vs_conversion.pdf` (constant-rate test) is still
+  produced because the GCA manuscript uses it. `history_test()` (Test 1 numbers) retained.
+- `fig_goethite_hematite_phase_diagram.py`: unchanged (identical to the committed version).
+- All re-run; the figure outputs were refreshed and `generated/data/hydrothermal_tests_summary.json` was updated.
+
+## chapter2_body.tex
+- Thermodynamic methods (`sec:gt_thermo_methods`): replaced with the draft's revised text --
+  derivation of the apparent Gibbs energy, the new water paragraph with Eq. `eq:gt_Gw`, the
+  expanded surface-energy derivation (factor-of-two explanation), and the phase-diagram method
+  (Brent on log P, 1e-12--1e4 bar, truncation at ice). The ideal-vapor boundary approximation and
+  `eq:gt_dmu_shift` were removed, as in the draft. The 10 nm surface-term example moved here from the
+  Discussion, as in the draft. Kept your manual edit `\Delta\mu \equiv -\Delta G_r^{0}` (the
+  draft writes `-\Delta G_r`).
+- Discussion `sec:gt_thermo`: removed the 10 nm example (now in Methods) and the
+  RT ln(Psat/P) = 96.1 kJ example; the Table `tab:gt_dmu` text follows the draft.
+- `sec:gt_vacuum`: +fitting-window independence (Ea = 122.7 with all steps) and the Goss (1987)
+  TG comparison (TODO comment kept).
+- Test 1: kept the bounding-method numbers and the `\ChTwoEa` macro; adopted the draft's wording
+  (first-order conversion has no memory) and figure pointers (Fig. gt_arrhenius a/b).
+- Test 2: replaced with the draft's first-order-vs-diffusion projection, recomputed on the
+  bounding method: F0 = 0.0795 (0.0793--0.0798); diffusion 0.149 (0.148--0.150) vs observed
+  0.146 (0.1460--0.1463); first-order 0.173 (0.172--0.174), a 46% (44--47%) overprediction;
+  R2/R3/A2/A3 0.174--0.212. (Draft, raw data: 0.148, 0.172, 44%, 0.174--0.209.)
+  `tab:gt_hold` and `fig:gt_hydro_tests` removed; new `fig:gt_hold`.
+- `sec:gt_nucleation`: replaced with the draft's revised text (CNT citations, the
+  transition-state upper bound `eq:gt_ceiling`, the Young/Volmer argument against free-surface
+  nucleation, the topotactic-mechanism paragraph, the enumerated driving-force definitions, the
+  9 kBT detectability bound, four assumptions). Kept the bounding-method numbers: residuals
+  30--62 / 20--41 / 53--105 orders (draft 30--101 / 20--68 / 53--169) and alpha = 0.147/0.888.
+  Equation line-splits re-applied.
+
+## chapter2goethite_SI_body.tex
+- Mechanism section: +the all-steps refit paragraph.
+- Barrier section: +"Sensitivity to surface terms" paragraph and Table `tab:gt_surf_sens`.
+
+## references.bib
++18 entries: berman1988, helgeson1978, anderson2005, gibbs1878, volmer1926, becker1935,
+turnbull1950, eyring1935, christian2002, kashchiev2000, deyoreo2003, lasaga1998, porter2009,
+limadefaria1963, watari1979, watari1983, cudennec2005, saito2016. Saito, Watari 1979/1983 and
+Lima-de-Faria were checked against the publisher pages; the Lima-de-Faria end page (203) and the
+rest are from standard citations -- worth a glance.
+
+## Verification
+Full dissertation build: 0 errors; only undefined reference is the pre-existing `app:bushveld`;
+no new overfull boxes; 249 pages. `fig_goethite_hydrothermal_tests.py` also runs on the local VM.
+
+## Still open / for you
+- The GCA manuscript still uses the earlier constant-rate Test 2 and the earlier nucleation text.
+- Numbers in the draft file itself (`ch2_goethite_stability_sections.tex`) remain the raw-data
+  values; the chapter is authoritative.
+- New draft numbers not re-derived here (vacuum-only or thermodynamic, independent of the
+  permeation-lag correction): Ea = 122.7 for all-step fits, the TST ceiling of 63 kBT, the 9 kBT
+  detectability bound, and Table `tab:gt_surf_sens`. They are taken from the draft as written.
+
+
+---
+
+# 2026-09-25c -- GCA manuscript brought up to date with the revised goethite analysis
+
+Same content decisions as 2026-09-25b (bounding-method numbers throughout; the chapter is the
+source). Legacy method names in the manuscript untouched.
+
+## hydrothermal_goethite_body.tex (main text, kept condensed)
+- `sec:methods-kinetics`: now says Delta G_r is evaluated in the apparent Gibbs energy
+  convention (`berman1988`); Delta mu defined as `-\Delta G_r^{0}` to match your Chapter 2 edit.
+- `sec:discussion-conversion`:
+  - Thermodynamics paragraph: +role of water (partial pressure, not total pressure; ~46 J
+    mechanical term at 40 bar; mass action on the bulk reaction).
+  - Vacuum paragraph: +cumulative-fit Ea within the window (122.9) and with all steps (122.7).
+  - Hydrothermal paragraph: Test 1 now points to Fig. `gt_arrhenius`b and uses the first-order
+    "no memory" wording; Test 2 is now the first-order-vs-diffusion projection (diffusion 0.149,
+    0.148--0.150; first-order 0.173, 0.172--0.174, 44--47% overprediction; observed
+    0.1460--0.1463). The two-panel figure `fig:gt_hydro_tests` was replaced by `fig:gt_hold`
+    (`hydrothermal_hold_projection.pdf`), same figure as the chapter.
+  - Nucleation paragraph: +transition-state upper bound on the vacuum barrier (<= 63 kBT),
+    free-surface nucleation fails it even with zero interfacial energy (>~2e2 kBT), internal
+    topotactic nucleation (limadefaria1963, watari1979, watari1983, cudennec2005),
+    gamma_eff within the coherent/semicoherent range (porter2009, saito2016), barriers
+    0.5--1.3 vs 52--129 kBT against the ~9 kBT needed for 1% conversion, and the surface-term
+    sensitivity (alpha ~1e-23 even at 10 nm).
+- Abstract and Conclusions unchanged (still accurate).
+
+## hydrothermal_goethite_SI_body.tex
+The five goethite SI sections were regenerated from the current Chapter 2 text (same assembly as
+before: `gtsi_` labels, main-text references through `main_xrefs.tex`, the main-text figures
+`fig:gt_arrhenius` and `fig:gt_hold` not duplicated). They now include everything merged into
+the chapter in 2026-09-25b: revised thermodynamic derivation, fitting-window note and Goss
+comparison, the projection form of Test 2, the revised nucleation section, the all-steps refit
+paragraph, and the surface-term sensitivity table.
+
+## main_xrefs.tex / hydrothermal_goethite_GCA_SI.tex
+`\MainFigGtHydroTests` replaced by `\MainFigGtHold` (fig:gt_hold); SI header comment updated.
+
+## Chapter2/Figures/fig_goethite_hydrothermal_tests.py
+Removed the now-unused two-panel constant-rate figure (`make_figure`,
+`hold_test_constant_rate`); the old `hydrothermal_diffusion_vs_conversion.*` outputs (generated/
+and the manuscript's figures/) were moved to `_to_delete/old_figures/`. Re-run.
+`copy_manuscript_sources.py` re-run (88 cited entries).
+
+## Verification
+Main text and SI (bibtex) compile with 0 errors and 0 undefined references; main 58 pp., SI
+37 pp. No new overfull boxes of note (one 11.9 pt line in the SI, text only). The
+dissertation is unaffected by this pass.

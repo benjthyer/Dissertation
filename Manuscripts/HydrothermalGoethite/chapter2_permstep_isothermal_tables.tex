@@ -1,0 +1,104 @@
+% =============================================================
+%  chapter2_permstep_isothermal_tables.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.
+%  Written by Figures/fig_permstep_isothermal_fits.py from
+%  Win0601bHT_data_and_reduction.xlsx ('Fit Lambdas' sheet for the raw data
+%  and the per-sequence lambda/n0 fits, cross-checked against 'Raw Data and
+%  Corrections' -- the workbook's master per-measurement sheet).
+%
+%  Regenerate after any change to either sheet:
+%    python3 Figures/fig_permstep_isothermal_fits.py
+%  (run_all_figures.py does this automatically, before write_chapter2_macros.py.)
+%
+%  \input{} by chapter2goethite_SI.tex (standalone) and chapter2.tex
+%  (dissertation -- defined early enough for chapter2_SI.tex, input later,
+%  to use), same pattern as chapter2_derived_values.tex.
+%
+%  \ChTwoPermStepRawTable : Table~\ref{tab:ch2-permeation-isothermal-raw}, the raw
+%    per-step dataset for all 10 isothermal sequences.
+%  \ChTwoPermStepFitTable : Table~\ref{tab:ch2-permeation-isothermal-fits}, the fitted
+%    lambda/n0 (+/- 2 sigma) for each of those 10 sequences.
+% =============================================================
+\newcommand{\ChTwoPermStepRawTable}{\begin{footnotesize}
+\begin{longtable}{c c c c c c}
+\caption{Raw step-heat data (\uppercase{`}Fit Lambdas\uppercase{'} sheet, cross-checked against \uppercase{`}Raw Data and Corrections\uppercase{'}) for the 10 isothermal 3He permeation sequences used to determine the ampoule's apparent permeability (Fig.~\ref{fig:ch2-permeation-fits}, Fig.~\ref{fig:ch2-ampoule-permeability}). Series are separated by horizontal rules; within a series, steps are listed in the order measured.}\label{tab:ch2-permeation-isothermal-raw}\\
+\toprule
+Series & Temp & Nominal Time & Cooling Time & $^3$He measured & $\pm2\sigma$ \\
+ & (\textdegree C) & (min) & (min) & (pccSTP) & \\
+\midrule
+\endfirsthead
+\multicolumn{6}{l}{\textit{(continued)}} \\
+\toprule
+Series & Temp & Nominal Time & Cooling Time & $^3$He measured & $\pm2\sigma$ \\
+ & (\textdegree C) & (min) & (min) & (pccSTP) & \\
+\midrule
+\endhead
+\midrule
+\multicolumn{6}{r}{\textit{continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+1 & 105.00 & 150 & 26 & 0.0190 & \(1.1\!\times\!10^{-4}\) \\
+1 & 105.00 & 150 & 26 & 0.0111 & \(7.4\!\times\!10^{-5}\) \\
+1 & 105.00 & 150 & 26 & 0.0080 & \(5.3\!\times\!10^{-5}\) \\
+\midrule
+2 & 109.99 & 150 & 26 & 0.0229 & \(1.4\!\times\!10^{-4}\) \\
+2 & 110.00 & 150 & 26 & 0.0115 & \(7.3\!\times\!10^{-5}\) \\
+2 & 110.00 & 150 & 26 & 0.0075 & \(5.2\!\times\!10^{-5}\) \\
+\midrule
+3 & 99.86 & 120 & 26 & 0.0106 & \(6.1\!\times\!10^{-5}\) \\
+3 & 100.00 & 120 & 26 & 0.0074 & \(4.0\!\times\!10^{-5}\) \\
+3 & 100.00 & 120 & 26 & 0.0049 & \(2.5\!\times\!10^{-5}\) \\
+3 & 99.99 & 120 & 26 & 0.0043 & \(2.1\!\times\!10^{-5}\) \\
+\midrule
+4 & 95.00 & 150 & 26 & 0.0109 & \(2.8\!\times\!10^{-4}\) \\
+4 & 95.00 & 150 & 26 & 0.0081 & \(2.0\!\times\!10^{-4}\) \\
+4 & 95.00 & 150 & 26 & 0.0062 & \(1.4\!\times\!10^{-4}\) \\
+\midrule
+5 & 104.99 & 120 & 26 & 0.0215 & \(8.9\!\times\!10^{-5}\) \\
+5 & 104.99 & 120 & 26 & 0.0144 & \(6.0\!\times\!10^{-5}\) \\
+5 & 104.99 & 120 & 26 & 0.0104 & \(4.3\!\times\!10^{-5}\) \\
+\midrule
+6 & 100.00 & 120 & 26 & 0.0126 & \(5.6\!\times\!10^{-5}\) \\
+6 & 100.00 & 120 & 26 & 0.0094 & \(3.5\!\times\!10^{-5}\) \\
+6 & 100.00 & 120 & 26 & 0.0074 & \(2.0\!\times\!10^{-5}\) \\
+\midrule
+7 & 95.00 & 120 & 26 & 0.0072 & \(3.0\!\times\!10^{-5}\) \\
+7 & 95.00 & 120 & 26 & 0.0063 & \(2.6\!\times\!10^{-5}\) \\
+7 & 95.00 & 120 & 26 & 0.0045 & \(1.9\!\times\!10^{-5}\) \\
+\midrule
+8 & 90.00 & 150 & 26 & 0.0059 & \(2.7\!\times\!10^{-5}\) \\
+8 & 89.90 & 150 & 26 & 0.0048 & \(2.4\!\times\!10^{-5}\) \\
+8 & 90.00 & 150 & 26 & 0.0036 & \(1.9\!\times\!10^{-5}\) \\
+\midrule
+9 & 90.00 & 180 & 26 & 0.0100 & \(6.2\!\times\!10^{-5}\) \\
+9 & 89.92 & 180 & 26 & 0.0067 & \(5.1\!\times\!10^{-5}\) \\
+9 & 90.00 & 180 & 26 & 0.0054 & \(4.8\!\times\!10^{-5}\) \\
+\midrule
+10 & 99.99 & 150 & 26 & 0.0104 & \(4.3\!\times\!10^{-5}\) \\
+10 & 99.98 & 150 & 26 & 0.0068 & \(3.5\!\times\!10^{-5}\) \\
+10 & 100.00 & 150 & 26 & 0.0054 & \(3.4\!\times\!10^{-5}\) \\
+\end{longtable}
+\end{footnotesize}}
+
+\newcommand{\ChTwoPermStepFitTable}{\begin{footnotesize}
+\begin{table}[htbp]
+\centering
+\caption{Fitted $\lambda$ (permeation rate constant) and $n_0$ (residual helium at the start of the series) for each of the 10 isothermal sequences in Table~\ref{tab:ch2-permeation-isothermal-raw}, from the weighted non-linear least-squares fit of Eq.~\eqref{eq:incyield} (Chapter~\ref{ch:apparatus}) described in the main text (\S\ref{ch2-experimental-methods}). $n$ is the number of steps in the sequence. These are the same per-sequence fits plotted in Fig.~\ref{fig:ch2-permeation-fits} and used to build the Arrhenius regression in Fig.~\ref{fig:ch2-ampoule-permeability}.}\label{tab:ch2-permeation-isothermal-fits}
+\begin{tabular}{c c c c c c c c}
+\toprule
+Series & Temp (\textdegree C) & Duration (min) & $n$ & $\lambda$ (s$^{-1}$) & $\pm2\sigma$ & $n_0$ (pccSTP) & $\pm2\sigma$ \\
+\midrule
+1 & 105.00 & 150 & 3 & \(4.9\!\times\!10^{-5}\) & \(1.4\!\times\!10^{-5}\) & 0.0521 & \(7.8\!\times\!10^{-3}\) \\
+2 & 109.99 & 150 & 3 & \(6.3\!\times\!10^{-5}\) & \(1.8\!\times\!10^{-5}\) & 0.0508 & \(7.3\!\times\!10^{-3}\) \\
+3 & 99.86 & 120 & 4 & \(4.3\!\times\!10^{-5}\) & \(1.3\!\times\!10^{-5}\) & 0.0377 & \(5.2\!\times\!10^{-3}\) \\
+4 & 95.00 & 150 & 3 & \(3.1\!\times\!10^{-5}\) & \(2.6\!\times\!10^{-6}\) & 0.0444 & \(2.2\!\times\!10^{-3}\) \\
+5 & 104.99 & 120 & 3 & \(5.0\!\times\!10^{-5}\) & \(6.2\!\times\!10^{-6}\) & 0.0696 & \(4.7\!\times\!10^{-3}\) \\
+6 & 100.00 & 120 & 3 & \(3.7\!\times\!10^{-5}\) & \(4.1\!\times\!10^{-6}\) & 0.0534 & \(3.4\!\times\!10^{-3}\) \\
+7 & 95.00 & 120 & 3 & \(3.3\!\times\!10^{-5}\) & \(1.5\!\times\!10^{-5}\) & 0.0348 & \(1.1\!\times\!10^{-2}\) \\
+8 & 90.00 & 150 & 3 & \(2.7\!\times\!10^{-5}\) & \(4.8\!\times\!10^{-6}\) & 0.0279 & \(3.5\!\times\!10^{-3}\) \\
+9 & 90.00 & 180 & 3 & \(3.0\!\times\!10^{-5}\) & \(9.0\!\times\!10^{-6}\) & 0.0357 & \(7.0\!\times\!10^{-3}\) \\
+10 & 99.99 & 150 & 3 & \(3.8\!\times\!10^{-5}\) & \(1.2\!\times\!10^{-5}\) & 0.0351 & \(7.0\!\times\!10^{-3}\) \\
+\bottomrule
+\end{tabular}
+\end{table}
+\end{footnotesize}}

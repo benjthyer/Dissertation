@@ -26,7 +26,7 @@ from scipy.optimize import least_squares
 
 HERE = Path(__file__).resolve().parent
 _spec = importlib.util.spec_from_file_location(
-    "gh", HERE / "goethite_hematite_phase_diagram.py")
+    "gh", HERE / "fig_goethite_hematite_phase_diagram.py")
 gh = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(gh)
 R, OUTDIR, MODELS = gh.R, gh.OUTDIR, gh.EXTENT_MODELS
@@ -68,7 +68,7 @@ def load_hm(path=HM_FILE):
     h["F"] = h["dF"].cumsum()
     h["t_cum"] = h["Time (h)"].cumsum()
     h = h.reset_index(drop=True)
-    h.attrs["name"] = "HM"
+    h.attrs["name"] = "HDM"
     return h
 
 
@@ -76,7 +76,7 @@ def load_hm(path=HM_FILE):
 # files.  KAF: steps 1-4 (70-165 C) are low-T non-conversion He; steps 24+
 # (>= 290 C) sit on the hematite plateau.  HM: steps 2-7 (79-179 C) are
 # low-T He; step 29+ (338.8 C onward) is on the hematite plateau.
-WINDOW_STEPS = {"KAF": (5, 23), "HM": (8, 28)}
+WINDOW_STEPS = {"KAF": (5, 23), "HDM": (8, 28)}
 F_MAX = 0.89
 
 
@@ -92,8 +92,22 @@ def fit_window(df, F_max=F_MAX):
     return m
 
 
+LOW_SIGNAL_PCC = 0.1   # measured 3He below this is excluded (as in all Ch. 2 plots)
+
+
 def load_ht(path=None):
-    """Hydrothermal run (liquid water), 3He from the cumulative column."""
+    """Hydrothermal run (liquid water), reduced by the BOUNDING METHOD.
+
+    The cumulative 3He released by the sample at the end of step i is bounded
+    below by the measured cumulative 3He (residual ampoule inventory n_t = 0)
+    and above by the measured cumulative plus n_t,UB (steady-state upper
+    bound, Eq. eq:steadystate).  F is the midpoint of those bounds; F_LB and
+    F_UB are the bounds.  ln(D/a^2) LB / m / UB are read directly from the
+    distilled bounding-method table (Table tab:ch2-distilled-3he), as
+    everywhere else in Chapter 2.  'use' marks steps whose bounds are defined
+    (lambda t >= 4) and whose measured 3He >= LOW_SIGNAL_PCC; other steps are
+    not plotted.
+    """
     path = HERE / "data/Win0601bHT_distilled.csv" if path is None else path
     raw = pd.read_csv(path, encoding="utf-8-sig")
     raw.columns = [c.strip() for c in raw.columns]
@@ -102,15 +116,49 @@ def load_ht(path=None):
     tot3 = float(tot["Σ 3He (pccSTP)"].iloc[0])
     tot4 = float(tot["Σ 4He (nccSTP)"].iloc[0])
     d = raw[pd.to_numeric(raw[tcol], errors="coerce").notna()].copy()
-    out = pd.DataFrame({"Temp (C)": pd.to_numeric(d[tcol]).values,
-                        "Time (h)": pd.to_numeric(d["Minutes"]).values / 60})
-    s3 = pd.to_numeric(d["Σ 3He (pccSTP)"]).values
-    s4 = pd.to_numeric(d["Σ 4He (nccSTP)"]).values
-    out["F"] = s3 / tot3
+    num = lambda c: pd.to_numeric(d[c], errors="coerce").values
+    out = pd.DataFrame({"Temp (C)": num(tcol),
+                        "Time (h)": num("Minutes") / 60})
+    meas = num("3He Measured (pccSTP)")
+    s3 = num("Σ 3He (pccSTP)")
+    nt = num("ntUB 3He (pccSTP)")
+    s4 = num("Σ 4He (nccSTP)")
+    out["meas3"] = meas
+    out["cum3"] = s3          # includes intervening permeation-step yields
+    out["ntUB"] = nt
+    out["F_LB"] = s3 / tot3
+    out["F_UB"] = (s3 + np.nan_to_num(nt)) / tot3
+    out["F"] = (s3 + 0.5 * np.nan_to_num(nt)) / tot3
+    for tag in ("LB", "m", "UB"):
+        out[f"lnDa2_{tag}"] = num(f"3He ln(d/a^2){tag}")
+    out["use"] = np.isfinite(out["lnDa2_m"].values) & (meas >= LOW_SIGNAL_PCC)
     d3, d4 = np.diff(np.r_[0, s3]), np.diff(np.r_[0, s4])
     out["r43"] = (d4 / d3) / (tot4 / tot3)
     out["t_cum"] = out["Time (h)"].cumsum()
+    out.attrs["name"] = "HT"
+    out.attrs["tot3"] = tot3
     return out
+
+
+def ht_lnk_bounds(ht, phi):
+    """First-order ln k bounds for each hydrothermal step.  The step release
+    is bounded by [dSigma - n_t,UB(i-1), dSigma + n_t,UB(i)] (dSigma: change in
+    cumulative measured 3He, including intervening permeation-step yields --
+    the convention of the table's ln(D/a^2)), applied from the central
+    cumulative F before the step."""
+    tot = ht.attrs["tot3"]
+    S, nt = ht["cum3"].values, np.nan_to_num(ht["ntUB"].values)
+    dS = np.diff(np.r_[0, S])
+    lo = dS - np.r_[0, nt[:-1]]
+    hi = dS + nt
+    F0 = np.r_[0, ht["F"].values[:-1]]
+    t = ht["Time (h)"].values * 3600
+    res = []
+    for w in (lo, hi):
+        a0 = F0 / (1 - phi)
+        a1 = (F0 + np.clip(w, 1e-12, None) / tot) / (1 - phi)
+        res.append(np.log(-np.log((1 - a1) / (1 - a0)) / t))
+    return res
 
 
 # ----------------------------------------------------------------------------
@@ -206,22 +254,22 @@ def run(conv_T_max=320.0, fname="vacuum_kinetics_KAF_to_HM"):
     b.legend(fontsize=8)
     # (c) HM prediction, cumulative
     c = ax[1, 0]
-    c.plot(h["t_cum"], h["F"], "ko", ms=4, label="HM observed")
+    c.plot(h["t_cum"], h["F"], "ko", ms=4, label="HDM observed")
     for m in SHOW:
         c.plot(h["t_cum"], fits[m][1], color=COL[m], lw=1.6,
                label=f"{m} (predicted)")
-    c.set_title("(c) HM: out-of-sample prediction from KAF")
+    c.set_title("(c) HDM: out-of-sample prediction from KAF")
     # (d) HM per step
     d = ax[1, 1]
     s = np.arange(len(h))
-    d.semilogy(s, h["dF"], "ko", ms=4, label="HM observed")
+    d.semilogy(s, h["dF"], "ko", ms=4, label="HDM observed")
     for m in SHOW:
         d.semilogy(s, np.diff(np.r_[0, fits[m][1]]).clip(1e-6), color=COL[m],
                    lw=1.4, drawstyle="steps-mid")
     d.set_ylim(1e-5, 0.3)
-    d.set_xlabel("HM step")
+    d.set_xlabel("HDM step")
     d.set_ylabel("fraction released per step")
-    d.set_title("(d) HM per step (cycled schedule)")
+    d.set_title("(d) HDM per step (cycled schedule)")
     for axx in (a, c):
         axx.set_xlabel("cumulative heating time (h)")
         axx.set_ylabel(r"cumulative $^3$He fraction $F$")
@@ -326,7 +374,7 @@ def make_arrhenius_comparison(fname="arrhenius_reaction_vs_diffusion",
     k, h = load_kaf(), load_hm()
     line = vacuum_line()
     phi = line["phi"]
-    sets = [("KAF vacuum", k, "o", "k"), ("HM vacuum", h, "s", "0.35")]
+    sets = [("KAF vacuum", k, "o", "k"), ("HDM vacuum", h, "s", "0.35")]
     if include_ht and (HERE / "data/Win0601bHT_distilled.csv").exists():
         sets.append(("hydrothermal (liquid)", load_ht(), "^", "tab:blue"))
 
@@ -337,6 +385,13 @@ def make_arrhenius_comparison(fname="arrhenius_reaction_vs_diffusion",
         x = 1e4 / T
         lk = np.log(first_order_k(df["F"], df["Time (h)"], phi, amax=0.999))
         ld = np.log(fk_Da2(df["F"], df["Time (h)"]))
+        if df.attrs.get("name") == "HT":
+            # bounding method: central/LB/UB ln(D/a^2) straight from the
+            # distilled table; ln k bounds from the bounded step release
+            ld = df["lnDa2_m"].values
+            klo, khi = ht_lnk_bounds(df, phi)
+            ylo = {ax[0]: klo, ax[1]: df["lnDa2_LB"].values}
+            yhi = {ax[0]: khi, ax[1]: df["lnDa2_UB"].values}
         up = _prograde(df)
         vac = "vacuum" in lab
         win = fit_window(df) if vac else np.zeros(len(df), bool)
@@ -355,15 +410,19 @@ def make_arrhenius_comparison(fname="arrhenius_reaction_vs_diffusion",
                     a_.plot(x[nl], y[nl], "o", ms=11, mfc="none",
                             mec="tab:purple", label="KAF, LN$_2$ off (not fitted)")
             else:
-                a_.plot(x[up], y[up], "^", color=col, ms=6,
+                ok = df["use"].values
+                a_.plot(x[up & ok], y[up & ok], "^", color=col, ms=6,
                         label=f"{lab}, prograde")
-                a_.plot(x[~up], y[~up], "v", color=col, mfc="white", ms=6,
-                        label=f"{lab}, retrograde")
+                a_.plot(x[~up & ok], y[~up & ok], "v", color=col,
+                        mfc="white", ms=6, label=f"{lab}, retrograde")
+                a_.errorbar(x[ok], y[ok], yerr=[y[ok] - ylo[a_][ok],
+                            yhi[a_][ok] - y[ok]], fmt="none", ecolor=col,
+                            elinewidth=0.8, alpha=0.6)
     Ea, sEa, lnA = line["Ea"], line["sEa"], line["lnA"]
     per = {f"{kk} vacuum": vv for kk, vv in line["per"].items()}
     xx = np.linspace(17.0, 23.0, 50)
     ax[0].plot(xx, lnA - Ea * 1e3 / R * (xx / 1e4), "r-", lw=1.5,
-               label=f"fit KAF+HM: Ea = {Ea:.0f} ± {sEa:.0f} kJ/mol")
+               label=f"fit KAF+HDM: Ea = {Ea:.0f} ± {sEa:.0f} kJ/mol")
     for (lab, (e, se, c, _)), ls in zip(per.items(), ("--", ":")):
         ax[0].plot(xx, c - e * 1e3 / R * (xx / 1e4), "r", ls=ls, lw=0.9,
                    label=f"{lab} only: {e:.0f} ± {se:.0f} kJ/mol")
@@ -532,7 +591,7 @@ def make_delta_plot(fname="first_order_delta_lnk", gammas=GAMMA_CAL):
     L10 = np.log(10)
     fig, ax = plt.subplots(figsize=(12, 5.4), constrained_layout=True)
     for df, mk, col, lab in [(load_kaf(), "o", "k", "KAF vacuum"),
-                             (load_hm(), "s", "0.35", "HM vacuum")]:
+                             (load_hm(), "s", "0.35", "HDM vacuum")]:
         T = df["Temp (C)"].values
         d = (step_lnk(df, phi) - lnk_vac(T, line)) / L10
         w = fit_window(df)
@@ -545,8 +604,9 @@ def make_delta_plot(fname="first_order_delta_lnk", gammas=GAMMA_CAL):
             ax.plot(T[nl], d[nl], "o", ms=10, mfc="none", mec="tab:purple",
                     label="KAF, LN$_2$ off")
     ht = load_ht()
+    lk = step_lnk(ht, phi)[ht["use"].values]
+    ht = ht[ht["use"].values].reset_index(drop=True)
     T = ht["Temp (C)"].values
-    lk = step_lnk(ht, phi)
     dry = (lk - lnk_vac(T, line)) / L10
     lo, mid, hi = [(lk - lnk_vac(T, line) - np.log(np.clip(
         saturated_rate_factor(T, g), 1e-300, None))) / L10 for g in gammas]

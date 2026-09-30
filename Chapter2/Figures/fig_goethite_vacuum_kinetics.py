@@ -17,6 +17,7 @@ Inputs (same folder as this script):
 Outputs -> ./generated/
 """
 from pathlib import Path
+import json
 import importlib.util
 import numpy as np
 import pandas as pd
@@ -76,7 +77,13 @@ def load_hm(path=HM_FILE):
 # files.  KAF: steps 1-4 (70-165 C) are low-T non-conversion He; steps 24+
 # (>= 290 C) sit on the hematite plateau.  HM: steps 2-7 (79-179 C) are
 # low-T He; step 29+ (338.8 C onward) is on the hematite plateau.
-WINDOW_STEPS = {"KAF": (5, 23), "HDM": (8, 28)}
+WINDOW_STEPS_BASE = {"KAF": (5, 23), "HDM": (8, 28)}
+# Trial (2026-09-29): exclude KAF step 23 (285 C) and HDM steps 27-28 (317 and
+# 338 C) and everything after, i.e. no step at or above ~285/317 C is fitted.
+# Set USE_TRIAL_WINDOW = False to restore the original 5-23 / 8-28 windows.
+WINDOW_STEPS_TRIAL = {"KAF": (5, 22), "HDM": (8, 26)}
+USE_TRIAL_WINDOW = True
+WINDOW_STEPS = WINDOW_STEPS_TRIAL if USE_TRIAL_WINDOW else WINDOW_STEPS_BASE
 F_MAX = 0.89
 
 
@@ -177,46 +184,73 @@ def predict(model, p, T_C, t_h, noLN2=None):
     return (1 - phi) * MODELS[model](x)
 
 
-def fit_model(model, df, target="F", use_noLN2=True, window=True):
+def fit_model(model, df, target="F", use_noLN2=True, window=True,
+              phi=None, phi_free=False):
     """Least squares on cumulative target. p = (Ea kJ, lnA, ln s, phi).
     window=True: residuals only for steps inside fit_window (the whole
-    schedule is still integrated)."""
-    diff = model.startswith("D3") or target == "alpha_w"
+    schedule is still integrated).
+
+    phi handling: by default phi is free for the reaction models and fixed
+    at 0 for D3 and for the water data.  phi=<float> fixes it at that value
+    (e.g. the F1 hematite-inherited fraction, so that D3 can be compared on
+    the same footing); phi_free=True frees it for D3 as well."""
+    diff = (model.startswith("D3") or target == "alpha_w") and not phi_free
     y = df[target].values
     w = fit_window(df) if window else np.ones(len(df), bool)
     nl = df["noLN2"].values if use_noLN2 else None
+    fixed = 0.0 if (diff and phi is None) else phi
     best = None
     for Ea0 in (60, 100, 150, 200, 300):
         c0 = -np.log(arrhenius_time(df["Temp (C)"], df["Time (h)"],
                                     Ea0 * 1e3)[-1])
-        p0 = [Ea0, c0, 0.0, 0.0 if diff else 0.1]
-        lb = [20, -300, -6, 0.0]
-        ub = [600, 300, 3, 1e-9 if diff else 0.5]
+        if fixed is None:
+            q0, lb, ub = [Ea0, c0, 0.0, 0.1], [20, -300, -6, 0.0], [600, 300, 3, 0.5]
+            full = lambda q: q
+        else:
+            q0, lb, ub = [Ea0, c0, 0.0], [20, -300, -6], [600, 300, 3]
+            full = lambda q, f=fixed: np.r_[q, f]
         r = least_squares(
-            lambda p: (predict(model, p, df["Temp (C)"], df["Time (h)"], nl)
+            lambda q: (predict(model, full(q), df["Temp (C)"], df["Time (h)"], nl)
                        - y)[w],
-            p0, bounds=(lb, ub))
+            q0, bounds=(lb, ub))
         if best is None or r.cost < best.cost:
-            best = r
+            best, bfull = r, full
     rms = np.sqrt(2 * best.cost / w.sum())
-    return best.x, rms
+    return bfull(best.x), rms
 
 
 # ----------------------------------------------------------------------------
 def run(conv_T_max=320.0, fname="vacuum_kinetics_KAF_to_HM"):
+    """Fit every model to the cumulative KAF 3He release inside the fitting
+    window, predict HDM, and fit the KAF water data.  D3 is fitted three
+    ways: phi = 0 (pure diffusion, the default), phi fixed at the F1 value
+    (same hematite-inherited fraction as the reaction fit), and phi free.
+    The same fits are repeated with every step included ('all' columns,
+    rms over all steps)."""
     k, h = load_kaf(), load_hm()
     rows, fits = [], {}
-    for m in MODELS:
-        p, rms = fit_model(m, k, "F")
+    phiF1 = fit_model("F1 first order", k, "F")[0][3]
+    variants = [(m, m, {}) for m in MODELS] + [
+        ("D3 sphere diffusion, phi = phi(F1)", "D3 sphere diffusion",
+         dict(phi=phiF1)),
+        ("D3 sphere diffusion, phi free", "D3 sphere diffusion",
+         dict(phi_free=True))]
+    for lab, m, kw in variants:
+        p, rms = fit_model(m, k, "F", **kw)
         pw, rmsw = fit_model(m, k, "alpha_w")
         FH = predict(m, p, h["Temp (C)"], h["Time (h)"])
         sel = fit_window(h)
-        fits[m] = (p, FH)
-        rows.append(dict(model=m, Ea_kJ=p[0], lnA=p[1],
+        pa, rmsa = fit_model(m, k, "F", window=False, **kw)
+        FHa = predict(m, pa, h["Temp (C)"], h["Time (h)"])
+        fits[lab] = (p, FH)
+        rows.append(dict(model=lab, Ea_kJ=p[0], lnA=p[1],
                          noLN2_rate_factor=np.exp(p[2]), phi=p[3],
                          rms_KAF_He=rms,
                          rms_HM_pred=np.sqrt(np.mean((FH[sel] - h["F"][sel])**2)),
-                         Ea_water_kJ=pw[0], rms_KAF_water=rmsw))
+                         n_KAF=int(fit_window(k).sum()), n_HM=int(sel.sum()),
+                         Ea_water_kJ=pw[0], rms_KAF_water=rmsw,
+                         Ea_kJ_all=pa[0], phi_all=pa[3], rms_KAF_He_all=rmsa,
+                         rms_HM_pred_all=np.sqrt(np.mean((FHa - h["F"])**2))))
     tab = pd.DataFrame(rows)
     tab.to_csv(OUTDIR / f"{fname}_fits.csv", index=False)
 
@@ -224,7 +258,6 @@ def run(conv_T_max=320.0, fname="vacuum_kinetics_KAF_to_HM"):
     # (a) KAF fit
     a = ax[0, 0]
     a.plot(k["t_cum"], k["F"], "ko", ms=4, label=r"$^3$He, $F$")
-    phiF1 = fits["F1 first order"][0][3]
     a.plot(k["t_cum"], (1 - phiF1) * k["alpha_w"], "s", mfc="none",
            color="tab:green", ms=5, label=r"water, $(1-\phi)\,\alpha_w$")
     for m in SHOW:
@@ -366,84 +399,120 @@ def lnk_vac(T_C, line=None):
 
 
 def make_arrhenius_comparison(fname="arrhenius_reaction_vs_diffusion",
-                              include_ht=True):
-    """ln k (first-order, nucleation-limited) and ln D/a^2 for every step of
-    KAF, HM and (optionally) the hydrothermal run.  Arrhenius line fitted to
-    KAF + HM steps inside fit_window, excluding LN2-off steps.  Steps whose F
-    exceeds 1 - phi have no defined k and are absent from the left panel."""
+                              include_ht=True, T_min_C=125.0, T_max_C=325.0):
+    """Every 3He step of KAF, HDM and the hydrothermal run in two stacked
+    representations, in the house Arrhenius style of
+    winsor_goethite_Diffusivities_Arrhenius.pdf (fig_decomp_vs_hydrothermal.py):
+    (a) first-order rate constants k_i (Eq. eq:gt_stepk) with the joint
+    Arrhenius line fitted to KAF + HDM steps inside fit_window (LN2-off steps
+    excluded); (b) Fechtig-Kalbitzer D/a^2.  Points of each experiment are
+    joined in step order by dashed lines; prograde and retrograde steps are
+    not distinguished.  Filled markers: vacuum steps used in the fit; open
+    markers: vacuum steps outside the fitting window.  Large pink circles:
+    the two KAF steps with the LN2 trap isolated.  Hydrothermal steps are
+    bounding-method central values with lower/upper-bound bars (low-signal
+    steps excluded).  Steps whose F exceeds 1 - phi have no defined k."""
+    import matplotlib as mpl
+    from matplotlib.lines import Line2D
+    import sys
+    sys.path.insert(0, str(HERE))
+    from plot_style import apply_style
+
     k, h = load_kaf(), load_hm()
     line = vacuum_line()
     phi = line["phi"]
-    sets = [("KAF vacuum", k, "o", "k"), ("HDM vacuum", h, "s", "0.35")]
+    sets = [("Vacuum: Farley et al., 2024 (KAF)", k, "o", "red"),
+            ("Vacuum: Monteiro, 2017 (HDM)", h, "s", "orange")]
     if include_ht and (HERE / "data/Win0601bHT_distilled.csv").exists():
-        sets.append(("hydrothermal (liquid)", load_ht(), "^", "tab:blue"))
+        sets.append(("Hydrothermal: this study", load_ht(), "D", "blue"))
+    xlim = (1e4 / (T_max_C + 273.15), 1e4 / (T_min_C + 273.15))
+    Ctemps = np.array([125, 150, 175, 200, 225, 250, 275, 300, 325])
+    Ctemps = Ctemps[(Ctemps >= T_min_C) & (Ctemps <= T_max_C)]
+    LN2_COL = "tab:pink"
 
-    fig, ax = plt.subplots(1, 2, figsize=(13, 5.4), constrained_layout=True)
-    fitX, fitY, per = [], [], {}
-    for lab, df, mk, col in sets:
-        T = df["Temp (C)"].values + 273.15
-        x = 1e4 / T
-        lk = np.log(first_order_k(df["F"], df["Time (h)"], phi, amax=0.999))
-        ld = np.log(fk_Da2(df["F"], df["Time (h)"]))
-        if df.attrs.get("name") == "HT":
-            # bounding method: central/LB/UB ln(D/a^2) straight from the
-            # distilled table; ln k bounds from the bounded step release
-            ld = df["lnDa2_m"].values
-            klo, khi = ht_lnk_bounds(df, phi)
-            ylo = {ax[0]: klo, ax[1]: df["lnDa2_LB"].values}
-            yhi = {ax[0]: khi, ax[1]: df["lnDa2_UB"].values}
-        up = _prograde(df)
-        vac = "vacuum" in lab
-        win = fit_window(df) if vac else np.zeros(len(df), bool)
-        nl = df["noLN2"].values if "noLN2" in df else np.zeros(len(df), bool)
-        use = win & ~nl & np.isfinite(lk)
-        for a_, y in zip(ax, (lk, ld)):
-            if vac:
-                inn, out = use, ~use & ~nl
-                a_.plot(x[inn & up], y[inn & up], mk, color=col, ms=5,
-                        label=f"{lab}, fitted")
-                a_.plot(x[inn & ~up], y[inn & ~up], mk, mfc="tab:cyan",
-                        mec=col, ms=6, label=f"{lab}, retrograde, fitted")
-                a_.plot(x[out], y[out], mk, mfc="none", mec=col, ms=5,
-                        alpha=0.7, label=f"{lab}, not fitted")
-                if nl.any():
-                    a_.plot(x[nl], y[nl], "o", ms=11, mfc="none",
-                            mec="tab:purple", label="KAF, LN$_2$ off (not fitted)")
+    with mpl.rc_context():
+        # side by side, two 6.4-in-wide panels; fonts scaled per plot_style's
+        # convention so they print at the house size when the figure is
+        # placed at full text width
+        apply_style(scale=1.6)
+        fig, ax = plt.subplots(1, 2, figsize=(12.8, 5.9))
+        yrange = [[np.inf, -np.inf], [np.inf, -np.inf]]
+        for lab, df, mk, col in sets:
+            T = df["Temp (C)"].values + 273.15
+            x = 1e4 / T
+            lk = np.log(first_order_k(df["F"], df["Time (h)"], phi, amax=0.999))
+            ld = np.log(fk_Da2(df["F"], df["Time (h)"]))
+            ht = df.attrs.get("name") == "HT"
+            if ht:
+                ld = df["lnDa2_m"].values
+                klo, khi = ht_lnk_bounds(df, phi)
+                lo = (klo, df["lnDa2_LB"].values)
+                hi = (khi, df["lnDa2_UB"].values)
+                show = df["use"].values
+                fitted = np.ones(len(df), bool)       # drawn filled
             else:
-                ok = df["use"].values
-                a_.plot(x[up & ok], y[up & ok], "^", color=col, ms=6,
-                        label=f"{lab}, prograde")
-                a_.plot(x[~up & ok], y[~up & ok], "v", color=col,
-                        mfc="white", ms=6, label=f"{lab}, retrograde")
-                a_.errorbar(x[ok], y[ok], yerr=[y[ok] - ylo[a_][ok],
-                            yhi[a_][ok] - y[ok]], fmt="none", ecolor=col,
-                            elinewidth=0.8, alpha=0.6)
-    Ea, sEa, lnA = line["Ea"], line["sEa"], line["lnA"]
-    per = {f"{kk} vacuum": vv for kk, vv in line["per"].items()}
-    xx = np.linspace(17.0, 23.0, 50)
-    ax[0].plot(xx, lnA - Ea * 1e3 / R * (xx / 1e4), "r-", lw=1.5,
-               label=f"fit KAF+HDM: Ea = {Ea:.0f} ± {sEa:.0f} kJ/mol")
-    for (lab, (e, se, c, _)), ls in zip(per.items(), ("--", ":")):
-        ax[0].plot(xx, c - e * 1e3 / R * (xx / 1e4), "r", ls=ls, lw=0.9,
-                   label=f"{lab} only: {e:.0f} ± {se:.0f} kJ/mol")
-    ax[0].set_ylabel(r"ln $k$ (s$^{-1}$), first order: "
-                     r"$k = -\ln[(1-\alpha_i)/(1-\alpha_{i-1})]/\Delta t$")
-    ax[1].set_ylabel(r"ln $D/a^2$ (s$^{-1}$), Fechtig-Kalbitzer sphere")
-    ax[0].set_title(rf"Reaction representation ($\alpha = F/(1-\phi)$, "
-                    rf"$\phi$ = {phi:.3f})")
-    ax[1].set_title("Diffusion representation")
-    for a_ in ax:
-        a_.set_xlabel(r"10$^4$/T (K$^{-1}$)")
-        a_.set_xlim(16.8, 29.5)
-        sec = a_.secondary_xaxis("top", functions=(
-            lambda x: 1e4 / np.maximum(x, 1e-9) - 273.15,
-            lambda c: 1e4 / (c + 273.15)))
-        sec.set_xlabel("T (°C)")
-    h_, l_ = ax[0].get_legend_handles_labels()
-    uniq = dict(zip(l_, h_))
-    ax[0].legend(uniq.values(), uniq.keys(), fontsize=6.5, loc="upper right")
-    for ext in ("png", "pdf"):
-        fig.savefig(OUTDIR / f"{fname}.{ext}", dpi=200)
+                show = np.ones(len(df), bool)
+                nl = df["noLN2"].values if "noLN2" in df else np.zeros(len(df), bool)
+                fitted = fit_window(df) & ~nl
+            for i_ax, (a_, y) in enumerate(zip(ax, (lk, ld))):
+                ok = show & np.isfinite(y)
+                # sequential dashed connector (step order), no pro/retro split
+                a_.plot(x[ok], y[ok], ls="--", lw=1, color=col, alpha=0.5, zorder=1)
+                if ht:
+                    a_.errorbar(x[ok], y[ok], yerr=[y[ok] - lo[i_ax][ok],
+                                hi[i_ax][ok] - y[ok]], fmt="none", ecolor=col,
+                                elinewidth=0.8, alpha=0.5, zorder=2)
+                f_ = ok & fitted
+                o_ = ok & ~fitted
+                a_.plot(x[f_], y[f_], mk, color=col, ms=8, alpha=0.75, ls="",
+                        zorder=3)
+                a_.plot(x[o_], y[o_], mk, mfc="none", mec=col, ms=8, mew=1.5,
+                        alpha=0.9, ls="", zorder=3)
+                if not ht and "noLN2" in df:
+                    n_ = ok & df["noLN2"].values
+                    a_.plot(x[n_], y[n_], "o", ms=20, mfc="none", mec=LN2_COL,
+                            mew=2.5, ls="", zorder=4)
+                inx = ok & (x >= xlim[0]) & (x <= xlim[1])
+                if inx.any():
+                    lo_y = np.min(lo[i_ax][inx]) if ht else np.min(y[inx])
+                    hi_y = np.max(hi[i_ax][inx]) if ht else np.max(y[inx])
+                    yrange[i_ax] = [min(yrange[i_ax][0], lo_y), max(yrange[i_ax][1], hi_y)]
+        Ea, sEa, lnA = line["Ea"], line["sEa"], line["lnA"]
+        xx = np.linspace(*xlim, 50)
+        ax[0].plot(xx, lnA - Ea * 1e3 / R * (xx / 1e4), "k-", lw=1.5, zorder=5)
+        for i_ax, a_ in enumerate(ax):
+            pad = 0.06 * (yrange[i_ax][1] - yrange[i_ax][0])
+            a_.set_ylim(yrange[i_ax][0] - pad, yrange[i_ax][1] + pad)
+            a_.set_xlim(xlim)
+        ax[0].set_ylabel(r"$\ln k \left(sec^{-1}\right)$")
+        ax[1].set_ylabel(r"$ln\left(\frac{D}{a^2}\right) \left(sec^{-1}\right)$")
+        for a_ in ax:
+            a_.set_xlabel(r"$10^{4}/T$ (K)")
+            a_.grid(True, color="0.85", lw=0.8, zorder=0)
+            a_.set_axisbelow(True)
+        for a_, t_ in zip(ax, ("(a) first-order\nconversion",
+                                "(b) volume diffusion\n(sphere)")):
+            a_.text(0.97, 0.96, t_, transform=a_.transAxes, ha="right",
+                    va="top", fontsize=18)
+        for a_ in ax:
+            top = a_.twiny()
+            top.set_xlim(xlim)
+            top.set_xticks(1e4 / (Ctemps[::2] + 273.15))
+            top.set_xticklabels(Ctemps[::2])
+            top.set_xlabel("Temperature (C)")
+        handles = [Line2D([], [], marker=mk, color=col, ls="--", alpha=0.75,
+                          label=lab) for lab, _, mk, col in sets]
+        handles += [Line2D([], [], marker="o", mfc="none", mec="0.4", ls="",
+                           label="outside fitting window"),
+                    Line2D([], [], marker="o", ms=12, mfc="none", mec=LN2_COL,
+                           mew=2, ls="", label="KAF, LN$_2$ trap isolated"),
+                    Line2D([], [], color="k", lw=1.5,
+                           label=f"first-order fit: $E_a$ = {Ea:.0f} $\\pm$ {sEa:.0f} kJ/mol")]
+        fig.legend(handles=handles, loc="lower center", ncol=3, fontsize=15,
+                   frameon=False)
+        fig.tight_layout(rect=(0, 0.13, 1, 1), w_pad=2)
+        for ext in ("png", "pdf"):
+            fig.savefig(OUTDIR / f"{fname}.{ext}", dpi=300)
     return fig, line
 
 
@@ -682,6 +751,504 @@ def make_hydrothermal_translation(fname="hydrothermal_translation"):
     return fig, sup, Pw
 
 
+# ----------------------------------------------------------------------------
+# Water-inhibition rate laws: sensitivity of the hydrothermal prediction to the
+# assumed functional form, an empirical bound from the hydrothermal data, and
+# Monte Carlo propagation of the calibration uncertainties (added 2026-09-30,
+# in response to review).
+# ----------------------------------------------------------------------------
+# Each law gives the ratio R = k(P_H2O) / k(P_on) of the conversion rate at a
+# water pressure P to its rate in the trapped vacuum line (P_on = 1e-8 atm).
+# Each is calibrated on the same trap-isolated steps, R(P_off) = s, and then
+# applied at water saturation, P = P_sat(T), step by step through the
+# hydrothermal schedule:  alpha = 1 - exp(-sum_i k_vac(T_i) R_i dt_i).
+#   CNT        ln R = -(C g^3/T)(1/dmu(P)^2 - 1/dmu_on^2)  (g calibrated)
+#   Langmuir   R = (1 + K P_on)/(1 + K P)   (site blocking; K calibrated and,
+#              for lack of a temperature dependence, held constant)
+#   power law  R = (P/P_on)^-n              (n calibrated)
+#   linear     R = (1 - exp(-dmu(P)/RT)) / (1 - exp(-dmu_on/RT))  (TST, linear
+#              in dmu near equilibrium; no free parameter -- it predicts s ~ 1
+#              and cannot reproduce the trap-isolated slowdown)
+P_ON_PA = gh.P_VAC / 1.0          # gh.P_VAC is in Pa
+RATE_LAWS = ("CNT", "Langmuir", "power")
+THERMO_UNC_J = 2.8e3              # +-1.4 kJ per FeOOH (Majzlan 2003) per reaction
+N_MC = 4000
+
+
+def _psat_pa(T):
+    return CP.PropsSI("P", "T", T, "Q", 0, "Water")
+
+
+def _dmu(T, P_pa, delta=0.0):
+    """Bulk driving force (J/mol Fe2O3) with the thermodynamic offset delta
+    (J per reaction, added to Delta G_r, i.e. subtracted from dmu)."""
+    return _dmu_bulk(T, P_pa) - delta
+
+
+def calibrate_law(law, T_C, s, P_off_pa, delta=0.0):
+    """Return the law's free parameter from one trap-isolated step."""
+    T = T_C + 273.15
+    if law == "CNT":
+        m_on, m_off = _dmu(T, P_ON_PA, delta), _dmu(T, P_off_pa, delta)
+        return (np.log(1 / s) * T / (C_NUC * (1 / m_off**2 - 1 / m_on**2)))**(1 / 3)
+    if law == "Langmuir":
+        return (1 / s - 1) / (P_off_pa - P_ON_PA / s)
+    if law == "power":
+        return np.log(1 / s) / np.log(P_off_pa / P_ON_PA)
+    raise ValueError(law)
+
+
+_SCHED_CACHE = {}
+
+
+def _sat_terms(T_C):
+    """Cached P_sat (Pa) and bulk driving forces at saturation and in the
+    trapped line, for each temperature (J/mol Fe2O3, no thermodynamic offset)."""
+    key = tuple(np.round(np.atleast_1d(np.asarray(T_C, float)), 6))
+    if key not in _SCHED_CACHE:
+        T = np.array(key) + 273.15
+        ps = np.array([_psat_pa(t) * (1 + 1e-6) for t in T])
+        ms = np.array([_dmu(t, p) for t, p in zip(T, ps)])
+        mv = np.array([_dmu(t, P_ON_PA) for t in T])
+        _SCHED_CACHE[key] = (T, ps, ms, mv)
+    return _SCHED_CACHE[key]
+
+
+def ln_ratio_sat(law, par, T_C, delta=0.0):
+    """ln(k_sat/k_vac) at water saturation for each temperature."""
+    T, ps, ms, mv = _sat_terms(T_C)
+    if law == "CNT":
+        ms, mv = ms - delta, mv - delta
+        with np.errstate(divide="ignore"):
+            return np.where(ms > 0, -(C_NUC * par**3 / T) * (1 / ms**2 - 1 / mv**2),
+                            -np.inf)
+    if law == "Langmuir":
+        return np.log((1 + par * P_ON_PA) / (1 + par * ps))
+    if law == "power":
+        return -par * np.log(ps / P_ON_PA)
+    raise ValueError(law)
+
+
+def log10_alpha_law(law, par, T_C, t_h, line, delta=0.0):
+    """log10 of the predicted hydrothermal conversion alpha (exact first-order
+    form, evaluated in log space so that vanishing values do not underflow)."""
+    terms = (lnk_vac(T_C, line) + np.log(np.asarray(t_h, float) * 3600)
+             + ln_ratio_sat(law, par, T_C, delta))
+    m = terms.max()
+    lnx = m + np.log(np.exp(terms - m).sum())          # ln(sum k dt)
+    x = np.exp(lnx)
+    return float(np.log10(-np.expm1(-x)) if x > 1e-12 else lnx / np.log(10))
+
+
+def linear_law_s(T_C, P_off_pa):
+    """Trap-off slowdown predicted by a law linear in dmu (no free parameter)."""
+    T = T_C + 273.15
+    f = lambda P: -np.expm1(-_dmu(T, P) / (R * T))
+    return f(P_off_pa) / f(P_ON_PA)
+
+
+def empirical_bounds(line, phi, detect_alpha=0.01):
+    """Suppression factors R (uniform over the schedule) that (a) keep
+    conversion below detect_alpha, and (b) would convert just enough goethite
+    to supply ALL of the observed 3He release (alpha_obs = F/(1-phi)); any
+    larger R is excluded by the data."""
+    ht = load_ht()
+    S = np.sum(np.exp(lnk_vac(ht["Temp (C)"], line)) * ht["Time (h)"] * 3600)
+    a_obs = float(ht["F"].iloc[-1]) / (1 - phi)
+    return dict(sum_kdt=S, alpha_obs=a_obs,
+                log10R_detect=np.log10(-np.log(1 - detect_alpha) / S),
+                log10R_obs=np.log10(-np.log(1 - a_obs) / S),
+                log10R_obs_nuc=None)
+
+
+def trap_off_s_variants(phi_F1=None, phi_R3=None):
+    """Trap-isolated slowdown s for each trap-off step under several
+    reductions: first-order (F1) and contracting-sphere (R3) step rate
+    constants, each against the mean of the two trapped neighbours and
+    against each neighbour alone.  Returns {T_C: [s values]}."""
+    k = load_kaf()
+    if phi_F1 is None:
+        phi_F1 = fit_model("F1 first order", k, "F")[0][3]
+    if phi_R3 is None:
+        phi_R3 = fit_model("R3 contracting sphere", k, "F")[0][3]
+    t = k["Time (h)"].values * 3600
+    a1 = np.clip(k["F"].values / (1 - phi_F1), 0, 0.999)
+    kF1 = -np.log((1 - a1) / (1 - np.r_[0, a1[:-1]])) / t
+    a3 = np.clip(k["F"].values / (1 - phi_R3), 0, 0.999)
+    g3 = 1 - (1 - a3)**(1 / 3)
+    kR3 = np.diff(np.r_[0, g3]) / t
+    out = {}
+    for i in np.where(k["noLN2"].values)[0]:
+        T = float(k["Temp (C)"].iloc[i])
+        nb = [j for j in (i - 1, i + 1) if 0 <= j < len(k)
+              and k["Temp (C)"].iloc[j] == T and not k["noLN2"].iloc[j]]
+        vals = []
+        for kk in (kF1, kR3):
+            vals += [kk[i] / np.mean(kk[nb])] + [kk[i] / kk[j] for j in nb]
+        out[T] = vals
+    return out
+
+
+def rate_law_table(line, sup=None):
+    """Deterministic calibration grid (as in the text: two steps x two
+    apparatus volumes x end-of-step or half pressure) for every law:
+    free parameter, k_sat/k_vac at 250 C, and log10 alpha for the schedule."""
+    ht = load_ht()
+    sup = dict(trap_off_suppression() if sup is None else sup)
+    Pw = trap_off_pressures()
+    rows = []
+    for T_C, s_ in sup.items():
+        for V, P_end in zip(V_APPARATUS_mL, Pw[T_C]):
+            for pf in (1.0, 0.5):
+                P = P_end * pf
+                for law in RATE_LAWS:
+                    par = calibrate_law(law, T_C, s_, P)
+                    rows.append(dict(
+                        law=law, T_C=T_C, s=s_, V_mL=V, P_frac=pf, P_off_Pa=P,
+                        par=par,
+                        log10_R250=float(ln_ratio_sat(law, par, 250.0)[0] / np.log(10)),
+                        log10_alpha=float(log10_alpha_law(
+                            law, par, ht["Temp (C)"], ht["Time (h)"], line))))
+                rows.append(dict(law="linear", T_C=T_C, s=s_, V_mL=V, P_frac=pf,
+                                 P_off_Pa=P, par=np.nan,
+                                 s_pred=float(linear_law_s(T_C, P))))
+    tab = pd.DataFrame(rows)
+    tab.to_csv(OUTDIR / "hydrothermal_rate_law_sensitivity.csv", index=False)
+    return tab
+
+
+def rate_law_monte_carlo(line, n=N_MC, seed=20260930):
+    """Propagate the calibration uncertainties into log10 alpha for each law.
+    Sampled: the trap-off step (230 or 240 C); s from its reduction range
+    (F1/R3, neighbour mean or either neighbour; log-uniform between the
+    extremes); apparatus volume (log-uniform 190-600 mL); time-averaged
+    pressure fraction (uniform 0.5-1 of the end-of-step value); and, for CNT
+    only, a common offset of Delta G_r (uniform +-2.8 kJ per reaction), which
+    shifts every driving force together."""
+    rng = np.random.default_rng(seed)
+    ht = load_ht()
+    sv = trap_off_s_variants()
+    temps = sorted(sv)
+    out = {law: [] for law in RATE_LAWS}
+    out["gamma"] = []
+    for _ in range(n):
+        T_C = temps[rng.integers(len(temps))]
+        lo, hi = np.log(min(sv[T_C])), np.log(max(sv[T_C]))
+        s_ = np.exp(rng.uniform(lo, hi))
+        V = np.exp(rng.uniform(*np.log(V_APPARATUS_mL))) * 1e-6
+        n_w = TRAP_OFF_WATER_MG[T_C] * 1e-3 / 18.015
+        P = n_w * R * 298.15 / V * rng.uniform(0.5, 1.0)
+        delta = rng.uniform(-THERMO_UNC_J, THERMO_UNC_J)
+        for law in RATE_LAWS:
+            d = delta if law == "CNT" else 0.0
+            par = calibrate_law(law, T_C, s_, P, d)
+            if law == "CNT":
+                out["gamma"].append(par)
+            out[law].append(log10_alpha_law(law, par, ht["Temp (C)"],
+                                            ht["Time (h)"], line, d))
+    res = {}
+    for key, v in out.items():
+        v = np.asarray(v, float)
+        res[key] = dict(p2_5=float(np.percentile(v, 2.5)),
+                        p50=float(np.percentile(v, 50)),
+                        p97_5=float(np.percentile(v, 97.5)))
+    res["s_variants"] = {str(k): [float(x) for x in v] for k, v in sv.items()}
+    return res
+
+
+def cnt_scales(gamma, T_C=250.0):
+    """Critical radius (nm) and formula units in the critical nucleus, and the
+    barrier (k_B T), in vacuum and at saturation."""
+    T = T_C + 273.15
+    fu = gh.V_HEM / 6.02214076e23
+    out = {}
+    for tag, P in (("vac", P_ON_PA), ("sat", _psat_pa(T) * (1 + 1e-6))):
+        m = _dmu(T, P)
+        r = 2 * gamma * gh.V_HEM / m
+        out[tag] = dict(r_nm=r * 1e9, n_fu=(4 / 3 * np.pi * r**3) / fu,
+                        barrier_kBT=C_NUC * gamma**3 / (T * m**2))
+    return out
+
+
+# ----------------------------------------------------------------------------
+# Statistics cache + LaTeX macros for Chapter 2
+# ----------------------------------------------------------------------------
+# Every kinetic-fit statistic quoted in Chapter 2 (main text and SI) is read
+# from Chapter2/Writing/chapter2_kinetics_values.tex, written here, so the
+# text cannot drift from the fits.  Do not edit that file by hand; re-run
+# this script (or run_all_figures.py).
+MACRO_PATH = HERE.parent / "Writing" / "chapter2_kinetics_values.tex"
+CACHE_PATH = OUTDIR / "data" / "goethite_kinetics_cache.json"
+KB_J, H_J = 1.380649e-23, 6.62607015e-34
+
+
+def residual_stats(line=None):
+    """rms of the vacuum first-order residuals (log10 units) in the fitting
+    window, and the offsets of the two trap-isolated KAF steps."""
+    line = vacuum_line() if line is None else line
+    phi = line["phi"]
+    out = {}
+    for df in (load_kaf(), load_hm()):
+        T = df["Temp (C)"].values
+        d = (step_lnk(df, phi) - lnk_vac(T, line)) / np.log(10)
+        w = fit_window(df)
+        nl = df["noLN2"].values if "noLN2" in df else np.zeros(len(df), bool)
+        out[df.attrs["name"]] = float(np.sqrt(np.nanmean(d[w & ~nl]**2)))
+        if nl.any():
+            out["trap_offsets"] = [float(x) for x in d[nl]]
+    return out
+
+
+def _f(x, nd):
+    return f"{x:.{nd}f}"
+
+
+def _sig(x, sf=2):
+    """Round to sf significant figures and print without trailing exponent."""
+    if x == 0:
+        return "0"
+    e = int(np.floor(np.log10(abs(x))))
+    nd = max(sf - e - 1, 0)
+    return f"{round(x, nd):.{nd}f}"
+
+
+def _sci(x, sf=2):
+    e = int(np.floor(np.log10(abs(x))))
+    return f"{x / 10**e:.{sf - 1}f}\\times10^{{{e}}}"
+
+
+def _win_temps(df):
+    """'Tlo--Thi' (deg C, rounded) of the steps inside the fitting window."""
+    T = df["Temp (C)"].values[fit_window(df)]
+    return f"{T.min():.0f}--{T.max():.0f}"
+
+
+def make_rate_law_figure(tab, mc, bounds, fname="hydrothermal_rate_law_sensitivity"):
+    """Predicted hydrothermal conversion for each water-inhibition law:
+    deterministic calibration grid (thick bars) and Monte Carlo 95% range
+    (thin bars), against the empirical bounds from the hydrothermal data."""
+    from plot_style import apply_style
+    with plt.rc_context():
+        apply_style(scale=0.125 * 9.0 / 1.0)
+        fig, ax = plt.subplots(figsize=(9.0, 4.2), constrained_layout=True)
+        labels = {"CNT": "nucleation\n(CNT, $\\gamma^3/\\Delta\\mu^2$)",
+                  "Langmuir": "site blocking\n(Langmuir)",
+                  "power": "power law\n($P^{-n}$)"}
+        for y, law in enumerate(RATE_LAWS[::-1]):
+            d = tab[tab.law == law]["log10_alpha"]
+            ax.plot([mc[law]["p2_5"], mc[law]["p97_5"]], [y, y], color="0.3",
+                    lw=1.5, solid_capstyle="butt")
+            ax.plot([d.min(), d.max()], [y, y], color="tab:blue", lw=9,
+                    solid_capstyle="butt")
+            ax.plot(mc[law]["p50"], y, "o", color="white", mec="k", ms=7, zorder=3)
+        a_det = np.log10(0.01)
+        a_obs = np.log10(bounds["alpha_obs"])
+        ax.axvline(a_det, color="tab:green", ls="--", lw=1.5)
+        ax.axvline(a_obs, color="tab:red", ls="-", lw=1.5)
+        ax.text(a_det - 0.8, 2.45, "1% conversion", color="tab:green",
+                ha="right", va="center", fontsize="small")
+        ax.annotate("all observed $^3$He\nfrom conversion", xy=(a_obs, 0.45),
+                    xytext=(a_det - 3.0, 0.45), color="tab:red", ha="right",
+                    va="center", fontsize="small",
+                    arrowprops=dict(arrowstyle="->", color="tab:red", lw=1.2))
+        ax.axvspan(a_obs, 0.5, color="tab:red", alpha=0.08)
+        from matplotlib.lines import Line2D
+        ax.legend(handles=[
+            Line2D([], [], color="tab:blue", lw=9, label="calibration grid"),
+            Line2D([], [], color="0.3", lw=1.5, marker="o", mfc="white", mec="k",
+                   label="Monte Carlo median, 95%")],
+            loc="lower left", fontsize="small", handlelength=1.6)
+        ax.set_yticks(range(len(RATE_LAWS)))
+        ax.set_yticklabels([labels[l] for l in RATE_LAWS[::-1]])
+        ax.set_ylim(-0.8, 2.8)
+        ax.set_xlim(-72, 2)
+        ax.set_xlabel(r"predicted hydrothermal conversion, $\log_{10}\alpha$")
+        for ext in ("png", "pdf"):
+            fig.savefig(OUTDIR / f"{fname}.{ext}", dpi=300)
+    return fig
+
+
+def rate_law_macros(line, sup):
+    """Macros for the rate-law sensitivity, the empirical bounds, the Monte
+    Carlo propagation and the CNT length scales (Chapter 2 nucleation section
+    and SI)."""
+    tab = rate_law_table(line, sup)
+    mc = rate_law_monte_carlo(line)
+    bd = empirical_bounds(line, line["phi"])
+    make_rate_law_figure(tab, mc, bd)
+    g = lambda law, c: tab[tab.law == law][c]
+    M = {"ChTwoKinSumKdt": _f(bd["sum_kdt"], 0),
+         "ChTwoKinLogRDetect": _f(bd["log10R_detect"], 1),
+         "ChTwoKinLogRObs": _f(bd["log10R_obs"], 1),
+         "ChTwoKinLinearS": _f(g("linear", "s_pred").min(), 3),
+         "ChTwoKinNMC": str(N_MC)}
+    for law, tag in (("CNT", "CNT"), ("Langmuir", "Lang"), ("power", "Pow")):
+        r, a = g(law, "log10_R250"), g(law, "log10_alpha")
+        M[f"ChTwoKin{tag}LogRLo"] = _f(r.min(), 1)
+        M[f"ChTwoKin{tag}LogRHi"] = _f(r.max(), 1)
+        M[f"ChTwoKin{tag}LogAlphaLo"] = _f(a.min(), 1)
+        M[f"ChTwoKin{tag}LogAlphaHi"] = _f(a.max(), 1)
+        M[f"ChTwoKinMC{tag}Lo"] = _f(mc[law]["p2_5"], 1)
+        M[f"ChTwoKinMC{tag}Mid"] = _f(mc[law]["p50"], 1)
+        M[f"ChTwoKinMC{tag}Hi"] = _f(mc[law]["p97_5"], 1)
+    pw = g("power", "log10_alpha")
+    M["ChTwoKinPowAlphaLo"] = _f(10**pw.min(), 2)
+    M["ChTwoKinPowAlphaHi"] = _f(10**pw.max(), 2)
+    M["ChTwoKinMCPowAlphaLo"] = _f(10**mc["power"]["p2_5"], 2)
+    M["ChTwoKinLangKLo"] = _sig(g("Langmuir", "par").min())
+    M["ChTwoKinLangKHi"] = _sig(g("Langmuir", "par").max())
+    M["ChTwoKinPowNLo"] = _f(g("power", "par").min(), 2)
+    M["ChTwoKinPowNHi"] = _f(g("power", "par").max(), 2)
+    M["ChTwoKinGammaLo"] = _f(g("CNT", "par").min(), 2)
+    M["ChTwoKinGammaHi"] = _f(g("CNT", "par").max(), 2)
+    M["ChTwoKinMCGammaLo"] = _f(mc["gamma"]["p2_5"], 2)
+    M["ChTwoKinMCGammaHi"] = _f(mc["gamma"]["p97_5"], 2)
+    sv = mc["s_variants"]
+    M["ChTwoKinSLowRange"] = f"{min(sv['230.0']):.2f}--{max(sv['230.0']):.2f}"
+    M["ChTwoKinSHighRange"] = f"{min(sv['240.0']):.2f}--{max(sv['240.0']):.2f}"
+    lo, hi = cnt_scales(GAMMA_CAL[0]), cnt_scales(GAMMA_CAL[2])
+    for tag, key, nd in (("Rstar", "r_nm", 2), ("Nfu", "n_fu", 2), ("Bar", "barrier_kBT", 1)):
+        for ph, PH in (("vac", "Vac"), ("sat", "Sat")):
+            v0, v1 = lo[ph][key], hi[ph][key]
+            if ph == "sat" and tag != "Rstar":
+                M[f"ChTwoKin{tag}{PH}"] = f"{v0:.0f}--{v1:.0f}"
+            elif ph == "sat":
+                M[f"ChTwoKin{tag}{PH}"] = f"{v0:.1f}--{v1:.1f}"
+            else:
+                M[f"ChTwoKin{tag}{PH}"] = f"{v0:.{nd}f}--{v1:.{nd}f}"
+    return M, dict(table=tab.to_dict(orient="records"), monte_carlo=mc, bounds=bd)
+
+
+def write_kinetics_macros(tab, line, sup, resid, synth):
+    t = tab.set_index("model")
+    F1, R2, R3 = (t.loc[m] for m in ("F1 first order", "R2 contracting cylinder",
+                                      "R3 contracting sphere"))
+    D3 = t.loc["D3 sphere diffusion"]
+    D3p = t.loc["D3 sphere diffusion, phi = phi(F1)"]
+    D3f = t.loc["D3 sphere diffusion, phi free"]
+    T250 = 250 + 273.15
+    k250 = np.exp(line["lnA"] - line["Ea"] * 1e3 / (R * T250))
+    n_grain = (np.pi * 1e-6**3 / 6) / (gh.V_GOE / 6.02214076e23)
+    ceiling = np.log(n_grain * KB_J * T250 / H_J / k250)
+    ht_ = load_ht()
+    t_ht = ht_["Time (h)"].sum() * 3600
+    # detectability: ln(sum_i k_vac(T_i) dt_i / 0.01) over the actual schedule
+    detect = np.log(np.sum(np.exp(lnk_vac(ht_["Temp (C)"], line))
+                           * ht_["Time (h)"] * 3600) / 0.01)
+    la = {g: log10_alpha_hydrothermal(ht_["Temp (C)"], ht_["Time (h)"], g, line)
+          for g in (0.084,) + GAMMA_CAL}
+    F_end = float(ht_["F"].iloc[-1])
+    alpha_perm = 10**la[0.084]
+    e_ = int(np.floor(np.log10(alpha_perm)))
+    alpha_perm_s = f"{round(alpha_perm / 10**e_):.0f}\\times10^{{{e_}}}"
+    M_rl, rl_cache = rate_law_macros(line, sup)
+    sup = dict(sup)
+    M = {
+        # cumulative F1 fit to KAF (fitting window)
+        "ChTwoKinFOneEa": _f(F1.Ea_kJ, 1), "ChTwoKinFOneLnA": _f(F1.lnA, 2),
+        "ChTwoKinPhi": _f(F1.phi, 3), "ChTwoKinS": _f(F1.noLN2_rate_factor, 2),
+        "ChTwoKinFOneRmsKAF": _sig(F1.rms_KAF_He), "ChTwoKinFOneRmsHDM": _sig(F1.rms_HM_pred),
+        "ChTwoKinNKAF": str(int(F1.n_KAF)), "ChTwoKinNHDM": str(int(F1.n_HM)),
+        "ChTwoKinWinKAF": "{}--{}".format(*WINDOW_STEPS["KAF"]),
+        "ChTwoKinWinHDM": "{}--{}".format(*WINDOW_STEPS["HDM"]),
+        "ChTwoKinWinKAFT": _win_temps(load_kaf()), "ChTwoKinWinHDMT": _win_temps(load_hm()),
+        # D3: phi = 0, phi = phi(F1), phi free
+        "ChTwoKinDThreeEa": _f(D3.Ea_kJ, 0),
+        "ChTwoKinDThreeRmsKAF": _sig(D3.rms_KAF_He), "ChTwoKinDThreeRmsHDM": _sig(D3.rms_HM_pred),
+        "ChTwoKinDThreeRmsRatio": _f(D3.rms_KAF_He / F1.rms_KAF_He, 1),
+        "ChTwoKinDThreePhiEa": _f(D3p.Ea_kJ, 0),
+        "ChTwoKinDThreePhiRmsKAF": _sig(D3p.rms_KAF_He), "ChTwoKinDThreePhiRmsHDM": _sig(D3p.rms_HM_pred),
+        "ChTwoKinDThreePhiRmsRatio": _f(D3p.rms_KAF_He / F1.rms_KAF_He, 1),
+        "ChTwoKinDThreePhiS": _f(D3p.noLN2_rate_factor, 2),
+        "ChTwoKinDThreeFreeEa": _f(D3f.Ea_kJ, 0), "ChTwoKinDThreeFreePhi": _f(D3f.phi, 3),
+        "ChTwoKinDThreeFreeRmsKAF": _sig(D3f.rms_KAF_He), "ChTwoKinDThreeFreeRmsHDM": _sig(D3f.rms_HM_pred),
+        # KAF water
+        "ChTwoKinWaterEa": _f(F1.Ea_water_kJ, 1), "ChTwoKinWaterRms": _sig(F1.rms_KAF_water),
+        # all steps included
+        "ChTwoKinAllFOneEa": _f(F1.Ea_kJ_all, 1), "ChTwoKinAllPhi": _f(F1.phi_all, 3),
+        "ChTwoKinAllFOneRmsKAF": _sig(F1.rms_KAF_He_all), "ChTwoKinAllFOneRmsHDM": _sig(F1.rms_HM_pred_all),
+        "ChTwoKinAllRThreeEa": _f(R3.Ea_kJ_all, 1), "ChTwoKinAllRThreeRmsKAF": _sig(R3.rms_KAF_He_all),
+        "ChTwoKinAllRThreeRmsHDM": _sig(R3.rms_HM_pred_all),
+        "ChTwoKinAllRTwoEa": _f(R2.Ea_kJ_all, 1), "ChTwoKinAllRTwoRmsKAF": _sig(R2.rms_KAF_He_all),
+        "ChTwoKinAllRTwoRmsHDM": _sig(R2.rms_HM_pred_all),
+        "ChTwoKinAllDThreeEa": _f(D3.Ea_kJ_all, 1), "ChTwoKinAllDThreeRmsKAF": _sig(D3.rms_KAF_He_all),
+        "ChTwoKinAllDThreeRmsHDM": _sig(D3.rms_HM_pred_all),
+        "ChTwoKinAllDThreePhiRmsKAF": _sig(D3p.rms_KAF_He_all),
+        "ChTwoKinAllDThreePhiRmsHDM": _sig(D3p.rms_HM_pred_all),
+        # joint Arrhenius line through the step rate constants
+        "ChTwoKinLineEa": _f(line["Ea"], 1), "ChTwoKinLineEaErr": _f(line["sEa"], 1),
+        "ChTwoKinLineLnA": _f(line["lnA"], 2), "ChTwoKinLineLnAErr": _f(line["slnA"], 2),
+        "ChTwoKinLineN": str(int(line["n"])),
+        "ChTwoKinKAFEa": _f(line["per"]["KAF"][0], 1), "ChTwoKinKAFEaErr": _f(line["per"]["KAF"][1], 1),
+        "ChTwoKinHDMEa": _f(line["per"]["HDM"][0], 1), "ChTwoKinHDMEaErr": _f(line["per"]["HDM"][1], 1),
+        "ChTwoKinKTwoFifty": _sci(k250), "ChTwoKinConvPerHour": _f(100 * (1 - np.exp(-k250 * 3600)), 0),
+        "ChTwoKinCeiling": _f(ceiling, 0), "ChTwoKinDetect": _f(detect, 0),
+        # phi-dependent quantities for the hydrothermal translation
+        "ChTwoKinPhiPct": _f(100 * F1.phi, 0), "ChTwoKinOneMinusPhi": _f(1 - F1.phi, 3),
+        # truncated (not rounded) to match the "14.7%" total 3He yield quoted in the text
+        "ChTwoKinHTFEnd": _f(np.floor(F_end * 1000) / 1000, 3),
+        "ChTwoKinHTAlphaObs": _f(np.floor(F_end * 1000) / 1000 / (1 - F1.phi), 2),
+        "ChTwoKinLogAlphaLow": _f(la[GAMMA_CAL[0]], 1), "ChTwoKinLogAlphaMid": _f(la[GAMMA_CAL[1]], 1),
+        "ChTwoKinLogAlphaHigh": _f(la[GAMMA_CAL[2]], 1), "ChTwoKinAlphaPermissive": alpha_perm_s,
+        # trap-isolated steps and residuals
+        "ChTwoKinTrapSuppLow": _f(sup[230.0], 2), "ChTwoKinTrapSuppHigh": _f(sup[240.0], 2),
+        "ChTwoKinResidRmsKAF": _f(resid["KAF"], 2), "ChTwoKinResidRmsHDM": _f(resid["HDM"], 2),
+        "ChTwoKinTrapResidLow": _f(-resid["trap_offsets"][0], 2),
+        "ChTwoKinTrapResidHigh": _f(-resid["trap_offsets"][1], 2),
+    }
+    M.update(M_rl)
+    # model-fit table rows (SI Table tab:gt_mech_fits)
+    short = {"R2 contracting cylinder": "R2", "R3 contracting sphere": "R3",
+             "F1 first order": "F1", "A2 Avrami n=2": "A2", "A3 Avrami n=3": "A3",
+             "D3 sphere diffusion": "D3, $\\phi=0$",
+             "D3 sphere diffusion, phi = phi(F1)": "D3, $\\phi=\\phi_{\\mathrm{F1}}$",
+             "D3 sphere diffusion, phi free": "D3, $\\phi$ free"}
+    rows = []
+    for m, r in t.iterrows():
+        lb = "$^{a}$" if r.Ea_kJ <= 20.0001 else ""
+        lbw = "$^{a}$" if r.Ea_water_kJ <= 20.0001 else ""
+        lnA = _f(r.lnA, 2)
+        lnA = f"${lnA}$" if r.lnA < 0 else lnA
+        water = "---" if "," in m else _f(r.Ea_water_kJ, 1) + lbw
+        rows.append(f"{short[m]} & {_f(r.Ea_kJ, 1)}{lb} & {lnA} & {_f(r.phi, 3)} & "
+                    f"{_f(r.noLN2_rate_factor, 2)} & {_f(r.rms_KAF_He, 4)} & "
+                    f"{_f(r.rms_HM_pred, 4)} & {water} \\\\")
+    M["ChTwoKinMechFitRows"] = "\n".join(rows)
+    # synthetic degeneracy table rows (SI Table tab:gt_synth)
+    sy = synth.pivot(index="model", columns="schedule")
+    srows = []
+    for m in ["R2 contracting cylinder", "F1 first order", "A2 Avrami n=2",
+              "A3 Avrami n=3", "D3 sphere diffusion", "R3 contracting sphere"]:
+        name = short[m].replace(", $\\phi=0$", "") + (" (true)" if m.startswith("R3") else "")
+        srows.append(f"{name} & {_f(sy.loc[m, ('Ea_kJ', 'monotonic')], 1)} & "
+                     f"{_f(sy.loc[m, ('rms_F', 'monotonic')], 4)} & "
+                     f"{_f(sy.loc[m, ('Ea_kJ', 'cycled')], 1)} & "
+                     f"{_f(sy.loc[m, ('rms_F', 'cycled')], 4)} \\\\")
+    M["ChTwoKinSynthRows"] = "\n".join(srows)
+    hdr = ("% =============================================================\n"
+           "%  chapter2_kinetics_values.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.\n"
+           "%  Written by Chapter2/Figures/fig_goethite_vacuum_kinetics.py\n"
+           "%  (write_kinetics_macros) from the kinetic fits to the vacuum step heats\n"
+           "%  (KAF = Farley et al. 2024; HDM = Monteiro et al. 2017). Statistics cache:\n"
+           "%  Figures/generated/data/goethite_kinetics_cache.json.\n"
+           "%  Rerun that script (or run_all_figures.py) after any change to the data\n"
+           "%  or fitting code.\n"
+           "% =============================================================\n")
+    body = "".join(f"\\newcommand{{\\{k}}}{{{v}}}\n" if "Rows" not in k else
+                   f"\\newcommand{{\\{k}}}{{%\n{v}}}\n" for k, v in M.items())
+    MACRO_PATH.write_text(hdr + body, encoding="utf-8")
+    CACHE_PATH.parent.mkdir(exist_ok=True)
+    cache = dict(fits=tab.to_dict(orient="records"),
+                 arrhenius_line={k: v for k, v in line.items() if k != "per"},
+                 arrhenius_per_experiment={k: list(v) for k, v in line["per"].items()},
+                 k250=k250, ceiling_kBT=ceiling, detect_kBT=detect,
+                 trap_suppression=sup, residuals=resid,
+                 synthetic=synth.to_dict(orient="records"),
+                 rate_laws=rl_cache, macros=M)
+    CACHE_PATH.write_text(json.dumps(cache, indent=1, default=float))
+    return M
+
+
 if __name__ == "__main__":
     tab, _ = run()
     _, arr = make_arrhenius_comparison()
@@ -701,6 +1268,8 @@ if __name__ == "__main__":
             print(f"  {T_C} C: P_end = {P:.1f} Pa -> gamma = "
                   f"{gamma_from_suppression(T_C, s_, P / 1e5):.3f}; "
                   f"P/2 -> {gamma_from_suppression(T_C, s_, P / 2e5):.3f}")
-    synthetic_degeneracy_test()
-    with pd.option_context("display.width", 160):
+    synth = synthetic_degeneracy_test()
+    M = write_kinetics_macros(tab, arr, sup, residual_stats(arr), synth)
+    print(f"wrote {len(M)} macros to {MACRO_PATH}")
+    with pd.option_context("display.width", 200):
         print(tab.round(4).to_string(index=False))

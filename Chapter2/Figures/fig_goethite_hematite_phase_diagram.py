@@ -40,6 +40,8 @@ import numpy as np
 from pathlib import Path
 import matplotlib.pyplot as plt
 from scipy.optimize import brentq
+import functools
+from plot_style import apply_style
 import CoolProp.CoolProp as CP
 
 TR = 298.15          # K
@@ -50,6 +52,27 @@ P_VAC = 1e-8 * ATM   # Pa, "water absent" / vacuum step-heating condition
 
 OUTDIR = Path(__file__).resolve().parent / "generated"
 OUTDIR.mkdir(exist_ok=True)
+
+
+def _styled(figwidth_in, printed_frac=1.0):
+    """Decorator: draw a phase diagram with the shared plot_style font sizes,
+    scaled for how the figure is placed (applied inside an rc_context, so the
+    other figures in this script keep their own settings).
+
+    Reference: the Arrhenius comparison figure (fig_goethite_vacuum_kinetics.py),
+    12.8 in wide with apply_style(scale=1.6) and printed at the full text width,
+    i.e. scale = 0.125 per inch of figure width at full width. A figure printed at a
+    fraction of the text width (e.g. 0.7\linewidth) is shrunk less, so its scale is
+    divided by that fraction. This keeps text the same printed size in every figure.
+    """
+    def deco(fn):
+        @functools.wraps(fn)
+        def wrapped(*args, **kwargs):
+            with plt.rc_context():
+                apply_style(scale=0.125 * figwidth_in / printed_frac)
+                return fn(*args, **kwargs)
+        return wrapped
+    return deco
 
 # ----------------------------------------------------------------------------
 # Data
@@ -145,6 +168,10 @@ def dG_surf(d_nm, surface="hydrated", basis="equal_area"):
 # Equilibrium curve
 # ----------------------------------------------------------------------------
 LOGP_MIN, LOGP_MAX = -12.0, 4.0   # bar; IAPWS-95 in CoolProp valid to 1 GPa
+# Plotted window of the goethite--hematite--water P-T phase diagrams
+# (solver range above is unchanged; these only set the axes).
+PT_LOGP_PLOT_MIN = -3.0            # bar
+PT_T_MAX_C = 275.0                 # deg C
 
 
 def equilibrium_logP(T, shift, dataset=DATASET):
@@ -185,14 +212,14 @@ LABEL = lambda d: "bulk" if d is None else f"{d} nm"
 DG_UNC = 2.8e3   # J per reaction (+-1.4 kJ per FeOOH, Majzlan 2003b)
 
 
+@_styled(10, 1.0)
 def make_figure(basis="equal_area", fname="goethite_hematite_Ph2o_T",
-                T_C=np.linspace(0.5, 500, 300)):
+                T_C=np.linspace(0.5, PT_T_MAX_C, 300)):
     T = T_C + 273.15
     sat = saturation_curve(T)
     bulk_lo = curve(T, -DG_UNC)
     bulk_hi = curve(T, +DG_UNC)
-
-    fig, axes = plt.subplots(1, 2, figsize=(11, 5), sharey=True,
+    fig, axes = plt.subplots(2, 1, figsize=(10, 10), sharex=True,
                              constrained_layout=True)
     for ax, surface in zip(axes, ["hydrated", "anhydrous"]):
         ax.plot(T_C, bulk_lo, color="0.6", lw=0.9, ls="-.",
@@ -206,20 +233,23 @@ def make_figure(basis="equal_area", fname="goethite_hematite_Ph2o_T",
             off = "" if np.isfinite(y).any() else " [off scale]"
             ls = "-"
             ax.plot(T_C, y, color=COLORS[d], ls=ls, lw=1.8,
-                    label=f"{LABEL(d)}  ($\\Delta G_{{surf}}$ = {sh/1e3:+.1f} kJ){off}")
+                    label=f"{LABEL(d)} ({sh/1e3:+.1f} kJ){off}")
         ax.set_title(f"{surface} surfaces ({basis.replace('_', ' ')})")
-        ax.set_xlabel("Temperature (°C)")
         ax.set_xlim(T_C[0], T_C[-1])
-        ax.set_ylim(LOGP_MIN, LOGP_MAX)
-        ax.text(0.04, 0.95, r"$\alpha$-FeOOH", transform=ax.transAxes,
-                va="top", fontsize=11)
-        ax.text(0.96, 0.05, r"$\alpha$-Fe$_2$O$_3$ + H$_2$O",
-                transform=ax.transAxes, ha="right", fontsize=11)
-        ax.legend(fontsize=7.5, loc="lower center", bbox_to_anchor=(0.62, 0.1))
+        ax.set_ylim(PT_LOGP_PLOT_MIN, LOGP_MAX)
+        ax.annotate(r"$\alpha$-FeOOH", xy=(8, 0.6), xytext=(34, 0.6), va="center",
+                    arrowprops=dict(arrowstyle="->", color="0.2", lw=1.2))
+        ax.text(0.96, 0.80, r"$\alpha$-Fe$_2$O$_3$ + H$_2$O",
+                transform=ax.transAxes, ha="right")
+        ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5),# title=r"size ($\Delta G_{\mathrm{surf}}$)",
+                  title_fontsize=plt.rcParams["legend.fontsize"],
+                  handlelength=1.4)
         sec = ax.secondary_xaxis("top", functions=(lambda c: c + 273.15,
                                                    lambda k: k - 273.15))
         sec.set_xlabel("Temperature (K)")
-    axes[0].set_ylabel(r"log $P_{\mathrm{H_2O}}$ (bar)")
+    axes[-1].set_xlabel("Temperature (°C)")
+    for ax in axes:
+        ax.set_ylabel(r"log $P_{\mathrm{H_2O}}$ (bar)")
     for ext in ("png", "pdf"):
         fig.savefig(OUTDIR / f"{fname}_{basis}.{ext}", dpi=200)
     return fig
@@ -595,9 +625,10 @@ def make_extent_test(path, label=None, d_nm=None,
     return fig, pd.DataFrame(rows)
 
 
+@_styled(6.5, 0.7)
 def make_pt_hydrated(sizes=(None, 100, 10), basis="equal_area",
                      fname="goethite_hematite_Ph2o_T_hydrated",
-                     T_C=np.linspace(0.5, 400, 300)):
+                     T_C=np.linspace(0.5, PT_T_MAX_C, 300)):
     """Main-text P-T diagram: hydrated surfaces only."""
     T = T_C + 273.15
     fig, ax = plt.subplots(figsize=(6.5, 5), constrained_layout=True)
@@ -609,15 +640,18 @@ def make_pt_hydrated(sizes=(None, 100, 10), basis="equal_area",
     for d in sizes:
         sh = dG_surf(d, "hydrated", basis)
         ax.plot(T_C, curve(T, sh), color=COLORS[d], lw=2,
-                label=f"{LABEL(d)} ($\\Delta G_{{surf}}$ = {sh/1e3:+.2f} kJ)")
+                label=f"{LABEL(d)} ({sh/1e3:+.2f} kJ)")
     ax.set_xlim(T_C[0], T_C[-1])
-    ax.set_ylim(-6, LOGP_MAX)
+    ax.set_ylim(PT_LOGP_PLOT_MIN, LOGP_MAX)
     ax.set_xlabel("Temperature (°C)")
     ax.set_ylabel(r"log $P_{\mathrm{H_2O}}$ (bar)")
-    ax.text(0.04, 0.95, r"$\alpha$-FeOOH", transform=ax.transAxes, va="top")
-    ax.text(0.96, 0.05, r"$\alpha$-Fe$_2$O$_3$ + H$_2$O",
+    ax.annotate(r"$\alpha$-FeOOH", xy=(8, 0.6), xytext=(34, 0.6), va="center",
+                arrowprops=dict(arrowstyle="->", color="0.2", lw=1.2))
+    ax.text(0.96, 0.80, r"$\alpha$-Fe$_2$O$_3$ + H$_2$O",
             transform=ax.transAxes, ha="right")
-    ax.legend(fontsize=8, loc="center right")
+    ax.legend(loc="lower right", title=r"size ($\Delta G_{\mathrm{surf}}$)",
+                  title_fontsize=plt.rcParams["legend.fontsize"],
+                  handlelength=1.4)
     sec = ax.secondary_xaxis("top", functions=(lambda c: c + 273.15,
                                                lambda k: k - 273.15))
     sec.set_xlabel("Temperature (K)")
@@ -626,9 +660,10 @@ def make_pt_hydrated(sizes=(None, 100, 10), basis="equal_area",
     return fig
 
 
+@_styled(11, 1.0)
 def make_basis_sensitivity(sizes=(None, 1000, 100, 10),
                            fname="size_basis_sensitivity",
-                           T_C=np.linspace(0.5, 400, 300)):
+                           T_C=np.linspace(0.5, PT_T_MAX_C, 300)):
     """Supplement: hydrated surfaces, equal area per Fe vs equal diameter."""
     T = T_C + 273.15
     sat = saturation_curve(T)
@@ -637,17 +672,21 @@ def make_basis_sensitivity(sizes=(None, 1000, 100, 10),
     for ax, basis, ttl in zip(axes, ("equal_area", "equal_diameter"),
                               ("(a) equal surface area per Fe",
                                "(b) equal particle diameter")):
-        ax.plot(T_C, sat, color="tab:blue", ls=":", lw=1.2,
-                label="H$_2$O liquid-vapor")
+        ax.plot(T_C, sat, color="tab:blue", ls=":", lw=1.2)
+        ax.text(235, np.interp(235, T_C, sat) + 0.25, "H$_2$O liquid-vapor",
+                color="tab:blue", fontsize="small", ha="center", va="bottom",
+                rotation=12, rotation_mode="anchor")
         for d in sizes:
             sh = dG_surf(d, "hydrated", basis)
             ax.plot(T_C, curve(T, sh), color=COLORS[d], lw=1.8,
-                    label=f"{LABEL(d)} ($\\Delta G_{{surf}}$ = {sh/1e3:+.2f} kJ)")
+                    label=f"{LABEL(d)} ({sh/1e3:+.2f} kJ)")
         ax.set_title(ttl)
         ax.set_xlabel("Temperature (°C)")
         ax.set_xlim(T_C[0], T_C[-1])
-        ax.set_ylim(-6, LOGP_MAX)
-        ax.legend(fontsize=7.5, loc="lower right")
+        ax.set_ylim(PT_LOGP_PLOT_MIN, LOGP_MAX)
+        ax.legend(loc="lower right", title=r"size ($\Delta G_{\mathrm{surf}}$)",
+                  title_fontsize=plt.rcParams["legend.fontsize"],
+                  handlelength=1.4)
     axes[0].set_ylabel(r"log $P_{\mathrm{H_2O}}$ (bar)")
     for ext in ("png", "pdf"):
         fig.savefig(OUTDIR / f"{fname}.{ext}", dpi=200)

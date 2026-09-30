@@ -475,10 +475,10 @@ for seq in sequences:
         f"{fmt_sci(seq['lam'])} & {fmt_sci(2 * seq['lam_sigma'])} & "
         f"{seq['n0']:.4f} & {fmt_sci(2 * seq['n0_sigma'])} \\\\")
 
-fit_table = r"""\begin{footnotesize}
-\begin{table}[htbp]
+fit_table = r"""\begin{table}[htbp]
 \centering
-\caption{Fitted $\lambda$ (permeation rate constant) and $n_0$ (residual helium at the start of the series) for each of the 10 isothermal sequences in Table~\ref{tab:ch2-permeation-isothermal-raw}, from the weighted non-linear least-squares fit of Eq.~\eqref{eq:incyield} (Chapter~\ref{ch:apparatus}) described in the main text (\S\ref{experimental-methods}). $n$ is the number of steps in the sequence. These are the same per-sequence fits plotted in Fig.~\ref{fig:ch2-permeation-fits} and used to build the Arrhenius regression in Fig.~\ref{fig:ch2-ampoule-permeability}.}\label{tab:ch2-permeation-isothermal-fits}
+\footnotesize
+\caption{Fitted $\lambda$ (permeation rate constant) and $n_0$ (residual helium at the start of the series) for each of the 10 isothermal sequences in Table~\ref{tab:ch2-permeation-isothermal-raw}, from the weighted non-linear least-squares fit of Eq.~\eqref{eq:incyield} (Chapter~\ref{ch:apparatus}) described in \S\ref{sec:ch2-si-permeation}. $n$ is the number of steps in the sequence. These are the same per-sequence fits plotted in Fig.~\ref{fig:ch2-permeation-fits} and used to build the Arrhenius regression in Fig.~\ref{fig:ch2-ampoule-permeability}.}\label{tab:ch2-permeation-isothermal-fits}
 \begin{tabular}{c c c c c c c c}
 \toprule
 Series & Temp (\textdegree C) & Duration (min) & $n$ & $\lambda$ (s$^{-1}$) & $\pm2\sigma$ & $n_0$ (pccSTP) & $\pm2\sigma$ \\
@@ -486,8 +486,7 @@ Series & Temp (\textdegree C) & Duration (min) & $n$ & $\lambda$ (s$^{-1}$) & $\
 """ + "\n".join(fit_rows) + r"""
 \bottomrule
 \end{tabular}
-\end{table}
-\end{footnotesize}"""
+\end{table}"""
 
 
 def _check_newcommand_safe(tex):

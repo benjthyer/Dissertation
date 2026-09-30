@@ -104,10 +104,59 @@ exceeds the rate of goethite decomposition into hematite and water, it
 would open up an experimental approach to systematically assess how
 factors like crystallite size, temperature, radiation damage, and
 chemical composition could affect helium mobility and retentivity in
-nature, enabling estimates of helium retention in previously untested
-natural samples. We test this premise with a thermodynamic and kinetic analysis of goethite
-dehydroxylation that compares the hydrothermal experiment with published vacuum step heats of
-the same sample (\S\ref{sec:gt_thermo}--\ref{sec:gt_pigment}).
+nature.
+
+Early trials of the method were encouraging (\S\ref{sem-study-of-thermally-treated-polycrystalline-goethite}).
+SEM imagery taken of thermally treated natural goethites in vacuum and
+open air showed the development of contraction cracks on the outside and
+throughout the interior of goethite grains heat treated in vacuum and in
+open air (Figs.~\ref{fig:ch2-sem-control-vacuum},~\ref{fig:ch2-sem-vacuum-interior}), while goethite heat-treated when
+encapsulated with water or gypsum did not form cracks (Fig.~\ref{fig:ch2-sem-buffered}).
+Goethite heat treated in open air turned red, whereas goethite heat
+treated in vacuum remained black.
+
+We test this premise with the first helium step heat experiment on goethite under
+hydrothermal conditions, and compare it with published vacuum step heats of the same sample
+(\S\ref{sec:gt_vacuum}--\ref{sec:gt_hydro}). A thermodynamic and kinetic analysis of goethite
+dehydroxylation then explains why water has this effect
+(\S\ref{sec:gt_thermo_methods}--\ref{sec:gt_nucleation}).
+
+% SEM images motivating the method (moved from the Discussion, 2026-09-29).
+\begin{figure}[htbp]
+\centering
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{cc}
+\textbf{Control} & \textbf{Vacuum, 300\textdegree C, 11 h} \\[2pt]
+\includegraphics[width=0.46\textwidth]{bahiaGoeControl_20um4.pdf} &
+\includegraphics[width=0.46\textwidth]{Goethite_Vac_300C_11hr_10umB0.pdf} \\
+\end{tabular}
+\caption{Secondary electron images of Bahia goethite aggregate before heat treatment (control) and after heat treatment at 300\textdegree C for 11 hours in vacuum. Cracks developed in the vacuum-heated sample both parallel and perpendicular to the long axis of the polycrystalline aggregate, representing volume contraction due to dehydration/decomposition of goethite into hematite. The buffered treatments at the same temperature are shown in Fig.~\ref{fig:ch2-sem-buffered}.}
+\label{fig:ch2-sem-control-vacuum}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{cc}
+\textbf{Gypsum-buffered, 300\textdegree C, 8 h} & \textbf{Water-buffered, 300\textdegree C, 4 h} \\[2pt]
+\includegraphics[width=0.46\textwidth]{bahiaGoeGypsum300C8hr_10um8.pdf} &
+\includegraphics[width=0.46\textwidth]{Goeth_Water_300C_4hr_10um6.pdf} \\
+\end{tabular}
+\caption{Secondary electron images of Bahia goethite aggregate heated at 300\textdegree C in a sealed glass tube with gypsum (8 hours) and with water (4 hours). Despite treatment at high heat, no cracks indicative of dehydration were visible on either goethite surface. In the gypsum experiment, the gypsum dehydrated first and produced enough water pressure to stop or slow dehydration of the goethite and prevent the development of microscopic cracks; at higher temperatures goethite and gypsum reacted, forming a surface layer of other minerals. For the water-buffered sample, no cracks were observed when investigating the goethite at scales similar to Fig.~\ref{fig:ch2-sem-control-vacuum}, and most of the aggregate's surface resembled the gypsum-buffered panel; the area pictured had the roughest texture on the grain. A very small crack parallel to the long axis may indicate some amount of dehydration had occurred, or it could have been inherited from before hydrothermal treatment, since even the untreated control grain (Fig.~\ref{fig:ch2-sem-control-vacuum}) had some rough surfaces and rare long-axis-parallel cracks.}
+\label{fig:ch2-sem-buffered}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{cc}
+\textbf{Vacuum, 300\textdegree C, 11 h (SE)} & \textbf{Vacuum, cross section (BSE)} \\[2pt]
+\includegraphics[width=0.46\textwidth]{Goethite_Vacuum_300C_11hr_10u9.pdf} &
+\includegraphics[width=0.46\textwidth]{C5_goeth_Vac205.pdf} \\
+\end{tabular}
+\caption{Vacuum-heated Bahia goethite at higher magnification and in cross section. Left: secondary electron image of goethite heated at 300\textdegree C for 11 hours in vacuum, at the same scale as the buffered samples of Fig.~\ref{fig:ch2-sem-buffered}, showing rough cracks at various scales both parallel and orthogonal to the long axis of the goethite aggregate. These are the typical decomposition features that would be expected in Fig.~\ref{fig:ch2-sem-buffered} if significant decomposition had occurred there. Right: backscatter electron image of a polished cross section of epoxy-mounted, vacuum-heated Bahia goethite, from the same subsample as the vacuum-heated grain of Fig.~\ref{fig:ch2-sem-control-vacuum}, exposing the grain's interior. This image clearly shows that the cracks visible on the exterior of dehydrated goethite are pervasive throughout the interior as well.}
+\label{fig:ch2-sem-vacuum-interior}
+\end{figure}
 
 \section{Experimental Methods}\label{ch2-experimental-methods}
 
@@ -272,432 +321,18 @@ were added to the total measurement, although both constituted less than
 3He-enriched air standard with known 3He and 4He contents immediately
 before the measurement.
 
-\paragraph{Permeation Lag Correction}\label{permeation-lag-correction}
-
-Because HT-Win-06-01b was encapsulated in an imperfectly
-helium-transmissive silica glass ampoule, permeation lag was an expected complication in these
-measurements. To address this, experimental steps at temperatures at or above 170°C were bracketed by low temperature
-(\textless120°C) steps where the helium in goethite at high pH2O was
-effectively immobile at experimental timescales, following the permeation step method (Chapter~\ref{ch:apparatus}, \S\ref{permeation-step-method}). For 3He, measured
-signals at these low temperature permeation steps were entirely
-controlled by the process of permeation through silica glass, and
-therefore could be used to estimate the amount of helium remaining within the
-ampoule between high-temperature experimental steps. However, for 4He,
-the measured signals at low temperature permeation steps were most often
-indistinguishable from the blank, so Eq.~\eqref{eq:n0perm} (Chapter~\ref{ch:apparatus}) could not be
-applied to 4He and the permeation step method could not be carried through for that isotope.
-
-As a result, permeation lag is instead addressed using the bounding method described in Chapter~\ref{ch:apparatus} (\S\ref{bounding-method}), which constrains the ampoule's residual helium from above rather than measuring it.
-In this approach, an upper bound constraint for the helium content of the ampoule at the end of each high-temperature step was
-calculated using Eq.~\eqref{eq:steadystate} (Chapter~\ref{ch:apparatus}). 3He was reduced this way as well, for consistency with 4He; because 3He can also be reduced by the permeation step method, the two reductions can be compared directly, and that comparison is used below (\S\ref{complete-degas-test}) as an internal test of the bounding method.
-
-Both routes require the ampoule's permeation rate constant $\lambda$, which was measured during the experiment itself rather than assumed from the literature (Chapter~\ref{ch:apparatus}, \S\ref{in-situ-rate-constant}). This in-experiment measurement is not an alternative method of handling permeation lag but a prerequisite of the permeation step method and, here, the empirical basis for choosing a conservative $\lambda$ for the bounding method. It is indispensable in this experiment: the permeability of ampoules used in hydrothermal step heats
-cannot reasonably be assumed to match literature values for anhydrous silica glass.
-
-10 series of 3-4 consecutive permeation steps held at a single
-temperature between 90-110°C for 120-180 minutes each with 26 minutes of
-cooling time before being inlet into the Helix-MC-Plus10k were
-identified as suitable for this exercise. The 3He measurements in these
-series were fit to Eq.~\eqref{eq:incyield} using a non-linear least
-squares optimization (Fig.~\ref{fig:ch2-permeation-fits}). This is accomplished with
-the Levenberg-Marquardt algorithm implemented in
-the curve\_fit function in the SciPy package of Python
-\citep{virtanen2020}, weighted by each measurement's own uncertainty.
-One additional series that otherwise qualified was not well fit by this
-model and was not used further for clarity, though its fit value of
-$\lambda$ was within uncertainty of the other series' fit values for
-$\lambda$.
-
-An initial guess of $\lambda$ $\approx$ 6x10\textsuperscript{-6}
-sec\textsuperscript{-1} and \(n_{0} \approx \frac{m_{i}}{1 - e^{- \lambda t_{i}}}\)
-(evaluated at the first measurement of a series) pccSTP was passed to
-the optimizer for each series. Uncertainties from the model fits were
-calculated using the covariance matrices generated for each of the model
-fits. Although the initial helium amount \(n_{0}\) was a free parameter
-in the optimizations, the rate constant of permeation ($\lambda$) was
-the only parameter of interest for this exercise. The fitted rate constants span
-\ChTwoPermLamMin\ to \ChTwoPermLamMax\ s\textsuperscript{-1}, with 2$\sigma$ uncertainties of
-0.08 to 0.46 log units and no trend resolvable against step duration:
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.8\textwidth]{PermeationStepFits_Grid.pdf}
-\caption{Cumulative yield against cumulative time for helium-3 yields for isothermal permeation steps. A non-linear least squares optimization fits $\lambda$ and $n_0$ of Eq.~\eqref{eq:incyield} (Chapter~\ref{ch:apparatus}) to data from a series of permeation steps like these. The permeability $K$ is calculated according to the relation $K = \lambda/GRT$ and is plotted as a function of temperature in Fig.~\ref{fig:ch2-ampoule-permeability}. The curvature of each series is what conditions the fit: a series in which the permeation rate has not yet slowed appreciably constrains $\lambda$ and $n_0$ only weakly.}
-\label{fig:ch2-permeation-fits}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.8\textwidth]{AmpoulePermeability_Arrhenius.pdf}
-\caption{Arrhenius plot of apparent permeation coefficients as a function of inverse temperature for HT-Win-06-01b, converted from the rate constants fitted in Fig.~\ref{fig:ch2-permeation-fits} via $K = \lambda/GRT$. The activation energy is higher than anhydrous silica glass, as expected \citep{masaryk1968,shelby1972}. It is unexpected that the glass ampoule of HT-Win-06-01b has higher apparent 3He permeability than the literature values of \citet{swets1961} and \citet{jones1953}, but this can be explained by an increase in the partial pressure of the gas phase within the tube due to displacement by high He diffusivity, low He solubility water. Yellow points labeled ``Diffusion Model with cooling, Anhydrous'' were produced to evaluate the expected excess apparent permeability due to the 25 minute cooldown period before measurement. This is accomplished by simulating the measured apparent permeability for a dry silica glass ampoule that continued to permeate helium while cooling for an additional 26 minutes before measurement after being held at 90--110\textdegree C for 120--180 minutes, similarly to the measured values. Variability in these points is due to differences in the length of time the ampoule was heated but is very small. They show a near constant offset from the expected values of \citet{swets1961} and \citet{jones1953} that is much smaller than the uncertainty in the regression of the fit values determined experimentally in teal.}
-\label{fig:ch2-ampoule-permeability}
-\end{figure}
-
-All measured apparent 3He permeabilities were equal to or in excess of the literature values for anhydrous silica glass (Fig.~\ref{fig:ch2-ampoule-permeability}),
-similar to observations discussed in Chapter~\ref{ch:apparatus} (\S\ref{resolving-the-paradoxically-high-apparent-helium-permeability-in-water-filled-tubes}). 4He permeability itself could not be independently measured in this
-experiment due to blank-level signals during the low temperature permeation steps and is assumed to similarly exceed the literature values for anhydrous silica glass.
-To evaluate the uncertainty due to the permeation lag, we use the literature values as a conservative (lower bound) estimate of the true permeability; a $\lambda$ that underestimates the ampoule's true rate constant yields a conservative (higher) upper bound on the residual helium (Chapter~\ref{ch:apparatus}, \S\ref{bounding-method}).
-$\lambda t$ (where $\lambda = GRTK$) is estimated here using the 4He
-permeability \emph{K} reported by \citet{swets1961}, while the 3He permeability
-is taken to be the product of the 4He permeability and the relative 3He/4He permeability reported by \citet{jones1953}. The geometric constant \emph{G} is calculated using the measured inner and
-outer diameter of the ampoule (Fig.~\ref{fig:ch2-ampoule-dims}).
-
-The first three experimental steps had values of $\lambda t$ lower than 4, and therefore
-the upper bound of the helium content of these steps could not be determined. These measurements are omitted
-from further analysis. Later experimental steps with values of $\lambda t$ lower than 4 could be determined
-using Eq.~\eqref{eq:s6-8} from the supplement to Chapter~\ref{ch:apparatus} because upper bounds on previous steps' residual helium
-content could be evaluated.
-
-\section{Analytical Methods}\label{ch2-analytical-methods}
-
-\paragraph{Finite Difference Diffusion Model of Cooling Tube}\label{finite-difference-diffusion-model-of-cooling-tube}
-
-One potential concern about the results of the internally measured permeabilities is that some additional helium was permeated 
-during the cooling period after each permeation step. In order to evaluate the significance of 
-this effect, a finite difference model was built in Python to simulate diffusion, influx, and
-outflux of helium across a hollow glass cylinder containing an
-arbitrary amount of helium gas within a helium-free chamber using the procedure described in Chapter~\ref{ch:apparatus} (\S\ref{numerical-diffusive-permeation-model-for-arbitrary-thermally-history-and-diffusive-disequilibrium}). The glass
-cylinder was given the same dimensions of the ampoule used in the
-Win-06-01b hydrothermal experiment, and was subjected to the same
-heating and cooling schedule as the hydrothermal experiment's permeation
-steps. The tube was charged with 100 arbitrary units of helium atoms at
-the end of each experimental step and a steady state concentration
-profile was assumed for the new arbitrary charge at T = 24°. Permeability
-values for 3He were assumed as the product of the 4He permeability
-values given by \citet{swets1961} and the 3He/4He relative
-permeabilities given by \citet{jones1953}.
-
-To simulate cooling, a cooling rate had to be assumed. To most
-accurately simulate the cooling of the experimental ampoule, Watlow temperature records
-of the experimental ampoule during cooling steps were used to calculate the cooling rate dT/dt for discrete time intervals.
-A quadratic function was fit to these data points to model the cooling rate as a function of temperature with a single root at 
-T = 24°C such that the temperature would stabilize at T = 24°C by design.
-\[
-\frac{dT}{dt} = -\left(9.23081\times10^{-6}\right)(T-24)^{2} - \left(7.74304\times10^{-4}\right)(T-24)
-\]
-(dT/dt in \textdegree C/s, T in \textdegree C; \(R^{2} = 0.9633\)). 
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.8\textwidth]{goethite_cooling_rate_fit.pdf}
-\caption{Discrete cooling rate (dT/dt) values calculated from the Watlow temperature record for the Winsor Goethite experiment, plotted against temperature, with the quadratic fit used to simulate cooling in the finite difference diffusion model overlain.}
-\label{fig:ch2-goethite-cooling-rate}
-\end{figure}
-
-\paragraph{Helium-in-Goethite Diffusivity Inversions}\label{helium-in-goethite-diffusivity-inversions}
-
-
-Apparent values of D/a\textsuperscript{2} for 3He and 4He were
-calculated from times and cumulative measured yields using the equations of \citet{fechtigkalbitzer1966}. 
-Lower and upper bounds for diffusivity were calculated 
-using the upper bound for the helium contents of the 
-ampoules before and after each step, evaluated using \eqref{eq:steadystate}. 
-Diffusivity for step $i$ is a function of the cumulative fractional yield for step i 
-$\Sigma ^{i}F$ and the cumulative fractional yield of the previous step $\Sigma ^{i-1}F$. The diffusivity
-is maximized when the difference between the fractional yields is largest, and minimized when the difference is smallest. 
-This difference is maximized for the extreme case where the previous step ended with no permeation lag, and the current step ended 
-with the maximum amount of permeation lag $\left(_{SS}^{i}n_t\right)$, whereas the opposite is true for the minimum diffusivity. 
-
-
-\begin{equation}
-\label{eq:diffusivity-bounds}
-\begin{gathered}
-{}^{UB}D_\omega = D\!\left(\Sigma^{i-1}F_m ,~ \Sigma^{i}F_m + {}_{SS}^{i}n_t\right) \\
-{}^{LB}D_\omega = D\!\left(\Sigma^{i-1}F_m + {}_{SS}^{i-1}n_t ,~ \Sigma^{i}F_m\right)
-\end{gathered}
-\end{equation}
-
-For the 3He diffusivities, a linear regression was fit to the steps with cumulative 3He fractional
-yield $\geq$7\% (\ChTwoN\ steps, Fig.~\ref{fig:ch2-arrhenius-zoom}),
-yielding an R\textsuperscript{2} statistic of \ChTwoRtwo. The fit's slope and intercept are used as a reference line to
-calculate ``Delta'' values for the diffusivities of 3He and 4He (Fig.~\ref{fig:ch2-delta-zoom}). No uncertainty on
-the total amounts of 3He and 4He is propagated into the diffusivities
-because the experiment operated at low cumulative yields where this
-error affects all diffusivities approximately homogeneously, so it is only
-relevant for the y-intercept of the regression and the corresponding
-calculated closure temperature. The uncertainty from the
-intercept and slope parameters of the linear regression is significantly
-larger than the uncertainty related to the total yield, so it is
-neglected.
-
-\paragraph{Helium Isotope Ratio Uncertainty for Step Heats}\label{helium-isotope-ratio-uncertainty}
-
-The upper and lower bounds of the $\frac{^4He}{^3He}$ isotope ratios for each heating step are taken as the maximum and minimum  $\frac{^4He}{^3He}$ 
-isotope ratio calculated out of the 4 hypothetical end-member permeation scenarios, which would have been experienced by both helium isotope systems:
-
-\begin{enumerate}
-\item $n_t = 0,\ n_0 = 0$
-\item $n_t = n_t^{\mathrm{UB}},\ n_0 = 0$
-\item $n_t = n_t^{\mathrm{UB}},\ n_0 = n_0^{\mathrm{UB}}$
-\item $n_t = 0,\ n_0 = n_0^{\mathrm{UB}}$
-\end{enumerate}
-
-Intuitively, higher differential permeability between the two helium isotopes ($\delta = \frac{K_{3He}}{K_{4He}}$ here) will result in greater isotope fractionation between the measured $\left(\frac{m_{4}}{m_{3}}\right)$ and true $\left(\frac{\omega_{4}}{\omega_{3}}\right)$.
-Furthermore, lower absolute permeabilities will result in stronger permeation lag, additionally producing higher isotope fractionation in the measured value. The 4He permeability is thus conservatively taken to be identical to \citet{swets1961}, an anhydrous
-literature value which this experiment's own isothermal 3He permeation measurements show to underestimate the ampoule's true permeability (Fig.~\ref{fig:ch2-ampoule-permeability}); 4He permeability itself could not be independently measured in this experiment. For the purposes of evaluating the measured isotope ratios, the relative 3He/4He permeability ($\delta$) is taken to be 1.29, the 2$\sigma$ upper bound of the value measured independently for a water-filled ampoule in Chapter~\ref{ch:apparatus} (\S\ref{results}):
-1.10 $\pm$ 0.19 (2$\sigma$). 1.29 is in great excess of realistic values of the relative 3He/4He permeability, which is expected to be between 1.06-1.11 for the temperature range relevant to this experiment \citep{jones1953}. These
-conservative assumptions taken together guarantee that the calculated upper and lower bounds for the isotope ratios accurately constrain the true value. The upper bounds of the
-ampoule contents are calculated using the steady-state approximation of Eq.~\eqref{eq:steadystate} (Chapter~\ref{ch:apparatus}): $n_{ss} = \frac{m}{\lambda t - 1}$. For the four extreme cases listed above, the following equations apply:
-
-\begin{enumerate}
-\item \scalebox{1.5}{$\frac{\omega_{4}}{\omega_{3}} = \frac{m_{4}}{m_{3}}$}
-\item \scalebox{1.5}{$\frac{\omega_{4}}{\omega_{3}} = \frac{m_{4}+\frac{m_{4}}{\lambda t - 1}}{m_{3}+\frac{m_{3}}{\delta \lambda t - 1}}$}
-\item \scalebox{1.5}{$\frac{\omega_{4}}{\omega_{3}} = \frac{m_{4}+\frac{m_{4}}{\lambda t - 1} - \frac{m_4^{i-1}}{\left(\lambda t\right)^{i-1} - 1}}{m_{3}+\frac{m_{3}}{\delta \lambda t - 1} - \frac{m_3^{i-1}}{\delta\left(\lambda t\right)^{i-1} - 1}}$}
-\item \scalebox{1.5}{$\frac{\omega_{4}}{\omega_{3}} = \frac{m_{4} - \frac{m_4^{i-1}}{\left(\lambda t\right)^{i-1} - 1}}{m_{3} - \frac{m_3^{i-1}}{\delta\left(\lambda t\right)^{i-1} - 1}}$}
-\end{enumerate}
-
-Where $m_{x}^{i-1}$ and $\left(\lambda t \right)^{i-1}$ refer to the measured helium content and $\lambda t$ of the previous step, respectively. $\lambda$ here applies explicitly to 4He, whereas $\delta \lambda$ applies to 3He. The upper and lower bounds of the isotope ratios are then taken to be the maximum and minimum of these four extreme cases.
-
-% --- Added 2026-09-25 (goethite stability integration; see CHANGES_JOURNAL.md) ---
-% Figures for the goethite stability/kinetics paragraphs below and in the
-% Discussion are produced by Chapter2/Figures/fig_goethite_hematite_phase_diagram.py,
-% fig_goethite_vacuum_kinetics.py and fig_goethite_hydrothermal_tests.py.
-\paragraph{Thermodynamic Model of Goethite Dehydroxylation}\label{sec:gt_thermo_methods}
-
-Goethite breaks down to hematite by the dehydroxylation reaction
-\begin{equation}
-  2\,\alpha\text{-FeOOH} \;\rightleftharpoons\; \alpha\text{-Fe}_2\text{O}_3 + \text{H}_2\text{O}_{(\text{fluid})},
-  \label{eq:gt_rxn}
-\end{equation}
-whose Gibbs energy change, written per mole of hematite formed, is
-\begin{equation}
-  \Delta G_r(T,P) = G_{\mathrm{hem}}(T,P) + G_{\mathrm{w}}(T,P) - 2\,G_{\mathrm{goe}}(T,P) + \Delta G_{\mathrm{surf}} .
-  \label{eq:gt_dGr}
-\end{equation}
-Goethite is stable where $\Delta G_r>0$ and hematite plus water where $\Delta G_r<0$.
-
-\textit{Gibbs energies of the solids.} The Gibbs energy of a phase at $(T,P)$ follows from
-integrating $dG = -S\,dT + V\,dP$ from the reference state $(T_r,P_r) = (298.15~\mathrm{K}, 1~\mathrm{bar})$,
-first in temperature at $P_r$ and then in pressure at $T$. At $P_r$,
-$H(T) = H(T_r) + \int_{T_r}^{T}C_p\,dT$ and $S(T) = S(T_r) + \int_{T_r}^{T}(C_p/T)\,dT$, so
-$G(T,P_r) = H(T) - T S(T)$. Adding $\int_{P_r}^{P}V\,dP$, and treating the solids as incompressible
-with no thermal expansion, gives
-\begin{equation}
-  G_i(T,P) = \Delta_f H_i^{0} + \int_{T_r}^{T} C_{p,i}\,dT
-  \;-\; T\left[S_i^{0} + \int_{T_r}^{T}\frac{C_{p,i}}{T}\,dT\right]
-  \;+\; V_i\,(P-P_r),
-  \label{eq:gt_Gsolid}
-\end{equation}
-where we have set $H(T_r) = \Delta_f H_i^{0}$, the enthalpy of formation from the elements, and
-$S(T_r) = S_i^{0}$, the third-law entropy. This is the ``apparent'' Gibbs energy of formation
-\citep{berman1988}; see also \citet{helgeson1978} and \citet{anderson2005}. It differs from
-the true Gibbs energy of formation,
-$\Delta_f G_i = \Delta_f H_i - T(S_i - \sum_e n_{e,i} S_e)$, by the term $T\sum_e n_{e,i}S_e$,
-where $n_{e,i}$ is the number of atoms of element $e$ in phase $i$ and $S_e$ the entropy of the
-element in its reference state. For any balanced reaction $\sum_i \nu_i n_{e,i} = 0$ for every element,
-so these terms cancel in $\Delta G_r$. The incompressible approximation affects $\Delta G_r$
-through $\Delta V_s (P-P_r)$ with $\Delta V_s = V_{\mathrm{hem}} - 2V_{\mathrm{goe}} = -11.5$~cm$^3$,
-i.e.\ at most a few kJ below 1~GPa; compressibility and thermal expansion change $V_i$ by
-$\lesssim1\%$ over the conditions considered and are neglected.
-
-Goethite heat capacity uses the Berman--Brown form \citep{berman1985} refined by
-\citet{majzlan2003},
-\begin{equation}
-  C_p = k_0 + k_1 T^{-1/2} + k_2 T^{-2} + k_3 T^{-3},
-\end{equation}
-which integrates to
-\begin{align}
-  \int_{T_r}^{T} C_p\,dT &= k_0 (T-T_r) + 2k_1\left(T^{1/2}-T_r^{1/2}\right) \notag\\
-    &\quad - k_2\left(T^{-1}-T_r^{-1}\right) - \tfrac{1}{2}k_3\left(T^{-2}-T_r^{-2}\right), \\
-  \int_{T_r}^{T} \frac{C_p}{T}\,dT &= k_0 \ln\frac{T}{T_r} - 2k_1\left(T^{-1/2}-T_r^{-1/2}\right) \notag\\
-    &\quad - \tfrac{1}{2}k_2\left(T^{-2}-T_r^{-2}\right) - \tfrac{1}{3}k_3\left(T^{-3}-T_r^{-3}\right).
-\end{align}
-Hematite uses a Maier--Kelley form, $C_p = a + bT + cT^{-2}$, with
-\begin{align}
-  \int_{T_r}^{T} C_p\,dT &= a(T-T_r) + \tfrac{1}{2}b\left(T^2-T_r^2\right) - c\left(T^{-1}-T_r^{-1}\right), \\
-  \int_{T_r}^{T} \frac{C_p}{T}\,dT &= a\ln\frac{T}{T_r} + b(T-T_r) - \tfrac{1}{2}c\left(T^{-2}-T_r^{-2}\right).
-\end{align}
-% TODO: cite the source of the hematite Maier-Kelley coefficients (Kelley-type fit,
-% cf. Robie & Hemingway 1995, USGS Bull. 2131); Majzlan et al. used Berman (1988). Differences are < 1 J/K/mol at 298 K.
-
-\textit{Water.} Water is evaluated with the IAPWS-95 equation of state \citep{wagner2002},
-implemented in CoolProp \citep{bell2014}, which is valid for liquid, vapor and supercritical
-water to 1~GPa. In the same apparent convention,
-\begin{equation}
-  G_{\mathrm{w}}(T,P) = \Delta_f H_{\mathrm{w}}^{0} + \left[h(T,P) - h(T_r,P_r)\right]
-  - T\left[S_{\mathrm{w}}^{0} + s(T,P) - s(T_r,P_r)\right],
-  \label{eq:gt_Gw}
-\end{equation}
-where $h$ and $s$ are the IAPWS-95 molar enthalpy and entropy and the reference state is liquid
-water at $T_r,P_r$. Equation~\eqref{eq:gt_Gw} is exact within the equation of state; no ideal-gas
-approximation is made anywhere in the calculation. Table~\ref{tab:gt_thermo_data} lists all
-input data. We use the enthalpies and entropies of \citet{majzlan2003} refined by mathematical
-programming against the phase-equilibrium brackets of \citet{voigt1981}.
-
-\begin{table}[htbp]
-  \centering
-  \caption{Thermodynamic data used for Eq.~\eqref{eq:gt_dGr}.}
-  \label{tab:gt_thermo_data}
-  \begin{footnotesize}
-  \begin{tabular}{lcc}
-    \hline
-    & Goethite ($\alpha$-FeOOH) & Hematite ($\alpha$-Fe$_2$O$_3$) \\
-    \hline
-    $\Delta_f H^0$ (kJ\,mol$^{-1}$) & $-561.4$ & $-825.8$ \\
-    $S^0$ (J\,mol$^{-1}$\,K$^{-1}$) & 59.5 & 87.4 \\
-    $V^0$ (cm$^3$\,mol$^{-1}$) & 20.881 & 30.274 \\
-    $C_p$ coefficients & $k_0=133.8765$ & $a=98.28$ \\
-          & $k_1=-738.5577$ & $b=7.782\times10^{-2}$ \\
-          & $k_2=-2.177657\times10^{6}$ & $c=-1.485\times10^{6}$ \\
-          & $k_3=2.165124\times10^{8}$ & \\
-    $C_p(298\ \mathrm{K})$ (J\,mol$^{-1}$\,K$^{-1}$) & 74.8 & 104.8 \\
-    $\gamma_{\mathrm{hydrated}}$ (J\,m$^{-2}$) & $0.60\pm0.10$ & $0.75\pm0.16$ \\
-    $\gamma_{\mathrm{anhydrous}}$ (J\,m$^{-2}$) & $0.91\pm0.09$ & $1.90\pm0.30$ \\
-    \hline
-  \end{tabular}
-  \end{footnotesize}
-
-  \vspace{0.5ex}
-  \begin{minipage}{0.85\linewidth}\footnotesize
-  Enthalpy, entropy and $C_p$: \citet{majzlan2003a,majzlan2003}; surface energies: \citet{navrotsky2008}.
-  Water: $\Delta_f H^0_{\mathrm{w}} = -285.83$~kJ\,mol$^{-1}$, $S^0_{\mathrm{w}} = 69.95$~J\,mol$^{-1}$\,K$^{-1}$; IAPWS-95 for $h(T,P)$, $s(T,P)$.
-  \end{minipage}
-\end{table}
-
-As a check, at 298.15~K and 1~bar with liquid water, Eqs.~\eqref{eq:gt_dGr}--\eqref{eq:gt_Gw}
-give $\Delta G_r = -0.26$~kJ: hematite plus liquid water is favored by only 0.13~kJ per mole of
-FeOOH. This is well inside the $\pm1.4$~kJ\,mol$^{-1}$ uncertainty that \citet{majzlan2003}
-assign to the goethite--hematite free-energy difference; the two assemblages are essentially
-balanced at ambient conditions. We carry this uncertainty ($\pm2.8$~kJ per reaction as written)
-as bounding curves on the phase diagram.
-
-\textit{Surface energy.} A crystal of finite size carries an excess free energy at its
-surface in addition to the free energy of its bulk \citep{gibbs1878}. For a population of
-particles of fixed size, this excess is $\gamma A$, where $\gamma$ is the surface energy
-(J\,m$^{-2}$) and $A$ the total surface area. Both the bulk and surface terms scale with the
-amount of material at fixed particle size, so the surface contribution can be written per mole,
-$G = G_{\mathrm{bulk}} + \gamma A_m$, with $A_m$ the surface area per mole. $A_m$ grows as $1/d$,
-so the term is negligible for coarse crystals and significant for nanoparticles
-\citep{navrotsky2008}. For the reaction as written (one mole of hematite from two moles of
-goethite),
-\begin{equation}
-  \Delta G_{\mathrm{surf}} = \gamma_{\mathrm{hem}} A_{m,\mathrm{hem}} - 2\,\gamma_{\mathrm{goe}} A_{m,\mathrm{goe}},
-  \label{eq:gt_dGsurf}
-\end{equation}
-where $A_{m,\mathrm{hem}}$ is per mole of Fe$_2$O$_3$ and $A_{m,\mathrm{goe}}$ per mole of FeOOH.
-
-A size must be chosen for each phase. We assume pseudomorphic dehydroxylation, in which hematite
-inherits the external envelope of the parent goethite, so that both phases share the same
-external surface area per mole of Fe. This is also the basis of the stability diagrams of
-\citet{navrotsky2008}. For spherical goethite grains of diameter $d$ this shared area is
-\begin{equation}
-  A_{\mathrm{Fe}} = \frac{6\,V_{\mathrm{goe}}}{d}\quad\text{per mole of Fe}.
-\end{equation}
-Goethite has one Fe per formula unit, so $A_{m,\mathrm{goe}} = A_{\mathrm{Fe}}$. Hematite has two,
-so $A_{m,\mathrm{hem}} = 2A_{\mathrm{Fe}}$. Substituting into Eq.~\eqref{eq:gt_dGsurf},
-\begin{equation}
-  \Delta G_{\mathrm{surf}} = \gamma_{\mathrm{hem}}\,(2A_{\mathrm{Fe}}) - 2\,\gamma_{\mathrm{goe}}\,A_{\mathrm{Fe}}
-  = 2A_{\mathrm{Fe}}\left(\gamma_{\mathrm{hem}} - \gamma_{\mathrm{goe}}\right).
-  \label{eq:gt_equalarea}
-\end{equation}
-The factor of two counts the two moles of Fe that pass through the reaction. It multiplies both
-terms because both phases carry the same area per Fe. For $d=10$~nm,
-$A_{\mathrm{Fe}} = 6\times20.881\times10^{-6}/10^{-8} = 1.253\times10^{4}$~m$^2$\,mol$^{-1}$, and
-with hydrated surface energies
-$\Delta G_{\mathrm{surf}} = 2\times1.253\times10^{4}\times(0.75-0.60) = +3.76$~kJ.
-The corresponding values are $+0.38$~kJ at 100~nm and $+0.04$~kJ at 1~\textmu m. A positive
-$\Delta G_{\mathrm{surf}}$ stabilizes goethite. The result depends on the choice of basis: at
-equal diameter the same hydrated surface energies destabilize fine goethite
-(\S\ref{sec:gt_supp_basis}).
-
-We use hydrated surface energies. They are referenced to liquid water, so they apply wherever the
-surfaces are in equilibrium with water at or near saturation, which includes all of the
-hydrothermal experiments. Anhydrous surface energies apply only to surfaces that have lost their
-chemisorbed water, i.e.\ under vacuum.
-
-\textit{Phase diagram.} The phase diagram (Fig.~\ref{fig:gt_PT}) is computed by solving
-$\Delta G_r(T,P) = 0$ (Eqs.~\eqref{eq:gt_dGr}--\eqref{eq:gt_equalarea}) numerically for
-$P = P_{\mathrm{H_2O}}$ at each temperature, using Brent's method on $\log_{10}P$ between
-$10^{-12}$ and $10^{4}$~bar, with the solids at the fluid pressure. Where no root exists below the
-melting curve of ice, the curve is truncated.
-
-\textit{Driving force and the role of water.} The quantity that matters for kinetics is the
-driving force for hematite formation, $\Delta\mu \equiv -\Delta G_r^{0}$ (per mole of Fe$_2$O$_3$).
-Water controls $\Delta\mu$ through its own chemical potential, because it is a product of
-reaction~\eqref{eq:gt_rxn}. $G_{\mathrm{w}}$ in Eq.~\eqref{eq:gt_dGr} is the chemical potential of
-H$_2$O at the prevailing water fugacity. It depends on the partial pressure of water, not on the
-total pressure. An inert gas, or any other mechanical load, acts only through the solid-volume
-term $\Delta V_s(P-P_r)$, which contributes $-1.15$~J\,bar$^{-1}$ and slightly favors the denser
-hematite. At 40~bar that is 46~J, three orders of magnitude smaller than the effect of 40~bar of
-water. The water-buffered step-heating technique therefore stabilizes goethite primarily by
-mass action on the bulk reaction. Surface hydration is a second-order correction that matters
-only for nanometer grains (Eq.~\eqref{eq:gt_equalarea}).
-
-\paragraph{Kinetic Analysis of Vacuum Step Heats}\label{sec:gt_kinetics_methods}
-
-Two published vacuum step heats of irradiated Win-06-01b are reanalyzed here. The experiment of
-\citet{farley2024} (hereafter KAF) used 1~h steps from 70 to 330~$^\circ$C, including isothermal
-repeats at 210, 230 and 240~$^\circ$C. Its extraction line was open to a liquid-nitrogen-cooled
-charcoal trap, so evolved water did not accumulate, and the water released in each step was
-measured by capacitance manometry. The experiment of \citet{monteiro2017} (hereafter HDM) used
-a different schedule: prograde to 238~$^\circ$C, retrograde to 180~$^\circ$C, then prograde
-again, with 0.5~h steps above 238~$^\circ$C, to 498~$^\circ$C. Water could accumulate in the
-HDM line. For each experiment, the cumulative fraction of $^3$He released after step $i$ is
-\begin{equation}
-  F_i = \frac{\sum_{j\le i} {}^3\mathrm{He}_j}{\sum_{\mathrm{steps}} {}^3\mathrm{He} + {}^3\mathrm{He}_{\mathrm{fusion}}} .
-\end{equation}
-
-We describe conversion by a first-order rate law,
-\begin{equation}
-  \frac{d\alpha}{dt} = k(T)\,(1-\alpha),
-  \qquad
-  k(T) = A\exp\!\left(-\frac{E_a}{RT}\right),
-  \label{eq:gt_F1}
-\end{equation}
-where $\alpha$ is the fraction of goethite converted. For a powder of many grains, first-order
-kinetics is the limit in which each grain converts rapidly once a hematite nucleus forms, so
-that the conversion rate is set by the nucleation rate per untransformed grain
-\citep{mampel1940}. $k$ is then a per-grain nucleation rate. We assume $^3$He is released when
-its host grain converts, except for a fraction $\phi$ that is inherited by the hematite
-product:
-\begin{equation}
-  F = (1-\phi)\,\alpha .
-  \label{eq:gt_Fphi}
-\end{equation}
-For a schedule of isothermal steps of duration $\Delta t_j$ at $T_j$, Eq.~\eqref{eq:gt_F1}
-integrates to
-\begin{equation}
-  \alpha_i = 1 - \exp\!\left[-A\sum_{j\le i} m_j\,\Delta t_j \exp\!\left(-\frac{E_a}{RT_j}\right)\right],
-  \label{eq:gt_F1_cum}
-\end{equation}
-where $m_j = s$ for the two KAF steps run with the trap isolated (\S\ref{sec:gt_vacuum}) and $m_j=1$
-otherwise. Inverting Eq.~\eqref{eq:gt_F1} step by step gives an apparent rate constant for every
-step that is independent of any fitted parameter except $\phi$:
-\begin{equation}
-  k_i = -\frac{1}{\Delta t_i}\ln\frac{1-\alpha_i}{1-\alpha_{i-1}},
-  \qquad \alpha_i = \frac{F_i}{1-\phi}.
-  \label{eq:gt_stepk}
-\end{equation}
-For comparison, the diffusion parameter of each step is obtained with the same
-\citet{fechtigkalbitzer1966} inversion for a sphere that is applied to the hydrothermal
-experiment (\S\ref{helium-in-goethite-diffusivity-inversions}),
-\begin{equation}
-  \frac{Dt}{a^2} =
-  \begin{cases}
-    \dfrac{1}{\pi^2}\left[2\pi - \dfrac{\pi^2}{3}F - 2\pi\sqrt{1-\dfrac{\pi F}{3}}\,\right], & F \le 0.85,\\[2ex]
-    -\dfrac{1}{\pi^2}\ln\!\left[\dfrac{\pi^2}{6}(1-F)\right], & F > 0.85,
-  \end{cases}
-  \label{eq:gt_FK}
-\end{equation}
-and
-\begin{equation*}
-  \left(\frac{D}{a^2}\right)_i = \frac{(Dt/a^2)_i - (Dt/a^2)_{i-1}}{\Delta t_i}.
-\end{equation*}
-For the hydrothermal experiment, $F_i$ and $D/a^2$ are always taken from the bounding-method
-reduction (Table~\ref{tab:ch2-distilled-3he}): the cumulative release at the end of step $i$ is
-bounded by the measured cumulative $^3$He and by that value plus $n_{t,\mathrm{UB}}$, and the
-central value is their midpoint. As elsewhere in this chapter, steps without defined bounds and
-steps with less than 0.1~pccSTP of measured $^3$He are excluded.
-
-All steps are plotted, but fits use only KAF steps 5--23
-(185--285~$^\circ$C) and HDM steps 8--28 (199--338~$^\circ$C). KAF steps 1--4 and HDM steps 2--7
-(below $\sim$180~$^\circ$C) release a small ($<2\%$), separate low-temperature component
-(\S\ref{sec:gt_vacuum}). Later steps sit on the post-conversion plateau, where
-$1-\alpha\to0$ and Eq.~\eqref{eq:gt_stepk} becomes controlled by the choice of $\phi$. The KAF
-steps run with the trap isolated are excluded from the Arrhenius regression.
+Helium released by the sample reaches the mass spectrometer only after permeating the ampoule
+wall, so each measured step yield lags the true release. Step yields were corrected for this
+permeation lag with the bounding method of Chapter~\ref{ch:apparatus} (\S\ref{bounding-method}),
+which gives lower-bound, central and upper-bound values for every step
+(Tables~\ref{tab:ch2-distilled-3he} and~\ref{tab:ch2-distilled-4he}). The correction and the
+ampoule permeabilities measured during the experiment are described in the Supplementary
+Information (\S\ref{sec:ch2-si-permeation}), together with the diffusivity inversions, the
+isotope-ratio uncertainties and the kinetic analysis of the published vacuum step heats
+(\S\ref{ch2-analytical-methods}).
 
 \paragraph{SEM Study of Thermally Treated Polycrystalline
-Goethite}\label{sem-study-of-thermally-treated-polycrystalline-goethite}
+Goethite}\label{sem-study-of-thermally-treated-polycrystalline-goethite}\label{sec:gt_pigment_methods}
 
 In early trials of the ``glass tube method'' for helium step heat
 experiments with controlled microenvironments presented here,
@@ -710,25 +345,15 @@ were held at 300°C for 4-11 hours, and the glass ampoules were broken
 and the goethites were allowed to air dry before all samples were placed
 on carbon tape and carbon coated. These samples were imaged at Caltech
 on Secondary Electron mode by the ZEISS 1550VP Field Emission SEM.
-
-
-% --- Added 2026-09-25 (goethite stability integration; see CHANGES_JOURNAL.md) ---
-\paragraph{Hydrothermal Treatment of Synthetic Goethite Pigment}\label{sec:gt_pigment_methods}
-
-A qualitative test of fluid-mediated conversion was carried out on a commercial yellow iron-oxide
-pigment composed of acicular goethite crystals $\sim$1~\textmu m long.
-% TODO: add the pigment product name/grade and supplier.
-These experiments were intended to give a rapid, qualitative answer, and many experimental
-details (exact temperature histories, run durations, and water-to-solid ratios for individual
-ampoules) were not recorded. At least five large silica glass ampoules were each loaded with
-pigment and an excess of water and fused shut at ambient pressure. They were prepared far
-less carefully than the step-heat ampoule of \S\ref{ch2-experimental-methods}; their larger
-size made them much easier to handle. The ampoules were heated in an oven without temperature
-control: the temperature was monitored and the heater voltage adjusted by hand to keep it
-between 200 and 250~$^\circ$C, and the ampoules were held for hours, typically about a day.
-Reaction was assessed by color (yellow goethite, red hematite), and representative unreacted and
-reacted products were imaged in secondary electron mode (\S\ref{sem-study-of-thermally-treated-polycrystalline-goethite}).
-% TODO: confirm SEM instrument/sample preparation for the pigment images (SE2, 10 kV, Feb 2024).
+Synthetic goethite pigment, a commercial yellow iron-oxide pigment of acicular crystals
+$\sim$1~\textmu m long, was treated in the same way but only with water, without vacuum or
+open-air runs: at least five larger silica glass ampoules, each loaded with pigment and an excess
+of water and fused shut at ambient pressure, were held at 200--250~$^\circ$C for about a day in an
+oven whose voltage was adjusted by hand. These runs were a rapid, qualitative test; details of
+individual runs (temperature histories, durations, water-to-solid ratios) were not recorded, and
+reaction was assessed by color (yellow goethite, red hematite) before imaging.
+% TODO: add the pigment product name/grade and supplier; confirm SEM instrument/sample
+% preparation for the pigment images (SE2, 10 kV, Feb 2024).
 
 \section{\texorpdfstring{Results }{Results }}\label{ch2-results}
 
@@ -737,7 +362,7 @@ The complete corrected step-heat dataset underlying the diffusivities, delta plo
 \begin{landscape}
 \begin{footnotesize}
 \begin{longtable}{r r r r r r r r r r}
-\caption{$^3$He step-heat dataset for HT-Win-06-01b under the bounding method: measured and cumulative $^3$He, the upper-bound residual ampoule content ($n_{t,\mathrm{UB}}$), the lower- and upper-bound true step production ($\omega_{\mathrm{LB}}$, $\omega_{\mathrm{UB}}$), and the corresponding lower-bound, central, and upper-bound apparent diffusivities. ``--'' denotes early steps with $\lambda t < 4$, for which bounds could not be determined (see \ref{permeation-lag-correction}). Six rows have derived values marked with ``*'': these steps have measured $^3$He $<0.1$ pccSTP and are excluded as low-signal from all plots (Fig.~\ref{fig:ch2-ratio-spectra} and others derived from this dataset).}\label{tab:ch2-distilled-3he}\\
+\caption{$^3$He step-heat dataset for HT-Win-06-01b under the bounding method: measured and cumulative $^3$He, the upper-bound residual ampoule content ($n_{t,\mathrm{UB}}$), the lower- and upper-bound true step production ($\omega_{\mathrm{LB}}$, $\omega_{\mathrm{UB}}$), and the corresponding lower-bound, central, and upper-bound apparent diffusivities. ``--'' denotes early steps with $\lambda t < 4$, for which bounds could not be determined (see \S\ref{permeation-lag-correction}). Six rows have derived values marked with ``*'': these steps have measured $^3$He $<0.1$ pccSTP and are excluded as low-signal from all plots (Fig.~\ref{fig:ch2-ratio-spectra} and others derived from this dataset).}\label{tab:ch2-distilled-3he}\\
 \toprule
 Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{t,\mathrm{UB}}$ & $\omega_{\mathrm{LB}}$ & $\omega_{\mathrm{UB}}$ & $\ln(D/a^2)_{\mathrm{LB}}$ & $\ln(D/a^2)_{m}$ & $\ln(D/a^2)_{\mathrm{UB}}$ \\
 (°C) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) &  &  &  \\
@@ -868,7 +493,7 @@ differs in shape: it is concave-down to about 5\% cumulative 3He yield,
 after which it follows a roughly linear array about one log unit below
 the 3He array (Fig.~\ref{fig:ch2-arrhenius-zoom}). The 3He diffusivities settled into a
 linear array which was suitable for linear regression after
-\textasciitilde7\% of the cumulative 3He yield was lost (Fig.~\ref{fig:ch2-arrhenius-full}). All
+\textasciitilde7\% of the cumulative 3He yield was lost (Fig.~\ref{fig:gt_arrhenius}b). All
 remaining diffusivity measurements of the experiment were included in
 the linear regression, so that diffusivities from 3He loss fractions of
 about 7-15\% were included. The linear regression yields an
@@ -878,9 +503,31 @@ rate of 10°C/Ma and considering only the uncertainty in the regression
 intercept (D\textsubscript{0}/a\textsuperscript{2}).
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.8\textwidth]{winsor_goethite_Diffusivities_Arrhenius.pdf}
-\caption{Arrhenius plot of 3He and 4He diffusivities from HT-Win-06-01b with other step heat experiments of Win-06-01b from \citet{monteiro2017} and \citet{farley2024}. The ``Stage 2 reference line'' is fit to helium step heats from \citet{monteiro2017}. Error bars on the data from this study are not plotted for clarity.}
-\label{fig:ch2-arrhenius-full}
+\includegraphics[width=\textwidth]{arrhenius_reaction_vs_diffusion.pdf}
+\caption{The $^3$He release of every step of the two vacuum step heats of Win-06-01b (red circles:
+KAF, \citealt{farley2024}; orange squares: HDM, \citealt{monteiro2017}) and of the hydrothermal
+step heat of this study (blue diamonds), reduced in two ways: (a) as first-order conversion rate
+constants $k_i$ (Eq.~\eqref{eq:gt_stepk}, $\phi=\ChTwoKinPhi$), and (b) as \citet{fechtigkalbitzer1966}
+apparent diffusivities $D/a^2$ for a sphere (Eq.~\eqref{eq:gt_FK}). The points of each experiment
+are joined in step order by dashed lines. Filled vacuum symbols are the steps in the kinetic fitting
+window and open symbols lie outside it; large pink circles mark the two KAF steps with the
+LN$_2$ trap isolated. Hydrothermal steps are bounding-method central values, with bars spanning the
+lower and upper bounds; low-signal steps are excluded. Black line: joint first-order Arrhenius fit
+to the KAF and HDM steps in the window (Eq.~\eqref{eq:gt_line}). The two reductions give the
+experiments opposite geometries. For the vacuum step heats, the first-order reduction collapses
+both heating schedules onto one line, including the retrograde steps of HDM, whereas the diffusion
+reduction separates the schedules, places HDM's retrograde steps above its own prograde steps and
+turns over above $\sim$275~$^\circ$C as release stalls at the hematite plateau, none of which a
+depleting diffusion domain can produce. For the hydrothermal step heat the pattern reverses. As rate
+constants, its steps sit 1.3--2.8 orders of magnitude below the vacuum line and split into
+history-dependent arrays that first-order kinetics forbids, with retrograde steps below prograde
+steps at the same temperature. As diffusivities, the same steps form a single coherent array,
+approximately seven natural-log units below the vacuum values, whose offsets through the temperature
+cycles follow the depletion of the least retentive domains (\S\ref{sec:gt_hydro}). Below
+$\sim$180~$^\circ$C both vacuum experiments depart from the first-order line, reflecting a small,
+separate low-temperature component (\S\ref{sec:gt_vacuum}). Steps with $F>1-\phi$ have no defined
+$k$ and are absent from (a).}
+\label{fig:gt_arrhenius}
 \end{figure}
 
 \begin{figure}[htbp]
@@ -904,91 +551,11 @@ values just after a cumulative 3He loss of 4\% for both 3He and 4He.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{DeltasWinsorGTzoomin_VacuumHydrothermal.pdf}
-\caption{Delta plot similar to those presented in \citep{farley2018}, or r/r0 plots in \citet{lovera1991} and \citet{farleyflowers2012}. Delta plots are the difference between apparent log diffusivities and a reference line; they are designed to remove the temperature dependence of the dominant process of helium migration to reveal how apparent diffusivities evolve as an experiment proceeds. 3He monotonically decreases until settling on a temporary plateau from 4--6\% 3He fractional yield, then settling on the reference line from 7--15\% 3He fractional yield, which is consistent with MDD systematics. 4He diffusivities and delta values are generally highly uncertain but initially show an increase in delta values that settles to a slow increase or plateau about one log unit below the 3He reference line by a 3He fractional yield of 5\%, which is consistent with diffusive loss of radiogenic 4He in the least retentive domains interrogated in HT-Win-06-01b. Apparent diffusivities for helium in Win-06-01b in hydrothermal conditions are up to 7 log units lower than the same sample in vacuum.}
+\caption{Delta plot similar to those presented in \citep{farley2018}, or r/r0 plots in \citet{lovera1991} and \citet{farleyflowers2012}. Delta plots are the difference between apparent log diffusivities and a reference line; they are designed to remove the temperature dependence of the dominant process of helium migration to reveal how apparent diffusivities evolve as an experiment proceeds. Each step is drawn as a bar spanning its starting to ending cumulative 3He fractional yield; hydrothermal bars span each step's uncertainty with the central value marked, vacuum steps are drawn as lines at their delta values, and thin vertical lines join adjacent steps. For visual continuity, the gap left by excluded hydrothermal steps is bridged by extending the preceding step's central value across its first half and the following step's across its second half; no uncertainty is shown over the bridge. 3He monotonically decreases until settling on a temporary plateau from 4--6\% 3He fractional yield, then settling on the reference line from 7--15\% 3He fractional yield, which is consistent with MDD systematics. 4He diffusivities and delta values are generally highly uncertain but initially show an increase in delta values that settles to a slow increase or plateau about one log unit below the 3He reference line by a 3He fractional yield of 5\%, which is consistent with diffusive loss of radiogenic 4He in the least retentive domains interrogated in HT-Win-06-01b. Apparent diffusivities for helium in Win-06-01b in hydrothermal conditions are up to 7 log units lower than the same sample in vacuum.}
 \label{fig:ch2-delta-zoom}
 \end{figure}
 
-SEM imagery taken of thermally treated natural goethites in vacuum and
-open air showed the development of contraction cracks on the outside and
-throughout the interior of goethite grains heat treated in vacuum and in
-open air (Figs.~\ref{fig:ch2-sem-control-vacuum},~\ref{fig:ch2-sem-vacuum-interior}), while goethite heat-treated when
-encapsulated with water or gypsum did not form cracks (Fig.~\ref{fig:ch2-sem-buffered}).
-Goethite heat treated in open air turned red, whereas goethite heat
-treated in vacuum remained black.
-
 \section{Discussion}\label{ch2-discussion}
-
-\paragraph{Measurement and Numerical Simulation of Apparent Permeability of Experimental Ampoule}\label{internal-measurement-of-ampoule-apparent-permeability}
-
-The apparent permeability values used in the numerical simulation (\S\ref{finite-difference-diffusion-model-of-cooling-tube}) are taken from the literature \citep{swets1961,jones1953} and explicitly apply to
-an ampoule without water. However, the purpose of these simulations was simply
-to quantify the excess apparent permeabilities that would be observed for ampoules
-with a cooling history similar to that of the hydrothermal experiments. Because
-the predicted offset is universally small and a weak function of temperature or
-permeability, these simulations demonstrate that the much larger experimentally observed permeability
-is not an artifact of the cooling history of the hydrothermal experiments, reaffirming the conclusion
-that the hydrothermal experiments are indeed more permeable than the vacuum experiments.
-
-The difference in log permeability between the actual and apparent
-permeabilities of the anhydrous simulation were significantly smaller
-than nearly all the 2$\sigma$ uncertainties of the apparent permeabilities
-determined above for the hydrothermal Win-06-01b experiment, which
-ranged from 0.08 to 0.46 log units. Thus, no trends with step duration could be identified in the
-effective permeability values. 
-
-Therefore, the literature values underestimate the helium
-permeabilities of the ampoule used in this experiment, which is permissible because these values are used
-to calculate an upper bound constraint of the helium content of the ampoule, and lower permeabilities produce more
-conservative (higher) upper bound constraints.
-
-A linear regression of ln($K$) against inverse temperature (Fig.~\ref{fig:ch2-ampoule-permeability}) fit to these isothermal
-3He permeation measurements over 90-110°C yields an R\textsuperscript{2} of \ChTwoPermRtwo\ and an activation energy of
-\ChTwoPermEakJ$\pm$\ChTwoPermEaErrkJ\ kJ/mol (2 s.e.), significantly higher than expected for pure silica glass with or without water
-\citep{swets1961,jones1953,masaryk1968,shelby1972}, but similar to glasses with a high abundance of network-modifying cations such as
-Na, K, Pb, or Li \citep{norton1953,altemose1961}. Because 4He signals during these isothermal steps were blank-level,
-only the ampoule's 3He permeability could be measured directly this way, using the fitting procedure described above.
-
-Every 3He permeability measurement for HT-Win-06-01b equals or exceeds the anhydrous literature value, which
-runs counter to expectations for a hydrothermal experiment: water and hydroxyl groups dissolved in silica glass are
-reported to \emph{decrease} helium permeation at all temperatures \citep{tsuru2011,shelby1972,masaryk1968}, under the
-common paradigm that species such as (OH)\textsuperscript{-} occupy interstitial space within the amorphous glassy
-network \citep{norton1953,shackelford1999}. The offset is nonetheless real: it cannot be accounted for by the ampoule's
-extended permeation during cooling before measurement (\S\ref{finite-difference-diffusion-model-of-cooling-tube}), and a
-similarly elevated permeability was independently observed at 100°C in a separate silica glass ampoule at Caltech
-partially filled with MilliQ water and equilibrated with \textasciitilde0.1 torr of tank helium, as discussed in
-Chapter~\ref{ch:apparatus} (\S\ref{resolving-the-paradoxically-high-apparent-helium-permeability-in-water-filled-tubes}).
-
-The likely explanation is geometric. Helium is only sparingly soluble in water and diffuses through it rapidly,
-roughly $7\times10^{-5}$ cm\textsuperscript{2}/s at room temperature \citep{verhallen1984} against about
-$2\times10^{-8}$ cm\textsuperscript{2}/s in silica glass \citep{swets1961}. On the timescale of permeation through
-the glass wall, transport through the water is effectively instantaneous, so the gas phase stays in equilibrium with
-the glass over the entire inner surface of the ampoule, including where liquid water contacts it. Helium partitions
-strongly into the gas phase over both water and glass: helium concentrations in the glass and water are about 3\% and
-1\%, respectively, of the gas-phase concentration, using solubilities from \citet{sander2015} and \citet{swets1961}.
-Displacing gas-phase volume with water therefore raises the helium partial pressure without changing the surface area
-available for permeation, and because the rate of permeation is proportional to the gas-phase partial pressure
-\citep{norton1953,altemose1961,swets1961,masaryk1968}, the ampoule's rate constant scales with the inverse volume
-fraction of the gas phase (Chapter~\ref{ch:apparatus}, Eq.~\eqref{eq:keff}), generalized here to any condensed payload:
-$\lambda_{ampoule} = \lambda_{empty}\left(V_{condensed} + V_{gas}\right)/V_{gas}$. This observed complexity emphasizes
-the need to measure the ampoule's rate constant in-experiment as described in Chapter~\ref{ch:apparatus}
-(\S\ref{in-situ-rate-constant}).
-
-\paragraph{Consistency of the Bounding Method with Direct Permeation-Step Quantification: The Complete Degas Test}\label{complete-degas-test}
-
-All Win-06-01b step heat data presented in this chapter are reduced using the bounding method (Eq.~\eqref{eq:steadystate}), because 4He permeation-step yields were near blank level and could not support the permeation step method directly. As an internal check on this choice, the ampoule's 3He inventory was also reconstructed directly from the permeation steps themselves, using the in-experiment rate constants of Fig.~\ref{fig:ch2-ampoule-permeability} (\S\ref{sec:ch2-si-detailed-methods}). Reducing 3He by the bounding method gives Stage 1 activation energies between 157.1 and 160.6\,kJ/mol and closure temperatures between 97.5 and 101.2\textdegree C across its lower-bound, central, and upper-bound reductions, a spread comparable to the regression uncertainty itself. Fig.~\ref{fig:ch2-nt-vs-ntss} compares the two: $n_t$, the ampoule's residual helium quantified directly from a permeation step, against $n_{t,SS}$ (equivalent to $n_{t,\mathrm{UB}}$ used elsewhere in this chapter), the upper bound on that same residual calculated independently from the preceding high-temperature step. For every ordinary permeation step in the experiment, $n_t \leq n_{t,SS}$, exactly as expected if the steady-state approximation genuinely bounds the ampoule's residual helium from above. This agreement is the justification for reducing the 4He dataset by the bounding method alone, since no analogous direct check of 4He is possible.
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.8\textwidth]{Winsor_nt_vs_ntSS.pdf}
-\caption{Two independent estimates of the ampoule's residual 3He inventory, $n_t$, following each permeation step of HT-Win-06-01b: quantified directly from the permeation step itself (\emph{permeation step method}, $y$-axis, \S\ref{sec:ch2-si-detailed-methods}), against the upper bound calculated independently from the preceding high-temperature step (\emph{bounding method}, $x$-axis, Eq.~\eqref{eq:steadystate}). Color indicates the duration of the permeation step. Circles are ordinary steps; triangles are the two ``attempted complete degas'' steps, held at 100°C for far longer than any other permeation step (1580 and 7200 minutes) in an attempt to drive the ampoule's 3He inventory toward zero. The dashed line is 1:1. Excepting the two complete-degas steps, $n_t$ never exceeds $n_{t,SS}$, as required if permeation lag is genuinely bounded above by the steady-state approximation. Both complete-degas steps instead record more helium than their own $n_{t,SS}$ permits.}
-\label{fig:ch2-nt-vs-ntss}
-\end{figure}
-
-Beyond the ampoule's residual helium content itself, the two methods' derived apparent diffusivities agree just as closely (Fig.~\ref{fig:ch2-diffusivity-comparison}, \S\ref{sec:ch2-si-detailed-methods}): $\ln(D/a^2)$ from the permeation step method tracks the bounding method's central value along the 1:1 line within uncertainty across the full range of the experiment. Fitting the permeation step method's own diffusivities with the same Stage 1 procedure used for the bounding method above (Fig.~\ref{fig:ch2-permstep-arrhenius-zoom}, \S\ref{sec:ch2-si-detailed-methods}) yields an activation energy of \ChTwoPermStepEa$\pm$\ChTwoPermStepEaErr\ kJ/mol (R\textsuperscript{2}=\ChTwoPermStepRtwo, n=\ChTwoPermStepN) and a closure temperature of \ChTwoPermStepTc$\pm$\ChTwoPermStepTcErr\textdegree C, indistinguishable from the bounding method's own \ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol and \ChTwoTc$\pm$\ChTwoTcErr\textdegree C (Fig.~\ref{fig:ch2-arrhenius-zoom}).
-
-The two ``complete degas'' permeation steps depart from this pattern. For the longer of the two (7200 minutes; predicted $n_t/n_0 \approx 1\times10^{-8}$ under simple first-order decay), the directly measured 3He inventory exceeds $n_{t,SS}$ by a factor of 1.5. For the shorter (1580 minutes; predicted $n_t/n_0 \approx 0.02$), the excess is smaller, 25\% over $n_{t,SS}$. A measured inventory in excess of $n_{t,SS}$ requires that the source term ($\Omega$: \S\ref{bounding-method}) increased during the high temperature experimental step, or the goethite sample was not effectively closed to helium loss during the low temperature permeation step (\S\ref{permeation-step-method}), or both. The measured diffusivitiy is constant at a given temperature for these high temperature measurements at the end of the experiment (Figs.~/ref{fig:ch2-arrhenius-zoom},~/ref{fig:ch2-delta-zoom}), so there is no evidence the source term ($\Omega$) is increasing during the high temperature measurements.
-
-The size of the two excesses scale with duration of their respective permeation step. The 7200-minute step is associated with the larger (1.5$\times$) excess whereas the 1580-minute step is associated with the smaller (25\%) excess. An artifact intrinsic to the the first order process of helium permeation through the ampoule itself, such as an underestimated rate constant, has no reason to strongly scale with the step duration, since both of these long steps would be expected empty the vast majority of the helium inventory of the ampoule. That the excess does scale this way points to open system behavior in the sample. The preferred explanation is short-circuit or fast pathway diffusion \citep{lee1992} of residual helium held within the interstitial space of the goethite crystallite aggregate (\S\ref{consistency-with-mdd-systematics}), recharged during the preceding high-temperature step, released slowly and with weak temperature dependence during the following extended low-temperature hold. This requires communication between a lattice or grain-boundary source and an interstitial reservoir, a departure from the independent, non-communicating domains of a strict MDD interpretation, but it is consistent with the interstitial framework already invoked to explain the early, low-retention fraction of 3He release (\S\ref{consistency-with-mdd-systematics}). Unlike dehydration, it requires no change in the intrinsic retentivity of the crystalline lattice recorded by the bulk of the experiment.
 
 \paragraph{Consistency with MDD
 Systematics}\label{consistency-with-mdd-systematics}
@@ -1016,10 +583,10 @@ difficult to prove that decomposition or recrystallization is not
 playing a role in the results presented in this work, the apparent
 diffusivities observed for the Win-06-01b goethite under hydrothermal
 conditions are much lower than those observed in previous step heats of
-Win-06-01b in vacuum (Fig.~\ref{fig:ch2-arrhenius-full}, Fig.~\ref{fig:ch2-arrhenius-zoom}, Fig.~\ref{fig:ch2-delta-zoom}, Fig.~\ref{fig:ch2-isothermal-retention}), implying that
+Win-06-01b in vacuum (Fig.~\ref{fig:gt_arrhenius}b, Fig.~\ref{fig:ch2-arrhenius-zoom}, Fig.~\ref{fig:ch2-delta-zoom}, Fig.~\ref{fig:ch2-isothermal-retention}), implying that
 processes other than dehydration may be responsible for the observed
 apparent diffusivities. This is tested quantitatively in
-\S\ref{sec:gt_vacuum}--\ref{sec:gt_nucleation}.
+\S\ref{sec:gt_vacuum}--\ref{sec:gt_hydro}, and explained in \S\ref{sec:gt_nucleation}.
 
 All helium step heat data on goethites are from naturally occurring
 polycrystalline aggregates with unclear and potentially widely variable
@@ -1032,7 +599,7 @@ proceeds, as would delta or r/r0 values at any temperature (where
 \(\Delta = \ ln\left( \frac{D}{a^{2}} \right)_{measured} - ln\left( \frac{D}{a^{2}} \right)_{reference}\)
 ) \citep{lovera1991,farley2018}, assuming that the activation
 energy of the reference line used in such plots matches that of the
-process controlling diffusion. For the activation energy of 160 kJ/mol
+process controlling diffusion. For the activation energy of \ChTwoEa{}~kJ/mol
 retrieved by regression in this work, the homogeneously distributed 3He
 step heat data follow the expected MDD systematics and monotonically
 decrease within a delta plot (Fig.~\ref{fig:ch2-delta-zoom}), which is consistent with
@@ -1079,77 +646,28 @@ independently provide any evidence to support or refute hypotheses that
 helium diffusion in crystalline goethite is anisotropic or affected by
 radiation damage \citep{bassal2022}.
 
-% --- Added 2026-09-25 (goethite stability integration; see CHANGES_JOURNAL.md) ---
-\paragraph{Thermodynamic Stability of Goethite under Experimental Conditions}\label{sec:gt_thermo}
-
-The thermodynamic model of \S\ref{sec:gt_thermo_methods} places the goethite--hematite--water
-boundary in $\log P_{\mathrm{H_2O}}$--$T$ space (Fig.~\ref{fig:gt_PT}). Above the
-saturation pressure, water is liquid, the reaction volume
-$\Delta V_r = V_{\mathrm{hem}} + V_{\mathrm{w}} - 2V_{\mathrm{goe}} \approx +6.6$~cm$^3$ is small,
-and the boundary becomes nearly vertical in $\log P$--$T$ space. Bulk goethite meets the
-liquid--vapor curve at 18~$^\circ$C, 100~nm goethite at 28~$^\circ$C and 10~nm goethite at
-108~$^\circ$C. At 25~$^\circ$C, bulk goethite requires $P_{\mathrm{H_2O}}\approx10^{2.6}$~bar
-(compressed liquid). By contrast, 100~nm goethite is stable above $10^{-1.52}$~bar (96\%
-relative humidity) and 10~nm goethite above $10^{-2.11}$~bar (24\% relative humidity). Bulk
-goethite is therefore metastable at the conditions of every experiment considered here, in
-water or in vacuum.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.7\linewidth]{goethite_hematite_Ph2o_T_hydrated.pdf}
-  \caption{Goethite--hematite--water equilibrium in $\log P_{\mathrm{H_2O}}$--$T$ space for bulk
-  goethite and for 100 and 10~nm grains with hydrated surfaces, compared at equal surface area
-  per mole of Fe (Eq.~\eqref{eq:gt_equalarea}). Goethite is stable above and to the left of each
-  curve. Dash-dot curves: bulk boundary shifted by the $\pm1.4$~kJ\,mol$^{-1}$ FeOOH uncertainty of
-  \citet{majzlan2003}. Dotted: liquid--vapor curve of water. Thermodynamic data in
-  Table~\ref{tab:gt_thermo_data}.}
-  \label{fig:gt_PT}
-\end{figure}
-
-Stability alone does not determine what happens in a step heat; the rate of conversion does,
-and that depends on the driving force $\Delta\mu$. Table~\ref{tab:gt_dmu} gives the bulk driving
-forces at the experimental temperatures, evaluated with IAPWS-95 water. At saturation,
-$\Delta\mu$ is 6--11~kJ, only 1.6--2.4 times $RT$. Under the vacuum of a step-heating line
-($P_{\mathrm{H_2O}}\approx10^{-8}$~atm) it is 76--106~kJ, about ten times larger. The chemical
-potential of water is therefore the key variable separating the two experimental settings.
-
-\begin{table}[htbp]
-  \centering
-  \caption{Bulk driving force for hematite formation, $\Delta\mu = -\Delta G_r$ (kJ per mole Fe$_2$O$_3$), at water saturation and at $P_{\mathrm{H_2O}} = 10^{-8}$~atm.}
-  \label{tab:gt_dmu}
-  \begin{tabular}{cccccc}
-    \hline
-    $T$ ($^\circ$C) & $P_{\mathrm{sat}}$ (bar) & $\Delta\mu_{\mathrm{sat}}$ & $\Delta\mu_{\mathrm{sat}}/RT$ & $\Delta\mu_{\mathrm{vac}}$ & $(\Delta\mu_{\mathrm{vac}}/\Delta\mu_{\mathrm{sat}})^2$ \\
-    \hline
-    150 & 4.76  & 5.68  & 1.61 & 75.8  & 178 \\
-    175 & 8.93  & 6.88  & 1.84 & 83.4  & 147 \\
-    200 & 15.55 & 8.10  & 2.06 & 91.0  & 126 \\
-    225 & 25.50 & 9.36  & 2.26 & 98.5  & 111 \\
-    250 & 39.76 & 10.65 & 2.45 & 106.0 & 99  \\
-    \hline
-  \end{tabular}
-\end{table}
-
 \paragraph{Vacuum Step Heats of Win-06-01b Are Controlled by Conversion to Hematite}\label{sec:gt_vacuum}
 
-Fitting Eqs.~\eqref{eq:gt_Fphi}--\eqref{eq:gt_F1_cum} to the cumulative KAF $^3$He
-release by least squares gives $E_a = 122.9$~kJ\,mol$^{-1}$, $\ln A = 18.67$ ($A$ in s$^{-1}$),
-$\phi = 0.112$ and $s = 0.46$, with an rms misfit in $F$ of 0.0085. The step rate constants of
+Fitting the first-order conversion model of \S\ref{sec:gt_kinetics_methods}
+(Eqs.~\eqref{eq:gt_Fphi}--\eqref{eq:gt_F1_cum}) to the cumulative KAF $^3$He
+release by least squares gives $E_a = \ChTwoKinFOneEa$~kJ\,mol$^{-1}$, $\ln A = \ChTwoKinFOneLnA$ ($A$ in s$^{-1}$),
+$\phi = \ChTwoKinPhi$ and $s = \ChTwoKinS$, with an rms misfit in $F$ of \ChTwoKinFOneRmsKAF{} over the
+\ChTwoKinNKAF{} steps of the fitting window (\S\ref{sec:gt_kinetics_methods}). The step rate constants of
 both experiments (Eq.~\eqref{eq:gt_stepk}) fall on a single Arrhenius line
 (Fig.~\ref{fig:gt_arrhenius}a). This includes the HDM retrograde steps, which a first-order
 process requires: its rate depends only on $T$ and on the amount of goethite remaining. An
-unweighted least-squares fit of $\ln k_i$ against $1/T_i$ for the 38 steps in the fitting window
+unweighted least-squares fit of $\ln k_i$ against $1/T_i$ for the \ChTwoKinLineN{} steps in the fitting window
 gives
 \begin{equation}
-  E_a = 121.4 \pm 4.4~\mathrm{kJ\,mol^{-1}},
+  E_a = \ChTwoKinLineEa \pm \ChTwoKinLineEaErr~\mathrm{kJ\,mol^{-1}},
   \qquad
-  \ln A = 18.08 \pm 1.05
+  \ln A = \ChTwoKinLineLnA \pm \ChTwoKinLineLnAErr
   \label{eq:gt_line}
 \end{equation}
-(KAF alone $134.9\pm6.1$; HDM alone $116.3\pm5.6$~kJ\,mol$^{-1}$), in agreement with the
-cumulative fit. At 250~$^\circ$C this gives $k = 5.4\times10^{-5}$~s$^{-1}$, or 18\% conversion
+(KAF alone $\ChTwoKinKAFEa\pm\ChTwoKinKAFEaErr$; HDM alone $\ChTwoKinHDMEa\pm\ChTwoKinHDMEaErr$~kJ\,mol$^{-1}$), in agreement with the
+cumulative fit. At 250~$^\circ$C this gives $k = \ChTwoKinKTwoFifty$~s$^{-1}$, or \ChTwoKinConvPerHour\% conversion
 per hour. The result does not depend on the fitting window: fitting all steps instead gives
-$E_a = 122.7$~kJ\,mol$^{-1}$ and the same ranking of models (\S\ref{sec:gt_supp_mech}).
+$E_a = \ChTwoKinAllFOneEa$~kJ\,mol$^{-1}$ and the same ranking of models (\S\ref{sec:gt_supp_mech}).
 Thermogravimetric studies of goethite dehydroxylation report somewhat higher apparent activation
 energies, $154\pm15$ to $169\pm8$~kJ\,mol$^{-1}$, for a reaction controlled by a two-dimensional
 phase boundary, with a different mechanism at early stages and low temperature \citep{goss1987}.
@@ -1162,75 +680,41 @@ being progressively depleted cannot produce this, whether from a single domain o
 domains: retrograde steps must fall on or below the prograde trend. $D/a^2$ also turns over
 above $\sim$275~$^\circ$C, where release stalls at the plateau.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{arrhenius_reaction_vs_diffusion.pdf}
-  \caption{Every step of the two vacuum experiments (KAF, \citealt{farley2024}; HDM,
-  \citealt{monteiro2017}) and the hydrothermal experiment in two representations. (a)
-  First-order rate constants (Eq.~\eqref{eq:gt_stepk}, $\phi=0.112$); red line: fit to KAF and
-  HDM steps in the fitting window (filled symbols, Eq.~\eqref{eq:gt_line}); open symbols: steps
-  outside the window; purple circles: KAF steps with the LN$_2$ trap isolated. Steps with
-  $F>1-\phi$ have no defined $k$. (b) \citet{fechtigkalbitzer1966} $D/a^2$
-  (Eq.~\eqref{eq:gt_FK}). Hydrothermal steps are from the bounding-method reduction
-  (central values; bars span the lower and upper bounds), excluding low-signal steps. The
-  vacuum experiments collapse in (a) but not in (b); the hydrothermal experiment shows the
-  opposite behavior (\S\ref{sec:gt_hydro}).}
-  \label{fig:gt_arrhenius}
-\end{figure}
-
-The parameters fitted to KAF alone predict the independent HDM schedule with an rms misfit in
-$F$ of 0.017 over the fitting window (Fig.~\ref{fig:gt_vac_fit}c,d). The prediction reproduces
-the main release and follows the retrograde--prograde cycle within about a factor of two on
-individual steps. A single-domain spherical diffusion model fits KAF worse (rms 0.046) and
-predicts HDM worse (rms 0.053). It also predicts $F\to1$ by $\sim$300~$^\circ$C, whereas both
-experiments stall at $F\approx0.89$. Within a single schedule, fits alone cannot discriminate
+The kinetic rate parameters fitted to KAF alone predict the independent HDM schedule with an rms misfit in
+$F$ of \ChTwoKinFOneRmsHDM{} over the fitting window. A single-domain spherical diffusion model fits KAF worse
+(rms \ChTwoKinDThreeRmsKAF) and predicts HDM worse (rms \ChTwoKinDThreeRmsHDM). It also predicts $F\to1$ by
+$\sim$300~$^\circ$C, whereas both experiments stall at $F\approx0.89$. Giving the diffusion model the
+same hematite-inherited fraction as the first-order fit ($\phi = \ChTwoKinPhi$), and fitting the same
+steps, lowers its misfit to KAF to \ChTwoKinDThreePhiRmsKAF, still \ChTwoKinDThreePhiRmsRatio{} times that
+of the first-order model, but does not improve its prediction of HDM (rms \ChTwoKinDThreePhiRmsHDM), and it
+requires $E_a = \ChTwoKinDThreePhiEa$~kJ\,mol$^{-1}$. Leaving $\phi$ free
+($\phi = \ChTwoKinDThreeFreePhi$) gives \ChTwoKinDThreeFreeRmsKAF{} and \ChTwoKinDThreeFreeRmsHDM
+(Table~\ref{tab:gt_mech_fits}). Within a single schedule, fits alone cannot discriminate
 between kinetic mechanisms (\S\ref{sec:gt_supp_mech}). The second schedule is what gives the
 comparison its power.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{vacuum_kinetics_KAF_to_HM.pdf}
-  \caption{(a) Cumulative $^3$He release of KAF \citep{farley2024} with fits of the first-order
-  (F1), contracting-sphere (R3) and spherical-diffusion (D3) models; purple bands mark the steps
-  with the LN$_2$ trap isolated; grey: temperature schedule. (b) $^3$He against water released
-  during KAF, both normalized. (c) HDM \citep{monteiro2017} cumulative release and the predictions
-  from the KAF-calibrated models, with no parameters refitted. (d) HDM per-step release
-  fractions.}
-  \label{fig:gt_vac_fit}
-\end{figure}
 
 % NOTE: remove this paragraph if 4He/3He is to be avoided entirely
 During the main vacuum release (KAF, $0.04<F<0.88$), the step $^4$He/$^3$He ratio stays within
 0.95--1.10 of the bulk ratio. Grains therefore release their integrated inventory as they
 convert, rather than releasing a diffusive, rim-weighted component.
 
-In both experiments release stalls at $F\approx0.89$. The fitted $\phi=0.112$ is the same for KAF
-and HDM. In HDM, the remaining $\sim$11\% is released slowly between 340 and 500~$^\circ$C and on
+In both experiments release stalls at $F\approx0.89$. The fitted $\phi=\ChTwoKinPhi$ is the same for KAF
+and HDM. In HDM, the remaining $\sim$\ChTwoKinPhiPct\% is released slowly between 340 and 500~$^\circ$C and on
 fusion. We interpret this fraction as $^3$He inherited by the hematite product and subsequently
 released by the much slower diffusion out of hematite. Single-domain goethite diffusion cannot
 produce a plateau. The conversion and the plateau correspond to the ``Stage 2'' and
 ``Stage 3'' release of \citet{farley2024}, whose transition near $F\approx0.88$ is independent of
-heating schedule (Fig.~\ref{fig:ch2-fourier-win0601b}).
-
-The water evolved in each KAF step tracks the $^3$He release closely
-(Fig.~\ref{fig:gt_vac_fit}b). Water leads $^3$He slightly at 230~$^\circ$C and lags it by
-$\sim$0.1 between 250 and 280~$^\circ$C. Fitting Eq.~\eqref{eq:gt_F1_cum} to the water data alone
-gives $E_a = 91.5$~kJ\,mol$^{-1}$ (rms 0.033). The larger misfit is consistent with
-water adsorbed before dehydroxylation ($\sim$1\% of the total, released below 200~$^\circ$C). It
-is also consistent with systematically low manometer readings on the first step of each
-measurement day, and with normalizing the water to the 330~$^\circ$C total. % TODO: confirm the day-boundary artifact with the line operator
-Water release thus provides an independent measure of conversion that is consistent with the
-$^3$He record.
+heating schedule (Fig.~\ref{fig:ch2-delta-zoom}).
 
 In two KAF steps the trap was isolated and evolved water accumulated in the line. At
-230~$^\circ$C the step rate constant fell to $0.33$ times the mean of its neighbors at the same
-temperature, and at 240~$^\circ$C to $0.22$ times. The rate recovered fully when the trap was
+230~$^\circ$C the step rate constant fell to \ChTwoKinTrapSuppLow{} times the mean of its neighbors at the same
+temperature, and at 240~$^\circ$C to \ChTwoKinTrapSuppHigh{} times. The rate recovered fully when the trap was
 restored. Water and $^3$He were suppressed together. A diffusion process would not respond to
-the partial pressure of water. We use these two steps in \S\ref{sec:gt_nucleation} to calibrate
-the nucleation model.
+the partial pressure of water. We return to these two steps in \S\ref{sec:gt_nucleation}, where
+they calibrate the nucleation model.
 
 Below $\sim$180~$^\circ$C both vacuum experiments release $^3$He 0.5--3 orders of magnitude
-faster than the extrapolated conversion rate (Fig.~\ref{fig:gt_delta}). This component amounts
+faster than the extrapolated conversion rate (Fig.~\ref{fig:gt_arrhenius}). This component amounts
 to less than 2\% of the $^3$He and is not conversion. We attribute it to diffusion from the least
 retentive domains (\S\ref{consistency-with-mdd-systematics}).
 
@@ -1307,230 +791,9 @@ process forbids: retrograde steps 0.7--1.5 natural-log units below prograde step
 temperature, and a falling $k$ during the 250~$^\circ$C holds. In the diffusion representation
 (Fig.~\ref{fig:gt_arrhenius}b) the same steps form a coherent, history-dependent array. The
 vacuum experiments behave like conversion and the hydrothermal experiment behaves like
-diffusion. The conversion rate expected at water saturation is too small, by tens of orders
-of magnitude, to contribute to the observed release (\S\ref{sec:gt_nucleation}).
-
-\paragraph{Water Suppresses Solid-State Conversion of Goethite}\label{sec:gt_nucleation}
-
-\textit{Nucleation barrier.} In classical nucleation theory \citep{gibbs1878,volmer1926,becker1935},
-reviewed by \citet{christian2002}, \citet{kashchiev2000} and, for mineral systems,
-\citet{deyoreo2003} and \citet{lasaga1998}, a spherical hematite nucleus of radius $r$ has free
-energy
-\begin{equation}
-  \Delta G(r) = -\frac{4}{3}\pi r^{3}\,\frac{\Delta\mu}{V_{\mathrm{hem}}} + 4\pi r^{2}\gamma,
-\end{equation}
-where $\Delta\mu$ is the driving force per mole of Fe$_2$O$_3$ (Table~\ref{tab:gt_dmu}),
-$V_{\mathrm{hem}}$ the molar volume and $\gamma$ the energy of the interface surrounding the
-nucleus. The first term is the free energy released by transforming the nucleus volume. The second
-is the cost of creating its interface. Setting $d\Delta G/dr=0$ gives the barrier height
-\begin{equation}
-  \Delta G^{*} = \frac{16\pi\,\gamma^{3}\,V_{\mathrm{hem}}^{2}}{3\,\Delta\mu^{2}} .
-  \label{eq:gt_barrier}
-\end{equation}
-Written per formula unit, $V_{\mathrm{hem}}\to V_{\mathrm{hem}}/N_A$ and $\Delta\mu\to\Delta\mu/N_A$, so
-Avogadro's number cancels and Eq.~\eqref{eq:gt_barrier} is directly the barrier per nucleus in
-joules. In the first-order limit of \S\ref{sec:gt_vacuum}, the rate constant is a nucleation
-rate,
-\begin{gather}
-  k = A\exp\!\left(-\frac{E_a}{RT}\right)\exp\!\left(-\frac{\Delta G^{*}}{k_B T}\right), \notag\\
-  \frac{\Delta G^{*}}{k_B T} = \frac{C\gamma^{3}}{T\,\Delta\mu^{2}},
-  \qquad
-  C \equiv \frac{16\pi V_{\mathrm{hem}}^{2}}{3k_B} = 1.112\times10^{15}~\mathrm{m^6\,K\,J^{-1}\,mol^{-2}} ,
-  \label{eq:gt_knuc}
-\end{gather}
-where $A\exp(-E_a/RT)$ describes the atomic mobility and $\exp(-\Delta G^{*}/k_BT)$ the probability of
-forming a critical nucleus. The barrier scales as $\gamma^3/\Delta\mu^2$. Between vacuum and water
-saturation, $\Delta\mu$ falls tenfold and the barrier rises by the factor in the last column of
-Table~\ref{tab:gt_dmu}: about 100 at 250~$^\circ$C and nearly 180 at 150~$^\circ$C.
-
-\textit{An upper bound on the vacuum barrier.} The vacuum conversion rate is observed, so the
-barrier that controls it cannot exceed what the fastest conceivable prefactor allows. In
-transition-state theory \citep{eyring1935} no elementary step is faster than $k_BT/h$, which is
-$1.09\times10^{13}$~s$^{-1}$ at 250~$^\circ$C. If every one of the $N$ formula units in a grain were a
-nucleation site attempting at this frequency, the per-grain rate could not exceed
-$N(k_BT/h)\exp(-\Delta G^{*}/k_BT)$. A 1~\textmu m goethite sphere contains
-$N = (\pi d^3/6)/(V_{\mathrm{goe}}/N_A) = 1.5\times10^{10}$ formula units. Requiring this ceiling to
-reach the observed $k_{\mathrm{vac}} = 5.4\times10^{-5}$~s$^{-1}$ at 250~$^\circ$C (Eq.~\eqref{eq:gt_line})
-gives
-\begin{equation}
-  \frac{\Delta G^{*}_{\mathrm{vac}}}{k_BT} \le \ln\frac{N\,k_BT/h}{k_{\mathrm{vac}}}
-  = \ln\frac{1.5\times10^{10}\times1.09\times10^{13}}{5.4\times10^{-5}} = 63 .
-  \label{eq:gt_ceiling}
-\end{equation}
-A tenfold larger grain raises the bound by only $\ln 1000 = 7$. Real prefactors are smaller, so the
-true barrier is lower still.
-
-\textit{Nucleation must be internal.} The surface energies of \citet{navrotsky2008} fail this
-bound by a wide margin. If the nucleus were bounded by a free, anhydrous hematite surface
-($\gamma = 1.90$~J\,m$^{-2}$, $\Delta\mu = 106.0$~kJ at 250~$^\circ$C), Eq.~\eqref{eq:gt_knuc} would give
-$\Delta G^{*}/k_BT = 1.3\times10^{3}$. Nucleation on a goethite surface lowers this. For a nucleus
-shaped as a spherical cap on a flat substrate, the barrier is reduced by the purely geometric
-factor
-$f(\theta) = (2+\cos\theta)(1-\cos\theta)^2/4 \le 1$, where the contact angle $\theta$ is set by the
-balance of interfacial tensions at the triple junction (Young's equation),
-$\cos\theta = (\gamma_{\mathrm{goe}} - \gamma_{\mathrm{hem|goe}})/\gamma_{\mathrm{hem}}$
-\citep{volmer1926,turnbull1950}. Even with a hematite--goethite interfacial energy of zero,
-$\cos\theta \le 0.91/1.90 = 0.48$, $f\ge0.17$ and $\Delta G^{*}/k_BT\ge2.2\times10^{2}$. No
-non-negative interfacial energy brings nucleation on free surfaces within the bound of
-Eq.~\eqref{eq:gt_ceiling}. Hematite must therefore nucleate internally, where the only new
-interface is between hematite and goethite.
-
-This agrees with the known mechanism. Goethite dehydroxylates topotactically: the hematite
-inherits the oxygen framework and orientation of the parent, and the pseudomorph develops pores
-and twinned hematite domains \citep{limadefaria1963,watari1979,watari1983,cudennec2005}. Interfaces
-of this kind are coherent or semicoherent. In the general classification of \citet{porter2009},
-developed for metals, coherent interfaces have energies up to $\sim$0.2~J\,m$^{-2}$ and semicoherent
-interfaces 0.2--0.5~J\,m$^{-2}$, compared with 0.5--1~J\,m$^{-2}$ for incoherent ones. For this system
-specifically, density-functional calculations give 0.24~J\,m$^{-2}$ for the prismatic twin boundaries
-between hematite domains formed by dehydrating goethite \citep{saito2016}. We are not aware of a
-measured or calculated energy for the goethite--hematite interface itself. In what follows,
-$\gamma$ is replaced by an effective interfacial energy $\gamma_{\mathrm{eff}}$, calibrated from the
-data. It absorbs the geometry of internal nucleation and is a property of the sample.
-
-\textit{Calibrating $\gamma_{\mathrm{eff}}$ from the trap-isolated steps.} Isolating the trap
-raised $P_{\mathrm{H_2O}}$ in the line and lowered $\Delta\mu$, and the isothermal rate fell by a factor
-$s$ (\S\ref{sec:gt_vacuum}). With $A$ and $E_a$ unchanged, Eq.~\eqref{eq:gt_knuc} gives
-\begin{equation}
-  \ln\frac{1}{s} = \frac{C\gamma_{\mathrm{eff}}^{3}}{T}\left(\frac{1}{\Delta\mu_{\mathrm{off}}^{2}} - \frac{1}{\Delta\mu_{\mathrm{on}}^{2}}\right)
-  \quad\Longrightarrow\quad
-  \gamma_{\mathrm{eff}} = \left[\frac{T\ln(1/s)}{C\left(\Delta\mu_{\mathrm{off}}^{-2} - \Delta\mu_{\mathrm{on}}^{-2}\right)}\right]^{1/3}.
-  \label{eq:gt_gamma_cal}
-\end{equation}
-The driving forces are evaluated as follows.
-\begin{enumerate}
-  \item $\Delta\mu_{\mathrm{on}}$ and $\Delta\mu_{\mathrm{off}}$ are bulk driving forces,
-  $-\Delta G_r$ from Eqs.~\eqref{eq:gt_dGr}--\eqref{eq:gt_Gw} with $\Delta G_{\mathrm{surf}} = 0$, at the
-  step temperature and with the solids at vacuum.
-  \item They differ only through the chemical potential of water: $\Delta\mu_{\mathrm{on}}$ is
-  evaluated at $P_{\mathrm{H_2O}} = 10^{-8}$~atm and $\Delta\mu_{\mathrm{off}}$ at the water pressure
-  reached with the trap isolated (below). At these pressures (at most 20~Pa), IAPWS-95 and the
-  ideal gas agree, and
-  $\Delta\mu_{\mathrm{on}} - \Delta\mu_{\mathrm{off}} = RT\ln(P_{\mathrm{off}}/P_{\mathrm{on}})$, which is
-  32--41~kJ for the pressures in Table~\ref{tab:gt_gamma}.
-  \item Surface terms are omitted in both. The barrier of an internal nucleus depends on the free
-  energy per volume of material transformed, not on the external surface of the host grain. The
-  grain or domain size of the natural sample is also not characterized. The external surface
-  energy of the grain enters the overall thermodynamic stability (\S\ref{sec:gt_thermo}),
-  but we do not include it in the barrier. The sensitivity to this choice is small
-  (\S\ref{sec:gt_supp_barrier}).
-\end{enumerate}
-We bound the water pressure with the trap isolated by assuming that all evolved water was in the
-vapor, distributed uniformly through an apparatus of volume $V_{\mathrm{app}}$ at 298~K:
-\begin{equation}
-  P_{\mathrm{H_2O}} = \frac{(m_{\mathrm{w}}/M_{\mathrm{w}})\,RT}{V_{\mathrm{app}}} .
-\end{equation}
-With $m_{\mathrm{w}} = 0.027$~mg at 230~$^\circ$C and 0.016~mg at 240~$^\circ$C ($1.50$ and
-$0.89~\mu$mol), and $190\le V_{\mathrm{app}}\le600$~mL, Table~\ref{tab:gt_gamma} gives the pressures
-and the resulting $\gamma_{\mathrm{eff}}$. The pressures are end-of-step values; we also evaluate half
-of each as a time average for steady accumulation. Pressure enters only through $\ln P$ in
-$\Delta\mu$ and then through a cube root, so a threefold uncertainty in volume changes
-$\gamma_{\mathrm{eff}}$ by only about 10\%. The two steps agree within 15\%, and we adopt
-\begin{equation}
-  \gamma_{\mathrm{eff}} = 0.16\pm0.03~\mathrm{J\,m^{-2}} ,
-\end{equation}
-within the range expected for coherent and semicoherent interfaces. The corresponding barriers at
-250~$^\circ$C are 0.5--1.3~$k_BT$ under vacuum and 52--129~$k_BT$ at saturation. Under vacuum the
-barrier is negligible and the Arrhenius term of Eq.~\eqref{eq:gt_line} sets the rate; at saturation
-the barrier dominates.
-
-\begin{table}[htbp]
-  \centering
-  \caption{Water pressure with the trap isolated and the calibrated $\gamma_{\mathrm{eff}}$ (J\,m$^{-2}$; Eq.~\eqref{eq:gt_gamma_cal}).}
-  \label{tab:gt_gamma}
-  \begin{tabular}{cccccc}
-    \hline
-    $T$ ($^\circ$C) & $s$ & $V_{\mathrm{app}}$ (mL) & $P_{\mathrm{H_2O}}$ (Pa) & $\gamma_{\mathrm{eff}}$, end-of-step $P$ & $\gamma_{\mathrm{eff}}$, $P/2$ \\
-    \hline
-    230 & 0.333 & 190 & 19.6 & 0.138 & 0.145 \\
-    230 & 0.333 & 600 & 6.2  & 0.150 & 0.158 \\
-    240 & 0.224 & 190 & 11.6 & 0.164 & 0.172 \\
-    240 & 0.224 & 600 & 3.7  & 0.178 & 0.188 \\
-    \hline
-  \end{tabular}
-\end{table}
-
-\textit{Translation to water saturation.} For the same sample, with the same internal interface
-and the same mobility term, only $\Delta\mu$ changes between vacuum and saturation:
-\begin{equation}
-  \frac{k_{\mathrm{sat}}}{k_{\mathrm{vac}}} = \exp\!\left[-\frac{C\gamma_{\mathrm{eff}}^{3}}{T}\left(\frac{1}{\Delta\mu_{\mathrm{sat}}^{2}} - \frac{1}{\Delta\mu_{\mathrm{vac}}^{2}}\right)\right],
-  \label{eq:gt_translate}
-\end{equation}
-with both driving forces evaluated as in the calibration (bulk, IAPWS-95 water at $P_{\mathrm{sat}}$ and
-at $10^{-8}$~atm). For $\gamma_{\mathrm{eff}} = 0.14$, 0.16 and 0.19~J\,m$^{-2}$, this ratio is
-$7\times10^{-23}$, $9\times10^{-34}$ and $5\times10^{-56}$ at 250~$^\circ$C, and $5\times10^{-43}$,
-$7\times10^{-64}$ and $2\times10^{-106}$ at 200~$^\circ$C.
-
-How large a barrier would still allow detectable conversion follows from the same kinetics. Over
-the 442.8~h ($1.59\times10^{6}$~s) hydrothermal experiment, converting even 1\% of the sample at
-250~$^\circ$C requires $k_{\mathrm{sat}}t\gtrsim0.01$, i.e.
-\begin{equation}
-  \frac{\Delta G^{*}_{\mathrm{sat}}}{k_BT} \lesssim \ln\frac{k_{\mathrm{vac}}\,t}{0.01}
-  = \ln\frac{5.4\times10^{-5}\times1.59\times10^{6}}{0.01} = 9 ,
-\end{equation}
-far below the calibrated 52--129~$k_BT$. Applying Eq.~\eqref{eq:gt_translate} step by step to the
-hydrothermal schedule, with $k_{\mathrm{vac}}$ from Eq.~\eqref{eq:gt_line}, the predicted conversion is
-\begin{equation}
-  \alpha \approx \sum_i k_{\mathrm{vac}}(T_i)\,\frac{k_{\mathrm{sat}}}{k_{\mathrm{vac}}}(T_i)\,\Delta t_i
-  = 10^{-20.6},\ 10^{-31.5},\ 10^{-53.7}
-\end{equation}
-for the three values of $\gamma_{\mathrm{eff}}$. Even the most permissive calibration,
-$\gamma_{\mathrm{eff}} = 0.084$~J\,m$^{-2}$, gives $\alpha = 6\times10^{-4}$. That value would require
-0.1~bar of water in the line, far above the volume constraint. If the observed release came from
-conversion, it would imply $\alpha = F/(1-\phi) = 0.147/0.888 = 0.17$.
-
-\textit{Residuals.} Figure~\ref{fig:gt_delta} shows the difference between each observed step
-rate constant (Eq.~\eqref{eq:gt_stepk}) and the rate predicted for its setting:
-\begin{gather}
-  \Delta\log_{10}k_i = \log_{10}k_i^{\mathrm{obs}} - \log_{10}k^{\mathrm{pred}}(T_i), \notag\\
-  k^{\mathrm{pred}} =
-  \begin{cases}
-    k_{\mathrm{vac}}(T) & \text{vacuum},\\
-    k_{\mathrm{vac}}(T)\,\dfrac{k_{\mathrm{sat}}}{k_{\mathrm{vac}}}(T;\gamma_{\mathrm{eff}}) & \text{water-saturated}.
-  \end{cases}
-\end{gather}
-The vacuum steps in the fitting window scatter about zero with an rms of 0.15 (KAF) and 0.21
-(HDM) orders of magnitude. The trap-isolated steps sit 0.30 and 0.55 orders below. The hydrothermal
-steps sit 30--62 orders of magnitude above the saturated prediction for
-$\gamma_{\mathrm{eff}}=0.16$~J\,m$^{-2}$, and 20--41 and 53--105 orders above for 0.14 and
-0.19~J\,m$^{-2}$. Far more $^3$He is released in water than decomposition, as constrained by the vacuum
-experiments, could supply. The hydrothermal release must be controlled by diffusion.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{first_order_delta_lnk.pdf}
-  \caption{First-order residuals, $\log_{10}k^{\mathrm{obs}} - \log_{10}k^{\mathrm{pred}}$, on a
-  symmetric-log axis. Vacuum steps (KAF, HDM) are referenced to the vacuum line
-  (Eq.~\eqref{eq:gt_line}); filled symbols are in the fitting window. Blue: hydrothermal steps
-  (bounding-method central values, low-signal steps excluded) referenced to the water-saturated prediction (Eq.~\eqref{eq:gt_translate}) for
-  $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$; bars span 0.14--0.19~J\,m$^{-2}$. Grey: the same hydrothermal
-  steps referenced to the vacuum line without correction for water.}
-  \label{fig:gt_delta}
-\end{figure}
-
-A rate law linear in the driving force cannot produce this contrast. Such a law has
-$k\propto1-\exp(-\Delta\mu/RT)$, which at saturation is 0.80, 0.87 and 0.91 of the vacuum value at
-150, 200 and 250~$^\circ$C. That predicts only a 10--20\% slowdown, far less than the trap-isolated
-steps and hydrothermal data show. Suppression requires a barrier that grows as $\Delta\mu^{-2}$.
-
-\textit{Assumptions.} This treatment is a consistent physical explanation of the data, not a
-proof. It rests on four assumptions.
-(i) The slowdown during the trap-isolated steps acts through $\Delta\mu$. If adsorbed water instead
-slowed dehydroxylation by blocking reactive sites, these steps would not calibrate
-$\gamma_{\mathrm{eff}}$.
-(ii) The effective interface energy, $A$ and $E_a$ are the same in vacuum and in water. The
-mechanism is internal nucleation in both settings, and only the chemical potential of water
-changes.
-(iii) The barrier depends on the bulk driving force. Including the surface terms of
-Eq.~\eqref{eq:gt_equalarea} for grain sizes down to 10~nm raises the predicted hydrothermal
-conversion by about eight orders of magnitude, to $\alpha\approx10^{-23}$
-(\S\ref{sec:gt_supp_barrier}).
-(iv) Only solid-state conversion is modeled. Conversion by dissolution of goethite and
-precipitation of hematite from the fluid is not described by Eq.~\eqref{eq:gt_translate}
-(\S\ref{sec:gt_pigment}).
-The comparison is valid only between experimental conditions on the same sample. The calibrated
-$\gamma_{\mathrm{eff}}$ absorbs the sample's microstructure and should not be transferred to other
-goethites.
-
+diffusion. Section~\ref{sec:gt_nucleation} shows that these observations require the conversion
+rate at water saturation to be at least $10^{2.5}$ times slower than in vacuum, and that every
+water-inhibition law consistent with both data sets predicts far more suppression than that.
 
 % -----------------------------------------------------------------------------
 
@@ -1557,52 +820,14 @@ the hydrothermal experiments, it does not exclude the possibility of some dehydr
 on textural evolution of natural goethite aggregates during low fraction dehydration would be useful to resolve the extent of ``hidden'' dehydration that may occur before
 the formation of SEM-visible cracks.
 
-The kinetic analysis of \S\ref{sec:gt_vacuum}--\ref{sec:gt_nucleation} indicates that
-solid-state dehydration contributed negligibly to the helium loss of Win-06-01b-HT: at water
-saturation, the conversion rate expected from the vacuum kinetics is tens of orders of magnitude
-too slow, and the release shows the history and time dependence of diffusion rather than
+The kinetic analysis of \S\ref{sec:gt_vacuum}--\ref{sec:gt_hydro}, and the nucleation analysis of
+\S\ref{sec:gt_nucleation}, indicate that solid-state dehydration contributed negligibly to the helium loss of Win-06-01b-HT: at water
+saturation, every water-inhibition law consistent with the vacuum and hydrothermal data slows
+conversion by about five orders of magnitude or more (Table~\ref{tab:gt_ratelaws}), and the release shows the history and time dependence of diffusion rather than
 conversion. If dehydration nevertheless contributed to the helium loss of Win-06-01b-HT, the new
 data presented here would represent upper
 bounds for the apparent diffusivities of helium at the temperatures and
 fractional cumulative yields ($\Sigma F_{\mathrm{He}}$).
-
-\begin{figure}[htbp]
-\centering
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{cc}
-\textbf{Control} & \textbf{Vacuum, 300\textdegree C, 11 h} \\[2pt]
-\includegraphics[width=0.46\textwidth]{bahiaGoeControl_20um4.pdf} &
-\includegraphics[width=0.46\textwidth]{Goethite_Vac_300C_11hr_10umB0.pdf} \\
-\end{tabular}
-\caption{Secondary electron images of Bahia goethite aggregate before heat treatment (control) and after heat treatment at 300\textdegree C for 11 hours in vacuum. Cracks developed in the vacuum-heated sample both parallel and perpendicular to the long axis of the polycrystalline aggregate, representing volume contraction due to dehydration/decomposition of goethite into hematite. The buffered treatments at the same temperature are shown in Fig.~\ref{fig:ch2-sem-buffered}.}
-\label{fig:ch2-sem-control-vacuum}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{cc}
-\textbf{Gypsum-buffered, 300\textdegree C, 8 h} & \textbf{Water-buffered, 300\textdegree C, 4 h} \\[2pt]
-\includegraphics[width=0.46\textwidth]{bahiaGoeGypsum300C8hr_10um8.pdf} &
-\includegraphics[width=0.46\textwidth]{Goeth_Water_300C_4hr_10um6.pdf} \\
-\end{tabular}
-\caption{Secondary electron images of Bahia goethite aggregate heated at 300\textdegree C in a sealed glass tube with gypsum (8 hours) and with water (4 hours). Despite treatment at high heat, no cracks indicative of dehydration were visible on either goethite surface. In the gypsum experiment, the gypsum dehydrated first and produced enough water pressure to stop or slow dehydration of the goethite and prevent the development of microscopic cracks; at higher temperatures goethite and gypsum reacted, forming a surface layer of other minerals. For the water-buffered sample, no cracks were observed when investigating the goethite at scales similar to Fig.~\ref{fig:ch2-sem-control-vacuum}, and most of the aggregate's surface resembled the gypsum-buffered panel; the area pictured had the roughest texture on the grain. A very small crack parallel to the long axis may indicate some amount of dehydration had occurred, or it could have been inherited from before hydrothermal treatment, since even the untreated control grain (Fig.~\ref{fig:ch2-sem-control-vacuum}) had some rough surfaces and rare long-axis-parallel cracks.}
-\label{fig:ch2-sem-buffered}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{cc}
-\textbf{Vacuum, 300\textdegree C, 11 h (SE)} & \textbf{Vacuum, cross section (BSE)} \\[2pt]
-\includegraphics[width=0.46\textwidth]{Goethite_Vacuum_300C_11hr_10u9.pdf} &
-\includegraphics[width=0.46\textwidth]{C5_goeth_Vac205.pdf} \\
-\end{tabular}
-\caption{Vacuum-heated Bahia goethite at higher magnification and in cross section. Left: secondary electron image of goethite heated at 300\textdegree C for 11 hours in vacuum, at the same scale as the buffered samples of Fig.~\ref{fig:ch2-sem-buffered}, showing rough cracks at various scales both parallel and orthogonal to the long axis of the goethite aggregate. These are the typical decomposition features that would be expected in Fig.~\ref{fig:ch2-sem-buffered} if significant decomposition had occurred there. Right: backscatter electron image of a polished cross section of epoxy-mounted, vacuum-heated Bahia goethite, from the same subsample as the vacuum-heated grain of Fig.~\ref{fig:ch2-sem-control-vacuum}, exposing the grain's interior. This image clearly shows that the cracks visible on the exterior of dehydrated goethite are pervasive throughout the interior as well.}
-\label{fig:ch2-sem-vacuum-interior}
-\end{figure}
-
-\clearpage
 
 The process of recrystallization is another potential complication in
 interpreting helium step heats of goethite in hydrothermal conditions.
@@ -1644,7 +869,9 @@ primary drivers of helium loss.
 % --- Added 2026-09-25 (goethite stability integration; see CHANGES_JOURNAL.md) ---
 \paragraph{Fluid-Mediated Conversion of Synthetic Goethite Pigment}\label{sec:gt_pigment}
 
-Fluid-mediated conversion does occur in some materials. In the qualitative experiments on
+Goethite can also convert to hematite through the fluid, by dissolution of goethite and
+precipitation of hematite, and this fluid-mediated conversion does occur in some materials. In the
+qualitative experiments on
 acicular synthetic goethite pigment (\S\ref{sec:gt_pigment_methods}), heated with excess water at
 200--250~$^\circ$C for about a day, the outcome was all or nothing. Roughly equal proportions of
 ampoules were completely reacted (red), completely unreacted (yellow), or contained both
@@ -1654,7 +881,7 @@ isolated from one another, separated by gas bubbles. Unreacted pigment retains i
 $\sim$0.5--1~\textmu m across (Fig.~\ref{fig:gt_pigment}a), interpreted as hematite from its color
 and habit. The change of shape rules out pseudomorphic dehydroxylation. It indicates dissolution of
 goethite and nucleation and growth of hematite from the fluid, a pathway outside the solid-state
-model of \S\ref{sec:gt_nucleation}.
+nucleation model developed in \S\ref{sec:gt_nucleation}.
 
 \begin{figure}[htbp]
   \centering
@@ -1689,22 +916,8 @@ nucleate, goethite persists for the full run. The fluid-mediated pathway is ther
 like the solid-state pathway, by the difficulty of forming a hematite nucleus rather than by the
 rate at which hematite grows.
 
-Grain size and bulk thermodynamics do not explain why these blades reacted when the natural
-goethite did not. At 1~\textmu m, the surface contribution to $\Delta G_r$ is only
-$\sim$0.04~kJ, and the bulk driving force at saturation is the same 6--11~kJ for both materials
-(Table~\ref{tab:gt_dmu}). The most likely difference is the fluid itself. Commercial iron-oxide
-pigments are commonly produced by precipitation from iron-salt solutions. They can carry
-residual soluble salts, such as sulfate, and may be surface-treated. Such contaminants would
-change the pH and ionic strength of the water they are heated in, and with them the solubility
-of Fe(III). The dissolution--precipitation pathway is limited by how much iron the fluid can
-carry, so a modest increase in Fe(III) solubility could turn a negligible reaction into a
-visible one. Differences in residue loading or in the handling of individual ampoules would also
-explain why the outcome was not reproducible. The natural goethite, by contrast, was heated in
-distilled water, where near-neutral Fe(III) solubility is very low.
-% TODO: check the pigment product data sheet (grade, surface treatment, soluble-salt content, aqueous pH).
-
-We conclude that water-saturated conditions suppress solid-state conversion of goethite, but
-they do not by themselves exclude fluid-mediated conversion. Whether that pathway operates
+We conclude that water-saturated conditions do not by themselves exclude fluid-mediated
+conversion of goethite, even where solid-state conversion is suppressed (\S\ref{sec:gt_nucleation}). Whether that pathway operates
 depends on the solution chemistry. For the natural sample in distilled water,
 \S\ref{sec:gt_hydro} shows that the release is diffusive; a nucleation-limited, all-or-nothing
 reaction would also be expected to release helium abruptly rather than in the smooth,
@@ -1719,7 +932,7 @@ Apparent diffusivities calculated from helium step heats on the
 hydrothermal experiment on Win-06-01b goethite are clearly resolved and
 much lower than the apparent diffusivities calculated for the same
 sample in vacuum by \citet{monteiro2017} and \citet{farley2024} for all steps
-after the first few (Fig.~\ref{fig:ch2-arrhenius-full}, Fig.~\ref{fig:ch2-arrhenius-zoom}, Fig.~\ref{fig:ch2-delta-zoom}). Diffusivities calculated
+after the first few (Fig.~\ref{fig:gt_arrhenius}b, Fig.~\ref{fig:ch2-arrhenius-zoom}, Fig.~\ref{fig:ch2-delta-zoom}). Diffusivities calculated
 from the hydrothermal experiment are approximately seven natural log
 units lower than the earlier experiments in vacuum on the same sample. This high
 helium retentivity is explored through three lenses: closure temperature
@@ -1767,9 +980,6 @@ timescales.
 \label{fig:ch2-isothermal-retention}
 \end{figure}
 
-\clearpage
-
-
 It is difficult to use Arrhenius plots to compare many samples' helium
 retentivities. \citet{farley2024} report that linear regressions on
 apparent diffusivities calculated from helium step heat data on goethite
@@ -1807,8 +1017,8 @@ interrelationships regardless of the intercept used to calculate the
 reference Fourier numbers; the values of the reference Fourier numbers
 will be arbitrary and only meaningful as relative diffusive time.
 Another implication is that different aliquots of the same sample should
-appear identical in this space regardless of heating schedule (see
-Win-06-01b in Fig.~\ref{fig:ch2-fourier-win0601b}, or overlapping hematite samples in Fig.~\ref{fig:ch2-fourier-hematite-ref}). 
+appear identical in this space regardless of heating schedule (see the vacuum step heats of
+Win-06-01b and the overlapping hematite samples in Fig.~\ref{fig:ch2-fourier-hematite-ref}).
 Many such plots were generated with a variety of activation energies between
 149 kJ/mol to 171 kJ/mol, but the relative positions of the degassing curves for all samples are preserved, 
 illustrating the utility of this approach even for comparing helium retentivity between different minerals. 
@@ -1820,32 +1030,17 @@ Win-06-01b. In a thermal-history normalized space, it is obvious that
 goethite in vacuum and hematite define well-separated populations and
 goethite in vacuum is far less retentive of helium than hematite. Most
 interestingly, the most retentive sample on these plots is clearly the
-Win-06-01b-HT goethite under hydrothermal conditions, at least for the
-14.7\% of the total 3He hosted in the least retentive domains. This
-implies that the helium retentivity of stable goethite may even be
-higher than for hematite of similar size, although step heat experiments
-on irradiated single-crystal goethite of controlled size under
-hydrothermal conditions would be needed to fully assess this
-possibility. This plot also makes it clear that step heat results for
-different, unrelated goethite samples in vacuum are more similar to one
+Win-06-01b-HT goethite under water-saturated conditions, at least for the
+14.7\% of the total 3He hosted in the least retentive domains. This plot shows
+that step heat results for different, unrelated goethite samples in vacuum are more similar to one
 another than step heat results of the same sample at different water
 activities.
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.8\textwidth]{Fo_Plot_hematite_ref_HematiteGoethite.pdf}
+\includegraphics[width=0.75\textwidth]{Fo_Plot_hematite_ref_HematiteGoethite.pdf}
 \caption{Heating schedules for polycrystalline goethite and hematite samples are flattened to reference Fourier numbers, dimensionless numbers that can be thought of as integrated thermal history, allowing for easy comparison of entire helium step heat experiments. The 3He cumulative fractional yield is plotted on the $y$ axis as a function of Fourier number in log scale on the $x$ axis. Curves on the left of the plot degas earlier within a given thermal history than the curves on the right. Hematite and goethite step heats in vacuum each cluster closely together, forming distinct populations. Most strikingly, the hydrothermal Win-06-01b-HT experiment is the most helium-retentive polycrystalline sample on the plot, at least until the experiment's end at a cumulative fractional yield $\sim$15\% F3He. In vacuum, all hematite samples are significantly more retentive of helium than all goethite samples, with some limited exceptions for the least retentive domains holding $<$5\% of the total helium. Win-06-01b step heat experiments in vacuum are indistinguishable from the Capao samples in vacuum (the two leftmost goethites are Capao samples; the rest of the Capao samples closely cluster with Win-06-01b in vacuum). The differences in the curves here reflect differences in grain size distributions for hematite, and some combination of grain size and dehydration rate (due to variable water pressure in the experimental vessel and crystal aggregate size) for goethite. Vacuum step heats of 11 aliquots of 4 samples of polycrystalline hematite from the Grand Canyon, Arizona \citep{farleyflowers2012} and the Gogebic Range, Michigan \citep{farleymckeon2015}, and 9 aliquots of Win-06-01b and Capao goethite from Minas Gerais, Brazil \citep{monteiro2017,farley2024} are plotted here. The reference $D/a^2$ values are calculated for 1\textmu m domains of hematite (ln($D_0$) = 0.66; $E_a$ = 171 kJ/mol: \citep{farley2018}), and the reference curve for the degassing of 1\textmu m spherical domains of hematite with uniformly distributed 3He is calculated using the forward equations of \citet{fechtigkalbitzer1966}.}
 \label{fig:ch2-fourier-hematite-ref}
 \end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.8\textwidth]{CumDtPlot_WinsorGT_decompref_VacuumHDMKAF.pdf}
-\caption{Win-06-01b step heats flattened to the Fourier number calculated from the ``Stage 2'' reference domain from the Win-06-01b step heat of \citet{monteiro2017}. In this space, the helium retentivity contrast between the same goethite sample in vacuum and under hydrothermal conditions is striking. This plot shows that nearly 88\% of helium loss for Win-06-01b in vacuum can be well-explained by a single thermally activated process following an Arrhenius law, corresponding to the ``Stage 2'' reference line from the experiment of \citet{monteiro2017}, unlike polycrystalline hematite samples, which show a complex helium release pattern against a reference Fourier number, as expected for polycrystalline samples with complex grain size distributions. We interpret this ``Stage 2'' process as first-order conversion of goethite to hematite rather than volume diffusion (\S\ref{sec:gt_vacuum}). This process seems to be slightly faster for the experiment of \citet{farley2024}, potentially due to lower water pressures from a liquid nitrogen trap. Both experiments of \citet{monteiro2017} and \citet{farley2024} show that helium diffusivity (and the 4/3 ratio) suddenly decreases after a cumulative fractional yield of 3He around 88\%, signifying the beginning of ``Stage 3'' \citep{farley2024}, despite different heating schedules.}
-\label{fig:ch2-fourier-win0601b}
-\end{figure}
-
-\clearpage
-
 
 \paragraph{Profiling Radiogenic Helium Loss with $\frac{^4He}{^3He}$ Ratios of Win-06-01b-HT}\label{spectra-of-win-06-01b-ht}
 
@@ -1910,12 +1105,391 @@ a negligible fraction of the 4He contained in Win-06-01b.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{Comparative_Ratios_Dtplot_WinsorGT_VacuumHDMKAF.pdf}
-\caption{Bulk-normalized 4/3 ratios for Win-06-01b goethite step heats against cumulative fractional 3He yield. The hydrothermal experiment shows lower bulk-normalized 4/3He ratios at a given $\Sigma F_{3He}$ for the entire duration of the experiment, besides the very first step. All experiments' 4/3He ratios begin at very small values and increase steeply at first, which is consistent with complete then partial loss of radiogenic helium in nature for the least retentive helium domains. The rate of increase slows between $\Sigma F_{3He}$ of 0.05 to 0.2 for all experiments. The hydrothermal experiment is plotted as a shaded envelope spanning the bounding method's lower- and upper-bound 4/3He ratios; 10 of 34 analyses are excluded, either because the upper and lower bounds of $\omega$ cannot be computed for the early steps before $\lambda t$ was large enough to assume a steady-state permeation condition, or because the measured 3He signal for that step is below 0.1 pccSTP and too low-signal to give a reliable ratio.}
+\caption{Bulk-normalized 4/3 ratios for Win-06-01b goethite step heats against cumulative fractional 3He yield. The hydrothermal experiment shows lower bulk-normalized 4/3He ratios at a given $\Sigma F_{3He}$ for the entire duration of the experiment, besides the very first step. All experiments' 4/3He ratios begin at very small values and increase steeply at first, which is consistent with complete then partial loss of radiogenic helium in nature for the least retentive helium domains. The rate of increase slows between $\Sigma F_{3He}$ of 0.05 to 0.2 for all experiments. Each step is drawn as a bar spanning its starting to ending $\Sigma F_{3He}$. The hydrothermal experiment is drawn at the bounding method's central 4/3He ratio for each step, vacuum steps are drawn as lines at their ratios, and thin vertical lines join adjacent steps. For visual continuity, the gap left by excluded hydrothermal steps is bridged by extending the preceding step's ratio across its first half and the following step's ratio across its second half. The horizontal axis changes scale at $\Sigma F_{3He} = 0.2$ (double slash): the left two-thirds of the plot shows $\Sigma F_{3He}$ from 0 to 0.2 and the right third shows 0.2 to 1; 10 of 34 hydrothermal analyses are excluded, either because the upper and lower bounds of $\omega$ cannot be computed for the early steps before $\lambda t$ was large enough to assume a steady-state permeation condition, or because the measured 3He signal for that step is below 0.1 pccSTP and too low-signal to give a reliable ratio.}
 \label{fig:ch2-ratio-spectra}
 \end{figure}
 
-\clearpage
+% =============================================================================
+% Thermodynamics of goethite dehydroxylation, consolidated at the end of the
+% Discussion (moved 2026-09-29): model, stability, and nucleation control.
+% =============================================================================
+% --- Added 2026-09-25 (goethite stability integration; see CHANGES_JOURNAL.md) ---
+% Figures for the goethite stability/kinetics paragraphs below and in the
+% Discussion are produced by Chapter2/Figures/fig_goethite_hematite_phase_diagram.py,
+% fig_goethite_vacuum_kinetics.py and fig_goethite_hydrothermal_tests.py.
+\paragraph{Thermodynamic Model of Goethite Dehydroxylation}\label{sec:gt_thermo_methods}
 
+The preceding sections establish from the release patterns alone that the vacuum step heats of
+Win-06-01b record conversion to hematite, whereas the hydrothermal step heat records diffusion
+without detectable dehydration. Here we use the thermodynamics of goethite dehydroxylation to
+explain why water has this effect (\S\ref{sec:gt_thermo}) and to estimate how much solid-state
+conversion could have occurred in the hydrothermal experiment (\S\ref{sec:gt_nucleation}).
+
+Goethite breaks down to hematite by the dehydroxylation reaction
+\begin{equation}
+  2\,\alpha\text{-FeOOH} \;\rightleftharpoons\; \alpha\text{-Fe}_2\text{O}_3 + \text{H}_2\text{O}_{(\text{fluid})},
+  \label{eq:gt_rxn}
+\end{equation}
+whose Gibbs energy change, written per mole of hematite formed, is
+\begin{equation}
+  \Delta G_r(T,P) = G_{\mathrm{hem}}(T,P) + G_{\mathrm{w}}(T,P) - 2\,G_{\mathrm{goe}}(T,P) + \Delta G_{\mathrm{surf}} .
+  \label{eq:gt_dGr}
+\end{equation}
+where $\Delta G_r$ is the Gibbs energy change of the reaction and $G_{\mathrm{hem}}$, $G_{\mathrm{w}}$, and $G_{\mathrm{goe}}$ are the Gibbs energies of hematite, water, and goethite, respectively. 
+$\Delta G_{\mathrm{surf}}$ is the surface energy contribution, which must to be considered to reproduce observed phase stability \citep{navrotsky2008}. 
+Goethite is stable where $\Delta G_r>0$ and hematite plus water where $\Delta G_r<0$. The values and equations used to evaluate each of these terms is given in the supplement: \S\ref{sec:eqm-thermo}.
+
+% --- Added 2026-09-25 (goethite stability integration; see CHANGES_JOURNAL.md) ---
+\paragraph{Thermodynamic Stability of Goethite under Experimental Conditions}\label{sec:gt_thermo}
+
+The thermodynamic model of \S\ref{sec:gt_thermo_methods} can be used to calculate the stability field for
+goethite with respect to dehydroxylation to hematite and water in $\log P_{\mathrm{H_2O}}$--$T$ space (Fig.~\ref{fig:gt_PT}). This 
+phase diagram communicates several important features of the goethite--hematite--water system that are relevant to the experiments considered here:
+\begin{enumerate}
+  \item Goethite is not stable at the conditions of any of the experiments considered here, in water or in vacuum, in spite of the evidence that it did not react in the water-saturated experiment. Thus, we hypothesize that the reaction is kinetically inhibited for goethite under these conditions.
+  \item The stability of goethite is strongly dependent on the partial pressure of water below and up to water saturation. Above the saturation pressure, water is liquid and contributes far less to the reaction volume than it does as a gas. The reaction volume $\Delta V_r = V_{\mathrm{hem}} + V_{\mathrm{w}} - 2V_{\mathrm{goe}} \approx +6.6$~cm$^3$ is small,and the boundary becomes nearly vertical in $\log P_{\mathrm{H_2O}}$--$T$ space.
+  \item The stability of goethite is strongly dependent on grain size, with smaller grains being more stable than larger grains. At water saturation, bulk goethite is stable below 18~$^\circ$C, 100~nm goethite below 28~$^\circ$C, and 10~nm goethite below 108~$^\circ$C. 
+\end{enumerate}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.7\linewidth]{goethite_hematite_Ph2o_T_hydrated.pdf}
+  \caption{Goethite--hematite--water equilibrium in $\log P_{\mathrm{H_2O}}$--$T$ space for bulk
+  goethite and for 100 and 10~nm grains with hydrated surfaces, compared at equal surface area
+  per mole of Fe (Eq.~\eqref{eq:gt_equalarea}). Goethite is stable above and to the left of each
+  curve. The dash-dot curves illustrate the absolute uncertainty: the bulk boundary is shifted by the $\pm1.4$~kJ\,mol$^{-1}$ FeOOH uncertainty of
+  \citet{majzlan2003}. The blue dotted curve shows the water vapor saturation pressure; liquid water is present at and above this curve. The thermodynamic data used to compute the phase diagram are in
+  Table~\ref{tab:gt_thermo_data}.}
+  \label{fig:gt_PT}
+\end{figure}
+
+Stability alone does not determine what happens in a step heat; the rate of conversion controls
+whether this equilibrium state is reached or if the reaction proceeds at all,
+and that depends on the chemical potential of the reaction: $\Delta\mu$. Table~\ref{tab:gt_dmu} gives the bulk driving
+forces at the experimental temperatures, evaluated with IAPWS-95 water. At saturation,
+$\Delta\mu$ is 6--11~kJ, only 1.6--2.4 times $RT$. Under the vacuum of a step-heating line
+($P_{\mathrm{H_2O}}\approx10^{-8}$~atm) it is 76--106~kJ, about ten times larger. The chemical
+potential of water is therefore the key variable separating the two experimental settings.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Bulk driving force for hematite formation, $\Delta\mu = -\Delta G_r$ (kJ per mole Fe$_2$O$_3$), at water saturation and at $P_{\mathrm{H_2O}} = 10^{-8}$~atm.}
+  \label{tab:gt_dmu}
+  \begin{tabular}{cccccc}
+    \hline
+    $T$ ($^\circ$C) & $P_{\mathrm{sat}}$ (bar) & $\Delta\mu_{\mathrm{sat}}$ & $\Delta\mu_{\mathrm{sat}}/RT$ & $\Delta\mu_{\mathrm{vac}}$ & $(\Delta\mu_{\mathrm{vac}}/\Delta\mu_{\mathrm{sat}})^2$ \\
+    \hline
+    150 & 4.76  & 5.68  & 1.61 & 75.8  & 178 \\
+    175 & 8.93  & 6.88  & 1.84 & 83.4  & 147 \\
+    200 & 15.55 & 8.10  & 2.06 & 91.0  & 126 \\
+    225 & 25.50 & 9.36  & 2.26 & 98.5  & 111 \\
+    250 & 39.76 & 10.65 & 2.45 & 106.0 & 99  \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\paragraph{Water Suppresses Solid-State Conversion of Goethite}\label{sec:gt_nucleation}
+
+\textit{What the data require.} The hydrothermal observations themselves bound how fast
+goethite could have converted to hematite in water. Under the vacuum kinetics of
+Eq.~\eqref{eq:gt_line}, the hydrothermal schedule gives
+$\sum_i k_{\mathrm{vac}}(T_i)\,\Delta t_i \approx \ChTwoKinSumKdt$, enough to convert the sample
+completely many times over. Suppose instead that water lowers the conversion rate by a factor
+$R = k_{\mathrm{sat}}/k_{\mathrm{vac}}$. Even if every atom of the observed $^3$He release came from
+conversion, the conversion would be only $\alpha = F/(1-\phi) = \ChTwoKinHTFEnd/\ChTwoKinOneMinusPhi =
+\ChTwoKinHTAlphaObs$, which requires $R \le 10^{\ChTwoKinLogRObs}$. The release is instead diffusive
+(\S\ref{sec:gt_hydro}), and keeping conversion below 1\% requires $R \le 10^{\ChTwoKinLogRDetect}$.
+Without any assumption about mechanism, then, water must slow solid-state conversion by more
+than two orders of magnitude, and plausibly by nearly four. The question for the rest of this
+section is whether a physically reasonable rate law, calibrated on the vacuum data alone,
+predicts suppression of this size.
+
+\textit{Candidate rate laws.} The only direct information on how water affects the conversion rate
+comes from the two KAF steps with the trap isolated, where the rate fell by a factor
+$s$ (\S\ref{sec:gt_vacuum}) as $P_{\mathrm{H_2O}}$ rose from $\sim10^{-3}$~Pa to a few Pa. Each
+temperature therefore supplies one calibration pair ($s$, $P_{\mathrm{off}}$), and predicting the
+hydrothermal experiment means extrapolating about six orders of magnitude in $P_{\mathrm{H_2O}}$, to
+water saturation. The result is set by the assumed functional form. Water vapor is well known to
+retard dehydration and dehydroxylation reactions, through the reverse reaction, adsorption on the
+reaction interface, or both \citep{topley1935,lvov2007,koga2019}. We compare three laws,
+each calibrated on the same trap-isolated steps (Table~\ref{tab:gt_ratelaws}):
+\begin{enumerate}
+  \item \textit{Nucleation control} (classical nucleation theory, developed below), in which
+  $\ln k$ falls as $-1/\Delta\mu^{2}$, so that the tenfold drop in $\Delta\mu$ between vacuum and
+  saturation (Table~\ref{tab:gt_dmu}) raises the barrier a hundredfold.
+  \item \textit{Site blocking}, in which adsorbed water occupies reactive sites,
+  $k\propto 1/(1+KP_{\mathrm{H_2O}})$ (Langmuir), with $K$ calibrated at the trap-isolated steps
+  and held constant.
+  \item \textit{A power law}, $k\propto P_{\mathrm{H_2O}}^{-n}$, a deliberately weak dependence.
+\end{enumerate}
+A fourth possibility, a rate linear in the driving force, $k\propto1-\exp(-\Delta\mu/RT)$, has no free
+parameter and cannot reproduce the calibration: it predicts $s=\ChTwoKinLinearS$ at the trap-isolated
+steps, against the observed \ChTwoKinTrapSuppLow{} and \ChTwoKinTrapSuppHigh.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Water-inhibition rate laws calibrated on the two trap-isolated KAF steps and applied to
+  the hydrothermal schedule. Calibration grid: both steps, $V_{\mathrm{app}} = 190$ and 600~mL, and
+  end-of-step or half pressure (Table~\ref{tab:gt_gamma}). Monte Carlo: \ChTwoKinNMC{} draws of the
+  step, $s$ (\ChTwoKinSLowRange{} at 230~$^\circ$C and \ChTwoKinSHighRange{} at 240~$^\circ$C across
+  first-order and contracting-sphere reductions and choice of neighboring steps), $V_{\mathrm{app}}$,
+  the time-averaged pressure and, for nucleation control, a common $\pm2.8$~kJ offset in
+  $\Delta G_r$; 95\% range. Units: $\gamma_{\mathrm{eff}}$ in J\,m$^{-2}$, $K$ in Pa$^{-1}$. The data require $\alpha\le\ChTwoKinHTAlphaObs$ and, given the diffusive
+  release, $\alpha<0.01$ (\S\ref{sec:gt_supp_ratelaws}).}
+  \label{tab:gt_ratelaws}
+  \begin{footnotesize}
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{lcccc}
+    \hline
+    Law & Parameter & $\log_{10}\dfrac{k_{\mathrm{sat}}}{k_{\mathrm{vac}}}$, 250~$^\circ$C
+      & $\alpha$, grid & $\alpha$, Monte Carlo \\
+    \hline
+    Nucleation
+      & $\gamma_{\mathrm{eff}}$ = \ChTwoKinGammaLo--\ChTwoKinGammaHi
+      & $\ChTwoKinCNTLogRLo$ to $\ChTwoKinCNTLogRHi$
+      & $10^{\ChTwoKinCNTLogAlphaLo}$--$10^{\ChTwoKinCNTLogAlphaHi}$
+      & $10^{\ChTwoKinMCCNTLo}$--$10^{\ChTwoKinMCCNTHi}$ \\
+    Site blocking
+      & $K$ = \ChTwoKinLangKLo--\ChTwoKinLangKHi
+      & $\ChTwoKinLangLogRLo$ to $\ChTwoKinLangLogRHi$
+      & $10^{\ChTwoKinLangLogAlphaLo}$--$10^{\ChTwoKinLangLogAlphaHi}$
+      & $10^{\ChTwoKinMCLangLo}$--$10^{\ChTwoKinMCLangHi}$ \\
+    Power law
+      & $n$ = \ChTwoKinPowNLo--\ChTwoKinPowNHi
+      & $\ChTwoKinPowLogRLo$ to $\ChTwoKinPowLogRHi$
+      & \ChTwoKinPowAlphaLo--\ChTwoKinPowAlphaHi
+      & \ChTwoKinMCPowAlphaLo--1.00 \\
+    \hline
+  \end{tabular}
+  \end{footnotesize}
+\end{table}
+
+All three laws fit the calibration equally well, because each has one free parameter and each
+temperature supplies one number. They diverge by fifty orders of magnitude at saturation, but the
+hydrothermal data discriminate among them. The power law predicts that the hydrothermal schedule
+converted \ChTwoKinPowAlphaLo--\ChTwoKinPowAlphaHi{} of the sample, which would have released most of
+the $^3$He abruptly; only \ChTwoKinHTFEnd{} was released, smoothly and with the history and time
+dependence of diffusion. Site blocking and nucleation control both predict conversion well below
+1\%. The conclusion that solid-state conversion
+contributed negligibly to the hydrothermal release therefore holds for every law consistent with
+both data sets, but the magnitude of the suppression, $k_{\mathrm{sat}}/k_{\mathrm{vac}}$ from $10^{\ChTwoKinLangLogRHi}$ to
+$10^{\ChTwoKinCNTLogRLo}$ at 250~$^\circ$C, is set by the assumed law and is not constrained by the
+data. The nucleation
+interpretation developed below is one physically motivated explanation of why water is so
+effective, not a measurement of the suppression.
+
+\textit{Nucleation barrier.} In classical nucleation theory \citep{gibbs1878,volmer1926,becker1935},
+reviewed by \citet{christian2002}, \citet{kashchiev2000} and, for mineral systems,
+\citet{deyoreo2003} and \citet{lasaga1998}, a spherical hematite nucleus of radius $r$ has free
+energy
+\begin{equation}
+  \Delta G(r) = -\frac{4}{3}\pi r^{3}\,\frac{\Delta\mu}{V_{\mathrm{hem}}} + 4\pi r^{2}\gamma,
+\end{equation}
+where $\Delta\mu$ is the driving force per mole of Fe$_2$O$_3$ (Table~\ref{tab:gt_dmu}),
+$V_{\mathrm{hem}}$ the molar volume and $\gamma$ the energy of the interface surrounding the
+nucleus. The first term is the free energy released by transforming the nucleus volume. The second
+is the cost of creating its interface. Setting $d\Delta G/dr=0$ gives the critical radius
+$r^{*} = 2\gamma V_{\mathrm{hem}}/\Delta\mu$ (nuclei larger than this are stable and will grow) and the barrier height
+\begin{equation}
+  \Delta G^{*} = \frac{16\pi\,\gamma^{3}\,V_{\mathrm{hem}}^{2}}{3\,\Delta\mu^{2}} .
+  \label{eq:gt_barrier}
+\end{equation}
+Written per formula unit, $V_{\mathrm{hem}}\to V_{\mathrm{hem}}/N_A$ and $\Delta\mu\to\Delta\mu/N_A$, so
+Avogadro's number cancels and Eq.~\eqref{eq:gt_barrier} is directly the barrier per nucleus in
+joules. In the first-order limit of \S\ref{sec:gt_vacuum}, the rate constant is a nucleation
+rate of the form derived by \citet{turnbull1949},
+\begin{gather}
+  k = A\exp\!\left(-\frac{E_a}{RT}\right)\exp\!\left(-\frac{\Delta G^{*}}{k_B T}\right), \notag\\
+  \frac{\Delta G^{*}}{k_B T} = \frac{C\gamma^{3}}{T\,\Delta\mu^{2}},
+  \qquad
+  C \equiv \frac{16\pi V_{\mathrm{hem}}^{2}}{3k_B} = 1.112\times10^{15}~\mathrm{m^6\,K\,J^{-1}\,mol^{-2}} ,
+  \label{eq:gt_knuc}
+\end{gather}
+where $A\exp(-E_a/RT)$ describes the atomic mobility and $\exp(-\Delta G^{*}/k_BT)$ is the
+equilibrium fraction of sites occupied by critical nuclei. The barrier scales as $\gamma^3/\Delta\mu^2$. Between vacuum and water
+saturation, $\Delta\mu$ falls tenfold and the barrier rises by the factor in the last column of
+Table~\ref{tab:gt_dmu}: about 100 at 250~$^\circ$C and nearly 180 at 150~$^\circ$C.
+
+\textit{An upper bound on the vacuum barrier.} The vacuum conversion rate is observed, so the
+barrier that controls it cannot exceed what the fastest conceivable prefactor allows. In
+transition-state theory \citep{eyring1935} no elementary step is faster than $k_BT/h$, which is
+$1.09\times10^{13}$~s$^{-1}$ at 250~$^\circ$C. If every one of the $N$ formula units in a grain were a
+nucleation site attempting at this frequency, the per-grain rate could not exceed
+$N(k_BT/h)\exp(-\Delta G^{*}/k_BT)$. A 1~\textmu m goethite sphere contains
+$N = (\pi d^3/6)/(V_{\mathrm{goe}}/N_A) = 1.5\times10^{10}$ formula units. Requiring this ceiling to
+reach the observed $k_{\mathrm{vac}} = \ChTwoKinKTwoFifty$~s$^{-1}$ at 250~$^\circ$C (Eq.~\eqref{eq:gt_line})
+gives
+\begin{equation}
+  \frac{\Delta G^{*}_{\mathrm{vac}}}{k_BT} \le \ln\frac{N\,k_BT/h}{k_{\mathrm{vac}}}
+  = \ln\frac{1.5\times10^{10}\times1.09\times10^{13}}{\ChTwoKinKTwoFifty} = \ChTwoKinCeiling .
+  \label{eq:gt_ceiling}
+\end{equation}
+A tenfold larger grain raises the bound by only $\ln 1000 = 7$. Real prefactors are smaller, so the
+true barrier is lower still.
+
+\textit{Nucleation must be internal.} The surface energies of \citet{navrotsky2008} fail this
+bound by a wide margin. If the nucleus were bounded by a free, anhydrous hematite surface
+($\gamma = 1.90$~J\,m$^{-2}$, $\Delta\mu = 106.0$~kJ at 250~$^\circ$C), Eq.~\eqref{eq:gt_knuc} would give
+$\Delta G^{*}/k_BT = 1.3\times10^{3}$. Nucleation on a goethite surface lowers this. For a nucleus
+shaped as a spherical cap on a flat substrate, the barrier is reduced by the purely geometric
+factor
+$f(\theta) = (2+\cos\theta)(1-\cos\theta)^2/4 \le 1$, where the contact angle $\theta$ is set by the
+balance of interfacial tensions at the triple junction (Young's equation),
+$\cos\theta = (\gamma_{\mathrm{goe}} - \gamma_{\mathrm{hem|goe}})/\gamma_{\mathrm{hem}}$
+\citep{volmer1926,turnbull1950}. Even with a hematite--goethite interfacial energy of zero,
+$\cos\theta \le 0.91/1.90 = 0.48$, $f\ge0.17$ and $\Delta G^{*}/k_BT\ge2.2\times10^{2}$. No
+non-negative interfacial energy brings nucleation on free surfaces within the bound of
+Eq.~\eqref{eq:gt_ceiling}. Hematite must therefore nucleate internally, where the only new
+interface is between hematite and goethite. This agrees with the known mechanism: goethite
+dehydroxylates topotactically, the hematite inherits the oxygen framework and orientation of the
+parent, and the pseudomorph develops pores and twinned hematite domains
+\citep{limadefaria1963,watari1979,watari1983,cudennec2005}. We are not aware of a measured or
+calculated energy for the goethite--hematite interface. In what follows, $\gamma$ is replaced by an
+effective parameter $\gamma_{\mathrm{eff}}$, calibrated from the data.
+
+\textit{Calibrating $\gamma_{\mathrm{eff}}$ from the trap-isolated steps.} Isolating the trap
+raised $P_{\mathrm{H_2O}}$ in the line and lowered $\Delta\mu$, and the isothermal rate fell by a factor
+$s$ (\S\ref{sec:gt_vacuum}). With $A$ and $E_a$ unchanged, Eq.~\eqref{eq:gt_knuc} gives
+\begin{equation}
+  \ln\frac{1}{s} = \frac{C\gamma_{\mathrm{eff}}^{3}}{T}\left(\frac{1}{\Delta\mu_{\mathrm{off}}^{2}} - \frac{1}{\Delta\mu_{\mathrm{on}}^{2}}\right)
+  \quad\Longrightarrow\quad
+  \gamma_{\mathrm{eff}} = \left[\frac{T\ln(1/s)}{C\left(\Delta\mu_{\mathrm{off}}^{-2} - \Delta\mu_{\mathrm{on}}^{-2}\right)}\right]^{1/3}.
+  \label{eq:gt_gamma_cal}
+\end{equation}
+The driving forces are evaluated as follows.
+\begin{enumerate}
+  \item $\Delta\mu_{\mathrm{on}}$ and $\Delta\mu_{\mathrm{off}}$ are bulk driving forces,
+  $-\Delta G_r$ from Eq.~\eqref{eq:gt_dGr} (\S\ref{sec:eqm-thermo}) with $\Delta G_{\mathrm{surf}} = 0$, at the
+  step temperature and with the solids at vacuum.
+  \item They differ only through the chemical potential of water: $\Delta\mu_{\mathrm{on}}$ is
+  evaluated at $P_{\mathrm{H_2O}} = 10^{-8}$~atm and $\Delta\mu_{\mathrm{off}}$ at the water pressure
+  reached with the trap isolated (below). At these pressures (at most 20~Pa), IAPWS-95 and the
+  ideal gas agree, and
+  $\Delta\mu_{\mathrm{on}} - \Delta\mu_{\mathrm{off}} = RT\ln(P_{\mathrm{off}}/P_{\mathrm{on}})$, which is
+  32--41~kJ for the pressures in Table~\ref{tab:gt_gamma}.
+  \item Surface terms are omitted in both. The barrier of an internal nucleus depends on the free
+  energy per volume of material transformed, not on the external surface of the host grain. The
+  grain or domain size of the natural sample is also not characterized. The external surface
+  energy of the grain enters the overall thermodynamic stability (\S\ref{sec:gt_thermo}),
+  but we do not include it in the barrier. The sensitivity to this choice is small
+  (\S\ref{sec:gt_supp_barrier}).
+\end{enumerate}
+We bound the water pressure with the trap isolated by assuming that all evolved water was in the
+vapor, distributed uniformly through an apparatus of volume $V_{\mathrm{app}}$ at 298~K:
+\begin{equation}
+  P_{\mathrm{H_2O}} = \frac{(m_{\mathrm{w}}/M_{\mathrm{w}})\,RT}{V_{\mathrm{app}}} .
+\end{equation}
+With $m_{\mathrm{w}} = 0.027$~mg at 230~$^\circ$C and 0.016~mg at 240~$^\circ$C ($1.50$ and
+$0.89~\mu$mol), and $190\le V_{\mathrm{app}}\le600$~mL, Table~\ref{tab:gt_gamma} gives the pressures
+and the resulting $\gamma_{\mathrm{eff}}$. The pressures are end-of-step values; we also evaluate half
+of each as a time average for steady accumulation. This is an upper bound on the pressure, because
+some water adsorbs on the walls of the line; a lower true pressure gives a larger
+$\gamma_{\mathrm{eff}}$ and more suppression at saturation, so the bound is conservative. Pressure
+enters only through $\ln P$ in $\Delta\mu$ and then through a cube root, so a threefold uncertainty
+in volume changes $\gamma_{\mathrm{eff}}$ by only about 10\%. The two steps agree within 15\%, and
+we adopt $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$, with a range of
+\ChTwoKinGammaLo--\ChTwoKinGammaHi~J\,m$^{-2}$.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Water pressure with the trap isolated and the calibrated $\gamma_{\mathrm{eff}}$ (J\,m$^{-2}$; Eq.~\eqref{eq:gt_gamma_cal}).}
+  \label{tab:gt_gamma}
+  \begin{tabular}{cccccc}
+    \hline
+    $T$ ($^\circ$C) & $s$ & $V_{\mathrm{app}}$ (mL) & $P_{\mathrm{H_2O}}$ (Pa) & $\gamma_{\mathrm{eff}}$, end-of-step $P$ & $\gamma_{\mathrm{eff}}$, $P/2$ \\
+    \hline
+    230 & 0.333 & 190 & 19.6 & 0.138 & 0.145 \\
+    230 & 0.333 & 600 & 6.2  & 0.150 & 0.158 \\
+    240 & 0.224 & 190 & 11.6 & 0.164 & 0.172 \\
+    240 & 0.224 & 600 & 3.7  & 0.178 & 0.188 \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\textit{Where classical nucleation theory applies.} The calibration sits outside the range in
+which classical nucleation theory has a physical meaning. At 250~$^\circ$C and
+$\gamma_{\mathrm{eff}} = \ChTwoKinGammaLo$--$\ChTwoKinGammaHi$~J\,m$^{-2}$, the critical radius under vacuum
+is $r^{*} = \ChTwoKinRstarVac$~nm, a nucleus of \ChTwoKinNfuVac{} formula units, and the barrier is
+\ChTwoKinBarVac~$k_BT$. Conversion in vacuum is effectively barrierless, consistent with the simple
+first-order Arrhenius behavior of both vacuum experiments, and the trap-isolated steps change the
+barrier by only about one $k_BT$. At saturation $r^{*} = \ChTwoKinRstarSat$~nm (\ChTwoKinNfuSat{}
+formula units) and the barrier is \ChTwoKinBarSat~$k_BT$, a size at which the theory is at best
+approximate. The calibration therefore does not measure an interface energy. It fixes the one
+free parameter, $B = C\gamma_{\mathrm{eff}}^{3}$, of a rate law in which $\ln k$ falls as
+$-B/(T\Delta\mu^{2})$, and $\gamma_{\mathrm{eff}}$ should be read as a phenomenological parameter of the
+sample. Its magnitude is similar to the 0.24~J\,m$^{-2}$ calculated for the twin boundaries between
+hematite domains formed by dehydrating goethite \citep{saito2016}, but at these length scales the
+agreement should not be over-interpreted.
+
+\textit{Translation to water saturation.} For the same sample, with the same $\gamma_{\mathrm{eff}}$
+and the same mobility term, only $\Delta\mu$ changes between vacuum and saturation:
+\begin{equation}
+  \frac{k_{\mathrm{sat}}}{k_{\mathrm{vac}}} = \exp\!\left[-\frac{C\gamma_{\mathrm{eff}}^{3}}{T}\left(\frac{1}{\Delta\mu_{\mathrm{sat}}^{2}} - \frac{1}{\Delta\mu_{\mathrm{vac}}^{2}}\right)\right],
+  \label{eq:gt_translate}
+\end{equation}
+with both driving forces evaluated as in the calibration (bulk, IAPWS-95 water at $P_{\mathrm{sat}}$ and
+at $10^{-8}$~atm). For $\gamma_{\mathrm{eff}} = 0.14$, 0.16 and 0.19~J\,m$^{-2}$, this ratio is
+$7\times10^{-23}$, $9\times10^{-34}$ and $5\times10^{-56}$ at 250~$^\circ$C, and $5\times10^{-43}$,
+$7\times10^{-64}$ and $2\times10^{-106}$ at 200~$^\circ$C.
+
+How large a barrier would still allow detectable conversion follows from the same kinetics. Over
+the 442.8~h ($1.59\times10^{6}$~s) hydrothermal experiment, converting even 1\% of the sample
+requires $\sum_i k_{\mathrm{sat}}(T_i)\Delta t_i\gtrsim0.01$, i.e., for a barrier that is the same at
+every step,
+\begin{equation}
+  \frac{\Delta G^{*}_{\mathrm{sat}}}{k_BT} \lesssim \ln\frac{\sum_i k_{\mathrm{vac}}(T_i)\,\Delta t_i}{0.01}
+  = \ln\frac{\ChTwoKinSumKdt}{0.01} \approx \ChTwoKinDetect ,
+\end{equation}
+far below the calibrated \ChTwoKinBarSat~$k_BT$. Applying Eq.~\eqref{eq:gt_translate} step by step to the
+hydrothermal schedule, with $k_{\mathrm{vac}}$ from Eq.~\eqref{eq:gt_line}, the predicted conversion is
+\begin{equation}
+  \alpha \approx \sum_i k_{\mathrm{vac}}(T_i)\,\frac{k_{\mathrm{sat}}}{k_{\mathrm{vac}}}(T_i)\,\Delta t_i
+  = 10^{\ChTwoKinLogAlphaLow},\ 10^{\ChTwoKinLogAlphaMid},\ 10^{\ChTwoKinLogAlphaHigh}
+\end{equation}
+for the three values of $\gamma_{\mathrm{eff}}$. Propagating the uncertainties in $s$, the apparatus
+volume, the time-averaged pressure and the $\pm2.8$~kJ uncertainty in $\Delta G_r$ gives
+$10^{\ChTwoKinMCCNTLo}$ to $10^{\ChTwoKinMCCNTHi}$ (95\%; Table~\ref{tab:gt_ratelaws},
+\S\ref{sec:gt_supp_ratelaws}). The thermodynamic offset moves every driving force together; it
+barely changes $\gamma_{\mathrm{eff}}$ but contributes most of this spread, because it enters the small
+$\Delta\mu_{\mathrm{sat}}$ squared. Even the most permissive calibration,
+$\gamma_{\mathrm{eff}} = 0.084$~J\,m$^{-2}$, gives $\alpha = \ChTwoKinAlphaPermissive$. That value would require
+0.1~bar of water in the line, far above the volume constraint.
+
+\textit{Assumptions.} This treatment is a consistent physical explanation of the data, not a
+proof. It rests on four assumptions.
+(i) The slowdown during the trap-isolated steps acts through $\Delta\mu$. If adsorbed water instead
+slowed dehydroxylation by blocking reactive sites, the site-blocking law of
+Table~\ref{tab:gt_ratelaws} applies; it predicts far less suppression but still no detectable
+conversion.
+(ii) $\gamma_{\mathrm{eff}}$, $A$ and $E_a$ are the same in vacuum and in water. The
+mechanism is internal nucleation in both settings, so only the chemical potential of water
+changes.
+(iii) The barrier depends on the bulk driving force. Including the surface terms of
+Eq.~\eqref{eq:gt_equalarea} for grain sizes down to 10~nm raises the predicted hydrothermal
+conversion by about eight orders of magnitude, to $\alpha\approx10^{-23}$
+(\S\ref{sec:gt_supp_barrier}).
+(iv) Only solid-state conversion is modeled. Conversion by dissolution of goethite and
+precipitation of hematite from the fluid is not described by Eq.~\eqref{eq:gt_translate}
+(\S\ref{sec:gt_pigment}).
+The comparison is valid only between experimental conditions on the same sample. The calibrated
+$\gamma_{\mathrm{eff}}$ absorbs the sample's microstructure and should not be transferred to other
+goethites.
+
+Assumption (iv) matters for the synthetic pigment of \S\ref{sec:gt_pigment}. Grain size and bulk
+thermodynamics do not explain why the pigment blades reacted when the natural goethite did not. At 1~\textmu m, the surface contribution to $\Delta G_r$ is only
+$\sim$0.04~kJ, and the bulk driving force at saturation is the same 6--11~kJ for both materials
+(Table~\ref{tab:gt_dmu}). The most likely difference is the fluid itself. Commercial iron-oxide
+pigments are commonly produced by precipitation from iron-salt solutions. They can carry
+residual soluble salts, such as sulfate, and may be surface-treated. Such contaminants would
+change the pH and ionic strength of the water they are heated in, and with them the solubility
+of Fe(III). The dissolution--precipitation pathway is limited by how much iron the fluid can
+carry, so a modest increase in Fe(III) solubility could turn a negligible reaction into a
+visible one. Differences in residue loading or in the handling of individual ampoules would also
+explain why the outcome was not reproducible. The natural goethite, by contrast, was heated in
+distilled water, where near-neutral Fe(III) solubility is very low.
+% TODO: check the pigment product data sheet (grade, surface treatment, soluble-salt content, aqueous pH).
+
+\clearpage
 
 \section{Conclusions}\label{conclusions}
 
@@ -1930,14 +1504,18 @@ vacuum helium step heat data are with respect to helium retention and
 loss in natural samples. Because goethite dehydration is slowed or
 stopped at high water pressure, helium step heats under hydrothermal
 conditions are more likely to interrogate the processes controlling
-radiogenic helium loss in natural goethite. The method presented in this
+radiogenic helium loss in natural goethite. Hydrothermally treated goethite does not develop the
+visible dehydration-induced contraction cracks that goethite heated in vacuum does. The method
+presented in this
 study leverages the high helium permeability of silica glass to easily
 conduct helium step heat experiments under hydrothermal conditions,
 achieving internal water pressures up to 86 bars at 300°C using standard
 ultra-high vacuum experimental setups \citep{farley1999}.
 
 The experiment conducted on irradiated Win-06-01b represents the first
-hydrothermal helium step heat experiment for goethite. It gives apparent
+hydrothermal helium step heat experiment for goethite. Vacuum step heats of the same sample follow
+first-order conversion to hematite, whereas the hydrothermal release shows the history and time
+dependence of diffusion. The hydrothermal experiment gives apparent
 diffusivities approximately seven natural log units below those obtained
 from the same sample in vacuum. The corrected 3He array is linear between
 7--15\% cumulative yield, with an activation energy of \ChTwoEa ±
@@ -1953,14 +1531,13 @@ by goethite dehydration is distinct from that of diffusion. More
 hydrothermal step heat experiments of goethite are necessary to confirm
 this hypothesis.
 
-Hydrothermally treated goethite does not develop the visible
-dehydration-induced contraction cracks that goethite heated in vacuum
-does, and a thermodynamic and kinetic analysis of goethite dehydroxylation
-explains why. Vacuum step heats of Win-06-01b follow first-order conversion
-to hematite, whereas at water saturation the roughly tenfold smaller driving
-force raises the barrier to hematite nucleation enough to slow solid-state
-conversion by tens of orders of magnitude; the hydrothermal release instead
-shows the history and time dependence of diffusion. Fluid-mediated
+A thermodynamic and kinetic analysis of goethite dehydroxylation explains why water has this
+effect. The hydrothermal release itself requires solid-state conversion to be at least
+$10^{2.5}$ times slower in water than in vacuum. Every water-inhibition law consistent with the
+vacuum and hydrothermal data predicts negligible conversion at water saturation: by about five
+orders of magnitude if water blocks reactive sites, and by tens of orders of magnitude if the
+roughly tenfold smaller driving force at saturation raises the barrier to hematite nucleation.
+The size of the suppression depends on the rate law, which the present data cannot determine. Fluid-mediated
 conversion, which transformed synthetic goethite pigment in qualitative
 experiments, and recrystallization cannot be excluded on these grounds alone.
 If either contributed, the diffusivities reported here would be upper

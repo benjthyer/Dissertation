@@ -664,16 +664,68 @@ def low_signal_HTWin0601b_mask(xlsx_path, threshold=0.1):
     diffusivity or isotope-ratio determination, e.g. Temp/Minutes 205/520,
     195/1106, 185/740, 175/920, 200/260, and 210/520 at the default 0.1
     pccSTP threshold. Read from the master workbook's
-    DistilledUncertaintyTreatment sheet ('3He Measured (pccSTP)' column),
+    DistilledBoundingMethod sheet ('3He Measured (pccSTP)' column; this
+    sheet was formerly named 'DistilledUncertaintyTreatment'),
     which shares the same step order as the diffusivitiesHTWin0601b{M,UB,LB}
     sheets (verified by Temp/Minutes match) but is not itself split by bound,
     so this one mask applies to all three.
 
     True = low-signal (exclude); use `~mask` to select the reliable steps."""
-    sheet = pd.read_excel(xlsx_path, sheet_name='DistilledUncertaintyTreatment', header=0)
+    sheet = pd.read_excel(xlsx_path, sheet_name='DistilledBoundingMethod', header=0)
     sheet = sheet[pd.to_numeric(sheet.iloc[:, 0], errors='coerce').notna()]
     he3_measured = pd.to_numeric(sheet.iloc[:, 3], errors='coerce').to_numpy()
     return he3_measured < threshold
+
+
+def step_yield_edges(f_end):
+    """Cumulative fractional yield at the start and end of each step,
+    given the end-of-step cumulative yields of a *complete* step series
+    (in experimental order, nothing dropped). A step starts where the
+    previous step ended; the first step starts at 0.
+
+    Returns (f_start, f_end) as float arrays. Apply any step exclusions
+    (e.g. low_signal_HTWin0601b_mask) *after* calling this, so that an
+    excluded step still advances the start of the next one."""
+    f_end = np.asarray(f_end, dtype=float)
+    f_start = np.concatenate([[0.0], f_end[:-1]])
+    return f_start, f_end
+
+
+def step_yield_edges_HTWin0601b(xlsx_path):
+    """Start/end cumulative fractional 3He yield for each of the 34
+    HT-Win-06-01b steps (same row order as load_diffusivities_HTWin0601b_bounds
+    and low_signal_HTWin0601b_mask), computed from the master workbook's
+    DistilledBoundingMethod sheet as (Sigma 3He after the step) / (total
+    3He, from that column's 'Total' row). The end-of-step values equal
+    the 'Fi' column of the diffusivitiesHTWin0601b{M,LB,UB} sheets; note
+    that the DistilledBoundingMethod sheet's own 'F 3He' column holds the
+    *start*-of-step yield (Fi of the previous step).
+
+    Returns (f_start, f_end), each of length 34."""
+    sheet = pd.read_excel(xlsx_path, sheet_name='DistilledBoundingMethod', header=0)
+    temp = pd.to_numeric(sheet.iloc[:, 0], errors='coerce')
+    cum = pd.to_numeric(sheet['Σ 3He (pccSTP)'], errors='coerce')
+    total_rows = sheet.iloc[:, 0].astype(str).str.strip().str.lower() == 'total'
+    total = float(cum[total_rows].iloc[0])
+    return step_yield_edges(cum[temp.notna()].to_numpy() / total)
+
+
+def draw_step_connectors(ax, f_start, f_end, values, tol=1e-9, **kwargs):
+    """Draw fine vertical lines joining each plotted step's value to the
+    next step's value, at the x where one step ends and the next begins
+    (spectrum-style plots drawn with step_yield_edges). Pairs are only
+    joined when the steps are contiguous (next start == this end, within
+    tol) and both values are finite, so gaps left by dropped steps stay
+    open. Extra kwargs go to ax.vlines (defaults: linewidth 0.6)."""
+    f_start = np.asarray(f_start, dtype=float)
+    f_end = np.asarray(f_end, dtype=float)
+    v = np.asarray(values, dtype=float)
+    if v.size < 2:
+        return None
+    ok = (np.abs(f_start[1:] - f_end[:-1]) <= tol) & np.isfinite(v[:-1]) & np.isfinite(v[1:])
+    kwargs.setdefault('linewidth', 0.6)
+    return ax.vlines(f_end[:-1][ok], np.minimum(v[:-1], v[1:])[ok],
+                     np.maximum(v[:-1], v[1:])[ok], **kwargs)
 
 
 def asymmetric_yerr(bounds, iso, column='ln(d/a^2)'):
@@ -962,3 +1014,25 @@ def make_grid(minors=True):
     plt.hlines(y_coords, *xlim, linestyle='--', color='black', alpha=0.2)
     ax.set_xlim(xlim)
     ax.set_ylim(ylim)
+
+
+def bridge_interior_gaps(f_start, f_end, values, tol=1e-9):
+    """Fill each interior gap between consecutive plotted steps (i.e. where
+    excluded steps were dropped) for display: the first half of the gap
+    takes the value of the step before it, the second half the value of
+    the step after it. Returns new (f_start, f_end, values) arrays with two
+    pseudo-steps inserted per gap. A leading gap (before the first plotted
+    step) has no previous value and is left open."""
+    f_start = np.asarray(f_start, float)
+    f_end = np.asarray(f_end, float)
+    values = np.asarray(values, float)
+    s_out, e_out, v_out = [f_start[0]], [f_end[0]], [values[0]]
+    for i in range(1, len(values)):
+        gap_start, gap_end = f_end[i - 1], f_start[i]
+        if gap_end - gap_start > tol:
+            mid = 0.5 * (gap_start + gap_end)
+            s_out += [gap_start, mid]
+            e_out += [mid, gap_end]
+            v_out += [values[i - 1], values[i]]
+        s_out.append(f_start[i]); e_out.append(f_end[i]); v_out.append(values[i])
+    return np.array(s_out), np.array(e_out), np.array(v_out)

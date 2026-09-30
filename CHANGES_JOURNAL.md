@@ -1727,3 +1727,568 @@ and the manuscript's figures/) were moved to `_to_delete/old_figures/`. Re-run.
 Main text and SI (bibtex) compile with 0 errors and 0 undefined references; main 58 pp., SI
 37 pp. No new overfull boxes of note (one 11.9 pt line in the SI, text only). The
 dissertation is unaffected by this pass.
+
+---
+
+# 2026-09-28 -- Ch. 2 delta plot and 4/3He plot redrawn as step spectra
+
+**Figures** (`Chapter2/Figures/fig_delta_plot.py`, `fig_3_4_plot.py`; regenerated
+`DeltasWinsorGTzoomin_VacuumHydrothermal{,_asUncertainty}.pdf` and
+`Comparative_Ratios_Dtplot_WinsorGT_VacuumHDMKAF.pdf`). Points replaced with
+spectrum-style bars: each step spans x from the cumulative fractional 3He yield at
+the start of the step (end of the previous step; 0 for the first) to the yield at
+the end of the step. Hydrothermal steps are boxes spanning the step's uncertainty
+(delta plot: +/-(UB-LB)/2, or LB/UB in the `_asUncertainty` variant; ratio plot:
+LB-UB) with a line at the central value. Vacuum steps (no uncertainties) are flat
+segments at the step's value; in the delta plot 3He is solid and 4He dotted.
+Step spans are computed from the full step series before low-signal/no-bound steps
+are dropped, so dropped steps leave gaps. Hydrothermal colours in the delta plot
+are now blue (3He) and green (4He); legends use proxy handles; the ratio-plot
+legend is pinned to lower right.
+
+**Hydrothermal x-positions changed slightly.** The old delta plot placed points at
+the M sheet's `FiUB` column (cumulative yield + upper-bound gas still in the tube);
+the bars now use `Fi` (Sigma 3He / total 3He), matching the vacuum `Fcum`
+convention. The old ratio plot read the distilled sheet's `F 3He` column, which is
+actually each step's *starting* yield (Fi of the previous step), so its points
+lagged one step; the bars now run start->end.
+
+**Stale sheet name fixed in Chapter 2** (the latent bug flagged in the Ch. 3
+follow-up): `Chapter2/Figures/thermochr_utils.py` `low_signal_HTWin0601b_mask()`
+and `fig_3_4_plot.py` now read `DistilledBoundingMethod` (formerly
+`DistilledUncertaintyTreatment`). The new sheet also has fewer columns, so
+`fig_3_4_plot.py` now reads the ratio columns by header name instead of position
+(the old positions 23-26 no longer exist). Added helpers `step_yield_edges()` and
+`step_yield_edges_HTWin0601b()` to `thermochr_utils.py`. Neither figure could
+be regenerated before this fix, so the previous PDFs (6 Aug) predated the 26 Aug
+workbook; the hydrothermal values differ from those PDFs for that reason too.
+`fig_nt_vs_ntss_comparison.py` still reads the old sheet name (not touched).
+
+**Captions** (`Chapter2/Writing/chapter2_body.tex`, `fig:ch2-delta-zoom`,
+`fig:ch2-ratio-spectra`): one sentence each describing the bar representation;
+the ratio caption's "shaded envelope" wording replaced.
+
+**Not verified by compile:** the device's TeX install lacks `siunitx`, so
+`pdflatex dissertation.tex` stopped in the preamble. That aborted run truncated
+`dissertation.aux`/`.out` (regenerated on the next latexmk build);
+`dissertation.pdf` was restored from a copy taken beforehand.
+
+## Follow-up: step connectors and a two-scale x axis on the 4/3He plot
+
+- Both plots: fine vertical lines (0.6 pt, series colour) now join each step's
+  central value to the next step's, at the x where one ends and the next begins.
+  Only contiguous steps are joined; gaps left by dropped steps stay open. New
+  helper `draw_step_connectors()` in `Chapter2/Figures/thermochr_utils.py`.
+- `fig_3_4_plot.py`: x axis is now piecewise-linear (matplotlib `function` scale):
+  Sigma F3He 0-0.2 fills the left 2/3 of the axes and 0.2-1.0 the right 1/3, with
+  a double-slash break mark on the top and bottom spines at 0.2. Steps that cross
+  0.2 stay continuous. Break position and fraction are `X_BREAK` / `ZOOM_FRAC` at
+  the top of the plotting section. Title padded slightly to clear the top mark.
+- Captions for `fig:ch2-delta-zoom` and `fig:ch2-ratio-spectra` now mention the
+  connectors; the ratio caption also describes the scale change.
+
+## Follow-up: 4/3He plot -- error boxes removed, interior gap bridged
+
+- `fig_3_4_plot.py`: hydrothermal LB-UB error boxes removed (Ken's request); the
+  hydrothermal series is now the central (M) ratio only, drawn at the same 2.2 pt
+  weight as the vacuum series, with a line legend entry. Step selection is
+  unchanged (same 10 of 34 steps excluded).
+- Interior gaps left by excluded steps (here the single gap at Sigma F3He
+  ~0.040-0.042 from the dropped low-signal retrograde steps) are bridged for
+  display only: first half of the gap at the preceding step's ratio, second half at
+  the following step's (`bridge_interior_gaps()` in `fig_3_4_plot.py`). The
+  leading gap before the first plotted step is left open. The delta plot is
+  unchanged (still has its error boxes and open gap).
+- `fig:ch2-ratio-spectra` caption: bounds wording replaced with "drawn at the
+  bounding method's central 4/3He ratio", plus one sentence disclosing the
+  display-only gap bridging.
+
+## Follow-up: delta plot gap bridged (error boxes kept)
+
+- `fig_delta_plot.py` (both variants): the interior hydrothermal gap is bridged the
+  same way as the 4/3He plot (first half at the preceding step's central delta,
+  second half at the following step's), for both 3He and 4He. Error boxes are
+  unchanged and drawn only over real steps -- none over the bridge.
+- `bridge_interior_gaps()` moved from `fig_3_4_plot.py` into
+  `Chapter2/Figures/thermochr_utils.py` so both scripts share it; the 4/3He
+  figure regenerates identically.
+- `fig:ch2-delta-zoom` caption: one sentence disclosing the display-only bridge
+  and that no uncertainty is shown over it.
+
+---
+
+# 2026-09-29 -- Chapter 2 kinetic-fit statistics now come from macros; D3 refit with phi
+
+## New auto-generated file
+`Chapter2/Writing/chapter2_kinetics_values.tex` (59 `\ChTwoKin*` macros), written by
+`write_kinetics_macros()` in `Chapter2/Figures/fig_goethite_vacuum_kinetics.py` together with
+`Figures/generated/data/goethite_kinetics_cache.json`. It covers the cumulative F1 fit (Ea, ln A,
+phi, s, rms, n), the joint and per-experiment Arrhenius lines through the step rate
+constants, k at 250 C and conversion per hour, the TST ceiling (63 kBT) and 1% detectability
+bound (9 kBT), trap-isolated rate factors, the residual rms values, the water fit, the all-steps refits,
+the D3 variants, and the full row sets of SI Tables `tab:gt_mech_fits` and `tab:gt_synth`
+(`\ChTwoKinMechFitRows`, `\ChTwoKinSynthRows`). It is `\input` in `Chapter2/chapter2.tex`,
+`Writing/chapter2goethite.tex` and `Writing/chapter2goethite_SI.tex`. Do not edit it by hand.
+
+## Script changes (fig_goethite_vacuum_kinetics.py)
+- `fit_model()` takes `phi=<value>` (fixed) or `phi_free=True`; the default behavior is unchanged.
+- `run()` now also fits D3 with phi fixed at the F1 value (0.112) and with phi free, on the
+  same 19 KAF / 21 HDM steps, and repeats every fit with all steps (columns `*_all`), which
+  reproduces the previously hand-typed all-steps numbers exactly.
+- New `residual_stats()` and `write_kinetics_macros()`; called from `__main__`.
+
+## Result: D3 with the same phi
+| Model | Ea (kJ/mol) | rms KAF | rms HDM prediction |
+|---|---|---|---|
+| F1 | 122.9 | 0.0085 | 0.0167 |
+| R3 | 101.7 | 0.0111 | 0.0234 |
+| R2 | 90.3 | 0.0133 | 0.0292 |
+| D3, phi = phi(F1) = 0.112 | 245.6 | 0.0237 | 0.0539 |
+| D3, phi free (0.155) | 267.6 | 0.0199 | 0.0541 |
+| D3, phi = 0 | 183.7 | 0.0455 | 0.0529 |
+Imposing the plateau improves the KAF misfit for D3 but not its prediction of HDM, and it still ranks
+below F1, R3 and R2 (above A2/A3). Its trap-isolated rate factor is s = 0.69.
+
+## Text changes
+- `chapter2_body.tex`: all hard-coded kinetic-fit numbers in `sec:gt_vacuum`, the Arrhenius
+  figure caption, the trap-isolated paragraph and the two nucleation bounds replaced by macros;
+  +2 sentences reporting the D3-with-phi fits; fixed a missing space ("window.A").
+  (Your concurrent delta-plot caption edit was preserved.)
+- `chapter2goethite_SI_body.tex`: model-fit and synthetic tables now built from macros (two
+  new D3 rows); the all-steps paragraph uses macros; +D3-with-phi comparison in "Fits to
+  the vacuum data".
+- Displayed-value changes from rounding: D3 KAF rms prints 0.045 (was 0.046; value 0.0455);
+  all-steps R2 KAF rms 0.012 (was 0.0116); "five times worse" -> "5.3 times".
+- GCA manuscript not changed (it still hard-codes these numbers).
+Verified: full dissertation build, 0 errors, no undefined macros; the macro file written on the
+local VM is byte-identical to the one tested.
+
+## Follow-up: delta plot legend moved off the data
+
+- `fig_delta_plot.py` (both variants): legend text reduced from 11 pt to 8.5 pt
+  (`LEGEND_FONTSIZE`), tighter handle length / label spacing, and the legend is
+  now anchored centre-right against the right axes edge at Delta = 3 (`LEGEND_Y`,
+  data units), sitting in the empty band between the hydrothermal 3He line at 0
+  and the vacuum plateaus at ~6. Checked visually: overlaps no data.
+
+---
+
+# 2026-09-29b -- New Arrhenius comparison figure replaces the Stage 2 figure in Chapter 2
+
+## Figure (Chapter2/Figures/fig_goethite_vacuum_kinetics.py, make_arrhenius_comparison)
+`arrhenius_reaction_vs_diffusion.pdf` redrawn in the house style of
+`winsor_goethite_Diffusivities_Arrhenius.pdf` (plot_style.apply_style, top-axis temperature in C,
+1e4/T axis, KAF red / HDM orange / hydrothermal blue, dashed connectors):
+- temperature range now 125--325 C;
+- the points of each experiment are joined sequentially by dashed lines; no prograde/retrograde
+  distinction;
+- filled = vacuum steps in the kinetic fitting window, open = outside it; large pink
+  (tab:pink) circles mark the two LN2-isolated KAF steps;
+- hydrothermal: bounding-method central values with LB/UB bars, low-signal steps excluded;
+- black line = joint first-order fit; per-experiment dashed fit lines and the Stage 2 line
+  are gone;
+- two panels side by side (12.8 x 5.9 in, fonts scaled 1.6x) with a shared legend underneath,
+  so the figure plus its long caption fit on one page at full text width. (A stacked version
+  was too tall for the page with the caption.)
+
+## chapter2_body.tex
+- The Results figure `fig:ch2-arrhenius-full` (winsor_goethite_Diffusivities_Arrhenius.pdf,
+  Stage 2 reference line) was replaced by this figure, now labelled `fig:gt_arrhenius`, with a
+  new caption that compares the two reductions (first-order k vs. FK D/a^2) for the vacuum and
+  hydrothermal experiments.
+- The duplicate copy of the figure in the Discussion (`sec:gt_vacuum`) was removed; the three
+  references to `fig:ch2-arrhenius-full` now point to `fig:gt_arrhenius`b.
+
+## GCA manuscript
+`hydrothermal_goethite_body.tex`: the `fig:gt_arrhenius` caption was updated to describe the new
+styling (colors, dashed connectors, black fit line, pink circles), and the figure is now included at full text width.
+The manuscript still also shows `winsor_goethite_Diffusivities_Arrhenius.pdf` (fig:arrhenius-full,
+with the Stage 2 line), which is still produced by fig_decomp_vs_hydrothermal.py.
+
+Verified: dissertation and manuscript build, 0 errors, no new undefined references, and no
+float-too-large warning for the new figure.
+
+---
+
+# 2026-09-29c -- Trial: fitting window trimmed by one step; figure and phase-diagram tweaks
+
+## Trial window (easy to undo)
+`fig_goethite_vacuum_kinetics.py`: new flag `TRIM_LAST_FIT_STEP = True` drops the last step of
+each fitting window (KAF 5-23 -> 5-22, i.e. 285 C step excluded; HDM 8-28 -> 8-27, i.e. 338 C
+step excluded). **To undo: set it to False and rerun the script** (then
+fig_goethite_hydrothermal_tests.py and copy_manuscript_sources.py). The window description in
+Methods and every phi-dependent number in the chapter are now macros, so the chapter follows the
+flag automatically: new `\ChTwoKinWinKAF/HDM`, `\ChTwoKinWinKAFT/HDMT`, `\ChTwoKinPhiPct`,
+`\ChTwoKinOneMinusPhi`, `\ChTwoKinHTFEnd`, `\ChTwoKinHTAlphaObs`, `\ChTwoKinLogAlphaLow/Mid/High`,
+`\ChTwoKinAlphaPermissive` (chapter2_body.tex: fitting-window sentence, "~11%" plateau,
+predicted hydrothermal alpha, permissive-gamma alpha, apparent alpha).
+
+Effect (old -> trimmed):
+| | old | trimmed |
+|---|---|---|
+| cumulative F1 Ea / ln A / phi / s | 122.9 / 18.67 / 0.112 / 0.46 | 120.8 / 18.15 / 0.101 / 0.47 |
+| F1 rms KAF / HDM | 0.0085 / 0.017 | 0.0087 / 0.018 |
+| joint step-rate line Ea / ln A (n) | 121.4 +/- 4.4 / 18.08 +/- 1.05 (38) | 130.4 +/- 3.4 / 20.27 +/- 0.81 (36) |
+| KAF alone / HDM alone | 134.9 +/- 6.1 / 116.3 +/- 5.6 | 139.3 +/- 6.2 / 126.6 +/- 3.9 |
+| k(250 C), conversion/h | 5.4e-5, 18% | 6.1e-5, 20% |
+| residual rms KAF / HDM (log10) | 0.15 / 0.21 | 0.12 / 0.12 |
+| D3 (phi=0) rms KAF / HDM | 0.045 / 0.053 | 0.038 / 0.055 |
+| D3 (phi=phi_F1) rms KAF / HDM | 0.024 / 0.054 | 0.026 / 0.056 |
+| predicted HT log10 alpha (0.14/0.16/0.19) | -20.6/-31.5/-53.7 | -20.5/-31.4/-53.7 |
+| hold projection (F1 / D3) | 0.173 / 0.149 | unchanged (0.173 / 0.149) |
+Model ranking unchanged. Numbers not tied to the fits (gamma_eff calibration, the hydrothermal
+residual ranges, Test 1/2) did not change at the precision quoted.
+
+## Arrhenius comparison figure
+Light grey grid on both panels; x label now `10^4/T (K)` (was a stacked fraction).
+
+## Phase diagrams (fig_goethite_hematite_phase_diagram.py)
+All P-T phase diagrams (goethite_hematite_Ph2o_T_hydrated, size_basis_sensitivity,
+goethite_hematite_Ph2o_T_equal_area/_equal_diameter) now plot log P_H2O from -3 to 4 bar and
+T from 0.5 to 275 C (new constants PT_LOGP_PLOT_MIN, PT_T_MAX_C; the solver range is unchanged).
+The legends of the two-panel equal_area/equal_diameter figures were moved to center-right.
+
+## Not updated (trial)
+The GCA manuscript still hard-codes the old window's numbers (e.g. Ea 121.4 +/- 4.4,
+phi = 0.112) but uses the regenerated figure, whose legend now reads Ea = 130 +/- 3 kJ/mol.
+
+---
+
+# 2026-09-29d -- Chapter 2 restructured (goethite-forward); HDM fitting window ends before ~317 C
+
+No text was rewritten except as noted below. Everything else was moved as whole paragraphs, figures or tables.
+The GCA manuscript was not touched and will be rebuilt later.
+
+## Fitting window (fig_goethite_vacuum_kinetics.py)
+- `WINDOW_STEPS_TRIAL = {"KAF": (5, 22), "HDM": (8, 26)}`, `USE_TRIAL_WINDOW = True`. This excludes HDM step 27
+  (317 C) and all steps after it; KAF is unchanged from the 29b trial.
+  - To restore the original 5-23 / 8-28, set `USE_TRIAL_WINDOW = False`.
+- Re-run on the device: `fig_goethite_vacuum_kinetics.py`, then `fig_goethite_hydrothermal_tests.py`.
+- Main results:
+  - Joint Arrhenius line: Ea = 137.0 +/- 2.7 kJ/mol, ln A = 21.91 +/- 0.66, N = 35.
+    The 29b trial gave 130 +/- 3; the original window gave 121.4 +/- 4.4.
+  - Per experiment: KAF 139.3 +/- 6.2, HDM 135.4 +/- 2.5.
+  - Cumulative F1: Ea = 120.8, phi = 0.101, rms 0.0087 (KAF) / 0.018 (HDM).
+  - D3 at phi(F1): rms 0.026 / 0.057, 3.0x F1.
+  - Hydrothermal translation: log alpha = -20.5 / -31.4 / -53.7.
+  - All of these are macros, so the text follows automatically.
+
+## chapter2_body.tex
+- Introduction: the three SEM figures (control/vacuum, buffered, vacuum interior) were moved here from
+  the Discussion to motivate the method.
+- Experimental Methods:
+  - The SEM study paragraph now also carries the label `sec:gt_pigment_methods`.
+  - Two sentences on the pigment runs (water only; no vacuum or open-air runs) were added, with a
+    TODO for the pigment's product name and supplier.
+  - The separate "Synthetic Pigment" methods paragraph was DELETED, with permission.
+- Moved to the SI:
+  - Permeation Lag Correction (with the permeation-fit and ampoule-permeability figures).
+  - The Discussion paragraphs on measured/simulated apparent permeability and on the consistency of the
+    bounding method / complete degas test (with the nt-vs-ntss figure).
+  - All analytical methods: the finite-difference cooling tube, diffusivity inversions, isotope-ratio
+    uncertainty, and the Kinetic Analysis of Vacuum Step Heats.
+- Discussion order: MDD consistency; vacuum; hydrothermal; dehydration/recrystallization; pigment;
+  retentivity; 4He/3He. The thermodynamics block now comes last: Thermodynamic Model methods, then
+  sec:gt_thermo, then sec:gt_nucleation.
+- The thermo-kinetic sensitivity sections stay in the SI.
+
+## chapter2goethite_SI_body.tex
+- New section headings (added text):
+  - "Permeation Lag Correction and Ampoule Permeability" (`sec:ch2-si-permeation`)
+  - "Analytical Methods" (`ch2-analytical-methods`)
+- Both sit before the existing dataset section.
+
+## Verification
+- Full dissertation: 0 errors, 247 pp.
+- Undefined references:
+  - the pre-existing `app:bushveld`;
+  - `fig:ch2-fourier-win0601b` (the figure was removed on 09-29 but is still cited, body around line 1023).
+- One float is too large by 1.3 pt (the Fourier hematite-reference figure; not moved).
+
+---
+
+# 2026-09-29e -- Chapter 2 flow edits after the restructure
+
+Goal: make the new order (goethite observations first, thermodynamics last) read correctly.
+Pre-edit copies of the body, SI body and abstract are kept in the session scratchpad; git HEAD also has them.
+The GCA manuscript is still untouched.
+
+## chapter2_body.tex
+
+### Introduction
+- The last sentence of the "Goethite dehydration is suppressed..." paragraph was removed from that
+  paragraph and rewritten as a new closing paragraph (roadmap). It previously cited
+  "(S thermo--S pigment)", a range that is now out of order. It now reads: first hydrothermal step
+  heat, compared with the vacuum step heats (S gt_vacuum--gt_hydro); the thermodynamic/kinetic
+  analysis then explains why water has this effect (S gt_thermo_methods--gt_nucleation).
+- MOVED from the end of Results into the Introduction: the SEM observations paragraph ("SEM imagery
+  taken of thermally treated natural goethites... remained black"). It is unchanged except for a
+  new lead sentence, "Early trials of the method were encouraging (S SEM methods)." The Introduction
+  text now cites the SEM figures that sit there.
+
+### Experimental Methods
+- ADDED a paragraph after the final-step (furnace) paragraph. It says that measured yields lag the
+  release because of permeation, that they were corrected by the bounding method (Ch. 1, S
+  bounding-method; LB/central/UB in the distilled tables), and it points to
+  SI S sec:ch2-si-permeation and SI S ch2-analytical-methods.
+  - Reason: with those sections moved to the SI, the main text no longer said how the data were
+    reduced.
+
+### Results
+- 3He table caption: "(see \ref{permeation-lag-correction})" became "(see \S\ref{...})".
+- The SEM paragraph was removed from here (moved to the Introduction, above).
+
+### Discussion
+- MDD paragraph:
+  - "This is tested quantitatively in S vacuum--S nucleation" became "...in S vacuum--S hydro,
+    and explained in S nucleation". The old range now spans unrelated sections.
+  - The hard-coded "160 kJ/mol" became \ChTwoEa{} (macros take priority).
+- Vacuum section (sec:gt_vacuum):
+  - The first sentence now names "the first-order conversion model of S sec:gt_kinetics_methods",
+    because those equations are now in the SI.
+  - "(S sec:gt_kinetics_methods)" was added after "the fitting window".
+  - "We use these two steps in S nucleation to calibrate the nucleation model" became
+    "We return to these two steps in S nucleation, where they calibrate the nucleation model."
+- Hydrothermal section: the last sentence was recast as a forward reference: "Section
+  nucleation shows why: the conversion rate expected at water saturation is too small..."
+- Dehydration section: "The kinetic analysis of S vacuum--S nucleation indicates" became "The
+  kinetic analysis of S vacuum--S hydro, and the nucleation analysis of S nucleation, indicate".
+- Pigment section (sec:gt_pigment):
+  - New opening. It previously followed the nucleation section: "Fluid-mediated conversion does
+    occur in some materials." It now reads: "Goethite can also convert to hematite through the
+    fluid, by dissolution of goethite and precipitation of hematite, and this fluid-mediated
+    conversion does occur in some materials."
+  - "a pathway outside the solid-state model of S nucleation" became "...outside the solid-state
+    nucleation model developed in S nucleation".
+  - MOVED the thermodynamic paragraph ("Grain size and bulk thermodynamics do not explain why these
+    blades reacted...", with its TODO comment) to the end of S gt_nucleation. It uses Table gt_dmu,
+    which now comes later. It opens there with a new lead: "Assumption (iv) matters for the
+    synthetic pigment of S pigment." "these blades" became "the pigment blades".
+  - The pigment conclusion sentence was reworded so it does not rest on the later thermodynamics.
+    It now reads: "We conclude that water-saturated conditions do not by themselves exclude
+    fluid-mediated conversion of goethite, even where solid-state conversion is suppressed
+    (S nucleation)."
+- Fourier/retentivity:
+  - The citation of the removed figure fig:ch2-fourier-win0601b was replaced with "(see the
+    vacuum step heats of Win-06-01b and the overlapping hematite samples in Fig.
+    fourier-hematite-ref)".
+  - That figure's width went from 0.80 to 0.75 \textwidth. Before, its float was 1.3 pt too large.
+- Thermodynamic block (start of S gt_thermo_methods): ADDED a lead-in paragraph. It says the
+  preceding sections establish, from the release patterns alone, conversion in vacuum and
+  diffusion in water, and that the thermodynamics here explains why and bounds the
+  conversion (S thermo, S nucleation).
+- Typo fixed in assumption (ii): "so and only the chemical potential" became "so only the chemical
+  potential".
+- Four \clearpage were removed: one in the middle of the dehydration section, and the ones after the
+  isothermal-retention figure, the Fourier figure and the 4He/3He figure. The first flushed the SEM
+  figures, which are now in the Introduction. The others left half-empty pages. The \clearpage after
+  the ampoule figures, after the Results figures and before the Conclusions are kept. The chapter is
+  about 2 pages shorter, and every float lands within about a page of its first mention.
+
+### Conclusions (reordered to follow the new flow; no findings changed)
+- Paragraph 1: motivation and method. The SEM sentence ("Hydrothermally treated goethite does not
+  develop the visible dehydration-induced contraction cracks...") moved here from the last
+  paragraph, as the motivation.
+- Paragraph 2: the observational result first. "Vacuum step heats of the same sample follow
+  first-order conversion to hematite, whereas the hydrothermal release shows the history and time
+  dependence of diffusion" was moved here from the last paragraph and lightly reworded. It is
+  followed by the diffusivity and retentivity results ("It gives" became "The hydrothermal
+  experiment gives").
+- Paragraph 3: the 4He/3He paragraph (unchanged).
+- Paragraph 4: the thermodynamic explanation ("A thermodynamic and kinetic analysis of goethite
+  dehydroxylation explains why water has this effect: at water saturation...") and then the
+  unchanged caveats and future work.
+
+## chapter2_abstract.tex
+- The thermodynamic/nucleation sentences moved from before the results to after them.
+- ADDED one sentence before them: reanalysis of the vacuum step heats shows first-order conversion,
+  whereas the hydrothermal release records diffusion.
+- "shows that conducting step heats..." became "explains this difference and shows that
+  conducting step heats...".
+- Everything else is unchanged.
+
+## chapter2goethite_SI_body.tex
+- Complete degas test:
+  - "Stage 1 procedure used for the bounding method above" became "...in the main text" (it is no
+    longer above).
+  - Fixed "Figs.~/ref{...},~/ref{...}" to \ref, which was a broken rendering.
+- Dataset section intro: "described in full in the main text (S ch2-experimental-methods)" became
+  "described in full in S sec:ch2-si-permeation and S finite-difference... (cooling tube)".
+- Your caption edit in tab:gt_mech_fits cited \citet{montiero2017}, which is not a bib key. It is
+  fixed to monteiro2017.
+
+## Chapter2/Figures/fig_permstep_isothermal_fits.py and chapter2_permstep_isothermal_tables.tex
+- Fit-table caption: "described in the main text (S experimental-methods)" became "described in
+  S sec:ch2-si-permeation". The old label did not exist.
+- \footnotesize moved inside the table float. The old \begin{footnotesize} around a float had no
+  effect, and the table was 32 pt too wide.
+- The generated .tex was edited in place with its CRLF endings kept. The script was changed to
+  match, so a rerun gives the same result.
+
+## Verification
+- Full dissertation: 0 errors, 245 pp.
+- The only undefined reference is the pre-existing app:bushveld.
+- No float-too-large warnings, and no overfull boxes > 2 pt in Chapter 2 or its SI.
+
+---
+
+# 2026-09-30 -- Nucleation-rate wording + Turnbull & Fisher; legible phase diagrams
+
+## chapter2_body.tex (edited in place on your latest version)
+- Eq. gt_knuc lead-in: "the rate constant is a nucleation rate," became "...a nucleation rate of
+  the form derived by \citet{turnbull1949},".
+- "exp(-dG*/kBT) the probability of forming a critical nucleus" became "exp(-dG*/kBT) is the
+  equilibrium fraction of sites occupied by critical nuclei".
+- references.bib: added turnbull1949 (Turnbull & Fisher 1949, JCP 17, 71). The key matches the
+  file's short-key style, and the Zotero file path was dropped. If you re-export from Zotero,
+  its key is turnbull_rate_1949.
+
+## Chapter2/Figures/fig_goethite_hematite_phase_diagram.py (phase diagrams only)
+- New `_styled(width_in, printed_frac)` decorator. It applies plot_style.apply_style inside an
+  rc_context, so the other figures in the script (dmu maps, barrier ratio, etc.) are unchanged.
+  - Scale rule: 0.125 x figure width / printed fraction of \textwidth. That is the same printed
+    text size as the Arrhenius comparison figure (12.8 in, scale 1.6, full width).
+  - make_pt_hydrated (6.5 in at 0.7\linewidth): scale 1.16.
+  - make_basis_sensitivity (11 in, full width): 1.375.
+  - make_figure (now 10 x 10 in, two stacked panels, legends to the right): 1.25.
+- Hard-coded small font sizes were removed. Legends and labels now use the shared sizes.
+- Legends: sizes are labelled "bulk (+0.00 kJ)" etc. under a legend title "size (dG_surf)", so
+  the legends fit. They sit at lower right. handlelength is 1.4.
+- Main-text diagram:
+  - The alpha-FeOOH label is now an arrow pointing into the narrow goethite field. It had
+    overlapped the curves.
+  - The hematite + water label moved to the upper right of the hematite field.
+- SI size-basis figure: the liquid-vapor curve is labelled on the plot instead of in the legend,
+  so the legend no longer covers the 10 nm curve.
+- Re-run on the device.
+
+---
+
+# 2026-09-30b -- 09-29e flow edits re-merged onto your current Chapter 2
+
+Your save of chapter2_body.tex on 09-30 had been made from a buffer opened before the 09-29e edits.
+As a result, those edits were missing from the body, and two were missing from the SI.
+
+## What was done
+- Your current files were the base: your thermodynamics restructure (details moved to SI
+  sec:eqm-thermo), your caption and Delta-mu edits, and the Turnbull & Fisher edit.
+- Every 09-29e body edit was re-applied onto them:
+  - Introduction: SEM paragraph and roadmap.
+  - Methods: the permeation-lag/SI pointer paragraph.
+  - Caption \S.
+  - Section-range fixes.
+  - \ChTwoEa in place of 160 kJ/mol.
+  - Pointers to sec:gt_kinetics_methods.
+  - Forward references to S nucleation.
+  - Pigment opening, pigment conclusion sentence, and the pigment thermodynamic paragraph moved
+    to the end of S nucleation.
+  - Fourier citation fix and 0.75 figure width.
+  - "so only" typo.
+  - The four \clearpage removals.
+  - Reordered Conclusions.
+- NOT re-applied: the 09-29e thermodynamic lead-in paragraph. You wrote your own lead-in in
+  sec:gt_thermo_methods ("This work suggests, so far empiraclly and qualitatively, ...").
+  Note the typo "empiraclly" there, and "wate" in the fig:gt_PT caption. Both are left for you.
+- SI: re-applied two fixes.
+  - "described in full in the main text (S ch2-experimental-methods)" now points to the SI
+    sections.
+  - "/ref" is now "\ref".
+- The abstract edits and the other SI edits were already present.
+
+## Verification
+- Full dissertation: 0 errors, 246 pp.
+- The only undefined reference is app:bushveld.
+- No float-too-large warnings.
+
+---
+
+# 2026-09-30c -- Review response, items 1-2: rate-law sensitivity, empirical bound, Monte Carlo
+
+## fig_goethite_vacuum_kinetics.py (new section "Water-inhibition rate laws")
+- Three laws are calibrated on the two trap-isolated KAF steps, R(P_off) = s:
+  - nucleation, ln R ~ -C g^3 / (T dmu^2);
+  - Langmuir site blocking, R = (1+K P_on)/(1+K P), with K held constant;
+  - power law, R = (P/P_on)^-n.
+- Each law is applied at P_sat(T) step by step through the hydrothermal schedule:
+  alpha = 1 - exp(-sum k_vac R dt).
+- A rate law linear in dmu is checked too. It predicts s = 1.000, so it cannot reproduce the
+  calibration.
+- `rate_law_table`: the deterministic grid (both steps x 190/600 mL x end-of-step or half pressure).
+  Output: generated/hydrothermal_rate_law_sensitivity.csv.
+- `rate_law_monte_carlo` (4000 draws, fixed seed) samples:
+  - the step;
+  - s, log-uniform over F1/R3 step-rate reductions x neighbour choice (230 C: 0.30-0.37;
+    240 C: 0.22-0.23);
+  - V_app, log-uniform 190-600 mL;
+  - the pressure fraction, uniform 0.5-1;
+  - for nucleation only, a common Delta G_r offset, uniform +-2.8 kJ.
+- `empirical_bounds`: sum k_vac dt over the schedule is 60.
+  - All observed 3He from conversion would need R <= 10^-2.5.
+  - Less than 1% conversion needs R <= 10^-3.8.
+- `cnt_scales`: r* and the formula units in the critical nucleus.
+  - Vacuum: 0.08-0.11 nm, 0.04-0.11 f.u., barrier 0.5-1.3 kBT.
+  - Saturation: 0.8-1.1 nm, 42-105 f.u., barrier 51-129 kBT.
+- New SI figure: generated/hydrothermal_rate_law_sensitivity.pdf.
+- About 45 new \ChTwoKin* macros.
+- \ChTwoKinDetect is now computed from the actual schedule, ln(sum k_vac dt / 0.01), instead of
+  k(250 C) x total time. Its value is unchanged (9).
+- Results:
+
+  | Law | log10 R at 250 C | alpha, grid | alpha, MC 95% |
+  |---|---|---|---|
+  | nucleation | -53.5 to -21.1 | 10^-51.9 to 10^-19.4 | 10^-67.3 to 10^-15.7 |
+  | Langmuir | -6.9 to -5.6 | 10^-5.1 to 10^-3.8 | 10^-4.9 to 10^-3.9 |
+  | power | -1.9 to -1.1 | 0.52-0.99 | 0.59-1.00 |
+
+  The power law is excluded by the observed release.
+
+## chapter2_body.tex -- S gt_nucleation rewritten around the reviewer's points
+- It now opens with "What the data require": the empirical bounds (R <= 10^-2.5; R <= 10^-3.8 for
+  less than 1%).
+- "Candidate rate laws": the three laws plus the linear check. Cites topley1935, lvov2007 and
+  koga2019 (all new in references.bib). New Table tab:gt_ratelaws.
+- The discrimination paragraph says:
+  - the power law is falsified;
+  - site blocking and nucleation both predict negligible conversion;
+  - the magnitude of the suppression (10^-5.6 to 10^-53.5 at 250 C) is set by the law, not by
+    the data;
+  - the nucleation model is one explanation, not a measurement.
+- The CNT derivation, the TST ceiling and "nucleation must be internal" are kept. The topotactic
+  paragraph is condensed.
+- REMOVED the Porter coherent/semicoherent justification of gamma_eff, and "within the range
+  expected for coherent and semicoherent interfaces".
+- New paragraph "Where classical nucleation theory applies", with the r*, formula-unit and
+  barrier macros. gamma_eff is now described as a phenomenological parameter (B = C g^3). Saito's
+  0.24 J/m2 is kept as an order-of-magnitude comparison, with a caveat.
+- gamma_eff is now "0.16 J/m2, range 0.14-0.19" (macros), replacing "0.16 +- 0.03".
+- The barrier ranges now come from macros (51-129 kBT; the text had said 52-129).
+- New sentence: the vapor-pressure estimate is an upper bound, which is conservative.
+- The detectability equation now uses the schedule sum.
+- New Monte Carlo sentence: 10^-67 to 10^-16 (95%). The thermodynamic offset contributes most of
+  the spread.
+- Assumption (i) now points to the site-blocking result.
+- The item-1 driving-force reference now reads Eq. gt_dGr (S eqm-thermo). eq:gt_Gw now lives in
+  the SI.
+- Softened elsewhere:
+  - Hydrothermal section end: requires more than 10^2.5; every consistent law gives more.
+  - Dehydration section: "about five orders of magnitude or more".
+  - Conclusions: rewrote the thermodynamics paragraph (empirical bound; ~5 orders of magnitude if
+    site blocking, tens if nucleation; the size is not determined by the data).
+  - Abstract: "many orders of magnitude" became "at least five orders of magnitude".
+  - The "10^{2.5}" in the hydrothermal section and the Conclusions is typed, not a macro.
+
+## chapter2goethite_SI_body.tex
+- New section sec:gt_supp_ratelaws "Sensitivity to the water-inhibition rate law":
+  - the three laws' equations;
+  - the constant-K and P_on caveats;
+  - the linear-law check;
+  - the empirical-bound derivation;
+  - the Monte Carlo sampling;
+  - Figure fig:gt_ratelaws.
+- tab:gt_surf_sens: moved the long table footnote into the caption. It was 139 pt too wide.
+
+## Verification
+- Full dissertation: 0 errors, 251 pp.
+- The only undefined reference is app:bushveld.
+- No overfull boxes > 2 pt in Chapter 2 or its SI.
+- The script reproduces the same macros on the device.

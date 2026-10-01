@@ -21,7 +21,7 @@
 % =============================================================================
 \section{Permeation Lag Correction and Ampoule Permeability}\label{sec:ch2-si-permeation}
 
-\paragraph{Permeation Lag Correction}\label{permeation-lag-correction}
+\subsection{Permeation Lag Correction}\label{permeation-lag-correction}
 
 Because HT-Win-06-01b was encapsulated in an imperfectly
 helium-transmissive silica glass ampoule, permeation lag was an expected complication in these
@@ -97,7 +97,7 @@ from further analysis. Later experimental steps with values of $\lambda t$ lower
 using Eq.~\eqref{eq:s6-8} from the supplement to Chapter~\ref{ch:apparatus} because upper bounds on previous steps' residual helium
 content could be evaluated.
 
-\paragraph{Measurement and Numerical Simulation of Apparent Permeability of Experimental Ampoule}\label{internal-measurement-of-ampoule-apparent-permeability}
+\subsection{Measurement and Numerical Simulation of Apparent Permeability of Experimental Ampoule}\label{internal-measurement-of-ampoule-apparent-permeability}
 
 The apparent permeability values used in the numerical simulation (\S\ref{finite-difference-diffusion-model-of-cooling-tube}) are taken from the literature \citep{swets1961,jones1953} and explicitly apply to
 an ampoule without water. However, the purpose of these simulations was simply
@@ -152,7 +152,7 @@ $\lambda_{ampoule} = \lambda_{empty}\left(V_{condensed} + V_{gas}\right)/V_{gas}
 the need to measure the ampoule's rate constant in-experiment as described in Chapter~\ref{ch:apparatus}
 (\S\ref{in-situ-rate-constant}).
 
-\paragraph{Consistency of the Bounding Method with Direct Permeation-Step Quantification: The Complete Degas Test}\label{complete-degas-test}
+\subsection{Consistency of the Bounding Method with Direct Permeation-Step Quantification: The Complete Degas Test}\label{complete-degas-test}
 
 All Win-06-01b step heat data presented in this chapter are reduced using the bounding method (Eq.~\eqref{eq:steadystate}), because 4He permeation-step yields were near blank level and could not support the permeation step method directly. As an internal check on this choice, the ampoule's 3He inventory was also reconstructed directly from the permeation steps themselves, using the in-experiment rate constants of Fig.~\ref{fig:ch2-ampoule-permeability} (\S\ref{sec:ch2-si-detailed-methods}). Reducing 3He by the bounding method gives Stage 1 activation energies between 157.1 and 160.6\,kJ/mol and closure temperatures between 97.5 and 101.2\textdegree C across its lower-bound, central, and upper-bound reductions, a spread comparable to the regression uncertainty itself. Fig.~\ref{fig:ch2-nt-vs-ntss} compares the two: $n_t$, the ampoule's residual helium quantified directly from a permeation step, against $n_{t,SS}$ (equivalent to $n_{t,\mathrm{UB}}$ used elsewhere in this chapter), the upper bound on that same residual calculated independently from the preceding high-temperature step. For every ordinary permeation step in the experiment, $n_t \leq n_{t,SS}$, exactly as expected if the steady-state approximation genuinely bounds the ampoule's residual helium from above. This agreement is the justification for reducing the 4He dataset by the bounding method alone, since no analogous direct check of 4He is possible.
 
@@ -173,7 +173,7 @@ The size of the two excesses scale with duration of their respective permeation 
 
 \section{Analytical Methods}\label{ch2-analytical-methods}
 
-\paragraph{Finite Difference Diffusion Model of Cooling Tube}\label{finite-difference-diffusion-model-of-cooling-tube}
+\subsection{Finite Difference Diffusion Model of Cooling Tube}\label{finite-difference-diffusion-model-of-cooling-tube}
 
 One potential concern about the results of the internally measured permeabilities is that some additional helium was permeated 
 during the cooling period after each permeation step. In order to evaluate the significance of 
@@ -207,7 +207,7 @@ T = 24°C such that the temperature would stabilize at T = 24°C by design.
 \label{fig:ch2-goethite-cooling-rate}
 \end{figure}
 
-\paragraph{Helium-in-Goethite Diffusivity Inversions}\label{helium-in-goethite-diffusivity-inversions}
+\subsection{Helium-in-Goethite Diffusivity Inversions}\label{helium-in-goethite-diffusivity-inversions}
 
 
 Apparent values of D/a\textsuperscript{2} for 3He and 4He were
@@ -243,7 +243,7 @@ intercept and slope parameters of the linear regression is significantly
 larger than the uncertainty related to the total yield, so it is
 neglected.
 
-\paragraph{Helium Isotope Ratio Uncertainty for Step Heats}\label{helium-isotope-ratio-uncertainty}
+\subsection{Helium Isotope Ratio Uncertainty for Step Heats}\label{helium-isotope-ratio-uncertainty}
 
 The upper and lower bounds of the $\frac{^4He}{^3He}$ isotope ratios for each heating step are taken as the maximum and minimum  $\frac{^4He}{^3He}$ 
 isotope ratio calculated out of the 4 hypothetical end-member permeation scenarios, which would have been experienced by both helium isotope systems:
@@ -400,35 +400,14 @@ with no thermal expansion, gives
   \;+\; V_i\,(P-P_r),
   \label{eq:gt_Gsolid}
 \end{equation}
-where we have set $H(T_r) = \Delta_f H_i^{0}$, the enthalpy of formation from the elements, and
-$S(T_r) = S_i^{0}$, the third-law entropy. This is the ``apparent'' Gibbs energy of formation
-\citep{berman1988}; see also \citet{helgeson1978} and \citet{anderson2005}. It differs from
-the true Gibbs energy of formation,
-$\Delta_f G_i = \Delta_f H_i - T(S_i - \sum_e n_{e,i} S_e)$, by the term $T\sum_e n_{e,i}S_e$,
-where $n_{e,i}$ is the number of atoms of element $e$ in phase $i$ and $S_e$ the entropy of the
-element in its reference state. For any balanced reaction $\sum_i \nu_i n_{e,i} = 0$ for every element,
-so these terms cancel in $\Delta G_r$. The incompressible approximation affects $\Delta G_r$
-through $\Delta V_s (P-P_r)$ with $\Delta V_s = V_{\mathrm{hem}} - 2V_{\mathrm{goe}} = -11.5$~cm$^3$,
-i.e.\ at most a few kJ below 1~GPa; compressibility and thermal expansion change $V_i$ by
-$\lesssim1\%$ over the conditions considered and are neglected.
+where $H(T_r) = \Delta_f H_i^{0}$ and $S(T_r) = S_i^{0}$. This is the ``apparent'' Gibbs energy of
+formation \citep{berman1988}; the element-entropy terms that distinguish it from the true Gibbs
+energy of formation cancel in any balanced reaction. Compressibility and thermal expansion change
+$V_i$ by $\lesssim1\%$ over the conditions considered and are neglected.
 
 Goethite heat capacity uses the Berman--Brown form \citep{berman1985} refined by
-\citet{majzlan2003},
-\begin{equation}
-  C_p = k_0 + k_1 T^{-1/2} + k_2 T^{-2} + k_3 T^{-3},
-\end{equation}
-which integrates to
-\begin{align}
-  \int_{T_r}^{T} C_p\,dT &= k_0 (T-T_r) + 2k_1\left(T^{1/2}-T_r^{1/2}\right) \notag\\
-    &\quad - k_2\left(T^{-1}-T_r^{-1}\right) - \tfrac{1}{2}k_3\left(T^{-2}-T_r^{-2}\right), \\
-  \int_{T_r}^{T} \frac{C_p}{T}\,dT &= k_0 \ln\frac{T}{T_r} - 2k_1\left(T^{-1/2}-T_r^{-1/2}\right) \notag\\
-    &\quad - \tfrac{1}{2}k_2\left(T^{-2}-T_r^{-2}\right) - \tfrac{1}{3}k_3\left(T^{-3}-T_r^{-3}\right).
-\end{align}
-Hematite uses a Maier--Kelley form, $C_p = a + bT + cT^{-2}$, with
-\begin{align}
-  \int_{T_r}^{T} C_p\,dT &= a(T-T_r) + \tfrac{1}{2}b\left(T^2-T_r^2\right) - c\left(T^{-1}-T_r^{-1}\right), \\
-  \int_{T_r}^{T} \frac{C_p}{T}\,dT &= a\ln\frac{T}{T_r} + b(T-T_r) - \tfrac{1}{2}c\left(T^{-2}-T_r^{-2}\right).
-\end{align}
+\citet{majzlan2003}, $C_p = k_0 + k_1 T^{-1/2} + k_2 T^{-2} + k_3 T^{-3}$, and hematite a
+Maier--Kelley form, $C_p = a + bT + cT^{-2}$; both are integrated analytically.
 % TODO: cite the source of the hematite Maier-Kelley coefficients (Kelley-type fit,
 % cf. Robie & Hemingway 1995, USGS Bull. 2131); Majzlan et al. used Berman (1988). Differences are < 1 J/K/mol at 298 K.
 
@@ -517,9 +496,10 @@ $A_{\mathrm{Fe}} = 6\times20.881\times10^{-6}/10^{-8} = 1.253\times10^{4}$~m$^2$
 with hydrated surface energies
 $\Delta G_{\mathrm{surf}} = 2\times1.253\times10^{4}\times(0.75-0.60) = +3.76$~kJ.
 The corresponding values are $+0.38$~kJ at 100~nm and $+0.04$~kJ at 1~\textmu m. A positive
-$\Delta G_{\mathrm{surf}}$ stabilizes goethite. The result depends on the choice of basis: at
-equal diameter the same hydrated surface energies destabilize fine goethite
-(\S\ref{sec:gt_supp_basis}).
+$\Delta G_{\mathrm{surf}}$ stabilizes goethite. If the two phases are instead compared at equal
+particle diameter, the same hydrated surface energies slightly destabilize fine goethite
+($-1.41$~kJ at 10~nm). The choice affects only the stability discussion; the kinetic analysis uses
+bulk driving forces.
 
 We use hydrated surface energies. They are referenced to liquid water, so they apply wherever the
 surfaces are in equilibrium with water at or near saturation, which includes all of the
@@ -656,7 +636,7 @@ differ only in the shape $\alpha(x)$ and in the fitted $E_a$.
   \end{tabular}}
 \end{table}
 
-\paragraph{Synthetic test.} We generated noiseless release curves from the R3 model
+\subsubsection{Synthetic test} We generated noiseless release curves from the R3 model
 ($E_a = 150$~kJ\,mol$^{-1}$) on two schedules: a monotonic series of 1~h steps from 150 to
 390~$^\circ$C, and a cycled schedule with retrograde steps and long isothermal holds. We then
 fitted every model with $E_a$ and $A$ free. Table~\ref{tab:gt_synth} shows that every model
@@ -680,7 +660,7 @@ both (\S\ref{sec:gt_vacuum}).
   \end{tabular}
 \end{table}
 
-\paragraph{Fits to the vacuum data.} Table~\ref{tab:gt_mech_fits} gives the fit of each model to
+\subsubsection{Fits to the vacuum data} Table~\ref{tab:gt_mech_fits} gives the fit of each model to
 the cumulative KAF $^3$He release within the fitting window. It also gives the misfit of the
 resulting out-of-sample prediction of HDM, and the fit to the KAF water data. F1 gives the best
 fit and the best prediction. R3 and R2 are close behind, so we describe the mechanism as
@@ -720,88 +700,62 @@ for the HDM prediction), followed by R3 (\ChTwoKinAllRThreeEa~kJ\,mol$^{-1}$; \C
 
 
 % -----------------------------------------------------------------------------
-\section{Sensitivity of the size effect to the surface-area basis}
-\label{sec:gt_supp_basis}
-% -----------------------------------------------------------------------------
-
-The sign of the surface stabilization depends on how the surface areas of the two phases are
-related. At equal area per mole of Fe (Eq.~\eqref{eq:gt_equalarea}), goethite is stabilized
-whenever $\gamma_{\mathrm{hem}}>\gamma_{\mathrm{goe}}$. If both phases are instead spheres of the
-same diameter $d$, then $A_i = 6V_i/d$ and
-\begin{equation}
-  \Delta G_{\mathrm{surf}} = \frac{6}{d}\left(\gamma_{\mathrm{hem}}V_{\mathrm{hem}} - 2\gamma_{\mathrm{goe}}V_{\mathrm{goe}}\right),
-\end{equation}
-which stabilizes goethite only if
-\begin{equation}
-  \frac{\gamma_{\mathrm{hem}}}{\gamma_{\mathrm{goe}}} > \frac{2V_{\mathrm{goe}}}{V_{\mathrm{hem}}} = \frac{2\times20.881}{30.274} = 1.379 .
-\end{equation}
-Hematite is denser and carries less surface per Fe at equal size. For hydrated surfaces,
-$\gamma_{\mathrm{hem}}/\gamma_{\mathrm{goe}} = 0.75/0.60 = 1.25 < 1.379$, so fine goethite is
-destabilized: at 10~nm,
-$\Delta G_{\mathrm{surf}} = (6/10^{-8})(0.75\times30.274 - 2\times0.60\times20.881)\times10^{-6} = -1.41$~kJ.
-For anhydrous surfaces, $1.90/0.91 = 2.09 > 1.379$ and $\Delta G_{\mathrm{surf}} = +11.7$~kJ at
-10~nm. Table~\ref{tab:gt_basis} compares the two bases. The equal-area basis corresponds to
-pseudomorphic conversion and underlies the main-text calculations. The equal-diameter basis is
-more appropriate where hematite grows as separate crystals, as in fluid-mediated conversion
-(\S\ref{sec:gt_pigment}). There the surface term slightly favors hematite, but it is
-negligible at micrometer sizes.
-
-\begin{table}[htbp]
-  \centering
-  \caption{$\Delta G_{\mathrm{surf}}$ (kJ per reaction as written) for the two surface-area bases.}
-  \label{tab:gt_basis}
-  \begin{tabular}{lcccc}
-    \hline
-    & \multicolumn{2}{c}{Hydrated} & \multicolumn{2}{c}{Anhydrous} \\
-    $d$ & equal area & equal diameter & equal area & equal diameter \\
-    \hline
-    1~$\mu$m & $+0.04$ & $-0.01$ & $+0.25$ & $+0.12$ \\
-    100~nm & $+0.38$ & $-0.14$ & $+2.48$ & $+1.17$ \\
-    10~nm & $+3.76$ & $-1.41$ & $+24.8$ & $+11.7$ \\
-    \hline
-  \end{tabular}
-\end{table}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{size_basis_sensitivity}
-  \caption{Goethite--hematite--water boundaries for hydrated surfaces at (a) equal surface area
-  per mole of Fe and (b) equal particle diameter. The size effect changes sign between the two
-  bases.}
-  \label{fig:gt_basis}
-\end{figure}
-
-
-% -----------------------------------------------------------------------------
-\section{Nucleation barrier ratio and the calibration of $\gamma_{\mathrm{eff}}$}
+\section{Calibration of $\gamma_{\mathrm{eff}}$}
 \label{sec:gt_supp_barrier}
 % -----------------------------------------------------------------------------
 
-From Eq.~\eqref{eq:gt_barrier}, the ratio of barriers at water saturation and under vacuum at
-the same temperature is
+Equation~\eqref{eq:gt_gamma_cal} follows from Eq.~\eqref{eq:gt_knuc} applied to a trap-isolated step
+and its trapped neighbors,
+$\ln(1/s) = (C\gamma_{\mathrm{eff}}^{3}/T)(\Delta\mu_{\mathrm{off}}^{-2} - \Delta\mu_{\mathrm{on}}^{-2})$.
+The driving forces are evaluated as follows.
+\begin{enumerate}
+  \item $\Delta\mu_{\mathrm{on}}$ and $\Delta\mu_{\mathrm{off}}$ are bulk driving forces,
+  $-\Delta G_r$ from Eq.~\eqref{eq:gt_dGr} (\S\ref{sec:eqm-thermo}) with $\Delta G_{\mathrm{surf}} = 0$, at the
+  step temperature and with the solids at vacuum.
+  \item They differ only through the chemical potential of water: $\Delta\mu_{\mathrm{on}}$ is
+  evaluated at $P_{\mathrm{H_2O}} = 10^{-8}$~atm and $\Delta\mu_{\mathrm{off}}$ at the water pressure
+  reached with the trap isolated (below). At these pressures (at most 20~Pa), IAPWS-95 and the
+  ideal gas agree, and
+  $\Delta\mu_{\mathrm{on}} - \Delta\mu_{\mathrm{off}} = RT\ln(P_{\mathrm{off}}/P_{\mathrm{on}})$, which is
+  32--41~kJ for the pressures in Table~\ref{tab:gt_gamma}.
+  \item Surface terms are omitted in both. The barrier of an internal nucleus depends on the free
+  energy per volume of material transformed, not on the external surface of the host grain. The
+  grain or domain size of the natural sample is also not characterized. The external surface
+  energy of the grain enters the overall thermodynamic stability (\S\ref{sec:gt_thermo}),
+  but we do not include it in the barrier. The sensitivity to this choice is small
+  (Table~\ref{tab:gt_surf_sens}).
+\end{enumerate}
+We bound the water pressure with the trap isolated by assuming that all evolved water was in the
+vapor, distributed uniformly through an apparatus of volume $V_{\mathrm{app}}$ at 298~K:
 \begin{equation}
-  \frac{\Delta G^{*}_{\mathrm{sat}}}{\Delta G^{*}_{\mathrm{vac}}}
-  = \left(\frac{\Delta\mu_{\mathrm{vac}}}{\Delta\mu_{\mathrm{sat}}}\right)^{2}
-    \left(\frac{\gamma_{\mathrm{sat}}}{\gamma_{\mathrm{vac}}}\right)^{3}.
+  P_{\mathrm{H_2O}} = \frac{(m_{\mathrm{w}}/M_{\mathrm{w}})\,RT}{V_{\mathrm{app}}} .
 \end{equation}
-The prefactors, the temperature and the molar volume cancel. The first factor follows from the
-thermodynamic data alone (Table~\ref{tab:gt_dmu}; 99 at 250~$^\circ$C for bulk goethite). The
-second is 1 if nucleation occurs at the same internal interface in both settings. It is
-$(0.75/1.90)^3 = 1/16$ in the extreme case that the relevant interface is a free hematite
-surface, hydrated at saturation and anhydrous under vacuum. Figure~\ref{fig:gt_barrier_ratio}
-shows the ratio between these bounds for bulk and 10~nm goethite. Even at the lower bound, the
-saturated barrier is about six times the vacuum barrier at 250~$^\circ$C. Because the barrier
-appears in an exponent, that is still a difference of many orders of magnitude in rate.
+With $m_{\mathrm{w}} = 0.027$~mg at 230~$^\circ$C and 0.016~mg at 240~$^\circ$C ($1.50$ and
+$0.89~\mu$mol), and $190\le V_{\mathrm{app}}\le600$~mL, Table~\ref{tab:gt_gamma} gives the pressures
+and the resulting $\gamma_{\mathrm{eff}}$. The pressures are end-of-step values; we also evaluate half
+of each as a time average for steady accumulation. This is an upper bound on the pressure, because
+some water adsorbs on the walls of the line; a lower true pressure gives a larger
+$\gamma_{\mathrm{eff}}$ and more suppression at saturation, so the bound is conservative. Pressure
+enters only through $\ln P$ in $\Delta\mu$ and then through a cube root, so a threefold uncertainty
+in volume changes $\gamma_{\mathrm{eff}}$ by only about 10\%. The two steps agree within 15\%, and
+we adopt $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$, with a range of
+\ChTwoKinGammaLo--\ChTwoKinGammaHi~J\,m$^{-2}$.
 
-\begin{figure}[htbp]
+\begin{table}[htbp]
   \centering
-  \includegraphics[width=0.7\linewidth]{nucleation_barrier_ratio_vs_T}
-  \caption{Ratio of hematite nucleation barriers at water saturation and at
-  $P_{\mathrm{H_2O}}=10^{-8}$~atm for bulk and 10~nm goethite. Solid: same interface in both
-  settings; dashed: free hematite surfaces (hydrated vs anhydrous). Below the vertical dotted
-  lines, goethite is stable at saturation and there is no driving force.}
-  \label{fig:gt_barrier_ratio}
-\end{figure}
+  \caption{Water pressure with the trap isolated and the calibrated $\gamma_{\mathrm{eff}}$ (J\,m$^{-2}$; Eq.~\eqref{eq:gt_gamma_cal}).}
+  \label{tab:gt_gamma}
+  \begin{tabular}{cccccc}
+    \hline
+    $T$ ($^\circ$C) & $s$ & $V_{\mathrm{app}}$ (mL) & $P_{\mathrm{H_2O}}$ (Pa) & $\gamma_{\mathrm{eff}}$, end-of-step $P$ & $\gamma_{\mathrm{eff}}$, $P/2$ \\
+    \hline
+    230 & 0.333 & 190 & 19.6 & 0.138 & 0.145 \\
+    230 & 0.333 & 600 & 6.2  & 0.150 & 0.158 \\
+    240 & 0.224 & 190 & 11.6 & 0.164 & 0.172 \\
+    240 & 0.224 & 600 & 3.7  & 0.178 & 0.188 \\
+    \hline
+  \end{tabular}
+\end{table}
 
 Figure~\ref{fig:gt_translation}a shows $\gamma_{\mathrm{eff}}$ from Eq.~\eqref{eq:gt_gamma_cal} as
 a function of the assumed water pressure during the trap-isolated steps. It spans
@@ -821,7 +775,7 @@ the most permissive value.
   \label{fig:gt_translation}
 \end{figure}
 
-\paragraph{Sensitivity to surface terms.} The calibration and translation use bulk driving
+\subsection{Sensitivity to surface terms} The calibration and translation use bulk driving
 forces (\S\ref{sec:gt_nucleation}). To test this choice, we repeat both with the surface
 term of Eq.~\eqref{eq:gt_equalarea} included in $\Delta\mu$. We use anhydrous surfaces for the vacuum
 and trap-isolated steps and hydrated surfaces at saturation, the combination that most reduces the
@@ -843,64 +797,14 @@ conclusion is unchanged down to 10~nm grains.
   \end{tabular}
 \end{table}
 
-% --- Added 2026-09-30 (response to review: rate-law sensitivity and uncertainty propagation) ---
-\section{Sensitivity to the water-inhibition rate law}
-\label{sec:gt_supp_ratelaws}
-
-The prediction of \S\ref{sec:gt_nucleation} extrapolates from the trap-isolated KAF steps, at a few
-pascals of water, to water saturation, about six orders of magnitude higher in $P_{\mathrm{H_2O}}$. This
-section tests how much of the result is set by the assumed rate law and propagates the calibration
-uncertainties. 
-
-\paragraph{Rate laws.} Each law gives the ratio $R(P) = k(P)/k(P_{\mathrm{on}})$ of the conversion rate at
-water pressure $P$ to the rate in the trapped line, $P_{\mathrm{on}} = 10^{-8}$~atm, and has one free
-parameter, fixed by requiring $R(P_{\mathrm{off}}) = s$ at a trap-isolated step:
-\begin{align}
-  \text{nucleation:}\quad & \ln R = -\frac{C\gamma_{\mathrm{eff}}^{3}}{T}\left(\frac{1}{\Delta\mu(P)^{2}}-\frac{1}{\Delta\mu_{\mathrm{on}}^{2}}\right), \\
-  \text{site blocking:}\quad & R = \frac{1+KP_{\mathrm{on}}}{1+KP}, \qquad K = \frac{1/s-1}{P_{\mathrm{off}}-P_{\mathrm{on}}/s}, \\
-  \text{power law:}\quad & R = \left(\frac{P}{P_{\mathrm{on}}}\right)^{-n}, \qquad n = \frac{\ln(1/s)}{\ln(P_{\mathrm{off}}/P_{\mathrm{on}})} .
-\end{align}
-The Langmuir constant $K$ is held constant between the calibration temperatures (230 and
-240~$^\circ$C) and the hydrothermal steps (170--250~$^\circ$C), because the data give no temperature
-dependence; adsorption normally weakens with temperature, so this probably overstates site
-blocking below 230~$^\circ$C. The power-law exponent depends on the assumed $P_{\mathrm{on}}$; a higher
-background pressure in the trapped line gives a larger $n$ and more suppression. A rate linear in
-the driving force, $k\propto1-\exp(-\Delta\mu/RT)$, has no free parameter: because $\Delta\mu\gg RT$
-both with and without the trap, it predicts $s = \ChTwoKinLinearS$ and cannot reproduce the observed
-slowdown. Each calibrated law is applied at $P = P_{\mathrm{sat}}(T_i)$ to every step of the hydrothermal
-schedule, with $k_{\mathrm{vac}}(T_i)$ from Eq.~\eqref{eq:gt_line}, and the conversion is
-$\alpha = 1-\exp[-\sum_i k_{\mathrm{vac}}(T_i)R_i\,\Delta t_i]$.
-
-\paragraph{Empirical bounds.} Over the hydrothermal schedule,
-$\sum_i k_{\mathrm{vac}}(T_i)\Delta t_i = \ChTwoKinSumKdt$. For a suppression $R$ that is the same at every
-step, the conversion is $1-\exp(-R\sum_i k_{\mathrm{vac}}\Delta t_i)$. If all of the observed $^3$He
-release came from conversion, $\alpha = \ChTwoKinHTAlphaObs$ and $R = 10^{\ChTwoKinLogRObs}$; any
-larger $R$ would release more $^3$He than was observed. Keeping conversion below 1\% requires
-$R\le10^{\ChTwoKinLogRDetect}$. These bounds use only the vacuum kinetics and the hydrothermal
-release, not a rate law.
-
-\paragraph{Uncertainty propagation.} The Monte Carlo draws (\ChTwoKinNMC) sample: the trap-isolated
-step (230 or 240~$^\circ$C, equally likely); $s$, log-uniformly between the extremes of six
-reductions of that step (first-order and contracting-sphere step rate constants, each against the
-mean of its two trapped neighbors and against each neighbor alone), \ChTwoKinSLowRange{} at
-230~$^\circ$C and \ChTwoKinSHighRange{} at 240~$^\circ$C; the apparatus volume, log-uniformly between 190
-and 600~mL; the time-averaged pressure, uniformly between half and all of the end-of-step value;
-and, for the nucleation law only, a common offset of $\Delta G_r$, uniformly within
-$\pm2.8$~kJ per reaction (the $\pm1.4$~kJ per mole FeOOH of \citealt{majzlan2003}), which shifts
-every driving force together. The offset changes $\gamma_{\mathrm{eff}}$ by only a few percent
-(95\% range \ChTwoKinMCGammaLo--\ChTwoKinMCGammaHi~J\,m$^{-2}$) but enters $\Delta\mu_{\mathrm{sat}}$, which is
-only 6--11~kJ, squared, and so contributes most of the spread in the nucleation prediction.
-Figure~\ref{fig:gt_ratelaws} and Table~\ref{tab:gt_ratelaws} give the results.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{hydrothermal_rate_law_sensitivity}
-  \caption{Predicted conversion of Win-06-01b over the hydrothermal schedule for three
-  water-inhibition laws, each calibrated on the trap-isolated KAF steps. Thick bars: calibration grid
-  (both steps, both apparatus volumes, end-of-step and half pressure). Thin bars and circles: 95\%
-  range and median of \ChTwoKinNMC{} Monte Carlo draws. Red line: the conversion that would supply the
-  entire observed $^3$He release; larger conversion is excluded by the data. Green dashed line: 1\%
-  conversion. The power law is excluded; site blocking and nucleation control both predict
-  negligible conversion but differ by tens of orders of magnitude.}
-  \label{fig:gt_ratelaws}
-\end{figure}
+\subsection{Uncertainty propagation} The Monte Carlo range quoted in \S\ref{sec:gt_nucleation}
+(\ChTwoKinNMC{} draws) samples the trap-isolated step (230 or 240~$^\circ$C); $s$, log-uniformly
+between the extremes of six reductions of that step (first-order and contracting-sphere step rate
+constants, each against the mean of its two trapped neighbors and against each neighbor alone:
+\ChTwoKinSLowRange{} at 230~$^\circ$C and \ChTwoKinSHighRange{} at 240~$^\circ$C); the apparatus volume,
+log-uniformly between 190 and 600~mL; the time-averaged pressure, uniformly between half and all of
+the end-of-step value; and a common offset of $\Delta G_r$, uniformly within $\pm2.8$~kJ per reaction
+(the $\pm1.4$~kJ per mole FeOOH of \citealt{majzlan2003}), which shifts every driving force
+together. The offset barely changes $\gamma_{\mathrm{eff}}$ (95\% range
+\ChTwoKinMCGammaLo--\ChTwoKinMCGammaHi~J\,m$^{-2}$) but contributes most of the spread in the predicted
+conversion, because it enters the small $\Delta\mu_{\mathrm{sat}}$ (6--11~kJ) squared.

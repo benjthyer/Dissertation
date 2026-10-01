@@ -650,54 +650,76 @@ GAMMA_CAL = (0.14, 0.16, 0.19)   # J/m2: low, central, high (trap-off steps,
                                  # 190-600 mL volume, end/half-step P_H2O)
 
 
-def make_delta_plot(fname="first_order_delta_lnk", gammas=GAMMA_CAL):
-    """log10 k_obs - log10 k_pred.  Vacuum steps: k_pred from the vacuum
-    line.  Hydrothermal steps: k_pred = vacuum line x saturated nucleation
-    factor (gamma_eff central, bars = calibrated range).  Grey: hydrothermal
-    against the dry line (no water correction), for reference."""
+def make_delta_plot(fname="first_order_delta_lnk"):
+    """Delta plot: ln k_i - ln k_r(T_i) vs cumulative fractional 3He yield,
+    for the vacuum schedules (KAF, HDM) and the hydrothermal run.
+    ln k_r(T) = lnA - Ea/RT is the joint vacuum Arrhenius line.
+    Drawn in the style of fig_delta_plot.py: each step spans in x from the
+    cumulative 3He yield at its start to that at its end; vacuum steps are
+    flat segments, hydrothermal steps are boxes spanning the bounding-method
+    lower/upper bounds with a line at the central value (steps with measured
+    3He < LOW_SIGNAL_PCC dropped, as in fig_delta_plot.py; interior gaps
+    bridged for display)."""
+    import sys
+    import matplotlib as mpl
+    from matplotlib.lines import Line2D
+    from matplotlib.patches import Patch
+    sys.path.insert(0, str(HERE))
+    from plot_style import apply_style
+    from thermochr_utils import (make_grid, step_yield_edges,
+                                 draw_step_connectors, bridge_interior_gaps)
+
+    VAC = [(load_kaf(), "red", "Farley et al., 2024"),
+           (load_hm(), "orange", "Monteiro, 2017")]
+    HT_COLOR = "blue"
+
     line = vacuum_line()
     phi = line["phi"]
-    L10 = np.log(10)
-    fig, ax = plt.subplots(figsize=(12, 5.4), constrained_layout=True)
-    for df, mk, col, lab in [(load_kaf(), "o", "k", "KAF vacuum"),
-                             (load_hm(), "s", "0.35", "HDM vacuum")]:
-        T = df["Temp (C)"].values
-        d = (step_lnk(df, phi) - lnk_vac(T, line)) / L10
-        w = fit_window(df)
-        nl = df["noLN2"].values if "noLN2" in df else np.zeros(len(df), bool)
-        ax.plot(T[w & ~nl], d[w & ~nl], mk, color=col, ms=5,
-                label=f"{lab} (fitted)")
-        ax.plot(T[~w & ~nl], d[~w & ~nl], mk, mfc="none", mec=col, ms=5,
-                label=f"{lab} (not fitted)")
-        if nl.any():
-            ax.plot(T[nl], d[nl], "o", ms=10, mfc="none", mec="tab:purple",
-                    label="KAF, LN$_2$ off")
-    ht = load_ht()
-    lk = step_lnk(ht, phi)[ht["use"].values]
-    ht = ht[ht["use"].values].reset_index(drop=True)
-    T = ht["Temp (C)"].values
-    dry = (lk - lnk_vac(T, line)) / L10
-    lo, mid, hi = [(lk - lnk_vac(T, line) - np.log(np.clip(
-        saturated_rate_factor(T, g), 1e-300, None))) / L10 for g in gammas]
-    up = _prograde(ht)
-    ax.errorbar(T, mid, yerr=[mid - lo, hi - mid], fmt="none",
-                ecolor="tab:blue", elinewidth=0.8, alpha=0.6)
-    ax.plot(T[up], mid[up], "^", color="tab:blue", ms=6,
-            label=rf"hydrothermal vs wet prediction ($\gamma_{{eff}}$ = "
-                  rf"{gammas[1]}; bars {gammas[0]}-{gammas[2]} J/m$^2$)")
-    ax.plot(T[~up], mid[~up], "v", color="tab:blue", mfc="white", ms=6)
-    ax.plot(T, dry, "^", color="0.7", ms=4,
-            label="hydrothermal vs dry line (no water correction)")
-    ax.axhline(0, color="r", lw=1)
-    ax.set_yscale("symlog", linthresh=2)
-    ax.set_xlabel("Temperature (°C)")
-    ax.set_ylabel(r"$\Delta\log_{10} k$ = log$_{10}k_{obs}$ - "
-                  r"log$_{10}k_{pred}$ (orders of magnitude)")
-    ax.set_title(f"First-order residuals; vacuum line Ea = "
-                 f"{line['Ea']:.0f} ± {line['sEa']:.0f} kJ/mol")
-    ax.legend(fontsize=7.5, loc="upper left", bbox_to_anchor=(1.01, 1))
-    for ext in ("png", "pdf"):
-        fig.savefig(OUTDIR / f"{fname}.{ext}", dpi=200)
+    with mpl.rc_context():
+        apply_style()
+        fig, ax = plt.subplots()
+        ax.hlines(0, 0, 1, color="black", alpha=0.5)
+        handles = []
+        for df, col, lab in VAC:
+            f_start, f_end = step_yield_edges(df["F"])
+            d = step_lnk(df, phi) - lnk_vac(df["Temp (C)"].values, line)
+            ax.hlines(d, f_start, f_end, color=col, linewidth=2.2, alpha=0.8,
+                      zorder=2)
+            draw_step_connectors(ax, f_start, f_end, d, color=col, alpha=0.8,
+                                 zorder=2)
+            handles.append(Line2D([], [], color=col, linewidth=2.2, alpha=0.8,
+                                  label=f"Vacuum He3: {lab}"))
+
+        ht = load_ht()
+        f_start, f_end = step_yield_edges(ht["F_LB"])
+        ref = lnk_vac(ht["Temp (C)"].values, line)
+        d = step_lnk(ht, phi) - ref
+        lo, hi = (b - ref for b in ht_lnk_bounds(ht, phi))
+        ok = (ht["meas3"].values >= LOW_SIGNAL_PCC) & np.isfinite(d)
+        fs, fe, d, lo, hi = f_start[ok], f_end[ok], d[ok], lo[ok], hi[ok]
+        ax.bar(fs, hi - lo, width=fe - fs, bottom=lo, align="edge",
+               color=HT_COLOR, alpha=0.3, edgecolor=HT_COLOR, linewidth=0.6,
+               zorder=3)
+        hs, he, hd = bridge_interior_gaps(fs, fe, d)
+        ax.hlines(hd, hs, he, color=HT_COLOR, linewidth=1.5, zorder=4)
+        draw_step_connectors(ax, hs, he, hd, color=HT_COLOR, zorder=4)
+        handles.append(Patch(facecolor=HT_COLOR, edgecolor=HT_COLOR, alpha=0.45,
+                             label="Hydrothermal He3: This Study"))
+
+        ax.set_title("Delta Plot Winsor Goethite, First-Order Reference")
+        ax.set_ylabel(r"$\Delta$ $\left(ln\left(k\right)_{measured} - "
+                      r"ln\left(k\right)_{reference}\right)$")
+        ax.set_xlabel(r"$\Sigma F^3He$ Cumulative Helium Fractional Yield")
+        ax.set_xlim((0, 1))
+        fig.canvas.draw()   # make_grid reads tick-label positions
+        plt.sca(ax)
+        make_grid()
+        ax.legend(handles=handles, loc="upper right", fontsize=8.5,
+                  handlelength=1.8, labelspacing=0.3, borderpad=0.4)
+        fig.tight_layout()
+        for ext in ("png", "pdf"):
+            fig.savefig(OUTDIR / f"{fname}.{ext}", dpi=300)
+        plt.close(fig)
     return fig
 
 
@@ -752,25 +774,18 @@ def make_hydrothermal_translation(fname="hydrothermal_translation"):
 
 
 # ----------------------------------------------------------------------------
-# Water-inhibition rate laws: sensitivity of the hydrothermal prediction to the
-# assumed functional form, an empirical bound from the hydrothermal data, and
-# Monte Carlo propagation of the calibration uncertainties (added 2026-09-30,
-# in response to review).
+# Nucleation-controlled translation to water saturation: an empirical bound
+# from the hydrothermal data, the calibration grid, and Monte Carlo propagation
+# of the calibration uncertainties (added 2026-09-30; the Langmuir/power-law
+# comparison was removed on 2026-10-01 -- see git history, commit 94aab4c).
 # ----------------------------------------------------------------------------
-# Each law gives the ratio R = k(P_H2O) / k(P_on) of the conversion rate at a
-# water pressure P to its rate in the trapped vacuum line (P_on = 1e-8 atm).
-# Each is calibrated on the same trap-isolated steps, R(P_off) = s, and then
-# applied at water saturation, P = P_sat(T), step by step through the
-# hydrothermal schedule:  alpha = 1 - exp(-sum_i k_vac(T_i) R_i dt_i).
-#   CNT        ln R = -(C g^3/T)(1/dmu(P)^2 - 1/dmu_on^2)  (g calibrated)
-#   Langmuir   R = (1 + K P_on)/(1 + K P)   (site blocking; K calibrated and,
-#              for lack of a temperature dependence, held constant)
-#   power law  R = (P/P_on)^-n              (n calibrated)
-#   linear     R = (1 - exp(-dmu(P)/RT)) / (1 - exp(-dmu_on/RT))  (TST, linear
-#              in dmu near equilibrium; no free parameter -- it predicts s ~ 1
-#              and cannot reproduce the trap-isolated slowdown)
+# R = k(P_H2O) / k(P_on) at water pressure P relative to the trapped vacuum
+# line (P_on = 1e-8 atm), calibrated on the trap-isolated steps, R(P_off) = s,
+# and applied at P_sat(T) step by step through the hydrothermal schedule:
+#   ln R = -(C g^3/T)(1/dmu(P)^2 - 1/dmu_on^2)       (g = gamma_eff calibrated)
+#   alpha = 1 - exp(-sum_i k_vac(T_i) R_i dt_i)
 P_ON_PA = gh.P_VAC / 1.0          # gh.P_VAC is in Pa
-RATE_LAWS = ("CNT", "Langmuir", "power")
+RATE_LAWS = ("CNT",)
 THERMO_UNC_J = 2.8e3              # +-1.4 kJ per FeOOH (Majzlan 2003) per reaction
 N_MC = 4000
 
@@ -791,10 +806,6 @@ def calibrate_law(law, T_C, s, P_off_pa, delta=0.0):
     if law == "CNT":
         m_on, m_off = _dmu(T, P_ON_PA, delta), _dmu(T, P_off_pa, delta)
         return (np.log(1 / s) * T / (C_NUC * (1 / m_off**2 - 1 / m_on**2)))**(1 / 3)
-    if law == "Langmuir":
-        return (1 / s - 1) / (P_off_pa - P_ON_PA / s)
-    if law == "power":
-        return np.log(1 / s) / np.log(P_off_pa / P_ON_PA)
     raise ValueError(law)
 
 
@@ -822,10 +833,6 @@ def ln_ratio_sat(law, par, T_C, delta=0.0):
         with np.errstate(divide="ignore"):
             return np.where(ms > 0, -(C_NUC * par**3 / T) * (1 / ms**2 - 1 / mv**2),
                             -np.inf)
-    if law == "Langmuir":
-        return np.log((1 + par * P_ON_PA) / (1 + par * ps))
-    if law == "power":
-        return -par * np.log(ps / P_ON_PA)
     raise ValueError(law)
 
 
@@ -838,13 +845,6 @@ def log10_alpha_law(law, par, T_C, t_h, line, delta=0.0):
     lnx = m + np.log(np.exp(terms - m).sum())          # ln(sum k dt)
     x = np.exp(lnx)
     return float(np.log10(-np.expm1(-x)) if x > 1e-12 else lnx / np.log(10))
-
-
-def linear_law_s(T_C, P_off_pa):
-    """Trap-off slowdown predicted by a law linear in dmu (no free parameter)."""
-    T = T_C + 273.15
-    f = lambda P: -np.expm1(-_dmu(T, P) / (R * T))
-    return f(P_off_pa) / f(P_ON_PA)
 
 
 def empirical_bounds(line, phi, detect_alpha=0.01):
@@ -909,9 +909,6 @@ def rate_law_table(line, sup=None):
                         log10_R250=float(ln_ratio_sat(law, par, 250.0)[0] / np.log(10)),
                         log10_alpha=float(log10_alpha_law(
                             law, par, ht["Temp (C)"], ht["Time (h)"], line))))
-                rows.append(dict(law="linear", T_C=T_C, s=s_, V_mL=V, P_frac=pf,
-                                 P_off_Pa=P, par=np.nan,
-                                 s_pred=float(linear_law_s(T_C, P))))
     tab = pd.DataFrame(rows)
     tab.to_csv(OUTDIR / "hydrothermal_rate_law_sensitivity.csv", index=False)
     return tab
@@ -1023,66 +1020,19 @@ def _win_temps(df):
     return f"{T.min():.0f}--{T.max():.0f}"
 
 
-def make_rate_law_figure(tab, mc, bounds, fname="hydrothermal_rate_law_sensitivity"):
-    """Predicted hydrothermal conversion for each water-inhibition law:
-    deterministic calibration grid (thick bars) and Monte Carlo 95% range
-    (thin bars), against the empirical bounds from the hydrothermal data."""
-    from plot_style import apply_style
-    with plt.rc_context():
-        apply_style(scale=0.125 * 9.0 / 1.0)
-        fig, ax = plt.subplots(figsize=(9.0, 4.2), constrained_layout=True)
-        labels = {"CNT": "nucleation\n(CNT, $\\gamma^3/\\Delta\\mu^2$)",
-                  "Langmuir": "site blocking\n(Langmuir)",
-                  "power": "power law\n($P^{-n}$)"}
-        for y, law in enumerate(RATE_LAWS[::-1]):
-            d = tab[tab.law == law]["log10_alpha"]
-            ax.plot([mc[law]["p2_5"], mc[law]["p97_5"]], [y, y], color="0.3",
-                    lw=1.5, solid_capstyle="butt")
-            ax.plot([d.min(), d.max()], [y, y], color="tab:blue", lw=9,
-                    solid_capstyle="butt")
-            ax.plot(mc[law]["p50"], y, "o", color="white", mec="k", ms=7, zorder=3)
-        a_det = np.log10(0.01)
-        a_obs = np.log10(bounds["alpha_obs"])
-        ax.axvline(a_det, color="tab:green", ls="--", lw=1.5)
-        ax.axvline(a_obs, color="tab:red", ls="-", lw=1.5)
-        ax.text(a_det - 0.8, 2.45, "1% conversion", color="tab:green",
-                ha="right", va="center", fontsize="small")
-        ax.annotate("all observed $^3$He\nfrom conversion", xy=(a_obs, 0.45),
-                    xytext=(a_det - 3.0, 0.45), color="tab:red", ha="right",
-                    va="center", fontsize="small",
-                    arrowprops=dict(arrowstyle="->", color="tab:red", lw=1.2))
-        ax.axvspan(a_obs, 0.5, color="tab:red", alpha=0.08)
-        from matplotlib.lines import Line2D
-        ax.legend(handles=[
-            Line2D([], [], color="tab:blue", lw=9, label="calibration grid"),
-            Line2D([], [], color="0.3", lw=1.5, marker="o", mfc="white", mec="k",
-                   label="Monte Carlo median, 95%")],
-            loc="lower left", fontsize="small", handlelength=1.6)
-        ax.set_yticks(range(len(RATE_LAWS)))
-        ax.set_yticklabels([labels[l] for l in RATE_LAWS[::-1]])
-        ax.set_ylim(-0.8, 2.8)
-        ax.set_xlim(-72, 2)
-        ax.set_xlabel(r"predicted hydrothermal conversion, $\log_{10}\alpha$")
-        for ext in ("png", "pdf"):
-            fig.savefig(OUTDIR / f"{fname}.{ext}", dpi=300)
-    return fig
-
-
 def rate_law_macros(line, sup):
-    """Macros for the rate-law sensitivity, the empirical bounds, the Monte
-    Carlo propagation and the CNT length scales (Chapter 2 nucleation section
-    and SI)."""
+    """Macros for the empirical bounds, the nucleation calibration grid, the
+    Monte Carlo propagation and the CNT length scales (Chapter 2 nucleation
+    section and SI)."""
     tab = rate_law_table(line, sup)
     mc = rate_law_monte_carlo(line)
     bd = empirical_bounds(line, line["phi"])
-    make_rate_law_figure(tab, mc, bd)
     g = lambda law, c: tab[tab.law == law][c]
     M = {"ChTwoKinSumKdt": _f(bd["sum_kdt"], 0),
          "ChTwoKinLogRDetect": _f(bd["log10R_detect"], 1),
          "ChTwoKinLogRObs": _f(bd["log10R_obs"], 1),
-         "ChTwoKinLinearS": _f(g("linear", "s_pred").min(), 3),
          "ChTwoKinNMC": str(N_MC)}
-    for law, tag in (("CNT", "CNT"), ("Langmuir", "Lang"), ("power", "Pow")):
+    for law, tag in (("CNT", "CNT"),):
         r, a = g(law, "log10_R250"), g(law, "log10_alpha")
         M[f"ChTwoKin{tag}LogRLo"] = _f(r.min(), 1)
         M[f"ChTwoKin{tag}LogRHi"] = _f(r.max(), 1)
@@ -1091,14 +1041,6 @@ def rate_law_macros(line, sup):
         M[f"ChTwoKinMC{tag}Lo"] = _f(mc[law]["p2_5"], 1)
         M[f"ChTwoKinMC{tag}Mid"] = _f(mc[law]["p50"], 1)
         M[f"ChTwoKinMC{tag}Hi"] = _f(mc[law]["p97_5"], 1)
-    pw = g("power", "log10_alpha")
-    M["ChTwoKinPowAlphaLo"] = _f(10**pw.min(), 2)
-    M["ChTwoKinPowAlphaHi"] = _f(10**pw.max(), 2)
-    M["ChTwoKinMCPowAlphaLo"] = _f(10**mc["power"]["p2_5"], 2)
-    M["ChTwoKinLangKLo"] = _sig(g("Langmuir", "par").min())
-    M["ChTwoKinLangKHi"] = _sig(g("Langmuir", "par").max())
-    M["ChTwoKinPowNLo"] = _f(g("power", "par").min(), 2)
-    M["ChTwoKinPowNHi"] = _f(g("power", "par").max(), 2)
     M["ChTwoKinGammaLo"] = _f(g("CNT", "par").min(), 2)
     M["ChTwoKinGammaHi"] = _f(g("CNT", "par").max(), 2)
     M["ChTwoKinMCGammaLo"] = _f(mc["gamma"]["p2_5"], 2)

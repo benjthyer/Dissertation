@@ -649,8 +649,8 @@ def make_pt_hydrated(sizes=(None, 100, 10), basis="equal_area",
                 arrowprops=dict(arrowstyle="->", color="0.2", lw=1.2))
     ax.text(0.96, 0.80, r"$\alpha$-Fe$_2$O$_3$ + H$_2$O",
             transform=ax.transAxes, ha="right")
-    ax.legend(loc="lower right", title=r"size ($\Delta G_{\mathrm{surf}}$)",
-                  title_fontsize=plt.rcParams["legend.fontsize"],
+    ax.legend(loc="lower right",# title=r"size ($\Delta G_{\mathrm{surf}}$)",
+                  #title_fontsize=plt.rcParams["legend.fontsize"],
                   handlelength=1.4)
     sec = ax.secondary_xaxis("top", functions=(lambda c: c + 273.15,
                                                lambda k: k - 273.15))

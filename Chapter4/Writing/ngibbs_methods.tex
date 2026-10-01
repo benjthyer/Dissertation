@@ -122,7 +122,7 @@ Entropy is offered as a useful alternative to temperature because isentropic pat
 natural coordinate for the convecting mantle \citep{Davies1977,Brown1981,Asimow1997,Asimow2001,Ganguly2005,Tirone2016}. Supplying $S$ directly removes an inner iteration for $T$ at every pressure step, which is the dominant cost of constructing
 an adiabat by conventional means.
 
-\paragraph{Redox state.} \emph{nGibbs} models closed systems that conserve oxygen content, as well as open systems where oxygen fugacity is imposed. Iron is the major redox-active element in \emph{nGibbs}. Every element besides iron is tracked at a single, fixed oxidation state and therefore the oxygen content of the system is fully specified by the ferric-to-total iron ratio. The only other redox-active element is carbon in \textsc{MELTS} 1.2 emulators, wherein carbon exists as an oxide in melt, fluid, and calcite, and as reduced carbon in graphite. Carbon is only represented as an oxide (CO\textsubscript{2}) in nGibbs, so graphite is represented as C(FeO)\textsubscript{4}(Fe\textsubscript{2}O\textsubscript{3})\textsubscript{-2} in oxide space in order to conserve oxygen. Similarly, native iron phases are represented as (FeO)\textsubscript{3}(Fe\textsubscript{2}O\textsubscript{3})\textsubscript{-1} in oxide space in \emph{nGibbs}.
+\subsubsection{Redox state} \emph{nGibbs} models closed systems that conserve oxygen content, as well as open systems where oxygen fugacity is imposed. Iron is the major redox-active element in \emph{nGibbs}. Every element besides iron is tracked at a single, fixed oxidation state and therefore the oxygen content of the system is fully specified by the ferric-to-total iron ratio. The only other redox-active element is carbon in \textsc{MELTS} 1.2 emulators, wherein carbon exists as an oxide in melt, fluid, and calcite, and as reduced carbon in graphite. Carbon is only represented as an oxide (CO\textsubscript{2}) in nGibbs, so graphite is represented as C(FeO)\textsubscript{4}(Fe\textsubscript{2}O\textsubscript{3})\textsubscript{-2} in oxide space in order to conserve oxygen. Similarly, native iron phases are represented as (FeO)\textsubscript{3}(Fe\textsubscript{2}O\textsubscript{3})\textsubscript{-1} in oxide space in \emph{nGibbs}.
 
 One of two things must be supplied at inference: an explicit Fe$^{2+}$/Fe$^{3+}$
 partitioning (equivalently, both FeO and Fe$_2$O$_3$), which the closed-system models
@@ -194,7 +194,7 @@ numerically. All other \textsc{MELTS} solutions, and all \textsc{HeFESTo}
 solutions, are already non-negative in their native component bases, for which the
 transform below reduces to the identity.
 
-\paragraph{Pyroxene.} We write the mole fractions of the seven \textsc{MELTS} pyroxene
+\subsubsection{Pyroxene} We write the mole fractions of the seven \textsc{MELTS} pyroxene
 components (diopside, clinoenstatite, hedenbergite, alumino-buffonite, buffonite,
 essenite, jadeite) as $x_0,\dots,x_6$. Pyroxene has the general formula
 M2\,M1\,T$_2$O$_6$, with one large octahedral site (M2), one small octahedral site
@@ -311,7 +311,7 @@ compositions in the training data yields vectors that are non-negative and sum t
 unity, and $\mathsf{T}_{\mathrm{px}}^{-1}$ recovers the original mole fractions 
 within numeric precision.
 
-\paragraph{Spinel.} The spinel solution (chromite, hercynite, magnetite, spinel
+\subsubsection{Spinel} The spinel solution (chromite, hercynite, magnetite, spinel
 \emph{sensu stricto}, ulv\"ospinel) does not reduce to a comparably clean set of
 site-occupancy inequalities: the binding constraints couple several components
 together, so that, for example, the combined abundance of chromite, magnetite and
@@ -465,17 +465,17 @@ in Section~\ref{sec:results}.
 
 Three operations are applied to prepare \textsc{MELTS} and \textsc{HeFESTo} outputs for training.
 
-\paragraph{Consistency filtering.} Rows are removed where the reference code's output
+\subsubsection{Consistency filtering} Rows are removed where the reference code's output
 is internally inconsistent, e.g. where the composition reconstructed from the
 reported assemblage disagrees with the stated bulk composition beyond tolerance. The fractions
 actually removed are reported in Table~\ref{tab:filters}.
 
-\paragraph{Rare-phase removal.} Phases occurring too infrequently in the training set
+\subsubsection{Rare-phase removal} Phases occurring too infrequently in the training set
 to be effectively learned are removed from the component basis entirely to simplify the model.
 This operates on entire rows; assemblages with rare phases are discarded
 for containing a rare phase at any low modal proportion. It is presumed that this operation is minimally damaging, because very few assemblages are affected by design. 
 
-\paragraph{Rare-phase augmentation} The \textsc{MELTS} 1.2.0 emulator's training dataset upsampled phases containing rare phases like calcite that were especially desired so that they would surpass the removal threshold and be tracked by the emulator. To upsample, rows containing the rare phase would be duplicated, but with perturbed abundances of its phases, which shift the bulk composition for the same assemblage. This operation was only applied to the isothermal models to avoid invalidating the extensive entropy value natively reported by \textsc{MELTS}. For all models, modal imbalance is addressed through per-phase loss weighting (Section~\ref{sec:phaseweights}) during training, which incentivizes the emulator to learn rare phases that otherwise would have little affect on the loss function.
+\subsubsection{Rare-phase augmentation} The \textsc{MELTS} 1.2.0 emulator's training dataset upsampled phases containing rare phases like calcite that were especially desired so that they would surpass the removal threshold and be tracked by the emulator. To upsample, rows containing the rare phase would be duplicated, but with perturbed abundances of its phases, which shift the bulk composition for the same assemblage. This operation was only applied to the isothermal models to avoid invalidating the extensive entropy value natively reported by \textsc{MELTS}. For all models, modal imbalance is addressed through per-phase loss weighting (Section~\ref{sec:phaseweights}) during training, which incentivizes the emulator to learn rare phases that otherwise would have little affect on the loss function.
 
 % -- TABLE PLACEHOLDER ------------------------------------------------------- .... Maybe.... uhh maybe not.
 % \begin{table}[t] Rows entering and surviving each filter, per released model. 
@@ -737,7 +737,7 @@ The objective comprises four terms. Let $\mathbf{y},\hat{\mathbf{y}}$ denote tru
 predicted endmember fractions, $m,\hat m$ the true and predicted signed saturations,
 and $\hat{\mathbf{b}}$ the pre-projection bulk direction.
 
-\paragraph{Chemistry.} A symmetric relative $L_2$ discrepancy on the endmember
+\subsubsection{Chemistry} A symmetric relative $L_2$ discrepancy on the endmember
 fractions, masked to admissible components,
 \begin{equation}
   \mathcal{L}_{\mathrm{chem}} =
@@ -748,19 +748,19 @@ magnitude; an absolute error would be dominated by the major endmember and would
 leave minor endmembers---which frequently carry the petrologically interesting
 signal---effectively unsupervised.
 
-\paragraph{Abundance.} A Huber loss on the signed saturation $m$ of
+\subsubsection{Abundance} A Huber loss on the signed saturation $m$ of
 Eq.~\eqref{eq:m}. Crucially, and in contrast to the gated architecture, absent phases
 are supervised \emph{toward zero} rather than excluded from the loss. The behaviour
 at and below zero is the entire content of Section~\ref{sec:saturation}, and cannot
 be learned from present phases alone.
 
-\paragraph{Presence.} A binary cross-entropy on $g_\phi$ treated as a logit. This term
+\subsubsection{Presence} A binary cross-entropy on $g_\phi$ treated as a logit. This term
 is retained despite abundance being supervised directly, because the Huber loss is
 minimized \emph{at} zero and therefore provides almost no gradient distinguishing a
 confidently absent phase from a marginally absent one. Without it the decision
 boundary is soft and easily flipped by noise.
 
-\paragraph{Bulk residual.} A symmetric relative $L_2$ discrepancy between
+\subsubsection{Bulk residual} A symmetric relative $L_2$ discrepancy between
 $\hat{\mathbf{b}}$ and the input bulk direction, as motivated in
 Section~\ref{sec:massbalance}. This term is numerically delicate and is enabled only
 in the final training stage, once the abundance branches are trained; before that it

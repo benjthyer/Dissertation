@@ -1443,3 +1443,174 @@ possibilities, and separating the effects of crystallite size, chemical
 composition, and radiation damage, will require further hydrothermal
 experiments on irradiated single-crystal goethite of controlled size. The
 method described here makes such experiments straightforward.
+
+
+
+\paragraph{Helium Release under Hydrothermal Conditions Is Diffusive}\label{sec:gt_hydro}
+
+The hydrothermal experiment heated an aliquot of the same goethite in distilled water, with
+much of the sample submerged in the liquid. The schedule rose from 170 to 230~$^\circ$C, cycled
+down to 175~$^\circ$C, rose to 250~$^\circ$C, cycled down to 225~$^\circ$C and back to 250~$^\circ$C,
+where three 5~h steps preceded a 170.8~h step, and ended with a step at 240~$^\circ$C (442.8~h in
+total). Only 14.7\% of the $^3$He was released. Under the vacuum kinetics of
+Eq.~\eqref{eq:gt_line}, the same schedule would have converted the sample completely. Two tests,
+both applied to the bounding-method reduction (Table~\ref{tab:ch2-distilled-3he}), show that the
+release follows diffusion rather than conversion.
+
+\textit{Test 1: history dependence through temperature cycles.} A line through the first
+prograde sweep (200--230~$^\circ$C) serves as the reference. The two retrograde steps of the
+first cycle with adequate signal, at 225 and 215~$^\circ$C, fall 0.45 and 0.86 natural-log units
+below it in $\ln(D/a^2)$. The upper bound of each step
+still falls 0.18 and 0.47 log units below a line fitted to the lower bounds of the first sweep.
+On the next prograde sweep, the 220~$^\circ$C step sits 0.58 log units (at least 0.32) below its
+first-sweep value (Fig.~\ref{fig:gt_arrhenius}b). The low-signal steps of the first
+retrograde sweep (205--175~$^\circ$C, and 200--210~$^\circ$C on the following prograde sweep;
+excluded from all plots) sit lower still, by 1.3--2.1 log units. In the last cycle, retrograde and
+prograde values at 230--245~$^\circ$C agree within 0.07--0.45 log units, and their bounds
+overlap at every temperature. The Stage 1 regression over this interval (cumulative yield
+$\geq$7\%) gives $E_a = \ChTwoEa\pm\ChTwoEaErr$~kJ\,mol$^{-1}$
+(\S\ref{helium-in-goethite-diffusivity-inversions}). This is the signature of depleting fast,
+low-retentivity domains in the first cycle, with diffusion dominated by more retentive domains
+thereafter. A first-order conversion rate depends only on temperature and on the fraction
+converted, which is almost unchanged at $F\approx0.04$. It would return retrograde steps to the
+prograde line, as the vacuum HDM experiment does in the reaction representation
+(Fig.~\ref{fig:gt_arrhenius}a).
+
+\textit{Test 2: the 250~$^\circ$C holds.} The two processes project differently through a long
+isothermal step. Diffusion slows as the diffusion front moves inward, whereas first-order
+conversion proceeds at a nearly constant rate while $\alpha\ll1$. We calibrate both on the three
+5~h steps at 250~$^\circ$C and project through the 170.8~h step. For first-order conversion,
+$-\ln(1-\alpha)$ grows linearly in time at fixed $T$ (Eq.~\eqref{eq:gt_F1}), so
+\begin{equation}
+  F(t) = (1-\phi)\left[1-(1-\alpha_0)\,e^{-kt}\right],
+  \qquad \alpha_0 = \frac{F_0}{1-\phi},
+\end{equation}
+with $k$ fitted to the three calibration steps and $F_0 = 0.0795$ (bounds 0.0793--0.0798) the
+release before the first of them. For diffusion from a sphere, the Fourier number $Dt/a^2$ grows
+linearly in time at fixed $T$:
+\begin{equation}
+  F(t) = 1 - \frac{6}{\pi^2}\sum_{n=1}^{\infty}\frac{1}{n^2}
+  \exp\!\left[-n^2\pi^2\left(\left(\frac{Dt}{a^2}\right)_0 + \frac{D}{a^2}\,t\right)\right],
+\end{equation}
+where $(Dt/a^2)_0$ follows from $F_0$ by Eq.~\eqref{eq:gt_FK} and $D/a^2$ is fitted to the
+calibration steps. Both models reproduce the three calibration steps (Fig.~\ref{fig:gt_hold}).
+Over the long step they diverge. Diffusion projects $F = 0.149$ against an observed 0.146
+(bounds 0.1460--0.1463). First-order conversion projects 0.173, overpredicting the release in
+that step by 46\%: $(0.173-0.087)/(0.146-0.087) = 1.46$. Calibrating instead on the lower- and
+upper-bound series gives 0.148--0.150 for diffusion and 0.172--0.174 (a 44--47\%
+overprediction) for first-order conversion. We also tested the contracting-geometry and Avrami
+models of \S\ref{sec:gt_supp_mech}, which fit the vacuum data less well. Calibrated the same
+way, they project 0.174--0.212, and none changes the result.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.65\linewidth]{hydrothermal_hold_projection.pdf}
+  \caption{The 250~$^\circ$C holds of the hydrothermal experiment. Black: observed cumulative
+  $^3$He fraction (bounding-method central values; bars span the lower and upper bounds).
+  Curves: first-order conversion and spherical volume diffusion, each calibrated on the three
+  5~h steps (grey band) and projected through the 170.8~h step; faint bands show the same
+  projections calibrated on the lower- and upper-bound series.}
+  \label{fig:gt_hold}
+\end{figure}
+
+Plotted as first-order rate constants (Fig.~\ref{fig:gt_arrhenius}a), the hydrothermal steps sit
+1.3--2.8 orders of magnitude (median 2.4) below the vacuum line. They show what a first-order
+process forbids: retrograde steps 0.7--1.5 natural-log units below prograde steps at the same
+temperature, and a falling $k$ during the 250~$^\circ$C holds. In the diffusion representation
+(Fig.~\ref{fig:gt_arrhenius}b) the same steps form a coherent, history-dependent array. The
+vacuum experiments behave like conversion and the hydrothermal experiment behaves like
+diffusion. Section~\ref{sec:gt_nucleation} shows that these observations require the conversion
+rate at water saturation to be at least $10^{2.5}$ times slower than in vacuum, and that
+nucleation control explains suppression far larger than that.
+
+% -----------------------------------------------------------------------------
+
+
+\paragraph{Consistency with MDD
+Systematics}\label{consistency-with-mdd-systematics}
+
+Previous work on helium step heats of goethite in vacuum have
+demonstrated degassing behavior in the laboratory that is inconsistent
+with thermally activated volume diffusion through goethite. For example,
+apparent diffusivities calculated from helium step heat experiments of
+goethites with uniform distributions of 3He produced by proton
+irradiation following the methods of \citet{shuster2004} will increase
+in an isothermal experiment \citep{farley2024}, which is inconsistent
+with volume diffusion through an unchanging crystal.
+
+\citet{farley2024} reported that helium and water evolution in goethite
+vacuum step heating experiments are highly correlated and concluded that
+the crystal was decomposing into water and hematite during the
+experiment.
+
+The goal of this work was to attempt to slow this decomposition process
+below the rate of thermal helium loss in unchanging goethite. SEM
+imagery shows that goethite that is thermally treated when encapsulated
+with water (or gypsum) does not extensively dehydrate like
+goethite heat-treated in vacuum or open air (Figs.~\ref{fig:ch2-sem-control-vacuum}--\ref{fig:ch2-sem-vacuum-interior}). While it is
+difficult to prove that decomposition or recrystallization is not
+playing a role in the results presented in this work, the apparent
+diffusivities observed for the Win-06-01b goethite under hydrothermal
+conditions are much lower than those observed in previous step heats of
+Win-06-01b in vacuum (Fig.~\ref{fig:gt_arrhenius}b, Fig.~\ref{fig:ch2-arrhenius-zoom}, Fig.~\ref{fig:ch2-delta-zoom}, Fig.~\ref{fig:ch2-isothermal-retention}), implying that
+processes other than dehydration may be responsible for the observed
+apparent diffusivities. This is tested quantitatively in
+\S\ref{sec:gt_vacuum}--\ref{sec:gt_hydro}, and explained in \S\ref{sec:gt_nucleation}.
+
+All helium step heat data on goethites are from naturally occurring
+polycrystalline aggregates with unclear and potentially widely variable
+grain sizes \citep{monteiro2017,farley2024}, which are expected to
+follow MDD systematics. If volume diffusion is responsible for the data
+reported here, they too would be expected to follow MDD systematics. In
+MDD systems, apparent bulk diffusivities of a homogeneously distributed
+diffusant at a single temperature will decrease as an experiment
+proceeds, as would delta or r/r0 values at any temperature (where
+\(\Delta = \ ln\left( \frac{D}{a^{2}} \right)_{measured} - ln\left( \frac{D}{a^{2}} \right)_{reference}\)
+) \citep{lovera1991,farley2018}, assuming that the activation
+energy of the reference line used in such plots matches that of the
+process controlling diffusion. For the activation energy of \ChTwoEa{}~kJ/mol
+retrieved by regression in this work, the homogeneously distributed 3He
+step heat data follow the expected MDD systematics and monotonically
+decrease within a delta plot (Fig.~\ref{fig:ch2-delta-zoom}), which is consistent with
+volume diffusion in a MDD system.
+
+The strong plateau in the delta plot and statistically robust regression
+over a wide range of fractional cumulative 3He yield (from 7-15\% $\Sigma F_{3\mathrm{He}}$
+with an R\textsuperscript{2} of \ChTwoRtwo) suggests that the frequency
+factor obtained by the regression may be dominated by a particular
+diffusion domain, rather than a mix of diffusion domains as is most
+often observed in the apparent diffusivities for polycrystalline
+hematite \citep{farley2018}. The 4He apparent diffusivities are generally
+lower than the 3He apparent diffusivities and increased at the beginning
+of the experiment, which is consistent with rounding of 4He
+concentration profiles due to loss of radiogenic helium in the least
+retentive domains \citep{shuster2004,shustervasconcelos2005}.
+
+Many vacuum experiments in goethite also record declining delta values
+for early fractional yields of 3He \citep{shustervasconcelos2005,farley2024} that are generally not represented in the 4He data. This effect
+may be from helium migrating out of fast pathways along grain boundaries
+that would retain little helium in nature \citep{shustervasconcelos2005}.
+Goethite aggregates are known to have interstices that are filled by
+chemisorbed non-stoichiometric water that represents the earliest water
+to be lost in vacuum \citep{naono1987}. Non-stoichiometric hydrogen
+is known to persist in goethite even after heating to 140°C \citep{yapppoths1995}. It is therefore reasonable to posit that artificial 3He
+observed in less-retentive domains may be trapped by non-stoichiometric
+water or hydroxyl groups within interstices of goethite aggregates.
+Dehydration of non-stoichiometric interstitial water may be associated
+with early fractions of degassing water and 3He from goethite samples
+during step heats, and could potentially represent the LRD (low retention
+domain) of \citet{shustervasconcelos2005}, and the 3He offgassed during ``Stage
+1'' in vacuum step heats \citep{farley2024}. The high variability of
+the portion of 3He hosted in early-degassing ``Stage 1'' fractions
+within vacuum step heats is sensible considering observations that
+goethite formed at different temperatures is known to have highly
+variable crystallinity, crystallite ordering, surface area, and
+non-stoichiometric water contents \citep{schwertmann1985}. This
+population of 3He would likely also be the first to be lost under
+hydrothermal conditions.
+
+While the results presented here are strong experimental evidence for
+high helium retentivity in goethite (Fig.~\ref{fig:ch2-isothermal-retention}, Fig.~\ref{fig:ch2-fourier-hematite-ref}), they do not yet
+independently provide any evidence to support or refute hypotheses that
+helium diffusion in crystalline goethite is anisotropic or affected by
+radiation damage \citep{bassal2022}.

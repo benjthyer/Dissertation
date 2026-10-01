@@ -2292,3 +2292,98 @@ As a result, those edits were missing from the body, and two were missing from t
 - The only undefined reference is app:bushveld.
 - No overfull boxes > 2 pt in Chapter 2 or its SI.
 - The script reproduces the same macros on the device.
+
+---
+
+# 2026-10-01 -- Cut the thermodynamic/kinetic modelling to its essentials
+
+Pre-cut state is committed as 94aab4c ("Thermodynamic overkill progress save").
+
+## Main text, S gt_nucleation: 287 lines down to 90
+- KEPT:
+  - The data bound: sum k_vac dt ~ 60; R <= 10^-2.5 if all 3He came from conversion; R <= 10^-3.8
+    for less than 1%.
+  - The CNT barrier (eq:gt_barrier) and the Turnbull-Fisher rate (eq:gt_knuc), with the
+    gamma^3/dmu^2 scaling.
+  - The internal-nucleation scope: the 5-line replacement citing the topotactic literature.
+  - The gamma_eff calibration equation (eq:gt_gamma_cal) and result, 0.16 (0.14-0.19) J/m2.
+  - A short statement that the vacuum nucleus is sub-formula-unit, so gamma_eff is a
+    phenomenological parameter.
+  - The translation equation (eq:gt_translate), with the predicted alpha for the three gamma values
+    and the Monte Carlo 95% range, plus one sentence that the values reflect the assumed form and
+    exceed what the data require.
+  - Assumptions (i)-(iv), condensed into one paragraph.
+  - The pigment thermodynamics paragraph (unchanged).
+- CUT:
+  - The candidate-rate-law paragraph, Table tab:gt_ratelaws and the law-comparison paragraph
+    (site blocking, power law, linear law).
+  - The TST upper bound (eq:gt_ceiling) and the free-surface nucleation argument.
+  - The Saito comparison.
+  - The per-gamma k_sat/k_vac values at 250 and 200 C.
+  - The detectability equation.
+  - The gamma_eff = 0.084 "permissive" sentence.
+- MOVED to the SI calibration section: the driving-force evaluation list, the water-pressure bound
+  and Table tab:gt_gamma.
+- Elsewhere: the hydrothermal-section closing sentence, the dehydration section, the Conclusions and
+  the abstract now refer to nucleation control only. The abstract reads "many orders of magnitude".
+
+## SI
+- Equilibrium thermodynamics:
+  - The apparent-G discussion is condensed to 3 sentences.
+  - The Cp integrated forms are removed; the Cp forms are stated inline, and the hematite TODO is
+    kept.
+  - The basis-dependence pointer is replaced by one sentence (-1.41 kJ at 10 nm at equal diameter;
+    it affects stability only).
+- CUT: the section "Sensitivity of the size effect to the surface-area basis" (Table tab:gt_basis,
+  Fig. fig:gt_basis).
+- "Nucleation barrier ratio and the calibration of gamma_eff" became "Calibration of gamma_eff" (same
+  label, sec:gt_supp_barrier).
+  - The barrier-ratio discussion and Fig. fig:gt_barrier_ratio are cut.
+  - It now holds the calibration details moved from the main text, fig:gt_translation, the
+    surface-term sensitivity table, and a nucleation-only Monte Carlo paragraph.
+- CUT: the section "Sensitivity to the water-inhibition rate law" and Fig. fig:gt_ratelaws.
+
+## fig_goethite_vacuum_kinetics.py
+- The rate-law code is reduced to nucleation only:
+  - Removed the Langmuir, power-law and linear branches, linear_law_s and make_rate_law_figure.
+  - Removed 22 macros.
+  - The nucleation numbers are unchanged (same seed).
+- Moved to _to_delete/old_figures/: the generated hydrothermal_rate_law_sensitivity.*,
+  size_basis_sensitivity.* and nucleation_barrier_ratio_vs_T.* figures. The phase-diagram script
+  still makes the last two; they are no longer used.
+- references.bib still contains topley1935, lvov2007 and koga2019. They are now uncited, so they
+  are not printed.
+
+## Verification
+- Full dissertation: 0 errors, 243 pp (was 251).
+- The only undefined reference is app:bushveld.
+- No float-too-large warnings, and no overfull boxes > 2 pt in Chapter 2 or its SI.
+
+---
+
+# 2026-10-01b -- SI kinetic-mechanisms section: h(alpha) and x defined; integral form removed
+
+## chapter2goethite_SI_body.tex, sec:gt_supp_mech
+- Removed the g(alpha) integral equation.
+- Replaced it with:
+  - the rate law dalpha/dt = A exp(-Ea/RT) h(alpha), citing vyazovkin2011;
+  - a plain-language definition of the reaction model h(alpha), with what it means physically for
+    F1, R2/R3 and A2/A3;
+  - an explicit definition of x as the Arrhenius-weighted time (x = kt for a single isothermal
+    step; the Fourier number Dt/a^2 for D3).
+- Table tab:gt_mech_forms:
+  - dropped the g(alpha) column, keeping Model | h(alpha) | alpha(x);
+  - new caption;
+  - removed the \resizebox, which would otherwise have stretched the narrower table.
+
+## references.bib
+- Added vyazovkin2011 (ICTAC Kinetics Committee recommendations, Thermochim. Acta 520, 1-19).
+
+## Open (from your 09-30 move of the kinetic-analysis methods into the main text)
+- Two undefined references:
+  - \label{sec:gt_kinetics_methods}: the moved text has no heading or label, but the body still
+    cites it twice (vacuum section).
+  - eq:gt_FK: the Fechtig-Kalbitzer equation is no longer in the files, but it is cited in the
+    body (Arrhenius caption area, input line ~733).
+- sec:gt_supp_mech is still a \subsection. After the move it sits under the SI section
+  "Equilibrium Thermodynamics of Goethite Dehydroxylation".

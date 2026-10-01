@@ -406,10 +406,11 @@ energy of formation cancel in any balanced reaction. Compressibility and thermal
 $V_i$ by $\lesssim1\%$ over the conditions considered and are neglected.
 
 Goethite heat capacity uses the Berman--Brown form \citep{berman1985} refined by
-\citet{majzlan2003}, $C_p = k_0 + k_1 T^{-1/2} + k_2 T^{-2} + k_3 T^{-3}$, and hematite a
-Maier--Kelley form, $C_p = a + bT + cT^{-2}$; both are integrated analytically.
-% TODO: cite the source of the hematite Maier-Kelley coefficients (Kelley-type fit,
-% cf. Robie & Hemingway 1995, USGS Bull. 2131); Majzlan et al. used Berman (1988). Differences are < 1 J/K/mol at 298 K.
+\citet{majzlan2003}, $C_p = k_0 + k_1 T^{-1/2} + k_2 T^{-2} + k_3 T^{-3}$. Hematite uses the same
+polynomial with the coefficients of \citet{berman1988}, which \citet{majzlan2003} held fixed in their
+refinement. Both heat capacities are integrated analytically.
+% TODO: verify the hematite coefficients against Berman (1988) Tables 3a and 3b; the values used
+% were taken from the CHNOSZ transcription (Ber88_1988.csv).
 
 \textit{Water.} Water is evaluated with the IAPWS-95 equation of state \citep{wagner2002},
 implemented in CoolProp \citep{bell2014}, which is valid for liquid, vapor and supercritical
@@ -436,11 +437,11 @@ programming against the phase-equilibrium brackets of \citet{voigt1981}.
     $\Delta_f H^0$ (kJ\,mol$^{-1}$) & $-561.4$ & $-825.8$ \\
     $S^0$ (J\,mol$^{-1}$\,K$^{-1}$) & 59.5 & 87.4 \\
     $V^0$ (cm$^3$\,mol$^{-1}$) & 20.881 & 30.274 \\
-    $C_p$ coefficients & $k_0=133.8765$ & $a=98.28$ \\
-          & $k_1=-738.5577$ & $b=7.782\times10^{-2}$ \\
-          & $k_2=-2.177657\times10^{6}$ & $c=-1.485\times10^{6}$ \\
-          & $k_3=2.165124\times10^{8}$ & \\
-    $C_p(298\ \mathrm{K})$ (J\,mol$^{-1}$\,K$^{-1}$) & 74.8 & 104.8 \\
+    $C_p$ coefficients & $k_0=133.8765$ & $k_0=146.86$ \\
+          & $k_1=-738.5577$ & $k_1=0$ \\
+          & $k_2=-2.177657\times10^{6}$ & $k_2=-5.5768\times10^{6}$ \\
+          & $k_3=2.165124\times10^{8}$ & $k_3=5.2563\times10^{8}$ \\
+    $C_p(298\ \mathrm{K})$ (J\,mol$^{-1}$\,K$^{-1}$) & 74.8 & 104.0 \\
     $\gamma_{\mathrm{hydrated}}$ (J\,m$^{-2}$) & $0.60\pm0.10$ & $0.75\pm0.16$ \\
     $\gamma_{\mathrm{anhydrous}}$ (J\,m$^{-2}$) & $0.91\pm0.09$ & $1.90\pm0.30$ \\
     \hline
@@ -449,7 +450,10 @@ programming against the phase-equilibrium brackets of \citet{voigt1981}.
 
   \vspace{0.5ex}
   \begin{minipage}{0.85\linewidth}\footnotesize
-  Enthalpy, entropy and $C_p$: \citet{majzlan2003a,majzlan2003}; surface energies: \citet{navrotsky2008}.
+  Enthalpy and entropy: \citet{majzlan2003}; goethite $C_p$: \citet{majzlan2003a,majzlan2003};
+  hematite $C_p$: \citet{berman1988}; surface energies: \citet{navrotsky2008}.
+  Units: $k_0$ J\,mol$^{-1}$\,K$^{-1}$, $k_1$ J\,mol$^{-1}$\,K$^{-1/2}$, $k_2$ J\,K\,mol$^{-1}$,
+  $k_3$ J\,K$^{2}$\,mol$^{-1}$; $l_1$ (J\,mol$^{-1}$)$^{1/2}$\,K$^{-1}$, $l_2$ (J\,mol$^{-1}$)$^{1/2}$\,K$^{-2}$.
   Water: $\Delta_f H^0_{\mathrm{w}} = -285.83$~kJ\,mol$^{-1}$, $S^0_{\mathrm{w}} = 69.95$~J\,mol$^{-1}$\,K$^{-1}$; IAPWS-95 for $h(T,P)$, $s(T,P)$.
   \end{minipage}
 \end{table}
@@ -524,143 +528,54 @@ water. The water-buffered step-heating technique therefore stabilizes goethite p
 reducing the driving force of the reaction. Surface hydration is a second-order correction that matters
 only for nanometer grains (Eq.~\eqref{eq:gt_equalarea}).
 
-
-\section{Kinetic Analysis of Vacuum Step Heats}\label{sec:gt_kinetics_methods}
-
-Two published vacuum step heats of irradiated Win-06-01b are reanalyzed here. The experiment of
-\citet{farley2024} (hereafter KAF) used 1~h steps from 70 to 330~$^\circ$C, including isothermal
-repeats at 210, 230 and 240~$^\circ$C. Its extraction line was open to a liquid-nitrogen-cooled
-charcoal trap, so evolved water did not accumulate, and the water released in each step was
-measured by capacitance manometry. The experiment of \citet{monteiro2017} (hereafter HDM) used
-a different schedule: prograde to 238~$^\circ$C, retrograde to 180~$^\circ$C, then prograde
-again, with 0.5~h steps above 238~$^\circ$C, to 498~$^\circ$C. Water could accumulate in the
-HDM line. For each experiment, the cumulative fraction of $^3$He released after step $i$ is
-\begin{equation}
-  F_i = \frac{\sum_{j\le i} {}^3\mathrm{He}_j}{\sum_{\mathrm{steps}} {}^3\mathrm{He} + {}^3\mathrm{He}_{\mathrm{fusion}}} .
-\end{equation}
-
-We describe conversion by a first-order rate law,
-\begin{equation}
-  \frac{d\alpha}{dt} = k(T)\,(1-\alpha),
-  \qquad
-  k(T) = A\exp\!\left(-\frac{E_a}{RT}\right),
-  \label{eq:gt_F1}
-\end{equation}
-where $\alpha$ is the fraction of goethite converted. For a powder of many grains, first-order
-kinetics is the limit in which each grain converts rapidly once a hematite nucleus forms, so
-that the conversion rate is set by the nucleation rate per untransformed grain
-\citep{mampel1940}. $k$ is then a per-grain nucleation rate. We assume $^3$He is released when
-its host grain converts, except for a fraction $\phi$ that is inherited by the hematite
-product:
-\begin{equation}
-  F = (1-\phi)\,\alpha .
-  \label{eq:gt_Fphi}
-\end{equation}
-For a schedule of isothermal steps of duration $\Delta t_j$ at $T_j$, Eq.~\eqref{eq:gt_F1}
-integrates to
-\begin{equation}
-  \alpha_i = 1 - \exp\!\left[-A\sum_{j\le i} m_j\,\Delta t_j \exp\!\left(-\frac{E_a}{RT_j}\right)\right],
-  \label{eq:gt_F1_cum}
-\end{equation}
-where $m_j = s$ for the two KAF steps run with the trap isolated (\S\ref{sec:gt_vacuum}) and $m_j=1$
-otherwise. Inverting Eq.~\eqref{eq:gt_F1} step by step gives an apparent rate constant for every
-step that is independent of any fitted parameter except $\phi$:
-\begin{equation}
-  k_i = -\frac{1}{\Delta t_i}\ln\frac{1-\alpha_i}{1-\alpha_{i-1}},
-  \qquad \alpha_i = \frac{F_i}{1-\phi}.
-  \label{eq:gt_stepk}
-\end{equation}
-For comparison, the diffusion parameter of each step is obtained with the same
-\citet{fechtigkalbitzer1966} inversion for a sphere that is applied to the hydrothermal
-experiment (\S\ref{helium-in-goethite-diffusivity-inversions}),
-\begin{equation}
-  \frac{Dt}{a^2} =
-  \begin{cases}
-    \dfrac{1}{\pi^2}\left[2\pi - \dfrac{\pi^2}{3}F - 2\pi\sqrt{1-\dfrac{\pi F}{3}}\,\right], & F \le 0.85,\\[2ex]
-    -\dfrac{1}{\pi^2}\ln\!\left[\dfrac{\pi^2}{6}(1-F)\right], & F > 0.85,
-  \end{cases}
-  \label{eq:gt_FK}
-\end{equation}
-and
-\begin{equation*}
-  \left(\frac{D}{a^2}\right)_i = \frac{(Dt/a^2)_i - (Dt/a^2)_{i-1}}{\Delta t_i}.
-\end{equation*}
-For the hydrothermal experiment, $F_i$ and $D/a^2$ are always taken from the bounding-method
-reduction (Table~\ref{tab:ch2-distilled-3he}): the cumulative release at the end of step $i$ is
-bounded by the measured cumulative $^3$He and by that value plus $n_{t,\mathrm{UB}}$, and the
-central value is their midpoint. As elsewhere in this chapter, steps without defined bounds and
-steps with less than 0.1~pccSTP of measured $^3$He are excluded.
-
-All steps are plotted, but fits use only KAF steps \ChTwoKinWinKAF{}
-(\ChTwoKinWinKAFT~$^\circ$C) and HDM steps \ChTwoKinWinHDM{} (\ChTwoKinWinHDMT~$^\circ$C). KAF steps 1--4 and HDM steps 2--7
-(below $\sim$180~$^\circ$C) release a small ($<2\%$), separate low-temperature component
-(\S\ref{sec:gt_vacuum}). Later steps sit on the post-conversion plateau, where
-$1-\alpha\to0$ and Eq.~\eqref{eq:gt_stepk} becomes controlled by the choice of $\phi$. The KAF
-steps run with the trap isolated are excluded from the Arrhenius regression.
-
-
 % -----------------------------------------------------------------------------
-\subsection{Kinetic mechanisms and the limits of a single heating schedule}
+\section{Kinetic mechanisms and the limits of a single heating schedule}
 \label{sec:gt_supp_mech}
 % -----------------------------------------------------------------------------
 
-Solid-state rate laws take the form $d\alpha/dt = A\exp(-E_a/RT)\,h(\alpha)$. For any heating
-schedule this integrates to
+Solid-state rate laws separate the temperature dependence of the rate from its dependence on
+the extent of reaction \citep{vyazovkin2011}:
 \begin{equation}
-  g(\alpha) \equiv \int_0^{\alpha}\frac{d\alpha'}{h(\alpha')} = x,
-  \qquad
-  x = A\sum_j \Delta t_j\exp\!\left(-\frac{E_a}{RT_j}\right).
+  \frac{d\alpha}{dt} = A\exp\!\left(-\frac{E_a}{RT}\right)h(\alpha),
 \end{equation}
-We tested the mechanisms in Table~\ref{tab:gt_mech_forms}, including spherical diffusion on the
-same footing. Under vacuum, the driving-force factor $1-\exp(-\Delta\mu/RT)$ is unity to better
-than $10^{-9}$, so $x$ is simply an Arrhenius-weighted time. Diffusion and conversion then
-differ only in the shape $\alpha(x)$ and in the fitted $E_a$.
+where $\alpha$ is the fraction of goethite converted. The reaction model $h(\alpha)$ expresses the
+mechanism: it describes how the rate changes as conversion proceeds, which depends on where
+and how the reaction advances through a grain. For first-order kinetics (F1), grains convert
+independently once nucleated, so the rate is proportional to the goethite remaining,
+$h = 1-\alpha$. For a reaction front moving inward from the grain surface (R2, R3), the rate is
+proportional to the shrinking area of the unreacted core. For random nucleation followed by growth
+(A2, A3), the rate first accelerates and then slows. For any heating schedule, each rate law
+gives $\alpha$ as a function of a single variable,
+\begin{equation}
+  x = A\sum_j \Delta t_j\exp\!\left(-\frac{E_a}{RT_j}\right),
+\end{equation}
+the Arrhenius-weighted time delivered by the steps up to the current one; for a single isothermal
+step, $x = kt$. We tested the mechanisms in Table~\ref{tab:gt_mech_forms}, including spherical
+diffusion on the same footing: for diffusion, $x$ is the Fourier number $Dt/a^2$ with $D/a^2$
+Arrhenius in $T$. Under vacuum, the driving-force factor $1-\exp(-\Delta\mu/RT)$ is unity to better
+than $10^{-9}$, so $x$ depends only on the heating schedule. Diffusion and conversion then differ
+only in the shape of $\alpha(x)$ and in the fitted $E_a$.
 
 \begin{table}[htbp]
   \centering
-  \caption{Kinetic models and their integrated forms.}
+  \caption{Kinetic models: reaction model $h(\alpha)$ and conversion as a function of the Arrhenius-weighted time, $\alpha(x)$.}
   \label{tab:gt_mech_forms}
   \footnotesize
   \setlength{\tabcolsep}{4pt}
-  \resizebox{\textwidth}{!}{%
-  \begin{tabular}{llll}
+  \begin{tabular}{lll}
     \hline
-    Model & $h(\alpha)$ & $g(\alpha)$ & $\alpha(x)$ \\
+    Model & $h(\alpha)$ & $\alpha(x)$ \\
     \hline
-    R2 contracting cylinder & $2(1-\alpha)^{1/2}$ & $1-(1-\alpha)^{1/2}$ & $1-(1-x)^2$ \\
-    R3 contracting sphere & $3(1-\alpha)^{2/3}$ & $1-(1-\alpha)^{1/3}$ & $1-(1-x)^3$ \\
-    F1 first order & $1-\alpha$ & $-\ln(1-\alpha)$ & $1-e^{-x}$ \\
-    A2, A3 Avrami ($n=2,3$) & $n(1-\alpha)[-\ln(1-\alpha)]^{1-1/n}$ & $[-\ln(1-\alpha)]^{1/n}$ & $1-e^{-x^n}$ \\
-    D3 sphere diffusion & --- & --- & $1-\dfrac{6}{\pi^2}\displaystyle\sum_n \dfrac{e^{-n^2\pi^2 x}}{n^2}$ \\
-    \hline
-  \end{tabular}}
-\end{table}
-
-\subsubsection{Synthetic test} We generated noiseless release curves from the R3 model
-($E_a = 150$~kJ\,mol$^{-1}$) on two schedules: a monotonic series of 1~h steps from 150 to
-390~$^\circ$C, and a cycled schedule with retrograde steps and long isothermal holds. We then
-fitted every model with $E_a$ and $A$ free. Table~\ref{tab:gt_synth} shows that every model
-except the Avrami forms fits within 1\% in $F$ by adjusting $E_a$. With realistic analytical
-uncertainty, goodness of fit to a single schedule cannot identify the mechanism. The fitted
-activation energy trades off against the shape of $\alpha(x)$. Discrimination requires a second,
-independent schedule, an independent measure of $\alpha$, or both. The vacuum experiments supply
-both (\S\ref{sec:gt_vacuum}).
-
-\begin{table}[htbp]
-  \centering
-  \caption{Fits to synthetic R3 data ($E_a$ in kJ\,mol$^{-1}$; rms misfit in $F$).}
-  \label{tab:gt_synth}
-  \begin{tabular}{lcccc}
-    \hline
-    & \multicolumn{2}{c}{Monotonic schedule} & \multicolumn{2}{c}{Cycled schedule} \\
-    Model & $E_a$ & rms & $E_a$ & rms \\
-    \hline
-\ChTwoKinSynthRows
+    R2 contracting cylinder & $2(1-\alpha)^{1/2}$ & $1-(1-x)^2$ \\
+    R3 contracting sphere & $3(1-\alpha)^{2/3}$ & $1-(1-x)^3$ \\
+    F1 first order & $1-\alpha$ & $1-e^{-x}$ \\
+    A2, A3 Avrami ($n=2,3$) & $n(1-\alpha)[-\ln(1-\alpha)]^{1-1/n}$ & $1-e^{-x^n}$ \\
+    D3 sphere diffusion & --- & $1-\dfrac{6}{\pi^2}\displaystyle\sum_{m=1}^{\infty} \dfrac{e^{-m^2\pi^2 x}}{m^2}$ \\
     \hline
   \end{tabular}
 \end{table}
 
-\subsubsection{Fits to the vacuum data} Table~\ref{tab:gt_mech_fits} gives the fit of each model to
+\subsection{Fits to the vacuum data} Table~\ref{tab:gt_mech_fits} gives the fit of each model to
 the cumulative KAF $^3$He release within the fitting window. It also gives the misfit of the
 resulting out-of-sample prediction of HDM, and the fit to the KAF water data. F1 gives the best
 fit and the best prediction. R3 and R2 are close behind, so we describe the mechanism as
@@ -719,11 +634,9 @@ The driving forces are evaluated as follows.
   $\Delta\mu_{\mathrm{on}} - \Delta\mu_{\mathrm{off}} = RT\ln(P_{\mathrm{off}}/P_{\mathrm{on}})$, which is
   32--41~kJ for the pressures in Table~\ref{tab:gt_gamma}.
   \item Surface terms are omitted in both. The barrier of an internal nucleus depends on the free
-  energy per volume of material transformed, not on the external surface of the host grain. The
-  grain or domain size of the natural sample is also not characterized. The external surface
-  energy of the grain enters the overall thermodynamic stability (\S\ref{sec:gt_thermo}),
-  but we do not include it in the barrier. The sensitivity to this choice is small
-  (Table~\ref{tab:gt_surf_sens}).
+  energy per volume of material transformed, not on the external surface of the host grain. The external surface
+  energy of the grain enters the overall thermodynamic stability (\S\ref{sec:gt_thermo}), but is not
+  a part of the nucleation barrier, which is evaluated for internal neclei.
 \end{enumerate}
 We bound the water pressure with the trap isolated by assuming that all evolved water was in the
 vapor, distributed uniformly through an apparatus of volume $V_{\mathrm{app}}$ at 298~K:
@@ -751,7 +664,7 @@ we adopt $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$, with a range of
     \hline
     230 & 0.333 & 190 & 19.6 & 0.138 & 0.145 \\
     230 & 0.333 & 600 & 6.2  & 0.150 & 0.158 \\
-    240 & 0.224 & 190 & 11.6 & 0.164 & 0.172 \\
+    240 & 0.224 & 190 & 11.6 & 0.164 & 0.173 \\
     240 & 0.224 & 600 & 3.7  & 0.178 & 0.188 \\
     \hline
   \end{tabular}
@@ -775,35 +688,11 @@ the most permissive value.
   \label{fig:gt_translation}
 \end{figure}
 
-\subsection{Sensitivity to surface terms} The calibration and translation use bulk driving
-forces (\S\ref{sec:gt_nucleation}). To test this choice, we repeat both with the surface
-term of Eq.~\eqref{eq:gt_equalarea} included in $\Delta\mu$. We use anhydrous surfaces for the vacuum
-and trap-isolated steps and hydrated surfaces at saturation, the combination that most reduces the
-vacuum driving force relative to the saturated one. Table~\ref{tab:gt_surf_sens} shows that the
-conclusion is unchanged down to 10~nm grains.
-
-\begin{table}[htbp]
-  \centering
-  \caption{Effect of including surface terms in $\Delta\mu$ on the calibration and the predicted hydrothermal conversion. Driving forces in kJ per mole Fe$_2$O$_3$ at 250~$^\circ$C; $\gamma_{\mathrm{eff}}$ range over Table~\ref{tab:gt_gamma}. $\alpha_{\mathrm{HT}}$: predicted conversion over the hydrothermal schedule, median $\gamma_{\mathrm{eff}}$.}
-  \label{tab:gt_surf_sens}
-  \begin{tabular}{lcccc}
-    \hline
-    Grain size & $\Delta\mu_{\mathrm{vac}}$ & $\Delta\mu_{\mathrm{sat}}$ & $\gamma_{\mathrm{eff}}$ (J\,m$^{-2}$) & $\log_{10}\alpha_{\mathrm{HT}}$ \\
-    \hline
-    Bulk & 106.0 & 10.65 & 0.138--0.188 & $-32.0$ \\
-    100~nm & 103.5 & 10.27 & 0.133--0.182 & $-31.2$ \\
-    10~nm & 81.2 & 6.89 & 0.090--0.131 & $-23.3$ \\
-    \hline
-  \end{tabular}
-\end{table}
-
 \subsection{Uncertainty propagation} The Monte Carlo range quoted in \S\ref{sec:gt_nucleation}
-(\ChTwoKinNMC{} draws) samples the trap-isolated step (230 or 240~$^\circ$C); $s$, log-uniformly
-between the extremes of six reductions of that step (first-order and contracting-sphere step rate
-constants, each against the mean of its two trapped neighbors and against each neighbor alone:
-\ChTwoKinSLowRange{} at 230~$^\circ$C and \ChTwoKinSHighRange{} at 240~$^\circ$C); the apparatus volume,
-log-uniformly between 190 and 600~mL; the time-averaged pressure, uniformly between half and all of
-the end-of-step value; and a common offset of $\Delta G_r$, uniformly within $\pm2.8$~kJ per reaction
+(\ChTwoKinNMC{} draws) samples the trap-isolated step (230 or 240~$^\circ$C); $s$, log-uniformly between
+\ChTwoKinSLowRange{} at 230~$^\circ$C and \ChTwoKinSHighRange{} at 240~$^\circ$C; the apparatus volume,
+log-uniformly between 190 and 600~mL; a time-averaging coefficient for the pressure between 0.5 and 1 to account for 
+how quickly the evolved water assumulates in the diffusion cell, and a common offset of $\Delta G_r$, uniformly within $\pm2.8$~kJ per reaction
 (the $\pm1.4$~kJ per mole FeOOH of \citealt{majzlan2003}), which shifts every driving force
 together. The offset barely changes $\gamma_{\mathrm{eff}}$ (95\% range
 \ChTwoKinMCGammaLo--\ChTwoKinMCGammaHi~J\,m$^{-2}$) but contributes most of the spread in the predicted

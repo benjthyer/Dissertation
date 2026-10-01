@@ -1045,6 +1045,7 @@ def rate_law_macros(line, sup):
     M["ChTwoKinGammaHi"] = _f(g("CNT", "par").max(), 2)
     M["ChTwoKinMCGammaLo"] = _f(mc["gamma"]["p2_5"], 2)
     M["ChTwoKinMCGammaHi"] = _f(mc["gamma"]["p97_5"], 2)
+    M["ChTwoKinMCGammaMid"] = _f(mc["gamma"]["p50"], 2)
     sv = mc["s_variants"]
     M["ChTwoKinSLowRange"] = f"{min(sv['230.0']):.2f}--{max(sv['230.0']):.2f}"
     M["ChTwoKinSHighRange"] = f"{min(sv['240.0']):.2f}--{max(sv['240.0']):.2f}"

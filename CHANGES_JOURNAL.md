@@ -2387,3 +2387,90 @@ Pre-cut state is committed as 94aab4c ("Thermodynamic overkill progress save").
     body (Arrhenius caption area, input line ~733).
 - sec:gt_supp_mech is still a \subsection. After the move it sits under the SI section
   "Equilibrium Thermodynamics of Goethite Dehydroxylation".
+
+---
+
+# 2026-10-01c -- Hematite Cp switched to Berman (1988); dependent values recalculated
+
+Source: your uploaded goethite_hematite_phase_diagram.py and ch2_goethite_stability_sections.tex.
+Only the hematite Cp changes were taken.
+
+## Chapter2/Figures/fig_goethite_hematite_phase_diagram.py
+- Hematite Cp now uses the Berman (1988) polynomial, K_HEM = (146.86, 0, -5.5768e6, 5.2563e8), plus
+  the lambda term T(l1 + l2 T)^2 with l1 = -0.07403, l2 = 2.7921e-4, T_lambda = 955 K.
+- New function _lambda_int. G_solids now uses _berman_int(K_HEM) + _lambda_int.
+- The Maier-Kelley MK_HEM and _mk_int are kept for comparison only.
+- The docstring has been updated.
+- Your legend edits in this file are kept.
+- Re-run: the phase diagrams. Also re-ran fig_goethite_vacuum_kinetics.py; molmass was installed
+  in the local VM for thermochr_utils.
+
+## Recalculated values (old -> new)
+- Hematite Cp(298 K): 104.8 -> 104.0 J/mol/K.
+- dmu_sat (Table tab:gt_dmu, main text): 200 C 8.10 -> 8.11; 225 C 9.36 -> 9.37; 250 C 10.65 -> 10.66.
+  The other columns are unchanged.
+- Table tab:gt_gamma: 240 C / 190 mL / P/2 changes from 0.172 to 0.173. Everything else is
+  unchanged.
+- Table tab:gt_surf_sens:
+
+  | Grain size | Delta-mu_sat | Delta-mu_vac | log alpha |
+  |---|---|---|---|
+  | bulk | 10.65 -> 10.66 | unchanged | -32.0 -> -31.9 |
+  | 100 nm | 10.27 -> 10.28 | 103.5 -> 103.6 | -31.2 -> -31.0 |
+  | 10 nm | 6.89 -> 6.90 | unchanged | -23.3 -> -23.2 |
+
+  The log-alpha column changed mostly because the old values predated the current fitting window
+  and vacuum line. The Cp change alone moves it by less than 0.1.
+- Unchanged at the quoted precision:
+  - Delta G_r at 298 K (-0.26 kJ; 0.13 kJ per FeOOH). The Cp terms vanish at T_r.
+  - The saturation crossings (18, 28 and 108 C) and log P at 25 C (2.62, -1.52, -2.11).
+  - The vacuum dmu values.
+  - All \ChTwoKin* macros, which were regenerated and are identical.
+
+## SI text
+- The Cp paragraph now describes the Berman hematite polynomial and the lambda term (formula only;
+  the integrals are not shown, as elsewhere in this section). The TODO now says to verify the
+  coefficients against Berman Tables 3a/3b (they are from the CHNOSZ transcription).
+- tab:gt_thermo_data:
+  - hematite k0-k3 and l1, l2 rows;
+  - Cp(298) = 104.0;
+  - the footnote now separates the sources (hematite Cp: berman1988) and adds coefficient units.
+
+## Note (not changed)
+- The body currently cites fig:ch2-sem-air and fig:ch2-sem-vacuum, which are undefined. These are
+  from your in-progress edits.
+
+---
+
+# 2026-10-01d -- Redo of 10-01c on your current files; g(alpha) removal re-applied
+
+What went wrong in 10-01c: the copy of your .tex files used as the base was stale. Staging had
+not finished when it was read, so it was an older snapshot. Committing it overwrote your recent
+edits. This time the staged files were checksum-verified against the files on disk before
+editing, and only targeted replacements were made, with your CRLF line endings preserved.
+
+## chapter2_body.tex (3 lines)
+- tab:gt_dmu, Delta-mu_sat: 8.10 -> 8.11, 9.36 -> 9.37, 10.65 -> 10.66 (Berman hematite Cp).
+
+## chapter2goethite_SI_body.tex
+- The hematite Cp sentence now uses the Berman (1988) polynomial plus the lambda term (the
+  Maier-Kelley text and its TODO are replaced). New TODO: verify the coefficients against Berman
+  Tables 3a/3b.
+- tab:gt_thermo_data:
+  - hematite k0-k3 and l1, l2;
+  - Cp(298) 104.8 -> 104.0;
+  - the footnote now separates the sources (hematite Cp: berman1988) and gives the coefficient
+    units.
+- tab:gt_gamma: 0.172 -> 0.173 (240 C, 190 mL, P/2).
+- tab:gt_surf_sens:
+  - Delta-mu_sat 10.66 / 10.28 / 6.90;
+  - 100 nm Delta-mu_vac 103.6;
+  - log alpha -31.9 / -31.0 / -23.2.
+- sec:gt_supp_mech (re-applied from 10-01b):
+  - removed the g(alpha) integral equation and the g(alpha) table column;
+  - defined h(alpha) and x explicitly, citing vyazovkin2011;
+  - new table caption;
+  - removed the \resizebox.
+
+## references.bib
+- vyazovkin2011 appended. It was missing from the current file.

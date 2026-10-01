@@ -242,7 +242,7 @@ def make_figure(basis="equal_area", fname="goethite_hematite_Ph2o_T",
         ax.text(0.96, 0.80, r"$\alpha$-Fe$_2$O$_3$ + H$_2$O",
                 transform=ax.transAxes, ha="right")
         ax.legend(loc="center left", bbox_to_anchor=(1.02, 0.5),# title=r"size ($\Delta G_{\mathrm{surf}}$)",
-                  title_fontsize=plt.rcParams["legend.fontsize"],
+                  #title_fontsize=plt.rcParams["legend.fontsize"],
                   handlelength=1.4)
         sec = ax.secondary_xaxis("top", functions=(lambda c: c + 273.15,
                                                    lambda k: k - 273.15))
@@ -684,8 +684,8 @@ def make_basis_sensitivity(sizes=(None, 1000, 100, 10),
         ax.set_xlabel("Temperature (°C)")
         ax.set_xlim(T_C[0], T_C[-1])
         ax.set_ylim(PT_LOGP_PLOT_MIN, LOGP_MAX)
-        ax.legend(loc="lower right", title=r"size ($\Delta G_{\mathrm{surf}}$)",
-                  title_fontsize=plt.rcParams["legend.fontsize"],
+        ax.legend(loc="lower right",# title=r"size ($\Delta G_{\mathrm{surf}}$)",
+                  #title_fontsize=plt.rcParams["legend.fontsize"],
                   handlelength=1.4)
     axes[0].set_ylabel(r"log $P_{\mathrm{H_2O}}$ (bar)")
     for ext in ("png", "pdf"):

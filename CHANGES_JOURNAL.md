@@ -2474,3 +2474,22 @@ editing, and only targeted replacements were made, with your CRLF line endings p
 
 ## references.bib
 - vyazovkin2011 appended. It was missing from the current file.
+
+# 2026-10-01e -- Chapter 2 body restructuring pass (move-only)
+
+Backup: Chapter2/Writing/chapter2_body.tex.pre_reorder_backup_20261001. No prose added or
+deleted; only passages moved. Moved blocks are tagged in the source with
+`% --- ... (moved from Discussion, 2026-10-01) ---`.
+
+## chapter2_body.tex
+- Methods: kinetic-reduction assumption (F_i = (1-phi) alpha_i), eqs gt_F1/gt_F1_cum/gt_stepk,
+  the Fechtig-Kalbitzer comparison sentence, fitting window and exclusions, the phi justification
+  (F ~ 0.9 stall, Stage 2/3), the vacuum 4He/3He maximum near F ~ 0.9 (from the 4He/3He
+  section), and the design of the 250 C isothermal test.
+- Results: fig:gt_arrhenius, early-step excess release, eq gt_line and KAF/HDM/all-step fits,
+  HDM out-of-sample prediction, trap-isolated steps, 250 C test outcome and fig:gt_hold.
+- Discussion reordered: vacuum = conversion -> water-saturated = diffusive (+ MDD) ->
+  thermodynamics (sec:gt_thermo_methods now merged with sec:gt_thermo; heading
+  "Thermodynamic Model of Goethite Dehydroxylation" carries both labels) -> nucleation ->
+  dehydration/recrystallization caveats -> pigment (+ assumption (iv) paragraph appended) ->
+  retentivity -> 4He/3He.

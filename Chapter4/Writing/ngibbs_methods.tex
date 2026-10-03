@@ -255,7 +255,7 @@ Each $r_i$ is bounded for any physically legal pyroxene, but not on $[0,1]$.
 Rescaling and recombining gives six quantities that are individually bounded on
 $[0,1]$:
 \begin{equation}
-  u_0=\tfrac12 r_0,\quad u_1=\tfrac12(r_1+r_2),\quad u_2=\tfrac12(r_1+r_3),\quad
+  u_0=\tfrac12 r_0,\quad u_1=\tfrac12(r_1+r_2),\quad u_2=\tfrac12(r_1+r_3),\newline
   u_3=\tfrac12(r_2+r_3),\quad u_4=\tfrac12 r_4,\quad u_5=\tfrac12 r_4+r_5 .
   \label{eq:pxu}
 \end{equation}
@@ -386,7 +386,7 @@ each sampled composition is randomly assigned an oxygen fugacity from -5 to +5 l
 system models simply carry this oxygen fugacity as a feature, whereas closed models translate this oxygen fugacity into a molar \textsuperscript{+3}Fe/\textsuperscript{+2}Fe ratio using an empirical parameterization. This is not meant to be explicitly correct; it is meant to generate training data with an appropriate distribution of molar \textsuperscript{+3}Fe/\textsuperscript{+2}Fe ratios.
 
 \begin{equation}
-^{+3}Fe/^{+2}Fe \approx 10^{\left(0.2 \times log$_{10}\Delta$FMQ \right) - 1}
+^{+3}Fe/^{+2}Fe \approx 10^{\left(0.2 \times \text{log}_{10}\Delta\text{FMQ} \right) - 1}
 \label{eq:fO2ratio}
 \end{equation}
 
@@ -402,7 +402,7 @@ the applications the emulators target.
 
 For the \textsc{MELTS} 1.0.2 and 1.2.0 emulator families, each sampled composition is isobarically cooled from 1800\textdegree C in 1\textdegree C increments at a random pressure between 1 and 12000 bars. These computed assemblages have well-defined entropies and therefore are acceptable for use in training isentropic models. 
 
-\textsc{HeFESTo} Earth and Mars models are each trained around a core of (approximately) adiabatic simulations at reasonable potential temperatures (1200--1650\textdegree C for Earth; 500--1750\textdegreeC for Mars). These adiabats are supplemented with cooler conditions due to a conductive lid at the surface, which is assumed to be between 0-250 km thick for Earth and 100-700 km thick for Mars.  \todo{Potential temperature citations?}. Similarly, warmer conditions are modeled at the approach to the core-mantle boundary (CMB) for the Earth model, which assume a mantle temperature between 3200--4700\textdegree C at the CMB and a 100-300km width conductive layer
+\textsc{HeFESTo} Earth and Mars models are each trained around a core of (approximately) adiabatic simulations at reasonable potential temperatures (1200--1650\textdegree C for Earth; 500--1750\textdegree C for Mars). These adiabats are supplemented with cooler conditions due to a conductive lid at the surface, which is assumed to be between 0-250 km thick for Earth and 100-700 km thick for Mars.  \todo{Potential temperature citations?}. Similarly, warmer conditions are modeled at the approach to the core-mantle boundary (CMB) for the Earth model, which assume a mantle temperature between 3200--4700\textdegree C at the CMB and a 100-300km width conductive layer
 
 Although \textsc{HeFESTo} natively calculates isentropes, such a calculation requires an iteration of T at every step to retrieve the imposed entropy, which roughly doubles the computation time. Therefore, adiabatic PT paths were instead approximated to reduce computational expense in the generation of the training dataset. To accomplish this, a second-order linear regression of temperature as a function of specific entropy and pressure was fit to a dataset of dozens of \textsc{HeFESTo} isentropes at representative compositions and potential temperatures. A similar linear regression was fit for specific entropy as a function of temperature at P = 0 GPa on the same dataset to translate potential temperatures to specific entropy. Similarly to the iron speciation parameterization described in \S\ref{state-var-sampling}, this approach is not intended to be explicitly correct; it is intended to control the distribution of the training dataset in pressure-temperature-entropy space without unnecessary computational expense. These regressions are used to impose a roughly adiabatic pressure-temperature path for training data. These paths are pertubed with small random noise to prevent the emulators from learning relationships between composition and entropy. 
 
@@ -565,8 +565,8 @@ Training labels are converted to linear molar abundance before use, rather than 
 network being asked to reproduce a logarithmic target that is undefined at zero. Zero
 is the one value at which this architecture's behaviour is the point.
 
-\todo{rewrite this.\^\^\^}
- 
+\todo{rewrite this.\^{}\^{}\^{}}
+
 \subsubsection{Encoder and shared representation}
 
 Inputs pass through a fully connected encoder with leaky-ReLU activations, an
@@ -581,7 +581,7 @@ and the bulk composition rather than only to a learned summary of them. There is
 separate saturation sub-network; that is the direct consequence of
 Section~\ref{sec:saturation}.
 
-\todo{rewrite this.\^\^\^}
+\todo{rewrite this.\^{}\^{}\^{}}
 
 \subsubsection{Chemistry heads}
 \label{sec:chemheads}

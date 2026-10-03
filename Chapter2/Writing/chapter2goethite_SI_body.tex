@@ -207,7 +207,7 @@ T = 24°C such that the temperature would stabilize at T = 24°C by design.
 \label{fig:ch2-goethite-cooling-rate}
 \end{figure}
 
-\subsection{Helium-in-Goethite Diffusivity Inversions}\label{helium-in-goethite-diffusivity-inversions}
+\subsection{Uncertainty for Diffusivity Inversions}\label{helium-in-goethite-diffusivity-inversions}
 
 
 Apparent values of D/a\textsuperscript{2} for 3He and 4He were
@@ -243,7 +243,7 @@ intercept and slope parameters of the linear regression is significantly
 larger than the uncertainty related to the total yield, so it is
 neglected.
 
-\subsection{Helium Isotope Ratio Uncertainty for Step Heats}\label{helium-isotope-ratio-uncertainty}
+\subsection{Helium Isotope Ratio Uncertainty}\label{helium-isotope-ratio-uncertainty}
 
 The upper and lower bounds of the $\frac{^4He}{^3He}$ isotope ratios for each heating step are taken as the maximum and minimum  $\frac{^4He}{^3He}$ 
 isotope ratio calculated out of the 4 hypothetical end-member permeation scenarios, which would have been experienced by both helium isotope systems:
@@ -276,7 +276,7 @@ Where $m_{x}^{i-1}$ and $\left(\lambda t \right)^{i-1}$ refer to the measured he
 \section{Goethite Permeation Rate Constant Dataset}\label{sec:ch2-si-detailed-methods}
 \markright{\MakeUppercase{In-Experiment Permeation Rate Constant Dataset}}
 
-The in-experiment permeation rate constants used by the permeation step method below -- and the isothermal-permeation-fit methodology, cooling-tube numerical model, and Arrhenius regression used to determine them -- are described in full in \S\ref{sec:ch2-si-permeation} and \S\ref{finite-difference-diffusion-model-of-cooling-tube}. The complete fitted dataset underlying that regression is reported here: Table~\ref{tab:ch2-permeation-isothermal-raw} gives the raw per-step data for all 10 isothermal sequences, and Table~\ref{tab:ch2-permeation-isothermal-fits} gives the lambda/$n_0$ fit to each sequence (Fig.~\ref{fig:ch2-permeation-fits}) that together define the Arrhenius regression of Fig.~\ref{fig:ch2-ampoule-permeability}.
+The in-experiment permeation rate constants used to correct for permeation lag is reported below. Table~\ref{tab:ch2-permeation-isothermal-raw} gives the raw per-step data for all 10 isothermal sequences, and Table~\ref{tab:ch2-permeation-isothermal-fits} gives the lambda/$n_0$ fit to each sequence (Fig.~\ref{fig:ch2-permeation-fits}) that together define the Arrhenius regression of Fig.~\ref{fig:ch2-ampoule-permeability}.
 
 \ChTwoPermStepRawTable
 
@@ -284,7 +284,7 @@ The in-experiment permeation rate constants used by the permeation step method b
 
 \ChTwoPermStepFitTable
 
-\subsection*{Permeation Step Method Step-Heat Dataset}\label{ch2-si-distilled-permstep}
+\subsection*{\textsuperscript{3}He Step Heat Dataset, Corrected with the Permeation Step Method}\label{ch2-si-distilled-permstep}
 
 The complete corrected step-heat dataset produced by the permeation step
 method, using the in-experiment rate constants above
@@ -382,6 +382,92 @@ Beyond the ampoule's residual helium content itself (\S\ref{complete-degas-test}
 % Goethite dehydroxylation kinetics and stability: supplementary sections.
 % Added 2026-09-25 (goethite stability integration; see CHANGES_JOURNAL.md).
 % =============================================================================
+
+% -----------------------------------------------------------------------------
+\section{Kinetic mechanisms and the limits of a single heating schedule}
+\label{sec:gt_supp_mech}
+% -----------------------------------------------------------------------------
+
+Solid-state rate laws separate the temperature dependence of the rate from its dependence on
+the extent of reaction \citep{vyazovkin2011}:
+\begin{equation}
+  \frac{d\alpha}{dt} = A\exp\!\left(-\frac{E_a}{RT}\right)h(\alpha),
+\end{equation}
+where $\alpha$ is the fraction of goethite converted. The reaction model $h(\alpha)$ expresses the
+mechanism: it describes how the rate changes as conversion proceeds, which depends on where
+and how the reaction advances through a grain. For first-order kinetics (F1), grains convert
+independently once nucleated, so the rate is proportional to the goethite remaining,
+$h = 1-\alpha$. For a reaction front moving inward from the grain surface (R2, R3), the rate is
+proportional to the shrinking area of the unreacted core. For random nucleation followed by growth
+(A2, A3), the rate first accelerates and then slows. For any heating schedule, each rate law
+gives $\alpha$ as a function of a single variable,
+\begin{equation}
+  x = A\sum_j \Delta t_j\exp\!\left(-\frac{E_a}{RT_j}\right),
+\end{equation}
+the Arrhenius-weighted time delivered by the steps up to the current one; for a single isothermal
+step, $x = kt$. We tested the mechanisms in Table~\ref{tab:gt_mech_forms}, including spherical
+diffusion on the same footing: for diffusion, $x$ is the Fourier number $Dt/a^2$ with $D/a^2$
+Arrhenius in $T$. Under vacuum, the driving-force factor $1-\exp(-\Delta\mu/RT)$ is unity to better
+than $10^{-9}$, so $x$ depends only on the heating schedule. Diffusion and conversion then differ
+only in the shape of $\alpha(x)$ and in the fitted $E_a$.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kinetic models: reaction model $h(\alpha)$ and conversion as a function of the Arrhenius-weighted time, $\alpha(x)$.}
+  \label{tab:gt_mech_forms}
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabular}{lll}
+    \hline
+    Model & $h(\alpha)$ & $\alpha(x)$ \\
+    \hline
+    R2 contracting cylinder & $2(1-\alpha)^{1/2}$ & $1-(1-x)^2$ \\
+    R3 contracting sphere & $3(1-\alpha)^{2/3}$ & $1-(1-x)^3$ \\
+    F1 first order & $1-\alpha$ & $1-e^{-x}$ \\
+    A2, A3 Avrami ($n=2,3$) & $n(1-\alpha)[-\ln(1-\alpha)]^{1-1/n}$ & $1-e^{-x^n}$ \\
+    D3 sphere diffusion & --- & $1-\dfrac{6}{\pi^2}\displaystyle\sum_{m=1}^{\infty} \dfrac{e^{-m^2\pi^2 x}}{m^2}$ \\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Fits to the vacuum data} Table~\ref{tab:gt_mech_fits} gives the fit of each model to
+the cumulative KAF $^3$He release within the fitting window. It also gives the misfit of the
+resulting out-of-sample prediction of HDM, and the fit to the KAF water data. F1 gives the best
+fit and the best prediction. R3 and R2 are close behind, so we describe the mechanism as
+nucleation- or interface-controlled rather than claim first order specifically. The Avrami
+fits reach the lower bound of $E_a$ and fail on both data sets. Spherical diffusion with
+$\phi=0$ fits KAF \ChTwoKinDThreeRmsRatio{} times worse than F1 and cannot produce the $F\approx0.89$
+plateau. To compare diffusion on the same footing, we also fit D3 with $\phi$ fixed at the F1 value
+and with $\phi$ free, over the same \ChTwoKinNKAF{} KAF steps. The imposed plateau improves the KAF
+misfit to \ChTwoKinDThreePhiRmsKAF{} and \ChTwoKinDThreeFreeRmsKAF, which still ranks below F1, R3 and
+R2, and the out-of-sample prediction of HDM does not improve (rms \ChTwoKinDThreePhiRmsHDM{} and
+\ChTwoKinDThreeFreeRmsHDM, against \ChTwoKinFOneRmsHDM{} for F1). These fits also require
+$E_a$ of \ChTwoKinDThreePhiEa--\ChTwoKinDThreeFreeEa~kJ\,mol$^{-1}$ and a rate factor
+$s = \ChTwoKinDThreePhiS$ for the trap-isolated steps, although a diffusive process should not
+respond to the water pressure at all.
+
+The fitting window excludes the low-temperature steps, where release is dominated by diffusion from
+goethite, and the plateau, where it is dominated by diffusion from hematite; the rms misfits are
+computed over the same steps. Repeating the fits with every step included gives the same result:
+F1 remains the best model ($E_a = \ChTwoKinAllFOneEa$~kJ\,mol$^{-1}$, $\phi = \ChTwoKinAllPhi$, rms \ChTwoKinAllFOneRmsKAF{} for KAF and \ChTwoKinAllFOneRmsHDM{}
+for the HDM prediction), followed by R3 (\ChTwoKinAllRThreeEa~kJ\,mol$^{-1}$; \ChTwoKinAllRThreeRmsKAF, \ChTwoKinAllRThreeRmsHDM) and R2 (\ChTwoKinAllRTwoEa~kJ\,mol$^{-1}$;
+\ChTwoKinAllRTwoRmsKAF, \ChTwoKinAllRTwoRmsHDM), with D3 at \ChTwoKinAllDThreeEa~kJ\,mol$^{-1}$ (\ChTwoKinAllDThreeRmsKAF, \ChTwoKinAllDThreeRmsHDM;
+\ChTwoKinAllDThreePhiRmsKAF{} and \ChTwoKinAllDThreePhiRmsHDM{} with $\phi$ fixed at the F1 value).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Kinetic and Diffusive Model fits to the vacuum experiments (from \citet{monteiro2017}~and~\citet{farley2024}). $s$: rate factor for the trap-isolated steps. All rms values are over the same \ChTwoKinNKAF{} KAF and \ChTwoKinNHDM{} HDM steps. D3 is fitted with $\phi$ fixed at 0, fixed at the F1 value, and free; the water fit does not depend on $\phi$ and is given once.}
+  \label{tab:gt_mech_fits}
+  \begin{tabular}{lccccccc}
+    \hline
+    Model & $E_a$ & $\ln A$ & $\phi$ & $s$ & rms KAF & rms HDM & $E_a$ (water) \\
+    \hline
+\ChTwoKinMechFitRows
+    \hline
+    \multicolumn{8}{l}{\footnotesize $E_a$ in kJ\,mol$^{-1}$, $A$ in s$^{-1}$. $^{a}$At the lower bound of the fit.}
+  \end{tabular}
+\end{table}
+
 
 % -----------------------------------------------------------------------------
 \section{Equilibrium Thermodynamics of Goethite Dehydroxylation}
@@ -527,91 +613,6 @@ hematite. At 40~bar that is 46~J, three orders of magnitude smaller than the eff
 water. The water-buffered step-heating technique therefore stabilizes goethite primarily by
 reducing the driving force of the reaction. Surface hydration is a second-order correction that matters
 only for nanometer grains (Eq.~\eqref{eq:gt_equalarea}).
-
-% -----------------------------------------------------------------------------
-\section{Kinetic mechanisms and the limits of a single heating schedule}
-\label{sec:gt_supp_mech}
-% -----------------------------------------------------------------------------
-
-Solid-state rate laws separate the temperature dependence of the rate from its dependence on
-the extent of reaction \citep{vyazovkin2011}:
-\begin{equation}
-  \frac{d\alpha}{dt} = A\exp\!\left(-\frac{E_a}{RT}\right)h(\alpha),
-\end{equation}
-where $\alpha$ is the fraction of goethite converted. The reaction model $h(\alpha)$ expresses the
-mechanism: it describes how the rate changes as conversion proceeds, which depends on where
-and how the reaction advances through a grain. For first-order kinetics (F1), grains convert
-independently once nucleated, so the rate is proportional to the goethite remaining,
-$h = 1-\alpha$. For a reaction front moving inward from the grain surface (R2, R3), the rate is
-proportional to the shrinking area of the unreacted core. For random nucleation followed by growth
-(A2, A3), the rate first accelerates and then slows. For any heating schedule, each rate law
-gives $\alpha$ as a function of a single variable,
-\begin{equation}
-  x = A\sum_j \Delta t_j\exp\!\left(-\frac{E_a}{RT_j}\right),
-\end{equation}
-the Arrhenius-weighted time delivered by the steps up to the current one; for a single isothermal
-step, $x = kt$. We tested the mechanisms in Table~\ref{tab:gt_mech_forms}, including spherical
-diffusion on the same footing: for diffusion, $x$ is the Fourier number $Dt/a^2$ with $D/a^2$
-Arrhenius in $T$. Under vacuum, the driving-force factor $1-\exp(-\Delta\mu/RT)$ is unity to better
-than $10^{-9}$, so $x$ depends only on the heating schedule. Diffusion and conversion then differ
-only in the shape of $\alpha(x)$ and in the fitted $E_a$.
-
-\begin{table}[htbp]
-  \centering
-  \caption{Kinetic models: reaction model $h(\alpha)$ and conversion as a function of the Arrhenius-weighted time, $\alpha(x)$.}
-  \label{tab:gt_mech_forms}
-  \footnotesize
-  \setlength{\tabcolsep}{4pt}
-  \begin{tabular}{lll}
-    \hline
-    Model & $h(\alpha)$ & $\alpha(x)$ \\
-    \hline
-    R2 contracting cylinder & $2(1-\alpha)^{1/2}$ & $1-(1-x)^2$ \\
-    R3 contracting sphere & $3(1-\alpha)^{2/3}$ & $1-(1-x)^3$ \\
-    F1 first order & $1-\alpha$ & $1-e^{-x}$ \\
-    A2, A3 Avrami ($n=2,3$) & $n(1-\alpha)[-\ln(1-\alpha)]^{1-1/n}$ & $1-e^{-x^n}$ \\
-    D3 sphere diffusion & --- & $1-\dfrac{6}{\pi^2}\displaystyle\sum_{m=1}^{\infty} \dfrac{e^{-m^2\pi^2 x}}{m^2}$ \\
-    \hline
-  \end{tabular}
-\end{table}
-
-\subsection{Fits to the vacuum data} Table~\ref{tab:gt_mech_fits} gives the fit of each model to
-the cumulative KAF $^3$He release within the fitting window. It also gives the misfit of the
-resulting out-of-sample prediction of HDM, and the fit to the KAF water data. F1 gives the best
-fit and the best prediction. R3 and R2 are close behind, so we describe the mechanism as
-nucleation- or interface-controlled rather than claim first order specifically. The Avrami
-fits reach the lower bound of $E_a$ and fail on both data sets. Spherical diffusion with
-$\phi=0$ fits KAF \ChTwoKinDThreeRmsRatio{} times worse than F1 and cannot produce the $F\approx0.89$
-plateau. To compare diffusion on the same footing, we also fit D3 with $\phi$ fixed at the F1 value
-and with $\phi$ free, over the same \ChTwoKinNKAF{} KAF steps. The imposed plateau improves the KAF
-misfit to \ChTwoKinDThreePhiRmsKAF{} and \ChTwoKinDThreeFreeRmsKAF, which still ranks below F1, R3 and
-R2, and the out-of-sample prediction of HDM does not improve (rms \ChTwoKinDThreePhiRmsHDM{} and
-\ChTwoKinDThreeFreeRmsHDM, against \ChTwoKinFOneRmsHDM{} for F1). These fits also require
-$E_a$ of \ChTwoKinDThreePhiEa--\ChTwoKinDThreeFreeEa~kJ\,mol$^{-1}$ and a rate factor
-$s = \ChTwoKinDThreePhiS$ for the trap-isolated steps, although a diffusive process should not
-respond to the water pressure at all.
-
-The fitting window excludes the low-temperature steps, where release is dominated by diffusion from
-goethite, and the plateau, where it is dominated by diffusion from hematite; the rms misfits are
-computed over the same steps. Repeating the fits with every step included gives the same result:
-F1 remains the best model ($E_a = \ChTwoKinAllFOneEa$~kJ\,mol$^{-1}$, $\phi = \ChTwoKinAllPhi$, rms \ChTwoKinAllFOneRmsKAF{} for KAF and \ChTwoKinAllFOneRmsHDM{}
-for the HDM prediction), followed by R3 (\ChTwoKinAllRThreeEa~kJ\,mol$^{-1}$; \ChTwoKinAllRThreeRmsKAF, \ChTwoKinAllRThreeRmsHDM) and R2 (\ChTwoKinAllRTwoEa~kJ\,mol$^{-1}$;
-\ChTwoKinAllRTwoRmsKAF, \ChTwoKinAllRTwoRmsHDM), with D3 at \ChTwoKinAllDThreeEa~kJ\,mol$^{-1}$ (\ChTwoKinAllDThreeRmsKAF, \ChTwoKinAllDThreeRmsHDM;
-\ChTwoKinAllDThreePhiRmsKAF{} and \ChTwoKinAllDThreePhiRmsHDM{} with $\phi$ fixed at the F1 value).
-
-\begin{table}[htbp]
-  \centering
-  \caption{Kinetic and Diffusive Model fits to the vacuum experiments (from \citet{monteiro2017}~and~\citet{farley2024}). $s$: rate factor for the trap-isolated steps. All rms values are over the same \ChTwoKinNKAF{} KAF and \ChTwoKinNHDM{} HDM steps. D3 is fitted with $\phi$ fixed at 0, fixed at the F1 value, and free; the water fit does not depend on $\phi$ and is given once.}
-  \label{tab:gt_mech_fits}
-  \begin{tabular}{lccccccc}
-    \hline
-    Model & $E_a$ & $\ln A$ & $\phi$ & $s$ & rms KAF & rms HDM & $E_a$ (water) \\
-    \hline
-\ChTwoKinMechFitRows
-    \hline
-    \multicolumn{8}{l}{\footnotesize $E_a$ in kJ\,mol$^{-1}$, $A$ in s$^{-1}$. $^{a}$At the lower bound of the fit.}
-  \end{tabular}
-\end{table}
 
 
 % -----------------------------------------------------------------------------

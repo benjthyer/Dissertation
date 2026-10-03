@@ -91,7 +91,7 @@ conclusions about the mineralogical and environmental conditions needed
 for accurately dating the crystallization of goethite with the
 (U--Th)/He method and require experimental verification.
 
-Goethite dehydration is suppressed at high water pressure, so a step
+Goethite dehydration is suppressed at high water pressure \citep{langmuir1971,navrotsky2008}, so a step
 heat conducted under hydrothermal conditions may interrogate helium loss
 rather than decomposition kinetics. Until now, no studies have reported
 helium step-heating results for goethite under hydrothermal (high
@@ -329,8 +329,12 @@ Information (\S\ref{sec:ch2-si-permeation}), together with the diffusivity inver
 isotope-ratio uncertainties and the kinetic analysis of the published vacuum step heats
 (\S\ref{ch2-analytical-methods}).
 
-% --- Kinetic reduction of vacuum step heats (moved from Discussion, 2026-10-01) ---
-In the following analysis,
+\subsection{Kinetic and Diffusive Reductions of Step-Heat Data}\label{sec:gt_kin_methods}
+
+We reanalyzed the published vacuum step heats of irradiated Win-06-01b by \citet{farley2024} (hereafter \emph{KAF}) and
+\citet{monteiro2017} (hereafter \emph{HDM}), together with the water-saturated step heat of this study, by reducing every
+as both a first-order conversion rate constant and as an apparent diffusivity.
+For the kinetic reduction,
 \textsuperscript{3}He is assumed to be immediately released from the goethite lattice upon conversion to hematite, except for a fraction $\phi$ 
 that is inherited by the hematite product. The fraction of helium released in each step is then $F_i = (1-\phi)\,\alpha_i$, where $\alpha_i$ 
 is the fraction of goethite converted in step $i$.
@@ -362,9 +366,6 @@ For comparison, the diffusion parameter of each step is obtained with the same
 \citet{fechtigkalbitzer1966} inversion for a sphere that is applied to the hydrothermal
 experiment (\S\ref{helium-in-goethite-diffusivity-inversions}).
 
-All steps are plotted in Fig.~\ref{fig:gt_arrhenius}, for the both kinetic and diffusion reductions, but the fits use only KAF steps \ChTwoKinWinKAF{}
-(\ChTwoKinWinKAFT~$^\circ$C) and HDM steps \ChTwoKinWinHDM{} (\ChTwoKinWinHDMT~$^\circ$C).
-
 Additionally, in both experiments release stalls at $F\approx0.9$. The fitted $\phi=\ChTwoKinPhi$ is the same for KAF
 and HDM. In HDM, the remaining $\sim$\ChTwoKinPhiPct\% is released slowly between 340 and 500~$^\circ$C and on
 fusion. We interpret this fraction as $^3$He inherited by the hematite product and subsequently
@@ -381,15 +382,7 @@ decrease in apparent diffusivity interpreted to result from hematite inheritance
 The two experiments' agreement for this feature in the \textsuperscript{4}He/\textsuperscript{3}He spectra suggests that these values are 
 independent of heating schedule and may reflect a material property of Win-06-01b.
 
-% --- Isothermal discrimination test design (moved from Discussion, 2026-10-01) ---
-Sequences of isothermal steps can be particularly powerful in discriminating first and second order processes.
-Diffusion slows quickly as the diffusion front moves inward, depleting the grain
-rims of helium, whereas first-order conversion proceeds at a nearly constant rate for fractional yields much less than 1. We harness the principle to conduct a sensitive test
-by performing a series of 4 consectutive, long isothermal steps at 250~$^\circ$C at the end of the experiment: three consecutive 5-hour steps and one 170.8-hour step. Using the first three
-5~h steps at 250~$^\circ$C, we invert for both kinetic rate constants and apparent diffusivities, then use each model to project the yield for 170.8~h step.
-
-\subsection{SEM Study of Thermally Treated Polycrystalline
-Goethite}\label{sem-study-of-thermally-treated-polycrystalline-goethite}\label{sec:gt_pigment_methods}
+\subsection{SEM Study of Thermally Treated Goethite}\label{sem-study-of-thermally-treated-polycrystalline-goethite}\label{sec:gt_pigment_methods}
 
 In early trials of the ``glass tube method'' for helium step heat
 experiments with controlled microenvironments presented here,
@@ -413,6 +406,8 @@ reaction was assessed by color (yellow goethite, red hematite) before imaging.
 % preparation for the pigment images (SE2, 10 kV, Feb 2024).
 
 \section{\texorpdfstring{Results }{Results }}\label{ch2-results}
+
+\subsection{Water-Saturated Step Heat of HT-Win-06-01b}\label{sec:gt_ht_results}
 
 The complete corrected step-heat dataset underlying the diffusivities, delta plots, and Arrhenius regressions discussed below is reported in Tables~\ref{tab:ch2-distilled-3he} and~\ref{tab:ch2-distilled-4he}, including the lower-bound, central, and upper-bound values from the bounding method's permeation-lag correction for $^3$He and $^4$He respectively.
 
@@ -579,7 +574,8 @@ high-error, scattered diffusivities which are omitted for clarity.
 \label{fig:ch2-delta-zoom}
 \end{figure}
 
-% --- Kinetic reduction results (moved from Discussion, 2026-10-01) ---
+\subsection{Kinetic Reanalysis of Vacuum Step Heats}\label{sec:gt_kin_results}
+
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=\textwidth]{arrhenius_reaction_vs_diffusion.pdf}
@@ -590,15 +586,13 @@ constants $k_i$ (Eq.~\eqref{eq:gt_stepk}, $\phi=\ChTwoKinPhi$), and (b) as
 apparent diffusivities $D/a^2$ for a sphere \citep{fechtigkalbitzer1966}. Only the filled points are used for the linear regressions. 
 Large pink circles mark the two KAF steps with the
 LN$_2$ trap isolated. Six low-signal steps of the water-saturated experiment are excluded for clarity. The black line is a first-order Arrhenius fit to filled points of both vacuum experiments. These fitted parameters are given in Eq.~\eqref{eq:gt_line}. 
-Below $\sim$180~$^\circ$C both vacuum experiments depart from the first-order line, reflecting diffusion out of less-retentive domains that is more rapid than the dehydroxylation process. Steps with $F>1-\phi$ have no defined
-$k$ and are absent from (a). $\phi$, the proportion of helium retained by the pseudomorph hematite after dehydroxylation, was approximated as \ChTwoKinPhi for both vacuum experiments. $\phi$ appears to be a slight underestimation for both vacuum experiments.}
+Below $\sim$180~$^\circ$C both vacuum experiments depart from the first-order line. Steps with $F>1-\phi$ have no defined $k$ 
+and are absent from (a).}
 \label{fig:gt_arrhenius}
 \end{figure}
 
-KAF steps 1--4 and HDM steps 2--7
-(below $\sim$180~$^\circ$C) release $^3$He 0.5--3 orders of magnitude faster than the extrapolated 
-conversion rate (Fig.~\ref{fig:gt_arrhenius}). This component amounts
-to less than 2\% of the $^3$He.
+All steps are plotted in Fig.~\ref{fig:gt_arrhenius}, for both the kinetic and diffusion reductions, but the fits use only KAF steps \ChTwoKinWinKAF{}
+(\ChTwoKinWinKAFT~$^\circ$C) and HDM steps \ChTwoKinWinHDM{} (\ChTwoKinWinHDMT~$^\circ$C).
 
 An unweighted least-squares fit of $\ln k_i$ against $1/T_i$ for the \ChTwoKinLineN{} steps in the fitting window
 gives
@@ -615,18 +609,27 @@ $E_a = \ChTwoKinAllFOneEa$~kJ\,mol$^{-1}$ and the same ranking of models (\S\ref
 The kinetic rate parameters fitted to KAF alone predict the independent HDM schedule with an rms misfit in
 $F$ of \ChTwoKinFOneRmsHDM{} over the fitting window. A single-domain spherical diffusion model fits both vacuum step 
 heats worse, even when given the same hematite-inherited fraction ($\phi = \ChTwoKinPhi$) as the first-order fit (Table~\ref{tab:gt_mech_fits}). 
-It should be noted that this analysis would be ineffective if there were only one vacuum step heat experiment, as the kinetic and 
-diffusion models can be made to fit a single experiment similarly well by shifting the activation energy.
+
+KAF steps 1--4 and HDM steps 2--7
+(below $\sim$180~$^\circ$C) release $^3$He 0.5--3 orders of magnitude faster than the extrapolated 
+conversion rate (Fig.~\ref{fig:gt_arrhenius}). This component amounts
+to less than 2\% of the $^3$He.
 
 In two KAF steps the trap was isolated and evolved water accumulated in the line. At
 230~$^\circ$C the step rate constant fell to \ChTwoKinTrapSuppLow{} times the mean of its neighbors at the same
 temperature, and at 240~$^\circ$C to \ChTwoKinTrapSuppHigh{} times. The rate recovered fully when the trap was
-restored. Water and $^3$He were suppressed together. A diffusion process would not respond to
-the partial pressure of water. We return to these two steps in \S\ref{sec:gt_nucleation}, where
+restored. Water and $^3$He were suppressed together. We return to these two steps in \S\ref{sec:gt_nucleation}, where
 they calibrate the nucleation model.
 
-% --- Isothermal discrimination test results (moved from Discussion, 2026-10-01) ---
-Both models yield reproducible results for the three 5-hour calibration steps (Fig.~\ref{fig:gt_hold}), but their 
+\subsection{Isothermal Discrimination Test at 250~$^\circ$C}\label{sec:gt_hold_results}
+
+Sequences of isothermal steps can be particularly powerful in discriminating first and second order processes.
+Diffusion slows quickly as the diffusion front moves inward, depleting the grain
+rims of helium, whereas the rate of first-order conversion slows less for similar yields. We harnessed the principle to conduct a sensitive test
+by performing a series of 4 consecutive, long isothermal steps at 250~$^\circ$C at the end of the water-saturated experiment: three consecutive 5-hour steps and one 170.8-hour step. Using the first three
+5~h steps at 250~$^\circ$C, we invert for both kinetic rate constants and apparent diffusivities, then use each model to project the yield for 170.8~h step.
+
+Both the first-order and diffusion models yield reproducible results for the three 5-hour calibration steps (Fig.~\ref{fig:gt_hold}), but their 
 projections sharply diverge for the long step. Diffusion projects a final fractional cumulative yield of $F = 0.149$ against 
 an observed $F = 0.146$, a much stronger agreement than the first-order model prediction of $F = 0.173$, which overpredicts
 the helium yield for that step by 46\% (Fig.~\ref{fig:gt_hold}). The data's uncertainty is too small to affect this result. In the interest of thoroughness, 
@@ -649,39 +652,36 @@ Calibrated the same way, they project cumulative fractional yields within 0.174-
 
 \subsection{Dehydroxylation Kinetics in Vacuum Step Heats of Win-06-01b}\label{sec:gt_vacuum}
 
-\citet{farley2024} showed that evolved helium in vacuum step heats of Win-06-01b (and many other goethite samples) are controlled 
+\citet{farley2024} showed that evolved helium in vacuum step heats of Win-06-01b (and many other goethite samples) is controlled 
 by the conversion of goethite to hematite. Here, we present a reanalysis of the vacuum step heat data of Win-06-01b 
-from \citet{farley2024} (referred to here as \emph{KAF}) and \citet{monteiro2017} (referred to here as \emph{HDM}) to show that the helium release of Win-06-01b is better descibed 
+from KAF and HDM to show that the helium release of Win-06-01b is better described 
 by a model of first-order reaction kinetics for goethite dehydroxylation than by a second order diffusion model.
 
-We postulate that this early helium fraction is diffusively lost from the least
+We postulate that the early $^3$He released faster than the extrapolated conversion rate (\S\ref{sec:gt_kin_results}) is diffusively lost from the least
 retentive domains; it corresponds to ``Stage 1'' helium release of \citet{farley2024}.
-The kinetic reduction yields simpler, more interpretive Arrhenius plots for the vacuum experiments than the diffusion inversion The kinetic inversion collapses the
-the prograde steps at the beginning of the vacuum experiments onto a single line that the diffusion reduction instead shows as an irreversible 
+The kinetic reduction yields simpler, more interpretable Arrhenius plots for the vacuum experiments than the diffusion inversion does. The kinetic inversion collapses the
+prograde steps at the beginning of the vacuum experiments onto a single line that the diffusion reduction instead shows as an irreversible 
 increase in diffusivity (Fig.~\ref{fig:gt_arrhenius}). This initial helium release is most easily read as 
 a diffusive-related loss from a broad distribution of small, poorly retentive domains in the goethite. 
 The Arrhenius plot of the kinetic reduction makes it clear that helium release from the initial steps is in 
 excess of the rate of dehydroxylation, which is not obvious from the Arrhenius plot produced with the diffusion reduction. 
 This shift in the dominance from diffusive loss to dehydroxylation-related loss offers a clear explanation for the change in behavior between "Stage 1" and "Stage 2"
-in vacuum step heat experiments described by \citet{farley2024}. 
-The kinetic reduction collapses many of these prograde steps that appear distinct in an apparent diffusivity space
-onto the single line that defines the dehydroxylation rate law, reducing the overall complexity of the vacuum step heat results. 
+in vacuum step heat experiments described by \citet{farley2024}.
 
 Thermogravimetric studies of goethite dehydroxylation report somewhat higher apparent activation
 energies, $154\pm15$ to $169\pm8$~kJ\,mol$^{-1}$, for a reaction controlled by a two-dimensional
-phase boundary, with a different mechanism at early stages and low temperature \citep{goss1987}.This may simply
+phase boundary, with a different mechanism at early stages and low temperature \citep{goss1987}. This may simply
 be due to a difference in samples: goethites from different sources have different particle sizes, morphologies, 
 and aluminum contents, all of which affect the kinetics of dehydroxylation \citep{langmuir1971,yapp1983,tardy1985,majzlannavrotsky2003}.
 
 \subsection{Helium Release under Water-Saturated Conditions Is Diffusive}\label{sec:gt_hydro}
 
 The goal of this work was to attempt to slow the goethite dehydroxylation process
-below the rate of thermal helium loss in unchanging goethite. SEM imagery shows that goethite that is thermally treated when encapsulated
-with water does not extensively dehydrate like goethite heat-treated in vacuum or open air (Figs.~\ref{fig:ch2-sem-control-vacuum}--\ref{fig:ch2-sem-vacuum-interior}). 
-The schedule included several prograde-retrograde heating cycles
+below the rate of thermal helium loss in unchanging goethite.
+The thermal schedule included several prograde-retrograde heating cycles
 which together would have completely dehydroxylated goethite in vacuum, using the vacuum kinetics of
 Eq.~\eqref{eq:gt_line}. Even so, only 14.7\% of the $^3$He was released in the water-saturated experiment;
-we argue below that the helium loss in the water-saturated experimentis controlled by diffusion rather than by conversion.
+we argue below that the helium loss in the water-saturated experiment is controlled by diffusion rather than by conversion.
 
 Fig.~\ref{fig:gt_arrhenius} compares the kinetic and diffusion inversions of the step heat data.
 These plots show the opposite trend for the vacuum and hydrothermal experiments: the hydrothermal experiment collapses into a simpler, coherent
@@ -718,39 +718,12 @@ with an R\textsuperscript{2} of \ChTwoRtwo) suggests that the frequency
 factor obtained by the regression may be dominated by a single
 diffusion domain for $F_c \ge 7\%$ rather than a mix of diffusion domains as is most
 often observed in the apparent diffusivities for polycrystalline
-hematite \citep{farley2018}. 
-
-Many vacuum experiments in goethite also record declining delta values
-for early fractional yields of 3He \citep{shustervasconcelos2005,farley2024} that are generally not represented in the 4He data. 
-The 4He apparent diffusivities of this expeiment are consistently
-lower than the 3He apparent diffusivities and generally increase thoughout the experiment, 
-which is consistent with near-complete loss of \textsuperscript{4}He in the least retentive domains as well as paritial \textsuperscript{4}He 
-loss radiogenic helium in the more retentive domain(s) \citep{shuster2004,shustervasconcelos2005}.
-
-One potential explanation for this effect may be from helium migrating out of fast pathways along grain boundaries
-that would retain little helium in nature \citep{shustervasconcelos2005}.
-Goethite aggregates are known to have interstices that are filled by
-chemisorbed non-stoichiometric water that represents the earliest water
-to be lost in vacuum \citep{naono1987}. Non-stoichiometric hydrogen
-is known to persist in goethite even after heating to 140°C \citep{yapppoths1995}. It is therefore reasonable to posit that artificial 3He
-observed in less-retentive domains may be trapped by non-stoichiometric
-water or hydroxyl groups within interstices of goethite aggregates.
-Dehydration of non-stoichiometric interstitial water may be associated
-with early fractions of degassing water and 3He from goethite samples
-during step heats, and could potentially represent the LRD (low retention
-domain) of \citet{shustervasconcelos2005}, and the 3He offgassed during ``Stage
-1'' in vacuum step heats \citep{farley2024}. The high variability of
-the portion of 3He hosted in early-degassing ``Stage 1'' fractions
-within vacuum step heats is sensible considering observations that
-goethite formed at different temperatures is known to have highly
-variable crystallinity, crystallite ordering, surface area, and
-non-stoichiometric water contents \citep{schwertmann1985}. This
-population of 3He would likely also be the first to be lost in a water-saturated environment.
+hematite \citep{farley2018}.
 
 \subsection{Thermodynamic Model of Goethite Dehydroxylation}\label{sec:gt_thermo_methods}\label{sec:gt_thermo}
 
 The preceding sections establish from helium step heat data alone that the vacuum step heats of
-Win-06-01b record first order conversion to hematite, whereas the water-saturated step heat at records second order diffusion
+Win-06-01b record first order conversion to hematite, whereas the water-saturated step heat records second order diffusion
 without detectable dehydroxylation. Here we use the thermodynamics of goethite dehydroxylation to
 explain why water has this effect and to estimate how much solid-state
 conversion could have occurred in the hydrothermal experiment (\S\ref{sec:gt_nucleation}).
@@ -766,12 +739,12 @@ whose Gibbs energy change, written per mole of hematite formed, is
   \label{eq:gt_dGr}
 \end{equation}
 where $\Delta G_r$ is the Gibbs energy change of the reaction and $G_{\mathrm{hem}}$, $G_{\mathrm{w}}$, and $G_{\mathrm{goe}}$ are the Gibbs energies of hematite, water, and goethite, respectively. 
-$\Delta G_{\mathrm{surf}}$ is the surface energy contribution, which must to be considered to reproduce observed phase stability \citep{navrotsky2008}. 
-Goethite is stable where $\Delta G_r>0$ and hematite plus water where $\Delta G_r<0$. The values and equations used to evaluate each of these terms is given in the supplement: \S\ref{sec:eqm-thermo}.
+$\Delta G_{\mathrm{surf}}$ is the surface energy contribution, which must be considered to reproduce observed phase stability \citep{navrotsky2008}. 
+Goethite is stable where $\Delta G_r>0$ and hematite plus water where $\Delta G_r<0$. The values and equations used to evaluate each of these terms are given in the supplement: \S\ref{sec:eqm-thermo}.
 
 % --- Added 2026-09-25 (goethite stability integration; see CHANGES_JOURNAL.md) ---
 
-The thermodynamic model of \S\ref{sec:gt_thermo_methods} can be used to calculate the stability field for
+This model can be used to calculate the stability field for
 goethite with respect to dehydroxylation to hematite and water in $\log P_{\mathrm{H_2O}}$--$T$ space (Fig.~\ref{fig:gt_PT}). This 
 phase diagram communicates several important features of the goethite--hematite--water system that are relevant to the experiments considered here:
 \begin{enumerate}
@@ -875,7 +848,7 @@ unchanged, Eq.~\eqref{eq:gt_knuc} gives
 with $\Delta\mu_{\mathrm{on}}$ evaluated at $P_{\mathrm{H_2O}} = 10^{-8}$~atm and $\Delta\mu_{\mathrm{off}}$ at an
 upper bound on the water pressure with the trap isolated. This pressure estimate of the water released depends on the
 volume of the experimental apparatus and the water content emitted by the goethite, which was measured with 
-capacitance monometry (\S\ref{sec:gt_supp_barrier}). This gives $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$
+capacitance manometry (\S\ref{sec:gt_supp_barrier}). This gives $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$
 (range \ChTwoKinGammaLo--\ChTwoKinGammaHi). Under vacuum the corresponding critical nucleus is smaller
 than a formula unit ($r^{*} = \ChTwoKinRstarVac$~nm) and the barrier is only \ChTwoKinBarVac~$k_BT$:
 conversion in vacuum is effectively barrierless, consistent with the simple Arrhenius behavior of
@@ -915,30 +888,22 @@ The aim of helium step heat experiments is to characterize the
 mechanisms and rates helium loss in nature to aid in the interpretation
 of geochronologic and helium geochemical data. The results of this
 experiment are encouraging in that they differ remarkably from
-experiments on the same and similar samples in vacuum that are primarily
+experiments on the same samples in vacuum that are primarily
 controlled by dehydration processes \citep{farley2024}, but we cannot exclude that this
 experiment may have been affected to some degree by processes aside from
 volume diffusion that are unrelated to helium loss in
-goethite in nature.
+goethite in nature. We consider two processes outside of volume diffusion that could have contributed to the helium released in the
+water-saturated experiment: (i) recrystallization of goethite or (ii) fluid-mediated conversion of goethite to hematite. If either 
+of these processes affected the helium release, then the apparent diffusivities reported here would represent upper bounds for 
+diffusive helium loss in goethite in nature.
 
-Bulk goethite is unstable with respect to hematite and water at
-the pressures and temperatures of this experiment \citep{majzlan2003} (\S\ref{sec:gt_thermo}). 
-The SEM study of goethite heat-treated in vacuum and open air shows that clearly visible volume contraction cracks
-form throughout the interiors and surfaces of highly-dehydrated goethite grains, while goethite heat-treated in water-saturated conditions
-does not (Figs.~\ref{fig:ch2-sem-control-vacuum}--\ref{fig:ch2-sem-vacuum-interior}).
-Clearly, dehydration is occurring at a much smaller scale, if at all, in the hydrothermal experiments. While this evidence excludes the possibility of pervasive dehydration in
-the hydrothermal experiments, it does not exclude the possibility of some dehydration occurring at a scale too small to be observed in the SEM images. Future work
-on textural evolution of natural goethite aggregates during low fraction dehydration would be useful to resolve the extent of ``hidden'' dehydration that may occur before
-the formation of SEM-visible cracks.
-
-The kinetic analysis of \S\ref{sec:gt_vacuum}, and the nucleation analysis of
-\S\ref{sec:gt_nucleation}, indicate that solid-state dehydration contributed negligibly to the helium loss of Win-06-01b-HT: at water
-saturation, the nucleation model predicts conversion rates many orders of magnitude slower than
-in vacuum, and the release shows the history and time dependence of diffusion rather than
-conversion. If dehydration nevertheless contributed to the helium loss of Win-06-01b-HT, the new
-data presented here would represent upper
-bounds for the apparent diffusivities of helium at the temperatures and
-fractional cumulative yields ($\Sigma F_{\mathrm{He}}$).
+The helium step heat data at water-saturated conditions reported here are better fit with a diffusion model than with a
+conversion model (\S\ref{sec:gt_hydro}).The kinetic analysis of \S\ref{sec:gt_vacuum}, and the nucleation analysis of
+\S\ref{sec:gt_nucleation} indicate that topotactic dehydroxylation has a nucleation barrier that is insurmountable for
+experimental conditions and timescales; however, this model has no bearing on fluid-mediated dehydroxylation. 
+Equilibrium thermodynamics predict that goethite is unstable with respect to hematite and water at
+these conditions \citep{majzlan2003} (\S\ref{sec:gt_thermo}) and therefore dehydroxlation of 
+in the experiment cannot be outright excluded. 
 
 The process of recrystallization is another potential complication in
 interpreting helium step heats of goethite in hydrothermal conditions.
@@ -947,8 +912,8 @@ known to recrystallize into more orderly, crystalline goethite
 aggregates, even at temperatures as low as 125°C in as little as 16
 hours \citep{schwertmann1985}. In this study, natural goethite was
 held in contact with liquid water and water vapor at hydrothermal
-conditions as harsh as \textasciitilde40 bars and 250°C for as long as a
-week. These conditions appear to have visibly dissolved and
+conditions as harsh as \textasciitilde40 bars and 250°C for many days. 
+These conditions appear to have visibly dissolved and
 reprecipitated silica from the ampoule's inner walls (Fig.~\ref{fig:ch2-ampoule-post}),
 qualitatively testifying to the ability of the hydrothermal fluid to
 dissolve and recrystallize rock-forming oxides. It is unquestionable
@@ -958,34 +923,25 @@ recrystallize this specimen of goethite, Win-06-01b, which is amongst
 the most helium-retentive and crystalline dated goethite samples
 \citep{waltenberg2012,farley2024}. Less crystalline goethites in
 nature are commonly recrystallized, which appears to result in helium
-loss, resetting the U-Th/He age \citep{monteiro2018,monteiro2014,heim2006}. Intuitively, it is difficult to imagine that
-dissolution-precipitation mediated recrystallization would not result in
-complete loss of helium within recrystallized regions. Therefore,
-assuming an initially uniform distribution of 3He throughout the crystal
-from proton irradiation, the upper bound extent of recrystallization
-would be equivalent to the 3He cumulative fractional yield, which is
-only 14.7\% by the end of the hydrothermal experiment. Remaining helium is
-unlikely to pass through these now helium-free recrystallized areas if
-grain boundaries in goethite serve as fast pathways like they do in
-hematite \citep{farley2018}. Recrystallization could be the dominant process
+loss, resetting the U-Th/He age \citep{monteiro2018,monteiro2014,heim2006}. 
+Recrystallization could be the dominant process
 controlling helium loss in this experiment, but only if it is faster
 than diffusive loss, in which case the data presented here would
 represent new upper bounds for apparent diffusivities for helium in
-Win-06-01b goethite. In that case, it stands to reason that processes
-such as dehydration and recrystallization may be faster than volume
-diffusion of helium in crystalline goethite in nature and may be the
-primary drivers of helium loss.
+Win-06-01b goethite. Recrystallization might also be faster than volume
+diffusion of helium in goethite in nature over geologic timescales even if it did not occur in this experiment. 
+In that case, recrystallization could be the primary driver of helium loss in nature regardless of the results of this experiment.
 
-\subsubsection{Fluid-Mediated Conversion of Synthetic Goethite Pigment}\label{sec:gt_pigment}
+\subsubsection{Fluid Mediated Conversion of Synthetic Goethite Pigment}\label{sec:gt_pigment}
 
-Acicular synthetic goethite pigment (\S\ref{sec:gt_pigment_methods}), heated in ampoules with excess water at
-200--250~$^\circ$C for about a day spontaneously reacted into hematite. Roughly equal proportions of
+We observed the spontaneous conversion of synthetic goethite pigment (\S\ref{sec:gt_pigment_methods}) to hematite when 
+heated in ampoules with excess water at experimental temperatures. Roughly equal proportions of
 ampoules were completely reacted (red), completely unreacted (yellow), or contained both
 reacted and unreacted material in isolated patches. In the mixed ampoules, the red and yellow portions were entirely
-isolated from one another, separated by gas bubbles. Unreacted pigment retains its acicular habit
+isolated from one another, separated by gas bubbles. Unreacted pigment retains its original acicular habit
 (Fig.~\ref{fig:gt_pigment}b). The reacted hematite product is instead composed of equant to platy crystals
 $\sim$0.5--1~\textmu m across (Fig.~\ref{fig:gt_pigment}a). The change of shape rules out pseudomorphic dehydroxylation
-like that observed to occur in goethite heated in vacuum (Figs.~\ref{fig:ch2-sem-buffered},~\ref{fig:ch2-sem-vacuum}, and~\ref{fig:ch2-sem-air}) indicating dissolution of
+like that observed to occur in goethite heated in vacuum (Figs.~\ref{fig:ch2-sem-buffered},~\ref{fig:ch2-sem-control-vacuum}, and~\ref{fig:ch2-sem-vacuum-interior}) indicating dissolution of
 goethite and nucleation and growth of hematite from the fluid, a pathway outside the solid-state
 nucleation model developed in \S\ref{sec:gt_nucleation}.
 
@@ -1005,66 +961,51 @@ nucleation model developed in \S\ref{sec:gt_nucleation}.
   \end{subfigure}
   \caption{Secondary electron images of synthetic goethite pigment after hydrothermal treatment
   at 200--250~$^\circ$C for about a day (\S\ref{sec:gt_pigment_methods}). (a) Material from a
-  completely reacted (red) ampoule: the acicular goethite has been replaced by equant to platy
-  crystals $\sim$0.5--1~\textmu m across, interpreted as hematite. (b) Material from an
+  completely reacted (red) ampoule: the acicular goethite has been replaced by equant to platy hematite
+  crystals $\sim$0.5--1~\textmu m across. (b) Material from an
   unreacted (yellow) ampoule, which retains the unchanged acicular habit of the starting pigment. The change
   in crystal habit requires dissolution of goethite and precipitation of hematite from the fluid,
-  and the all-or-nothing outcome of the experiments indicates that the reaction is limited by
-  nucleation and proceeds rapidly once it begins.}
+  and the all-or-nothing outcome of the experiments indicates that the reaction is fast once it begins.}
   \label{fig:gt_pigment}
 \end{figure}
 
-The distribution of outcomes is itself diagnostic. Conversion either went to completion within
-a fluid-connected volume or did not occur at all, even where reacted and unreacted pigment shared
-the same ampoule and thermal history. This is the behavior of a nucleation-limited process:
-once hematite nucleates, the reaction proceeds rapidly to completion, and where it does not
-nucleate, goethite persists for the full run. The fluid-mediated pathway is therefore governed,
-like the solid-state pathway, by the difficulty of forming a hematite nucleus rather than by the
-rate at which hematite grows.
+Conversion either went to completion within a fluid-connected volume or did not occur at all, 
+even where reacted and unreacted pigment shared the same ampoule and thermal history. We posit 
+that the fluid-mediated reaction requires some threshold of dissolved Fe(III) in the fluid to 
+nucleate hematite, but because the reaction consumes and produces dissolved Fe(III) in equal proportions, 
+it is not self-limiting and proceeds quickly to completion once that threshold is reached. 
 
 We conclude that water-saturated conditions do not by themselves exclude fluid-mediated
-conversion of goethite, even where solid-state conversion is suppressed (\S\ref{sec:gt_nucleation}). Whether that pathway operates
-likely depends on the solution chemistry. For the natural sample in distilled water,
-\S\ref{sec:gt_hydro} shows that the release is diffusive. The nucleation-limited, fluid-mediated
-reaction observed in the pigment thermal treatments would also be expected to trigger the release of helium abruptly rather than in the smooth,
-history-dependent manner observed. 
+conversion of goethite, even where topotactic conversion is suppressed (\S\ref{sec:gt_nucleation}). 
+Whether that pathway operates likely depends on the solution chemistry. Still, the helium step heat data for Win-06-01b-HT
+show no evidence for the abrupt abrupt and extreme helium loss that would be expected to accompany a fluid-mediated reaction. 
+The step heat data are instead consistent with a smooth, history-dependent release of helium, as expected for diffusive loss (\S\ref{sec:gt_hydro}).
 
-Assumption (iv) matters for the synthetic pigment of \S\ref{sec:gt_pigment}. Grain size and bulk
-thermodynamics cannot explain why the pigment blades reacted when the natural goethite did not. At 1~\textmu m, the surface contribution to $\Delta G_r$ is only
+Grain size and bulk thermodynamics cannot explain why the pigment blades reacted when the natural 
+polycrystalline goethite did not. At 1~\textmu m, the surface contribution to $\Delta G_r$ is only
 $\sim$0.04~kJ, and the bulk driving force at saturation is the same 6--11~kJ for both materials
 (Table~\ref{tab:gt_dmu}). The most likely difference is the fluid itself. Commercial iron-oxide
 pigments are commonly produced by precipitation from iron-salt solutions. They can carry
-residual soluble salts such as iron and alkali sulfates or nitrates, and they are often surface-treated with organometallic compounds \citep{legodi2007,almeidasilva2017,xu2021}. Such contaminants would
+residual soluble salts such as iron and alkali sulfates or nitrates, and they are often surface-treated with 
+organometallic compounds \citep{legodi2007,almeidasilva2017,xu2021}. Such contaminants would
 change the pH and ionic strength of the water they are heated in, and with them the solubility
-of Fe(III). The dissolution--precipitation pathway is limited by how much iron the fluid can
-carry, so a modest increase in Fe(III) solubility could turn a negligible reaction into a
-visible one. The natural Win-06-01b goethite, by contrast, was heated in
-distilled water, where near-neutral Fe(III) solubility is very low.
+of Fe(III). The dissolution--precipitation pathway is limited by how much iron the fluid
+carries, so a modest increase in Fe(III) solubility could make a nucleation-limited reaction
+viable. The natural Win-06-01b goethite, by contrast, was heated in
+distilled water, where near-neutral Fe(III) solubility is very low, potentially offering an explanation for \
+the divergent outcomes.
+
 % TODO: check the pigment product data sheet (grade, surface treatment, soluble-salt content, aqueous pH).
 
 \subsection{\texorpdfstring{High Helium Retentivity of
 Win-06-01b-HT}{ High Helium Retentivity of Win-06-01b-HT}}\label{high-helium-retentivity-of-win-06-01b-ht}
 
-Apparent diffusivities calculated from helium step heats on the
-hydrothermal experiment on Win-06-01b goethite are clearly resolved and
-much lower than the apparent diffusivities calculated for the same
-sample in vacuum by \citet{monteiro2017} and \citet{farley2024} (Fig.~\ref{fig:gt_arrhenius}b, Fig.~\ref{fig:ch2-arrhenius-zoom}, 
-Fig.~\ref{fig:ch2-delta-zoom}). Diffusivities calculated
-from the hydrothermal experiment are approximately seven natural log
-units lower than the earlier experiments in vacuum on the same sample. This high
+The apparent diffusivities of the water-saturated experiment are approximately seven natural log units lower than
+those obtained from the same sample in vacuum by \citet{monteiro2017} and \citet{farley2024} (Fig.~\ref{fig:gt_arrhenius}b,
+Fig.~\ref{fig:ch2-arrhenius-zoom}, Fig.~\ref{fig:ch2-delta-zoom}). This high
 helium retentivity is explored through three lenses: closure temperature
 of cooling samples \citep{dodson1973}, isothermal diffusion \citep{wolf1998}, and through comparison with step heats of other polycrystalline
-samples. Strictly speaking, both closure temperatures and retention
-estimations under isothermal diffusion only apply to helium loss
-occurring exclusively via thermally activated volume diffusion with
-known domain size. While the results presented here on a polycrystalline
-sample are consistent with a thermally activated volume diffusive
-process for helium loss in goethite, other processes such as goethite
-dehydroxylation or recrystallization may be an important or even dominant mode of helium loss in nature.
-Similarly, this study of a single sample has no bearing on potential complexities
-related to radiation damage and crystal defects on bulk diffusion
-\citep{bassal2022}, nor do they permit estimation of the diffusivity
-at infinite temperature (D0) without experiments on controlled grain sizes.
+samples.
 
 If the slope and intercept on the regression of 3He apparent
 diffusivities from this experiment are taken to represent a real
@@ -1142,7 +1083,7 @@ illustrating the utility of this approach even for comparing helium retentivity 
 
 Fig.~\ref{fig:ch2-fourier-hematite-ref} compares the step heat results of Win-06-01b-HT with 11
 step heat experiments of 3 samples of polycrystalline hematite and 9
-step heat experiments of 2 samples of goethite in Vacuum, including
+step heat experiments of 2 samples of goethite in vacuum, including
 Win-06-01b. In a thermal-history normalized space, it is obvious that
 goethite in vacuum and hematite define well-separated populations and
 goethite in vacuum is far less retentive of helium than hematite. Most
@@ -1159,6 +1100,11 @@ activities.
 \label{fig:ch2-fourier-hematite-ref}
 \end{figure}
 
+This study of a single sample has no bearing on potential complexities
+related to aluminum content, radiation damage, or crystal defects on bulk diffusion
+\citep{bassal2022}, nor does it permit estimation of the diffusivity
+at infinite temperature (D0); this would require experiments on controlled grain sizes.
+
 \subsection{Profiling Radiogenic Helium Loss with $\frac{^4He}{^3He}$ Ratios of Win-06-01b-HT}\label{spectra-of-win-06-01b-ht}
 
 Bulk-normalized \textsuperscript{4}He/\textsuperscript{3}He ratios in step heats of irradiated samples
@@ -1170,8 +1116,27 @@ at vanishingly small values and steeply increase at first, with the rate
 of increase slowing as the experiments proceed (Fig.~\ref{fig:ch2-ratio-spectra}). This
 behavior is consistent with complete then partial loss of radiogenic
 helium in nature in the least retentive domains and is observed in all
-step heat experiments on irradiated goethite \citep{farley2024}. The
-hydrothermal experiment, however, records lower bulk-normalized \textsuperscript{4}He/\textsuperscript{3}He
+step heat experiments on irradiated goethite \citep{farley2024}. 
+These least retentive domains could represent fine goethite grains, or they could represent 
+interstitial helium trapped between crystallite grain boundaries.
+Goethite aggregates are known to have interstices that are filled by
+chemisorbed non-stoichiometric water that represents the earliest water
+to be lost in vacuum \citep{naono1987}. Non-stoichiometric hydrogen
+is known to persist in goethite even after heating to 140°C \citep{yapppoths1995}. It is therefore reasonable to posit that artificial 3He
+observed in less-retentive domains may be trapped by non-stoichiometric
+water or hydroxyl groups within interstices of goethite aggregates.
+Dehydration of non-stoichiometric interstitial water may be associated
+with early fractions of degassing 3He from goethite samples
+during step heats, and could potentially represent the LRD (low retention
+domain) of \citet{shustervasconcelos2005}, and the 3He offgassed during ``Stage
+1'' in vacuum step heats \citep{farley2024}. The high variability of
+the portion of 3He hosted in early-degassing ``Stage 1'' fractions
+within vacuum step heats is sensible considering observations that
+goethite formed at different conditions is known to have highly
+variable crystallinity, crystallite ordering, surface area, and
+non-stoichiometric water contents \citep{schwertmann1985}. 
+
+The hydrothermal experiment records lower bulk-normalized \textsuperscript{4}He/\textsuperscript{3}He
 ratios than the vacuum experiments at any given $\Sigma F_{3\mathrm{He}}$ for the duration
 of the experiment. Similarly, the approach to the \textsuperscript{4}He/\textsuperscript{3}He plateau varies
 between the three experiments: a high bulk normalized \textsuperscript{4}He/\textsuperscript{3}He plateau is
@@ -1205,6 +1170,17 @@ between 0.15 and 0.5 nccSTP. More \textsuperscript{4}He/\textsuperscript{3}He sp
 conditions, with stronger \textsuperscript{4}He signals, are needed to investigate this hypothesis
 further. 
 
+These ratios also bear on the natural thermal history of Win-06-01b. Throughout the range of
+$\Sigma F_{3\mathrm{He}}$ that defines the Stage~1 reference line (7--15\%), step \textsuperscript{4}He/\textsuperscript{3}He
+ratios remain at 0.67--0.82 of the bulk value (Table~\ref{tab:ch2-distilled-4he}).
+Radiogenic \textsuperscript{4}He is depleted relative to the uniformly distributed \textsuperscript{3}He in this domain, 
+so even this retentive domain lost helium in nature. A domain with the
+Stage~1 parameters is nearly quantitatively retentive at Earth-surface temperatures
+(\S\ref{high-helium-retentivity-of-win-06-01b-ht}), so this loss is difficult to attribute to thermally activated
+diffusion at surface conditions. Either Win-06-01b experienced temperatures well above surface conditions after it
+formed, for example if it grew in a hydrothermal setting, or non-thermal processes such as fluid-mediated
+recrystallization caused partial helium loss in nature. 
+
 \section{Conclusions}\label{conclusions}
 
 Predicting the degree of helium retention and loss to guide
@@ -1213,9 +1189,8 @@ such as grain size, crystallinity, radiation damage, defect density,
 impurities, and aluminum substitution remains challenging. Previous
 efforts to understand helium loss in natural goethite with step heating
 experiments in vacuum have instead queried the kinetics of dehydration
-\citep{farley2024}. It remains unclear how informative existing
-vacuum helium step heat data are with respect to helium retention and
-loss in natural samples. Because goethite dehydration is suppressed at high water pressure, helium step heats under hydrothermal
+\citep{farley2024}. Because goethite dehydration is suppressed at high water pressure, 
+helium step heats under hydrothermal
 conditions are more likely to interrogate the processes controlling
 radiogenic helium loss in natural goethite. The method
 presented in this study leverages the high helium permeability of silica glass to easily
@@ -1247,9 +1222,11 @@ at experimental timescales. The hydrothermal release itself requires solid-state
 $10^{2.5}$ times slower in water than in vacuum. At water saturation, the roughly tenfold smaller
 driving force raises the barrier to hematite nucleation enough to suppress solid-state conversion
 far below this limit. Fluid-mediated
-conversion, which transformed synthetic goethite pigment in qualitative
-experiments, and recrystallization cannot be excluded on these grounds alone.
-If either contributed, the diffusivities reported here would be upper
+conversion, which transformed synthetic goethite pigment in similar conditions, is rapid and would be accompanied by abrupt and extreme helium loss, which is not observed in the hydrothermal step heat data.
+This divergent outcome may be explained by different solution chemistry between the two experiments, which would affect the 
+availbility of aqueous Fe(III) that supplies the reaction.
+Recrystallization, however, cannot be excluded.
+If it contributed, the diffusivities reported here would be upper
 bounds and the retentivity a lower bound. Distinguishing these
 possibilities, and separating the effects of crystallite size, chemical
 composition, and radiation damage, will require further hydrothermal

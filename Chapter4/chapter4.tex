@@ -16,7 +16,7 @@
 %  This stub will be replaced with the full chapter text.
 % =============================================================
 
-\chapter{New Frontiers in Thermodynamically Informed Geodynamic Modeling: a General Deep Learning Accelerated Free Energy Minimizer for Multicomponent Silicate Systems}
+\chapter{nGibbs: Fast, Differentiable Phase Equilibria for Multicomponent Silicate Systems via Deep Learning}
 \label{ch:ngibbs}
 
 \begin{quote}
@@ -39,18 +39,15 @@ bottlenecks. State the deep learning acceleration approach.}
 \subsection{Machine Learning Surrogates for Physical Models}
 \todo{}
 
-\section{Model Architecture}
+% Methods (design rationale, training data generation, architecture, loss,
+% training, inference). Supersedes the former "Model Architecture" stub
+% (Training Data Generation / Neural Network Design placeholders). The file
+% opens with its own \section{Methods}; edit Chapter4/Writing/ngibbs_methods.tex
+% to change its content.
+\input{Chapter4/Writing/ngibbs_methods}
+
+\section{Uncertainty Quantification}
 \label{sec:ch4-architecture}
-
-\subsection{Training Data Generation}
-\todo{Describe the strategy for generating phase equilibrium training data
-from classical minimizers across relevant $P$--$T$--$X$ space.}
-
-\subsection{Neural Network Design}
-\todo{Describe the architecture: input/output spaces, layers, activation
-functions, loss function, training procedure.}
-
-\subsection{Uncertainty Quantification}
 \todo{}
 
 \section{Validation}

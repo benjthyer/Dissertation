@@ -2493,3 +2493,22 @@ deleted; only passages moved. Moved blocks are tagged in the source with
   "Thermodynamic Model of Goethite Dehydroxylation" carries both labels) -> nucleation ->
   dehydration/recrystallization caveats -> pigment (+ assumption (iv) paragraph appended) ->
   retentivity -> 4He/3He.
+
+# 2026-10-01f -- Chapter 2 body: flow edits, additions/deletions, typos
+
+Backup: Chapter2/Writing/chapter2_body.tex.pre_round2_backup_20261001 (= commit 1b63091 + SEM-ref fix).
+
+## chapter2_body.tex
+- Methods: new \subsection{Kinetic and Diffusive Reductions of Step-Heat Data} (sec:gt_kin_methods)
+  with a lead sentence defining KAF/HDM (definitions removed from Discussion 4.1).
+- Results: new subsections sec:gt_ht_results, sec:gt_kin_results, sec:gt_hold_results.
+- Discussion: bridge for the Stage 1 postulate; duplicate "kinetic reduction collapses" sentence
+  removed; SEM summary removed from sec:gt_hydro (kept in sec. 4); "This model can be used...";
+  sec. 4 opens with a three-process bridge; retentivity opener trimmed and its volume-diffusion
+  caveat removed (single-sample/radiation-damage/D0 sentence kept); 4He-diffusivity and
+  interstitial-water paragraphs moved from the MDD subsection to the start of the 4He/3He section;
+  new paragraph on natural 4He loss (normalized ratios 0.67-0.82, UB <= 0.84, over 7-15% yield).
+- Conclusions: removed "It remains unclear how informative existing vacuum ... data are ...".
+- Typos/grammar: consecutive, described, experiment is, experiment, throughout, partial loss of
+  radiogenic 4He, manometry, "for both the", "must be", "are given", "step heat records",
+  ". The kinetic", "the the", ". This", "helium ... is controlled", "in vacuum".

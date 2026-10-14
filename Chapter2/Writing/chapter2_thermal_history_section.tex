@@ -1,0 +1,228 @@
+% =============================================================
+%  Chapter 2 -- Thermal-history modeling of Win-06-01b
+%  (methods + results). Body text only: \input from a wrapper.
+%  Requires: amsmath, graphicx, natbib-style \citep/\citet,
+%  \input{chapter2_derived_values} and
+%  \input{chapter2_thermal_history_values} in the preamble
+%  (the latter is written by Figures/fig_winsor_burial_path.py).
+%  Figures: Figures/fig_winsor_3he_lrd_fit.py and
+%           Figures/fig_winsor_burial_path.py.
+% =============================================================
+
+\subsection{Thermal-History Modeling of Win-06-01b}\label{sec:gt_thermal_methods}
+
+Win-06-01b was collected as float in the Flinders Ranges and has a
+(U--Th)/He age of 130--180~Ma \citep{waltenberg2012}. Apatite fission-track
+studies across the region record regional cooling from roughly 50--70\,\textdegree C
+after the mid-Cretaceous \citep{gibsonstuwe2000,mitchell1998}, and Triassic
+intramontane basins less than 1.5~km thick preserve near-surface Early Mesozoic
+sections \citep{mitchell1998}. We therefore ask which burial-and-exhumation
+histories reproduce both the bulk-normalized $^4$He/$^3$He spectrum of the
+water-saturated experiment (Fig.~\ref{fig:ch2-ratio-spectra}) and the He age,
+following the ratio-evolution approach of \citet{shusterfarley2004}.
+
+\paragraph{Diffusion domains.}
+Helium resides in two spherical domains of the same goethite, with a common
+activation energy and frequency factor: a high-retentivity domain (HRD) of
+radius $a$ and a low-retentivity domain (LRD) of radius $r a$ ($r<1$) that holds
+a fraction $f$ of the uniformly distributed, proton-induced $^3$He. The HRD
+follows the Stage~1 Arrhenius regression of the water-saturated experiment
+(Fig.~\ref{fig:ch2-arrhenius-zoom}; $E_a = \ChTwoEa$~kJ\,mol$^{-1}$,
+$\ln(D_0/a^2) = \ChTwoStageOneLnDzeroAtwo$, $D_0/a^2$ in s$^{-1}$), so that
+\begin{equation}
+  \frac{D}{a^2}(T) = \frac{D_0}{a^2}\exp\!\left(-\frac{E_a}{RT}\right),
+  \qquad
+  \left(\frac{D}{a^2}\right)_{\mathrm{LRD}} = r^{-2}\,\frac{D}{a^2}.
+  \label{eq:gt_th_arrhenius}
+\end{equation}
+Diffusion in each domain is described by the non-dimensional time
+\begin{equation}
+  \tau(t) = \int \frac{D\big(T(t')\big)}{a^2}\,\mathrm{d}t',
+  \label{eq:gt_th_tau}
+\end{equation}
+and an initially uniform sphere releases the cumulative fraction
+\citep{crank1979}
+\begin{equation}
+  F(\tau) = 1 - \frac{6}{\pi^2}\sum_{k=1}^{\infty}\frac{1}{k^2}\exp\!\left(-k^2\pi^2\tau\right).
+  \label{eq:gt_th_F}
+\end{equation}
+
+\paragraph{Constraining the LRD with $^3$He.}
+With the HRD's laboratory time $\tau_i$ after step $i$ accumulated from
+Eq.~\ref{eq:gt_th_arrhenius} and the heating schedule, the model cumulative
+$^3$He release is
+\begin{equation}
+  \Sigma F^{\mathrm{model}}_{3,i} = f\,F\!\left(\tau_i/r^2\right) + (1-f)\,F(\tau_i).
+  \label{eq:gt_th_twodomain}
+\end{equation}
+We fit $f$ and $r$ by minimizing
+$\sum_i \big[(\Sigma F^{\mathrm{model}}_{3,i}-\Sigma F^{\mathrm{meas}}_{3,i})/\Sigma F^{\mathrm{meas}}_{3,i}\big]^2$
+over all 34 steps, with $f \le 0.075$ as required by the delta plot
+(Fig.~\ref{fig:ch2-delta-zoom}). These two parameters are then held fixed, so
+the $^4$He/$^3$He spectrum constrains only the thermal history.
+
+\paragraph{Radiogenic $^4$He in nature.}
+In each domain, $^4$He is produced uniformly at rate $P$ and diffuses with a
+zero-concentration boundary,
+\begin{equation}
+  \frac{\partial C}{\partial t} = \frac{D}{a^2}\,\frac{1}{x^2}\frac{\partial}{\partial x}\!\left(x^2\frac{\partial C}{\partial x}\right) + P,
+  \qquad C(1,t)=0,\quad C(x,t_\mathrm{form})=0,
+  \label{eq:gt_th_pde}
+\end{equation}
+where $x$ is radial position normalized to the domain radius and
+$t_\mathrm{form}$ is the crystallization age. Expanding the concentration in
+eigenfunctions \citep{carslawjaeger1959},
+$C(x,t)=\sum_k A_k(t)\,\sin(k\pi x)/x$, each mode obeys
+\begin{equation}
+  \frac{\mathrm{d}A_k}{\mathrm{d}t} = -k^2\pi^2\frac{D}{a^2}A_k + c_k P,
+  \qquad c_k = \frac{2(-1)^{k+1}}{k\pi},
+  \label{eq:gt_th_modes}
+\end{equation}
+where $c_k$ are the coefficients of a uniform profile. Discretizing the
+thermal history into intervals $\Delta t$ (2~Myr) of constant temperature gives
+the exact update
+\begin{equation}
+  A_k \leftarrow A_k\,e^{-\lambda_k} + c_k P\,\Delta t\,\frac{1-e^{-\lambda_k}}{\lambda_k},
+  \qquad \lambda_k = k^2\pi^2\,\frac{D}{a^2}\,\Delta t ,
+  \label{eq:gt_th_update}
+\end{equation}
+which we evaluate with 8000 modes. The $^4$He content per unit volume is
+$N = 3\sum_k A_k\,(-1)^{k+1}/(k\pi)$, and, taking U and Th to be distributed
+like the $^3$He, the predicted bulk He age is
+\begin{equation}
+  t_\mathrm{He} = \frac{(1-f)\,N_\mathrm{HRD} + f\,N_\mathrm{LRD}}{P},
+  \label{eq:gt_th_age}
+\end{equation}
+neglecting parent decay (a $\sim$3\% effect over 200~Myr).
+
+\paragraph{Laboratory degassing of the natural profile.}
+In the laboratory each mode decays as $\exp(-k^2\pi^2\tau)$. The HRD's
+laboratory times $\tau_i$ are solved from the measured cumulative $^3$He
+through Eq.~\ref{eq:gt_th_twodomain} (the LRD's are $\tau_i/r^2$), which removes
+any dependence on the heating schedule or on step-to-step kinetic scatter. The
+predicted spectrum is
+\begin{equation}
+  \frac{R_{\mathrm{step},i}}{R_\mathrm{bulk}} =
+  \frac{\Delta N_{4,i}/N_{4,\mathrm{tot}}}{\Delta F_{3,i}},
+  \label{eq:gt_th_ratio}
+\end{equation}
+where $\Delta N_{4,i}$ is the $^4$He released from both domains in step $i$
+and $\Delta F_{3,i}$ is the measured fraction of total $^3$He released in that
+step.
+
+\paragraph{Thermal histories and fitting.}
+The thermal history is piecewise linear through
+$(t_\mathrm{form}, T_s)$, $(t_\mathrm{peak}, T_\mathrm{max})$, $(50~\mathrm{Ma}, T_s)$,
+and $(0, T_s)$, with $T_s = 20$\,\textdegree C: the goethite crystallizes at
+the surface, is heated during burial to a peak temperature, and is exhumed by
+the Paleogene, when Paleogene sediments in Flinders Ranges valleys show that
+basement was exposed \citep{mitchell1998}. We searched $t_\mathrm{form}$ from
+180 to 210~Ma (5~Myr steps), $t_\mathrm{peak}$ from 55~Ma to $t_\mathrm{form}$
+(2.5~Myr steps), and $T_\mathrm{max}$ from 20 to 90\,\textdegree C (1\,\textdegree C
+steps). Each history is scored against the $\ChTwoBurialNfit$ steps with
+lag-correction bounds and $>0.1$~pccSTP $^3$He by
+\begin{equation}
+  \chi^2 = \sum_i\left(\frac{R^{\mathrm{model}}_i - R^{\mathrm{M}}_i}{\sigma_i}\right)^2,
+  \qquad \sigma_i = \max\!\left[\tfrac{1}{2}\left(R^{\mathrm{UB}}_i-R^{\mathrm{LB}}_i\right),\ 0.02\right],
+  \label{eq:gt_th_chi2}
+\end{equation}
+where M, LB and UB are the central, lower-bound and upper-bound
+bulk-normalized ratios of the bounding method. Histories within
+$\Delta\chi^2 \le 3.53\,\max(1,\chi^2_\nu)$ of the minimum form the joint
+1$\sigma$ region for three parameters. For comparison we also fit isothermal
+holding (one parameter, $\tau_\mathrm{nat}$) and a symmetric history heating
+linearly from 200 to 100~Ma and cooling linearly to the present (one
+parameter, $T_\mathrm{max}$). The kinetic extrapolation uncertainty of the
+Stage~1 line ($\pm$$\sim$4\,\textdegree C near 60\,\textdegree C) is not
+propagated.
+
+% -------------------------------------------------------------
+\subsection{Thermal History of Win-06-01b}\label{sec:gt_thermal_results}
+
+The two-domain model reproduces the measured cumulative $^3$He release to
+$\ChTwoLRDmisfit$\% (root-mean-square relative misfit), compared with
+$\ChTwoSingleDomainMisfit$\% for the Stage~1 line alone. It requires an LRD
+holding $\ChTwoLRDfrac$\% of the $^3$He with $r = \ChTwoLRDsize$, which is
+degassed within the first $\sim$7 steps and holds negligible radiogenic $^4$He
+in nature (Figs.~\ref{fig:gt_th_arrhenius} and \ref{fig:gt_th_delta}).
+
+With the LRD fixed, burial histories peaking at
+$\ChTwoBurialTmaxLo$--$\ChTwoBurialTmaxHi$\,\textdegree C between
+$\ChTwoBurialTpeakHi$ and $\ChTwoBurialTpeakLo$~Ma fit the spectrum
+($\chi^2_\nu \approx \ChTwoBurialGlobalChi$--$\ChTwoBurialBestChi$) and predict
+He ages within the measured range for crystallization at
+$\ChTwoBurialTformLo$--$\ChTwoBurialTformHi$~Ma
+(Figs.~\ref{fig:gt_th_map}--\ref{fig:gt_th_paths}). The spectrum alone barely
+distinguishes crystallization ages ($\chi^2_\nu = \ChTwoBurialChiTformLo$--$\ChTwoBurialChiTformHi$
+across 180--210~Ma); the He age excludes crystallization before
+$\sim$\ChTwoBurialTformHi~Ma. The best-fitting age-consistent history crystallizes
+at $\ChTwoBurialBestTform$~Ma, reaches $\ChTwoBurialBestTmax$\,\textdegree C at
+$\ChTwoBurialBestTpeak$~Ma and predicts a He age of $\ChTwoBurialBestAge$~Ma.
+These peak temperatures and timing agree with the 50--70\,\textdegree C
+cooling after $\sim$85~Ma inferred from apatite fission tracks
+\citep{gibsonstuwe2000} and sit at the $<$60\,\textdegree C limit reported
+near Copley \citep{mitchell1998}. The symmetric history fits almost as well
+($T_\mathrm{max} = \ChTwoVTmax$\,\textdegree C, $\chi^2_\nu = \ChTwoVChi$,
+$t_\mathrm{He} = \ChTwoVAge$~Ma), whereas isothermal holding is rejected
+($\chi^2_\nu = \ChTwoIsoChi$; Fig.~\ref{fig:gt_th_spectrum}).
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{winsor_3he_lrd_arrhenius.pdf}
+\caption{Arrhenius plot of $^3$He diffusivities in HT-Win-06-01b with the
+two-domain model. Black circles are bounding-method central values with
+lower and upper bounds; hollow circles are low-signal steps or steps without
+lag bounds. Blue diamonds are apparent diffusivities obtained by applying the
+same single-sphere inversion \citep{fechtigkalbitzer1966} to the model's
+cumulative release (Eq.~\ref{eq:gt_th_twodomain}); the dashed line is the
+Stage~1 regression, which describes the HRD. An LRD holding $\ChTwoLRDfrac$\%
+of the $^3$He with $a_\mathrm{LRD}/a_\mathrm{HRD} = \ChTwoLRDsize$ reproduces
+the elevated early diffusivities and the retrograde steps.}
+\label{fig:gt_th_arrhenius}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{winsor_3he_lrd_delta.pdf}
+\caption{Delta plot of the same data and model: departure of apparent
+$\ln(D/a^2)$ from the Stage~1 line against cumulative $^3$He fraction. The
+model approaches the Stage~1 line as the LRD is exhausted, consistent with
+an LRD holding no more than 7.5\% of the $^3$He.}
+\label{fig:gt_th_delta}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{winsor_burial_chi2_map.pdf}
+\caption{Fit of burial-and-exhumation histories to the $^4$He/$^3$He
+spectrum for crystallization at 180, 195 and 210~Ma. Colors show reduced
+$\chi^2$ as a function of the time and magnitude of peak temperature; white
+outlines enclose the joint 1$\sigma$ region across all three parameters, and
+diamonds mark each panel's best fit. Dashed lines are isopleths of the
+predicted bulk He age at the limits of the measured range (130 and 180~Ma).
+Orange boxes show the peak window implied by apatite fission-track data
+\citep{gibsonstuwe2000,mitchell1998}.}
+\label{fig:gt_th_map}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{winsor_burial_spectrum.pdf}
+\caption{Bulk-normalized $^4$He/$^3$He spectrum of HT-Win-06-01b (black,
+with bounding-method LB--UB boxes) compared with the best-fitting
+age-consistent burial history (blue), the best symmetric 200--100--0~Ma
+history (orange) and the best isothermal history (green), all computed with
+the LRD fixed from the $^3$He fit.}
+\label{fig:gt_th_spectrum}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{winsor_burial_tT_paths.pdf}
+\caption{Thermal histories within the joint 1$\sigma$ region of the
+spectrum fit. Blue paths also predict He ages within the measured
+130--180~Ma range; gray paths predict older ages. The black path is the
+best-fitting age-consistent history, and the orange box is the apatite
+fission-track peak window.}
+\label{fig:gt_th_paths}
+\end{figure}

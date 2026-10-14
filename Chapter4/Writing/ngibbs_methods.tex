@@ -115,7 +115,8 @@ Each emulator takes pressure and one further intensive variable (temperature
 for the isothermal models, specific entropy for the isentropic models) and a bulk
 composition as inputs. The emulators are trained on and expect the same units for pressure, temperature, and entropy that
 the real thermodynamic MELTS and HeFESTo use: Kelvin and GPa for HeFESTo, and Celcius and bars for MELTS. Both expect specific 
-entropy in units of J/g/K. nGibbs recieves as input normalized cation atomic abundances, following  $\mathbf{b}\in\mathbb{R}^{E}$ with $\sum_e b_e = 1$. Compositions are supplied by the user either as oxide weight percents or as element
+entropy in units of J/g/K. nGibbs recieves as input normalized cation atomic abundances, following  $\mathbf{b}\in\mathbb{R}^{E}$ with $\sum_e b_e = 1$. 
+Compositions are supplied by the user either as oxide weight percents or as element
 molar abundances for any model; oxide inputs are automatically converted internally to the normalized cation abundances expected by nGibbs.
 
 Entropy is offered as a useful alternative to temperature because isentropic paths are the
@@ -410,8 +411,8 @@ Although \textsc{HeFESTo} natively calculates isentropes, such a calculation req
 
 \subsubsection{Execution}
 
-\textsc{MELTS} simulations are driven through \textsc{alphaMELTS}
-\citep{Smith2005} under shell-level parallelism. \textsc{HeFESTo} simulations are
+\textsc{MELTS} simulations are driven through \textsc{alphaMELTS} on a window
+\citep{Smith2005} run with GNU parallel. \textsc{HeFESTo} simulations are
 run on the Caltech High Performance Computing cluster as SLURM array jobs. 
 \todo{describe hefesto resampling procedure}
 
@@ -485,248 +486,22 @@ for containing a rare phase at any low modal proportion. It is presumed that thi
 \subsubsection{Partitioning}
 \label{sec:split}
 
-Training and validation datasets are generated with the same pipelines, but are separated \emph{by unique bulk
-composition}. Bulk compositions were partitioned between training and validation datasets and are treated independently as separate datasets throughout the remainder of the processing pipeline. 
-
-This is the most consequential methodological choice in the preparation of the data.
+To monitor model overfitting during training, a validation dataset distinct from the training set is used. Training and validation datasets are generated with the same pipelines, but are separated \emph{by unique bulk
+composition}. Bulk compositions were partitioned between training and validation datasets and are treated independently as separate datasets throughout the processing pipeline. 
+This ensures that the validation dataset tracks the same fundamental structure as the training dataset while avoiding data leakage.
 Successive states along one path are strongly autocorrelated, and a row-wise random
 split would place near-duplicates on both sides of the partition. The resulting
 held-out error would measure interpolation between adjacent states of a rock the
 model had already seen, rather than generalization to a rock it had not, and would be
 optimistic by a wide and unquantifiable margin. Splitting by composition, before the reference thermodynamic
-models were applied, makes the validation dataset's error track overfitting to the training dataset more faithfully. This overfitting metric is instrumental to develop an emulator that can be effectively applied to new data. 
+models were applied, makes the validation dataset's error track overfitting to the training dataset more faithfully. 
+This overfitting metric is instrumental to develop an emulator that can be effectively applied to new data. 
 
-Compositions are assigned in the ratio 80:20 between training and validation. The validation partition is used every epoch for model selection, to tune adaptive regularization, and for early stopping. The performance of the emulator on these datasets appear in Section~\ref{sec:results}.
+Compositions were assigned in the ratio 80:20 between training and validation. 
+The validation partition is used every epoch for model selection, to tune adaptive regularization, and for early stopping. 
+Unless otherwise stated, all performance metric presented here in Section~\ref{sec:results} are for the validation datasets; the emulator's performance on the training datasets is not reported. 
 
-\subsection{Network architecture}
-\label{sec:continuous}
 
-\subsubsection{Motivation: the discontinuity problem}
-\label{sec:continuous-motivation}
-
-The original \emph{nGibbs} architecture predicts phase presence with a classifier
-and phase abundance with a regressor, multiplying the two so that the predicted
-abundance is the regressed magnitude gated by a thresholded presence probability. 
-This reproduces data with the same fundamental structure as the native \textsc{MELTS} and \textsc{HeFESTo}
-outputs: phases absent in an assemblage do not contain any abundance information or metastable chemistry. This gated model was simple and easy to train, but it has a structural defect.
-Because the gate and the magnitude are functions of different internal variables,
-nothing ties the magnitude to zero as the gate closes. Therefore, when the presence probability of a phase
-crosses its threshold, the predicted abundance jumps discontinuously from a finite
-value to exactly zero, which is unnexpected and near-impossible behavior for a mixed system.
-
-Nature is made up of complex, chemically-mixed systems. These systems, and the thermodyanamic models that describe them, behave continuously. \textsc{MELTS} and \textsc{HeFESTo} track each phases' chemical affinity, which is a continuous quality that is positive when a phase is present, and is directly related the phase abundance. Even when the phase is absent, the chemical affinity remains meaningful: it describes how 'close' a system is to being saturated with the phase. \todo{find some citation for topology in thermodynamics: talk to Paul} At a phase-out boundary the abundance of the departing
-phase goes to zero smoothly, linearly in reaction progress. A gated model is
-therefore structurally wrong precisely at the phase boundaries that constitute the most
-interesting content of a phase diagram, and its error there tracks the size
-of this jump rather than by the quality of the fit.
-
-The architecture used for all released models removes the defect by making the gate
-and the magnitude the same variable, analogously to a prediction of chemical affinity.
-
-\subsubsection{The saturation variable} %%%%%%%%%%%START HERE%%%%%%%%
-\label{sec:saturation}
-
-For each phase $\phi$ the network emits a single unactivated scalar $g_\phi$, from
-which two further quantities follow:
-\begin{align}
-  m_\phi &= \operatorname{leaky}_\lambda(g_\phi)
-          = \begin{cases} g_\phi, & g_\phi \ge 0 \\
-                          \lambda g_\phi, & g_\phi < 0 \end{cases}
-          \label{eq:m}\\[2pt]
-  n_\phi &= \max(m_\phi, 0).
-  \label{eq:n}
-\end{align}
-The signed saturation $m_\phi$ is the quantity the abundance loss regresses; the
-molar abundance $n_\phi$ is the quantity all downstream physics uses. Because the
-leaky branch passes through the origin, the composition
-$n_\phi = \max(\operatorname{leaky}_\lambda(g_\phi),0)$ is continuous at $g_\phi=0$:
-a phase leaving the assemblage produces a kink rather than a step. At the same time
-$n_\phi$ attains \emph{exact} zeros, so the predicted assemblage is exactly sparse
-and phase presence is a well-defined predicate rather than a thresholded
-probability.
-
-The construction is more than a smoothing device. Reading $g_\phi$ as an affinity,
-the equilibrium condition for a phase that may or may not be present is the
-complementarity condition
-\todo{get AI to explain complementarity. If it's not natural, I need to reword this.}
-\todo{Temperature and softmax: No more leaky ReLU, right? It's not present in my mental model}
-\begin{equation}
-  n_\phi \ge 0, \qquad A_\phi \ge 0, \qquad n_\phi A_\phi = 0,
-  \label{eq:complementarity}
-\end{equation}
-which states that a phase is either present with zero affinity or absent with
-positive affinity. Equations~\eqref{eq:m}--\eqref{eq:n} are exactly what a rectifier
-encodes, so the architecture parameterizes the thermodynamic condition directly
-rather than approximating its consequences. The leak $\lambda$ preserves gradient
-below zero, so an absent phase is still supervised---toward a confidently negative
-affinity---rather than being detached from the loss.
-
-Training labels are converted to linear molar abundance before use, rather than the
-network being asked to reproduce a logarithmic target that is undefined at zero. Zero
-is the one value at which this architecture's behaviour is the point.
-
-\todo{rewrite this.\^{}\^{}\^{}}
-
-\subsubsection{Encoder and shared representation}
-
-Inputs pass through a fully connected encoder with leaky-ReLU activations, an
-expanding then contracting layer geometry, and optional layer normalization and
-dropout, whose depth and width are hyperparameters (Section~\ref{sec:hpsearch}). The
-working representation is the encoder output concatenated with the raw input,
-\begin{equation}
-  \mathbf{h} = \big[\,\mathrm{Enc}(\mathbf{x});\ \mathbf{x}\,\big],
-\end{equation}
-so that the heads retain direct access to pressure, the second intensive variable,
-and the bulk composition rather than only to a learned summary of them. There is no
-separate saturation sub-network; that is the direct consequence of
-Section~\ref{sec:saturation}.
-
-\todo{rewrite this.\^{}\^{}\^{}}
-
-\subsubsection{Chemistry heads}
-\label{sec:chemheads}
-
-Each compositionally variable phase has its own head producing a softmax over that
-phase's endmembers in the reparameterized basis of Section~\ref{sec:pxsp}. Softmax
-is the correct parameterization because the target is a point on a simplex, and
-Section~\ref{sec:pxsp} is what makes the target expressible on that simplex in the
-first place.
-
-Endmembers requiring an element absent from the bulk composition are masked out
-before the softmax, so that the network is never asked to learn a constraint that is
-known exactly from the input. The mask is constructed from the zero entries of
-$\mathbf{b}$ propagated through the stoichiometry of Eq.~\eqref{eq:stoich}.
-
-\subsubsection{Abundance heads}
-\label{sec:moleheads}
-
-Each phase has an independent fully connected branch mapping the shared
-representation to the single scalar $g_\phi$ of Eq.~\eqref{eq:m}, with no output
-activation.
-
-These branches receive the predicted endmember fractions alongside the shared
-representation. The reason is Eq.~\eqref{eq:assembly} together with mass balance:
-given the endmember compositions and the bulk, the phase abundances are nearly
-determined by the linear system $\mathsf{A}^{\!\top}\mathbf{n} = \mathbf{b}$, so
-supplying the chemistry allows the abundance branches to approximate that solve
-rather than rediscovering it from the raw state. The chemistry is concatenated, not
-substituted, so a branch is free to ignore it.
-
-\subsubsection{Numerical precision}
-
-Training uses reduced-precision arithmetic in the encoder and chemistry heads. The
-abundance branches, and the boundary-temperature arithmetic of
-Section~\ref{sec:annealing}, are evaluated in single precision regardless of the
-ambient precision context. The reason is specific: the annealed smoothing width
-descends to a small fraction of an already small per-phase scale, and the
-quantization step of a reduced-precision $g_\phi$ would exceed that width before the
-schedule completes---destroying exactly the behaviour the scheme exists to control.
-
-\subsection{Mass balance}
-\label{sec:massbalance}
-
-\subsubsection{The constraint}
-
-The element totals implied by the predicted component moles must reproduce the input
-bulk composition. Since the bulk is supplied normalized, only the direction is
-constrained:
-\begin{equation}
-  \frac{\mathsf{A}^{\!\top}\mathbf{n}}
-       {\mathbf{1}^{\!\top}\mathsf{A}^{\!\top}\mathbf{n}} \;=\; \mathbf{b}.
-  \label{eq:mbconstraint}
-\end{equation}
-Mass conservation is not a soft preference that may be satisfied on average. A user
-integrating an emulated assemblage into a geodynamic calculation requires that it
-hold pointwise, and the architecture of Section~\ref{sec:continuous} does not
-enforce it: the chemistry and abundance heads are separately parameterized, and their
-product satisfies Eq.~\eqref{eq:mbconstraint} only to the accuracy of the fit.
-Equation~\eqref{eq:mbconstraint} is therefore imposed explicitly, as a projection
-applied to the network's raw output.
-
-\subsubsection{The projection operator}
-\label{sec:projection}
-
-Let $\mathbf{n}^{(0)}$ be the raw component moles from Eq.~\eqref{eq:assembly}. For
-$k=0,\dots,K-1$, define the current element totals and their sum,
-\begin{equation}
-  \mathbf{c}^{(k)} = \mathsf{A}^{\!\top}\mathbf{n}^{(k)}, \qquad
-  t^{(k)} = \max\!\big(\mathbf{1}^{\!\top}\mathbf{c}^{(k)},\ \varepsilon\big),
-\end{equation}
-and the residual against the target rebuilt on the current scale,
-\begin{equation}
-  \mathbf{r}^{(k)} = t^{(k)}\,\mathbf{b} \;-\; \mathbf{c}^{(k)}
-  \;\in\;\mathbb{R}^{E}.
-  \label{eq:residual}
-\end{equation}
-Rebuilding the target scale at every iteration, rather than fixing it once, is
-necessary: each clamp in Eq.~\eqref{eq:update} changes the element total, and holding
-$t$ fixed across iterations makes the residual non-monotone.
-
-Let $\Omega^{(k)} = \{\,c : n^{(k)}_c > 0\,\}$ be the active support and
-$\mathsf{P}_{\Omega^{(k)}}$ the diagonal indicator of that support. Define the
-support-restricted stoichiometry
-\begin{equation}
-  \mathsf{A}_\Omega^{(k)} \;=\; \mathsf{A}^{\!\top}\mathsf{P}_{\Omega^{(k)}}
-  \;\in\;\mathbb{R}^{E\times C},
-\end{equation}
-that is, $\mathsf{A}^{\!\top}$ with the columns of absent components set to zero. The
-correction is the minimum-norm solution of the underdetermined system
-$\mathsf{A}_\Omega^{(k)}\bm{\delta} = \mathbf{r}^{(k)}$,
-\begin{equation}
-  \bm{\delta}^{(k)} \;=\;
-  \big(\mathsf{A}_\Omega^{(k)}\big)^{\!\top}
-  \Big[\,\mathsf{A}_\Omega^{(k)}\big(\mathsf{A}_\Omega^{(k)}\big)^{\!\top}
-        + \tau\,\mathsf{I}_E \Big]^{-1}\mathbf{r}^{(k)},
-  \label{eq:delta}
-\end{equation}
-with $\tau$ a Tikhonov regularizer, followed by a damped, clamped update
-\begin{equation}
-  \mathbf{n}^{(k+1)} \;=\; \max\!\big(\mathbf{n}^{(k)}
-                     + \eta\,\bm{\delta}^{(k)},\ 0\big).
-  \label{eq:update}
-\end{equation}
-The returned residual, reported as a diagnostic at inference, is
-\begin{equation}
-  \rho \;=\; \Big\|\,
-    \tfrac{\mathsf{A}^{\!\top}\mathbf{n}^{(K)}}
-          {\mathbf{1}^{\!\top}\mathsf{A}^{\!\top}\mathbf{n}^{(K)}}
-    - \mathbf{b}\,\Big\|_2 .
-\end{equation}
-
-Two properties of this operator are worth stating explicitly.
-
-\emph{Support restriction is physical.} A phase that has left the assemblage must not
-participate in a mass-balance reaction. Restricting the correction to
-$\Omega^{(k)}$ enforces this, so that repairing mass balance can redistribute
-material among the phases that are present but cannot resurrect a phase the network
-has predicted absent.
-
-\emph{The iteration terminates rather than merely converging.} Because
-Eq.~\eqref{eq:update} clamps at zero and Eq.~\eqref{eq:delta} is confined to the
-active support, components can leave $\Omega^{(k)}$ but never re-enter it. The
-support is therefore monotonically non-increasing and the iteration reaches a fixed
-point in finitely many steps. This distinguishes the operator from generic
-alternating projection between the non-negative orthant and the mass-balance
-hyperplane, whose convergence rate degrades precisely where a phase is going out---
-which is the region of interest.
-
-The linear solve in Eq.~\eqref{eq:delta} is $E\times E$, with $E$ the number of
-elements, and is batched across samples; its cost is negligible relative to the
-forward pass. It is evaluated in double precision from the regularizer onward,
-because $\tau$ is small enough that adding it in single precision rounds it away on
-exactly the near-degenerate rows it exists to rescue.
-
-\subsubsection{Where the projection is applied}
-
-The projection is applied at inference, on every forward pass. During training the
-network is scored on its \emph{pre-projection} output, with the mass-balance residual
-of Eq.~\eqref{eq:mbconstraint} entering the objective as a penalty
-(Section~\ref{sec:objective}). The reason is that the post-projection residual is
-zero by construction and therefore carries no gradient; scoring it would teach the
-network nothing. Penalizing the pre-projection residual instead pulls the raw heads
-toward the feasible manifold, reducing the magnitude of the correction the projector
-must apply at inference and, with it, the extent to which the deployed model relies
-on a post-hoc repair.
 
 \subsection{Objective}
 \label{sec:objective}

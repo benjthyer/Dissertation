@@ -1,0 +1,21 @@
+% Preview wrapper for chapter2_thermal_history_section.tex only.
+% Cross-references into chapter2_body.tex render as ?? here; they resolve
+% once the section is \input into the chapter. Uses natbib + bibtex (biber is
+% not needed) purely for previewing.
+\documentclass[11pt]{article}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx,amsmath,amssymb}
+\usepackage[margin=1in]{geometry}
+\usepackage[round]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue]{hyperref}
+\graphicspath{{../Figures/generated/}}
+\input{chapter2_derived_values}
+\input{chapter2_thermal_history_values}
+\begin{document}
+\section*{Win-06-01b thermal-history modeling (preview)}
+\input{chapter2_thermal_history_section}
+\bibliographystyle{plainnat}
+\bibliography{../../references}
+\end{document}

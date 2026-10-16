@@ -14,14 +14,6 @@
 
 \section{Methods}\label{ch4-methods}
 
-\subsection{Data Generation}\label{ch4-data-gen}
--figure1: PTS Cloud coverage for HeFESTo Mars, Earth, (reference sims overlayed)
--figure2: compositional cloud coverage for 120, 102, Mars, Earth (reference sims overlayed)
--filters used by prepareML for MELTS
--tables for MELTS and HeFESTo each: phases and components
-
-
-
 \subsection{Network architecture}
 \label{sec:continuous}
 
@@ -124,6 +116,17 @@ molar abundances for any model; oxide inputs are automatically converted interna
 Entropy is offered as a useful alternative to temperature because isentropic paths are the
 natural coordinate for the convecting mantle \citep{Davies1977,Brown1981,Asimow1997,Asimow2001,Ganguly2005,Tirone2016}. Supplying $S$ directly removes an inner iteration for $T$ at every pressure step, which is the dominant cost of constructing
 an adiabat by conventional means.
+
+The full non-compositional feature vector (i.e. pressure, temperature, entropy, \emph{f}O\textsubscript{2}) is min--max normalized to $[0,1]$. The minima and maxima used for these normalizations are fit on the
+training data, and are carried by the emulator and automatically applied during inference.
+This avoids presenting the network with inputs on a
+different scale than the one it was trained on, leading to errors that would be difficult to diagnose.
+
+The neural networks driving \emph{nGibbs} expect that the input composition vector sum to a total of one. 
+During inference, this is explicitly enforced by a renormalization so that, similarly to \textsc{MELTS} and \textsc{HeFESTo}, 
+the user can supply a composition that sums to values other than one for convenience. 
+The outputs of \emph{nGIbbs}, however, are not rescaled and will always map to a cation sum of one regardless of user input.
+
 
 \subsubsection{Compositional basis}
 
@@ -558,108 +561,429 @@ Al$_2$O$_3$ $= 0$,
 
 \todo{Add Spinel 1:1 figure}
 
+%=====================================================================================
 \subsection{Mass balance}
 \label{sec:massbalance}
+%=====================================================================================
 
-\subsubsection{The constraint}
+The assemblage predicted by the emulator is not strictly constrained to reproduce the bulk composition;
+it is only encouraged to with a loss term during training (\S\ref{ch4-training}). 
+Therefore, a post-processing step is necessary to ensure that the final assemblage is consistent with the requested bulk composition.
+\emph{nGibbs} uses a mass balance correction adapted from \citet{asimow1998}, who find the smallest relative 
+change to $\hat m$ that makes $\hat b = b$. The implementation in \emph{nGibbs} differs from their procedure most
+strongly in two ways: (1) the minimisation is solved in parallel for thousands of assemblages at once on a GPU, and (2)
+the correction is done iteratively, with constraints enforced at each step so that no elemental abundance becomes negative. 
 
-The element totals implied by the predicted component moles must reproduce the input
-bulk composition. Since the bulk is supplied normalized, only the direction is
-constrained:
-\begin{equation}
-  \mathsf{A}^{\!\top}\mathbf{m} \;=\; \mathbf{b}.
-  \label{eq:mbconstraint}
-\end{equation}
-Mass conservation is not intrinsically enforced by the architecture of Section~\ref{sec:continuous}. 
-The chemistry and abundance heads are independent, and their
-product satisfies Eq.~\eqref{eq:mbconstraint} only to the accuracy of the fit.
-Equation~\eqref{eq:mbconstraint} is therefore imposed explicitly, as a projection
-applied to the network's raw output.
+The section makes use of variables defined in Table~\ref{tab:key} as well as those unique to this section
+in Table~\ref{tab:mbkey}. Index forms are given alongside the matrix forms
+throughout, with $c$ running over components and $e, e'$ over elements.
 
-\subsubsection{The projection operator}
-\label{sec:projection}
+\begin{table}[!htb]
+\centering
+\small
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{@{}c c >{\raggedright\arraybackslash}p{11.6cm}@{}}
+\toprule
+Symbol & Dim. & Meaning \\
+\midrule
+$\delta b$ & E & Bulk residual in element moles, $\delta b = \Gamma\, b - \hat m A$ \\
+$\delta \hat m$ & C & Correction to the component moles \\
+$\zeta$ & C & Relative correction, $\zeta_c = \delta\hat m_c / \hat m_c$ \\
+$D$ & C$\times$E & Abundance-weighted stoichiometry, $D = \operatorname{diag}(\hat m)\, A$,
+  i.e.\ $D_{ce} = \hat m_c A_{ce}$ \\
+$\nu$ & E & Lagrange multipliers, one per element \\
+$G$ & E$\times$E & $G = D^{\!\top} D$, the matrix of the system solved for $\nu$ \\
+$\kappa$ & 1 & Regularisation added to the diagonal of $G$ ($10^{-12}$) \\
+$\sigma_i,\ \Phi,\ \Psi$ & E, C$\times$E, E$\times$E & Singular values and singular vectors
+  of $D$: $D = \Phi\, \operatorname{diag}(\sigma)\, \Psi^{\!\top}$ \\
+$N_{\rm it}$ & 1 & Number of correction iterations (3) \\
+\bottomrule
+\end{tabular}
+\caption{Symbols added for the mass balance. Dimensions as in Table~\ref{tab:key}.}
+\label{tab:mbkey}
+\end{table}
 
-Let $\mathbf{m}^{(0)}$ be the raw component moles. For
-$k=0,\dots,K-1$, define the current element totals and their sum,
+The neural network returns the component moles $\hat m$ (the endmembers of every phase, in the
+transformed basis of Section~\ref{sec:polish}). The element moles they imply are $\hat m A$
+($[1\times\text{C}][\text{C}\times\text{E}] \to [1\times\text{E}]$). The reconstructed bulk is normalized to sum to one, then
+it's residual is given by
 \begin{equation}
-  \mathbf{c}^{(k)} = \mathsf{A}^{\!\top}\mathbf{n}^{(k)}, \qquad
-  t^{(k)} = \max\!\big(\mathbf{1}^{\!\top}\mathbf{c}^{(k)},\ \varepsilon\big),
-\end{equation}
-and the residual against the target rebuilt on the current scale,
-\begin{equation}
-  \mathbf{r}^{(k)} = t^{(k)}\,\mathbf{b} \;-\; \mathbf{c}^{(k)}
-  \;\in\;\mathbb{R}^{E}.
-  \label{eq:residual}
-\end{equation}
-Rebuilding the target scale at every iteration, rather than fixing it once, is
-necessary: each clamp in Eq.~\eqref{eq:update} changes the element total, and holding
-$t$ fixed across iterations makes the residual non-monotone.
-
-Let $\Omega^{(k)} = \{\,c : n^{(k)}_c > 0\,\}$ be the active support and
-$\mathsf{P}_{\Omega^{(k)}}$ the diagonal indicator of that support. Define the
-support-restricted stoichiometry
-\begin{equation}
-  \mathsf{A}_\Omega^{(k)} \;=\; \mathsf{A}^{\!\top}\mathsf{P}_{\Omega^{(k)}}
-  \;\in\;\mathbb{R}^{E\times C},
-\end{equation}
-that is, $\mathsf{A}^{\!\top}$ with the columns of absent components set to zero. The
-correction is the minimum-norm solution of the underdetermined system
-$\mathsf{A}_\Omega^{(k)}\bm{\delta} = \mathbf{r}^{(k)}$,
-\begin{equation}
-  \bm{\delta}^{(k)} \;=\;
-  \big(\mathsf{A}_\Omega^{(k)}\big)^{\!\top}
-  \Big[\,\mathsf{A}_\Omega^{(k)}\big(\mathsf{A}_\Omega^{(k)}\big)^{\!\top}
-        + \tau\,\mathsf{I}_E \Big]^{-1}\mathbf{r}^{(k)},
-  \label{eq:delta}
-\end{equation}
-with $\tau$ a Tikhonov regularizer, followed by a damped, clamped update
-\begin{equation}
-  \mathbf{n}^{(k+1)} \;=\; \max\!\big(\mathbf{n}^{(k)}
-                     + \eta\,\bm{\delta}^{(k)},\ 0\big).
-  \label{eq:update}
-\end{equation}
-The returned residual, reported as a diagnostic at inference, is
-\begin{equation}
-  \rho \;=\; \Big\|\,
-    \tfrac{\mathsf{A}^{\!\top}\mathbf{n}^{(K)}}
-          {\mathbf{1}^{\!\top}\mathsf{A}^{\!\top}\mathbf{n}^{(K)}}
-    - \mathbf{b}\,\Big\|_2 .
+  \delta b = b - \hat m A 
+  \qquad .
+  \label{eq:mbr}
 \end{equation}
 
-Two properties of this operator are worth stating explicitly.
+Mass balance seeks a correction $\delta\hat m$ to the component moles such that
+\begin{equation}
+  \delta\hat m\, A = \delta b,
+  \qquad\text{i.e.}\qquad
+  \sum_c \delta\hat m_c\, A_{ce} = \delta b_e \quad \text{for each element } e .
+  \label{eq:mbcond}
+\end{equation}
 
-\emph{Support restriction is physical.} A phase that has left the assemblage must not
-participate in a mass-balance reaction. Restricting the correction to
-$\Omega^{(k)}$ enforces this, so that repairing mass balance can redistribute
-material among the phases that are present but cannot resurrect a phase the network
-has predicted absent.
+This is E equations (about ten) in C unknowns (several tens), so the system is underconstrained and 
+has infinitely many solutions. Because the network's prediction is the best available estimate of the assemblage, it is 
+most reasonable to choose the solution that changes it least. We define this as the solution that minimizes the sum of 
+squared relative changes to the component moles. For convenience, we define the relative change $\zeta_c$ for each component $c$ as
 
-\emph{The iteration terminates rather than merely converging.} Because
-Eq.~\eqref{eq:update} clamps at zero and Eq.~\eqref{eq:delta} is confined to the
-active support, components can leave $\Omega^{(k)}$ but never re-enter it. The
-support is therefore monotonically non-increasing and the iteration reaches a fixed
-point in finitely many steps. This distinguishes the operator from generic
-alternating projection between the non-negative orthant and the mass-balance
-hyperplane, whose convergence rate degrades precisely where a phase is going out---
-which is the region of interest.
+\begin{equation}
+  \zeta_c = \frac{\delta\hat m_c}{\hat m_c},
+  \label{eq:zeta}
+\end{equation}
+We minimize the sum of squared relative changes,
+\begin{equation}
+  \tfrac12\, \zeta\, \zeta^{\!\top}
+  = \tfrac12 \sum_c \left(\frac{\delta\hat m_c}{\hat m_c}\right)^{\!2}.
+  \label{eq:mbobj}
+\end{equation}
+The factor $\tfrac12$ is arbitrarily added to elegantly cancel the 2 produced by the differentiation below. We introduce
+a new variable: $D$, the component abundance-weighted stoichiometry matrix, to relate $\zeta$ to the bulk residual $\delta b$.
+\begin{equation}
+  \zeta\, D = \delta b,
+  \qquad
+  D = \operatorname{diag}(\hat m)\, A \quad (\text{C}\times\text{E}),
+  \label{eq:agweighted}
+\end{equation}
+A component absent from the assemblage ($\hat m_c = 0$) has a zero row at $D_c$ and, by Eq.~\eqref{eq:agback}, $\delta\hat m_c = 0$ 
+so absent components are never changed.
 
-The linear solve in Eq.~\eqref{eq:delta} is $E\times E$, with $E$ the number of
-elements, and is batched across samples; its cost is negligible relative to the
-forward pass. It is evaluated in double precision from the regularizer onward,
-because $\tau$ is small enough that adding it in single precision rounds it away on
-exactly the near-degenerate rows it exists to rescue.
+We therefore formulate the problem as a minimization of Eq.~\eqref{eq:mbobj} subject to the constraints of Eq.~\eqref{eq:agweighted}. 
+In other words: our solution is the smallest relative change to the component moles necessary to satisfy conservation of mass. 
 
-\subsubsection{Where the projection is applied}
+\subsubsection{Solving with Lagrange multipliers}
+\label{sec:mb-lagrange}
 
-The projection is applied at inference, on every forward pass. During training the
-network is scored on its \emph{pre-projection} output, with the mass-balance residual
-of Eq.~\eqref{eq:mbconstraint} entering the objective as a penalty
-(Section~\ref{sec:objective}). The reason is that the post-projection residual is
-zero by construction and therefore carries no gradient; scoring it would teach the
-network nothing. Penalizing the pre-projection residual instead pulls the raw heads
-toward the feasible manifold, reducing the magnitude of the correction the projector
-must apply at inference and, with it, the extent to which the deployed model relies
-on a post-hoc repair.
+Lagrange multipliers reformulate this problem into a set of ordinary equations. One new unknown, the
+multiplier $\nu_e$, is introduced for each element. Each constraint is written as an expression that must equal zero.
+The multipliers $\nu_e$ relate the derivatives of the objective function to the constraints. Requiring every derivative 
+of the result to vanish then expresses two conditions at once: the constraints hold, and no change that respects them
+can lower the objective $ \tfrac12\, \zeta\, \zeta^{\!\top}$. This is the Lagrangian,
+\begin{equation}
+  \mathcal{L}(\zeta, \nu)
+  = \tfrac12\, \zeta\,\zeta^{\!\top} - \big( \zeta D - \delta b \big)\, \nu^{\!\top},
+  \label{eq:lagrangian}
+\end{equation}
+with $\nu$ the row of E multipliers. Now, differentiating with respect to the
+relative correction $\zeta$ gives
+\begin{equation}
+  \frac{\partial \mathcal{L}}{\partial \zeta} = \zeta - \nu\, D^{\!\top} = 0
+  \qquad\Longrightarrow\qquad
+  \zeta = \nu\, D^{\!\top}
+  \quad [1\times\text{E}][\text{E}\times\text{C}] \to [1\times\text{C}].
+  \label{eq:ystat}
+\end{equation}
+This reveals that the C relative corrections are not independent: they are all determined
+by just E numbers, the Lagrange multipliers. The problem has been reduced from C unknowns to E,
+and now the system is well-constrained.
+
+Substituting Eq.~\eqref{eq:ystat} into the $\zeta\, D = \delta b$ constraint gives
+\begin{equation}
+  \nu\, D^{\!\top} D = \delta b,
+\end{equation}
+
+and now the only unknowns are the E multipliers $\nu$, which can solved with an LU (lower-upper) decomposition as 
+
+\begin{equation}
+  \nu^{\!\top} = SOLVE(D^{\!\top} D, \delta b^{\!\top}) .
+  \label{eq:nu}
+\end{equation}
+
+With $\nu$ known, Eq.~\eqref{eq:ystat} relates the relative correction $\zeta$ to the multipliers.
+
+\begin{equation}
+  \zeta = \nu A^{\!\top} \operatorname{diag}(\hat m)
+\end{equation}
+
+The absolute correction $\delta\hat m$ is then obtained by multiplying the relative correction by the component moles (Eq.~\eqref{eq:zeta}).
+
+\begin{equation}
+  \delta\hat m = \zeta \operatorname{diag}(\hat m) = \nu A^{\!\top} \operatorname{diag}(\hat m)^2
+  \quad [1\times\text{E}][\text{E}\times\text{C}][\text{C}\times\text{C}] \to [1\times\text{C}],
+  \label{eq:share}
+\end{equation}
+
+\paragraph{Why the Lagrange form is used.} \citet{asimow1998} obtain the same solution by
+SVD, however their problem is distinct from this one in that they correct one assemblage at a
+time, whereas \emph{nGibbs} applies this operation to tens of thousands of assemblages in parallel. 
+The Lagrange form is used here because batched SVD handles these matrices poorly on a GPU.
+An informal test on a dataset of 15,000 assemblages from the HeFESTo Earth model validation dataset (E = 8, C = 68) 
+shows HeFESTo test bundle (B = 15{,}000, E = 8, C = 68), \code{torch.linalg.pinv} took 10.1\,s on the GPU against 0.29\,s 
+on the CPU (single precision), whereas the Lagrange solve took 25\,ms on the GPU (double precision; 48\,ms on
+the CPU). The Lagrange form, however, requires double precision floating point arithmetic to recover an accurate solution,
+whereas the SVD is robust to single precision arithmetic because the $\nu\left( D^{\!\top} D \right)$ solve of the Lagrange formulation
+squares the condition number. This cost is marginal, however, beside the speedup of the Lagrange form on both CPU and GPU, and it elegantly
+avoids the need to bus data between CPU and GPU when \emph{nGibbs} is run on a GPU.
+\subsection{Regularisation}
+\label{sec:mb-reg}
+
+\paragraph{The regularized solve.} In practice, a small number $\kappa$ is added to every diagonal entry
+of $\left( D^{\!\top} D \right)$,
+\begin{equation}
+  \nu\,\big( D^{\!\top} D  + \kappa I\big) = \delta b,
+  \qquad \kappa = 10^{-12},
+  \label{eq:regsolve}
+\end{equation}
+where $I$ is the E$\times$E identity matrix. This is because $ D^{\!\top} D $ has all-zero columns and rows for 
+any bulk composition lacking any particular element and is therefore singular. For a row lacking an element, 
+its equation becomes $\kappa\,\nu_e = 0$ for the regularized case and $\nu$ is zero because $\delta b_e = 0$ for an absent element. 
+Without regularization, the equation for this row would be $0 \nu_e = 0$, for which $\nu_e$ is undefined. 
+
+On the \textsc{HeFESTo} Earth Model validation dataset, the smallest non-zero diagonal entries of $ D^{\!\top} D $ are $ \thicksim 3\times10^{-7}$ 
+(median over rows), so $\kappa$ must be far smaller than that. A $\kappa$ as small as 10\textsuperscript{-12} requires
+double precision floating point values, but this is also required by the solve of the Lagrange multipliers and therefore poses no additional complication.
+
+% Generated by Chapter4/Figures/fig_mass_balance_G_hist.py
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=8.3cm]{mass_balance_G_hist_DtD_diag_linear.pdf}
+  \caption{Histogram of the non-zero diagonal entries of $D^{\!\top} D$ formed by the
+  conservation of mass correction (all three iterations) on the 15{,}000 assemblages of the
+  HeFESTo Earth adiabat isentropic (NPS) test set. The dashed line marks $\kappa = 10^{-12}$.}
+  \label{fig:mb-dtd-diag}
+\end{figure}
+
+\subsection{Seeding phases for unexplained elements}
+\label{sec:seed}
+
+\paragraph{Why it is needed.} The conservation of mass correction can only move an element through components
+that contain it and are present ($\hat m_c > 0$). If the predicted assemblage contains no
+carrier of an element that is in the bulk (for example K, P or H when the network places
+the K-, P- or H-bearing phase just below saturation), that element's residual cannot be
+removed: the regularised solve leaves it in place (Section~\ref{sec:mb-reg}). In the 102
+Closed Cr test set this happens in 13 of 15{,}000 rows.
+
+\paragraph{Procedure.} Before the correction, for the continuous models
+(\code{NN_MELTS.seed_unexplained_phases}), repeat for each row:
+\begin{enumerate}[nosep]
+  \item \textbf{Unexplained elements.} Element $e$ is unexplained if $b_e > 0$ and no
+        component with $\hat m_c > 0$ contains it ($A_{ce} = 0$ for every present $c$). Call
+        the set of unexplained elements $\mathcal{U}$.
+  \item \textbf{Candidates.} Absent phases ($\hat n_p = 0$) whose \emph{predicted}
+        composition contains at least one element of $\mathcal{U}$. The chemistry heads
+        predict a composition $\hat x$ for every phase, present or not, so one is always
+        available.
+  \item \textbf{Choice.} The candidate closest to saturation: the largest (least negative)
+        affinity $g_p$ ($\hat g_p$ for \code{AffinityModel}).
+  \item \textbf{Abundance.} Let
+        \begin{equation}
+          a_e = \sum_c M_{pc}\,(\hat x V + f)_c\, A_{ce}
+          \label{eq:seedcomp}
+        \end{equation}
+        be the moles of element $e$ in one mole of the chosen phase $p$: its predicted
+        component fractions (Eq.~\ref{eq:m}, restricted to phase $p$ by $M_{pc}$) times
+        their stoichiometry. The phase is added with the abundance $\hat n_p$ that best
+        supplies the elements of $\mathcal{U}$ it carries,
+        \begin{equation}
+          \hat n_p = \frac{\sum_{e \in \mathcal{U}} a_e\, \Gamma\, b_e}{\sum_{e \in \mathcal{U}} a_e^2},
+          \label{eq:seed}
+        \end{equation}
+        the least-squares fit of $\hat n_p\, a_e = \Gamma\, b_e$ over those elements. When the
+        phase covers a single unexplained element, $\hat n_p$ supplies exactly the bulk's
+        amount of it, $\hat n_p = \Gamma\, b_e / a_e$.
+  \item \textbf{Insert.} The phase's components get $\hat m_c = \hat n_p\,(\hat x V + f)_c$
+        for every $c$ with $M_{pc} = 1$, as in Eq.~\eqref{eq:m}.
+\end{enumerate}
+The loop stops when $\mathcal{U}$ is empty or no candidate is left; each round adds a new
+phase, so it ends after at most P rounds. $\hat m$ is then renormalised so that
+$\Gamma = 1$. Rows that need no seeding are not touched.
+
+\paragraph{Effect.} Seeding gives every element of the bulk a non-zero column in $D$.
+Because the seeded phase already carries about the right amount of the missing element, it
+also gets a sensible weight: the correction moves each component in proportion to
+$\hat m_c^2$ (Eq.~\ref{eq:share}), so a phase added at a negligible abundance would barely
+be used. On the 102 test set, 14 phases were seeded in the 13 rows, and 11 of them are
+present in the ground truth (apatite, leucite, fluid, hornblende). A single unclamped
+correction step on those rows reduces their residuals from order $10^{-3}$ to about
+$10^{-8}$.
+
+\subsection{The iterative correction}
+\label{sec:mb-iter}
+
+\paragraph{Why one step is not enough.} The step of Sections~\ref{sec:mb-lagrange}--\ref{sec:mb-reg}
+places no bound on $\delta\hat m_c$. Nothing prevents $\delta\hat m_c < -\hat m_c$, which
+would leave a component with negative moles; this is the ``overstepping'' failure Asimow
+and Ghiorso note. Setting such a component to zero restores a physical assemblage but
+breaks the mass balance again, because the moles it would have supplied are now missing.
+The step is therefore repeated: each repetition spreads the remaining residual over the
+components that are still present.
+
+\paragraph{Procedure.} Starting from the seeded $\hat m$, each of $N_{\rm it}$ iterations
+($N_{\rm it} = 3$ by default) does:
+\begin{enumerate}[nosep]
+  \item \textbf{Residual on the current scale.} Recompute $\Gamma = \sum_e (\hat m A)_e$ and
+        $\delta b = \Gamma\, b - \hat m A$ (Eq.~\ref{eq:mbr}). Only the proportions of the
+        bulk are enforced, and each clamp (step 4) changes the total, so the target
+        $\Gamma\, b$ is rebuilt every iteration. A target held at a fixed scale would make
+        the residual grow between iterations.
+  \item \textbf{Weights.} Build $D = \operatorname{diag}(\hat m)\,A$, with each present
+        $\hat m_c$ raised to at least $10^{-9}$ in the diagonal. The floor keeps a very small
+        but present component solvable; absent components keep a zero row.
+  \item \textbf{Solve.} Form $G = D^{\!\top} D$, solve the regularised system
+        Eq.~\eqref{eq:regsolve} for $\nu$, then $\zeta = \nu D^{\!\top}$
+        (Eq.~\ref{eq:ystat}), all in double precision. This is the operation that runs
+        batched on the GPU.
+  \item \textbf{Update and clamp.} $\hat m \leftarrow \max\big(\hat m + \zeta \operatorname{diag}(\hat m),\ 0\big)$,
+        element by element: Eq.~\eqref{eq:agback}, followed by setting any negative
+        component moles to zero.
+  \item \textbf{Polish.} For MELTS models containing orthopyroxene, clinopyroxene or spinel,
+        re-impose the legality corrections of Section~\ref{sec:polish}. The update moves
+        component moles within a phase and can create a negative oxide in a phase whose
+        predicted composition was legal.
+\end{enumerate}
+After the last iteration the remaining residual, $\lVert \hat b - b \rVert$ with $\hat b$ from
+Eq.~\eqref{eq:bhat}, is reported for each row.
+
+\paragraph{Properties.}
+\begin{itemize}[nosep]
+  \item \emph{Termination.} A component set to zero has a zero row in $D$ from then on and
+        cannot return. The set of present components can only shrink, so the iteration
+        cannot cycle, and a phase removed by the correction stays removed.
+  \item \emph{Exactness.} Each unclamped step removes the residual up to the
+        regularisation. After the final clamp and polish a small residual can remain: the
+        median on the 102 test set is $3.0\times10^{-8}$.
+  \item \emph{Non-negativity and legality.} Returned component moles are never negative,
+        and the polish runs after every step rather than only at the end.
+  \item \emph{Special cases.} With one iteration, no clamp, no polish and $\kappa \to 0$,
+        the procedure reduces to the single weighted step of Asimow and Ghiorso,
+        Eq.~\eqref{eq:agsvd}. That single step remains available for comparison as
+        \code{mass_balance='pinv'}, evaluated by SVD on the CPU. Setting
+        \code{relative=False} replaces $\operatorname{diag}(\hat m)$ by the identity on
+        present components, giving the unweighted smallest change.
+\end{itemize}
+
+
+\subsection{Data generation}
+\label{sec:datagen}
+
+\subsubsection{Bulk composition sampling}
+
+Bulk compositions are sampled from whole-rock analyses in the GEOROC and PetDB
+databases \citep{GEOROC,PetDB}, preferentially weighting the compositional range
+the emulator is intended to serve. Whole rock analyses from GEOROC in particular are weighted towards more evolved compositions, so mafic and ultramafic compostions were more heavily weighted in the  \emph{nGibbs} training datasets than in the original source datasets.  For the \textsc{HeFESTo} models, one fifth of the training data are drawn from the population of compositions between 5 and 20 wt\% MgO, three tenths of the data are drawn from the population of compositions with greater than 20 wt\% MgO, and the remaining half is a mixture of these two mafic and ultramafic populations in random proportions. These base compositions were substantially randomly altered so that \emph{nGibbs} would perform well in a wider variety of parameter spaces, including rock compositions that are uncommon or unknown on Earth's surface. For the Earth model, one quarter of the compositions are not perturbed. For the \textsc{MELTS} emulators, half of the training data is generated from any composition in the compiled database, one fifth of the data are pulled from ultramafic compositions with greater than 25 wt\% MgO, and three tenths of the data are pulled from compositions with greater than 5  wt\% MgO. These bulk compositions are perturbed by guassian noise with a standard deviation of 5\%, a substantially more modest perturbation that that applied to the \textsc{HeFESTo} emulator training data.  
+
+For volatile-focused \textsc{MELTS} 1.2.0 emulators in particular, 35\% of the training and validation datasets are drawn from sedimentary compositions within the Gard database \citep{Gard2019}. Of these sedimentary bulk compositions, about one quarter are drawn from carbonate rich compositions, with CO\textsubscript{2} contents greater than 10 wt\%, whereas the remaining sedimentary compositions contain less than 10 wt\% CO\textsubscript{2}. The remaining 65\% of the training data were drawn from
+igneous whole rock data from GEOROC and PetDB, similarly to the other models \citep{GEOROC,PetDB}. 
+
+In order to train emulators that perform well in a variety of redox conditions, 
+each sampled composition is randomly assigned an oxygen fugacity from -5 to +5 log$_{10}\Delta$FMQ for \textsc{MELTS} training data, or -7 to +3 log$_{10}\Delta$FMQ for \textsc{HeFESTo} training data. Open 
+system models simply carry this oxygen fugacity as a feature, whereas closed models translate this oxygen fugacity into a molar \textsuperscript{+3}Fe/\textsuperscript{+2}Fe ratio using an empirical parameterization. This is not meant to be explicitly correct; it is meant to generate training data with an appropriate distribution of molar \textsuperscript{+3}Fe/\textsuperscript{+2}Fe ratios.
+
+\begin{equation}
+^{+3}Fe/^{+2}Fe \approx 10^{\left(0.2 \times \text{log}_{10}\Delta\text{FMQ} \right) - 1}
+\label{eq:fO2ratio}
+\end{equation}
+
+Manganese and nickel are excluded from the compositional basis of all released
+models. Manganese and nickel are not handled by \textsc{HeFESTo}, and we have 
+observed that \textsc{MELTS} solutions that carry MnO and NiO frequently stabilize
+phases with compositions rarely observed in nature, and there is little value in
+emulating the regions of a model that are not themselves trusted. Excluding these
+oxides also removes two dimensions from the component basis at small cost to
+the applications the emulators target.
+
+\subsubsection{State-variable sampling}\label{stae-var-sampling}
+
+For the \textsc{MELTS} 1.0.2 and 1.2.0 emulator families, each sampled composition is isobarically cooled from 1800\textdegree C in 1\textdegree C increments at a random pressure between 1 and 12000 bars. These computed assemblages have well-defined entropies and therefore are acceptable for use in training isentropic models. 
+
+\textsc{HeFESTo} Earth and Mars models are each trained around a core of (approximately) adiabatic simulations at reasonable potential temperatures (1200--1650\textdegree C for Earth; 500--1750\textdegree C for Mars). These adiabats are supplemented with cooler conditions due to a conductive lid at the surface, which is assumed to be between 0-250 km thick for Earth and 100-700 km thick for Mars.  \todo{Potential temperature citations?}. Similarly, warmer conditions are modeled at the approach to the core-mantle boundary (CMB) for the Earth model, which assume a mantle temperature between 3200--4700\textdegree C at the CMB and a 100-300km width conductive layer
+
+Although \textsc{HeFESTo} natively calculates isentropes, such a calculation requires an iteration of T at every step to retrieve the imposed entropy, which roughly doubles the computation time. Therefore, adiabatic PT paths were instead approximated to reduce computational expense in the generation of the training dataset. To accomplish this, a second-order linear regression of temperature as a function of specific entropy and pressure was fit to a dataset of dozens of \textsc{HeFESTo} isentropes at representative compositions and potential temperatures. A similar linear regression was fit for specific entropy as a function of temperature at P = 0 GPa on the same dataset to translate potential temperatures to specific entropy. Similarly to the iron speciation parameterization described in \S\ref{state-var-sampling}, this approach is not intended to be explicitly correct; it is intended to control the distribution of the training dataset in pressure-temperature-entropy space without unnecessary computational expense. These regressions are used to impose a roughly adiabatic pressure-temperature path for training data. These paths are pertubed with small random noise to prevent the emulators from learning relationships between composition and entropy. 
+
+
+
+\subsubsection{Execution}
+
+\textsc{MELTS} simulations are driven through \textsc{alphaMELTS} on a window
+\citep{Smith2005} run with GNU parallel. \textsc{HeFESTo} simulations are
+run on the Caltech High Performance Computing cluster as SLURM array jobs. 
+\todo{describe hefesto resampling procedure}
+
+% -- PLACEHOLDER: campaign scale ---------------------------------------------
+% Number of simulations and retained rows per released model.
+% Include MELTStable rows
+% For HeFESTo: Conductive vs adiabatic sims?
+% Attrition rates
+% Filtered rates
+% ----------------------------------------------------------------------------
+
+\subsubsection{Import and attrition}
+
+Reference-code output is parsed into a single wide table in which each row is one
+equilibrium state and columns follow a \texttt{quantity(phase)} convention. Retained
+per row are the state variables, the bulk composition, the phase assemblage, the
+per-phase component molar abundances, the per-phase masses, and the bulk physical
+properties reported by the reference code. The last of these are retained for
+validation only; consistent with Section~\ref{sec:overview}, they are never training
+targets.
+
+A fraction of simulations fail to converge or terminate without usable output. These
+are detected and discarded at import. Attrition differs sharply between codes and
+compositional domains, and is reported here because it determines the difference
+between the sampled and the achieved distribution: approximately $0.1\%$ for
+\textsc{HeFESTo}, approximately $15\%$ for \textsc{MELTS} on igneous bulk
+compositions, and approximately $40\%$ for \textsc{MELTS} 1.2 on sedimentary bulk
+compositions. The last figure reflects that \textsc{MELTS} 1.2 was applied near the
+edge of its calibration.
+
+\subsubsection{Coverage}
+
+The achieved envelope of each released model in pressure, temperature or entropy,
+and composition defines its domain of applicability.
+
+% -- FIGURE PLACEHOLDERS -----------------------------------------------------
+% \begin{figure}[t] ... \caption{Training-set density in P--T (or P--S) for each
+% released model.} \label{fig:coverage-pt} \end{figure}
+%
+% \begin{figure}[t] ... \caption{Bulk-composition coverage of the training sets,
+% projected onto Si--Mg, with the sampled database compositions for reference.}
+% \label{fig:coverage-comp} \end{figure}
+% ----------------------------------------------------------------------------
+
+The emulators are fits, not theories. No accuracy claim can be made for states outside
+the sampled envelope. Examples of the behaviour of each model on extrapolation are reported
+in Section~\ref{sec:results}. 
+
+\subsection{Data preparation}
+\label{sec:prep}
+
+Three operations are applied to prepare \textsc{MELTS} and \textsc{HeFESTo} outputs for training.
+
+\subsubsection{Consistency filtering} Rows are removed where the reference code's output
+is internally inconsistent, e.g. where the composition reconstructed from the
+reported assemblage disagrees with the stated bulk composition beyond tolerance. The fractions
+actually removed are reported in Table~\ref{tab:filters}.
+
+\subsubsection{Rare-phase removal} Phases occurring too infrequently in the training set
+to be effectively learned are removed from the component basis entirely to simplify the model.
+This operates on entire rows; assemblages with rare phases are discarded
+for containing a rare phase at any low modal proportion. It is presumed that this operation is minimally damaging, because very few assemblages are affected by design. 
+
+\subsubsection{Rare-phase augmentation} The \textsc{MELTS} 1.2.0 emulator's training dataset upsampled phases containing rare phases like calcite that were especially desired so that they would surpass the removal threshold and be tracked by the emulator. To upsample, rows containing the rare phase would be duplicated, but with perturbed abundances of its phases, which shift the bulk composition for the same assemblage. This operation was only applied to the isothermal models to avoid invalidating the extensive entropy value natively reported by \textsc{MELTS}. For all models, modal imbalance is addressed through per-phase loss weighting (Section~\ref{sec:phaseweights}) during training, which incentivizes the emulator to learn rare phases that otherwise would have little affect on the loss function.
+
+% -- TABLE PLACEHOLDER ------------------------------------------------------- .... Maybe.... uhh maybe not.
+% \begin{table}[t] Rows entering and surviving each filter, per released model. 
+% \label{tab:filters} \end{table}
+% ----------------------------------------------------------------------------
+
+\subsubsection{Partitioning}
+\label{sec:split}
+
+To monitor model overfitting during training, a validation dataset distinct from the training set is used. Training and validation datasets are generated with the same pipelines, but are separated \emph{by unique bulk
+composition}. Bulk compositions were partitioned between training and validation datasets and are treated independently as separate datasets throughout the processing pipeline. 
+This ensures that the validation dataset tracks the same fundamental structure as the training dataset while avoiding data leakage.
+Successive states along one path are strongly autocorrelated, and a row-wise random
+split would place near-duplicates on both sides of the partition. The resulting
+held-out error would measure interpolation between adjacent states of a rock the
+model had already seen, rather than generalization to a rock it had not, and would be
+optimistic by a wide and unquantifiable margin. Splitting by composition, before the reference thermodynamic
+models were applied, makes the validation dataset's error track overfitting to the training dataset more faithfully. 
+This overfitting metric is instrumental to develop an emulator that can be effectively applied to new data. 
+
+Compositions were assigned in the ratio 80:20 between training and validation. 
+The validation partition is used every epoch for model selection, to tune adaptive regularization, and for early stopping. 
+Unless otherwise stated, all performance metric presented here in Section~\ref{sec:results} are for the validation datasets; the emulator's performance on the training datasets is not reported. 
+
+
 
 \subsection{Training}\label{ch4-training}
 -continuous model types: Affinity aware and affinity naive

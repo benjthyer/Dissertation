@@ -363,13 +363,6 @@ originals across the full training set. Original compositions are recovered with
 
 \subsubsection{Normalization}
 
-The full non-compositional feature vector (i.e. pressure, temperature, entropy, \emph{f}O\textsubscript{2}) is min--max normalized to $[0,1]$. The minima and maxima used for these normalizations are fit on the
-training data, and are carried by the emulator and automatically applied during inference.
-This avoids presenting the network with inputs on a
-different scale than the one it was trained on, leading to errors that would be difficult to diagnose.
-
-The neural networks driving \emph{nGibbs} expect that the input composition vector sum to a total of one. During inference, this is explicitly enforced by a renormalization so that, similarly to \textsc{MELTS} and \textsc{HeFESTo}, the user can supply a composition that sums to values other than one for convenience. The outputs of \emph{nGIbbs}, however, are not rescaled and will always map to a cation sum of one regardless of user input.
-
 \subsection{Training data generation}
 \label{sec:datagen}
 

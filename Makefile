@@ -22,7 +22,8 @@
 #                          #   currently in each chapter's Figures/generated/
 #                          #   (does NOT rerun any python -- fast, use this
 #                          #   for ordinary text/equation edits)
-#   make all               # figures, then thesis -- the "fresh clone" build
+#   make listings          # run + cache scripts shown as code listings (Ch4)
+#   make all               # figures, listings, then thesis -- the "fresh clone" build
 #   make chapter1           # standalone Chapter 1 manuscript (TubeMethodPaper.pdf)
 #   make chapter2            # standalone Chapter 2 manuscript (chapter2goethite.pdf)
 #   make clean                # remove LaTeX aux/intermediate files
@@ -63,11 +64,11 @@ FIGURE_CHAPTERS := 1 2 3
 # practice without the declaration: nothing ever creates a file actually
 # named figures-ch1/2/3, so make always finds them "missing" and reruns
 # their recipe regardless.
-.PHONY: all thesis figures clean clean-figures distclean \
+.PHONY: all thesis figures listings clean clean-figures distclean \
         chapter1 chapter2 dissertation.pdf \
         Chapter1/Writing/TubeMethodPaper.pdf Chapter2/Writing/chapter2goethite.pdf
 
-all: figures thesis
+all: figures listings thesis
 
 # --- Figures ------------------------------------------------------------------
 
@@ -80,6 +81,16 @@ figures: $(foreach n,$(FIGURE_CHAPTERS),figures-ch$(n))
 # (currently Chapter 3, which has no orchestrator yet).
 figures-ch%:
 	$(PYTHON) tools/run_chapter_figures.py Chapter$*
+
+# Scripts reproduced verbatim in the thesis (\lstinputlisting) whose printed
+# output and figures sit under the code. run_cached_listing.py caches each to
+# Chapter4/Figures/generated/<stem>/ and skips the rerun while the script's
+# source hash is unchanged, so this is cheap to call every time. Needs the
+# environment with petthermotools/nGibbs (PYTHON=... make listings).
+LISTING_SCRIPTS := nGibbsPhaseDiagram.py
+
+listings:
+	cd Chapter4/Figures && $(PYTHON) run_cached_listing.py $(LISTING_SCRIPTS)
 
 # --- LaTeX ----------------------------------------------------------------------
 

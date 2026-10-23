@@ -1,14 +1,14 @@
 """
 Thermal softplus activation (Eq. eq:smooth) and the centre-downweighting
-weight of the presence loss (Eq. eq:sat) against the scaled affinity x = g / T0.
+weight of the presence loss (Eq. eq:sat) against the scaled affinity x = g / Upsilon0.
 
-With T = a T0 (Section sec:anneal):
-  n_tilde / T0 = a ln(1 + exp(x / a))                 -> max(x, 0) as a -> 0
-  c / w        = |tanh(x / a)|                         (BCE weight, Eq. eq:sat)
+With Upsilon = a Upsilon0 (Section sec:anneal):
+  n_tilde / Upsilon0 = a ln(1 + exp(x / a))           -> max(x, 0) as a -> 0
+  c / w              = |tanh(x / a)|                   (BCE weight, Eq. eq:sat)
 
 a -> 0 is drawn with a = 1e-4, the end of the second annealing episode.
 
-Writes generated/fig_thermal_softplus.{pdf,png}.
+Writes generated/fig_thermal_softplus.pdf (300 dpi).
 """
 import os
 import sys
@@ -42,18 +42,17 @@ for (a, label), color in zip(A_VALUES, COLORS):
     ax_n.plot(X, n_tilde(X, a), color=color, lw=2, label=label)
     ax_s.plot(X, np.abs(np.tanh(X / a)), color=color, lw=2)
 
-ax_n.set_ylabel(r'$\tilde n / T_0$')
+ax_n.set_ylabel(r'$\tilde n / \Upsilon_0$')
 ax_n.set_xlim(-5, 5)
 ax_n.set_ylim(0, 5)
 ax_n.axvline(0, color='0.7', lw=0.8, zorder=0)
 ax_n.legend(loc='upper left', frameon=False)
 
-ax_s.set_ylabel(r'$|\tanh(g/T)|$')
-ax_s.set_xlabel(r'$g / T_0$')
+ax_s.set_ylabel(r'$|\tanh(g/\Upsilon)|$')
+ax_s.set_xlabel(r'$g / \Upsilon_0$')
 ax_s.set_ylim(0, 1.05)
 ax_s.axvline(0, color='0.7', lw=0.8, zorder=0)
 
 os.makedirs(OUT_DIR, exist_ok=True)
-for ext in ('pdf', 'png'):
-    fig.savefig(os.path.join(OUT_DIR, f'fig_thermal_softplus.{ext}'),
-                dpi=200, bbox_inches='tight')
+fig.savefig(os.path.join(OUT_DIR, 'fig_thermal_softplus.pdf'),
+            dpi=300, bbox_inches='tight')

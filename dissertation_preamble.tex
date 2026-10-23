@@ -129,6 +129,7 @@
 
 % --- Colors & hyperlinks -----------------------------------------------------
 \usepackage[dvipsnames]{xcolor}
+\usepackage{colortbl}         % \cellcolor shading in the Chapter 4 quality tables
 \usepackage[
   colorlinks = true,
   linkcolor  = NavyBlue,
@@ -295,6 +296,38 @@
 \usepackage{lineno}           % line numbers — comment out for final version
 % \linenumbers
 
+% --- Code listings with cached output ------------------------------------------
+% A script is shown verbatim with \lstinputlisting[style=thesispython], followed
+% by what it printed (\cachedoutput) and the figure(s) it drew. Results are
+% never computed by LaTeX: Chapter4/Figures/run_cached_listing.py runs the script
+% once and writes generated/<stem>/{prints.txt,fig1.pdf,...}, rerunning only when
+% the script's source changes (`make listings`). Paths are relative to the
+% dissertation root.
+\usepackage{listings}
+\lstdefinestyle{thesispython}{
+  language=Python,
+  basicstyle=\ttfamily\footnotesize,
+  keywordstyle=\color{NavyBlue}\bfseries,
+  commentstyle=\color{OliveGreen}\itshape,
+  stringstyle=\color{BrickRed},
+  numbers=left, numberstyle=\tiny\color{gray}, numbersep=6pt,
+  frame=single, rulecolor=\color{gray!60},
+  breaklines=true, columns=fullflexible, keepspaces=true,
+  showstringspaces=false, upquote=true,
+}
+\lstdefinestyle{thesisoutput}{
+  basicstyle=\ttfamily\footnotesize,
+  frame=leftline, framerule=1.5pt, rulecolor=\color{gray!60},
+  backgroundcolor=\color{gray!8}, xleftmargin=1em,
+  breaklines=true, columns=fullflexible, keepspaces=true,
+}
+% \cachedoutput{<path to prints.txt>} -- placeholder box instead of a fatal
+% error if the cache hasn't been generated yet (e.g. fresh clone).
+\newcommand{\cachedoutput}[1]{%
+  \IfFileExists{#1}%
+    {\lstinputlisting[style=thesisoutput]{#1}}%
+    {\fbox{\footnotesize Missing cached output \texttt{\detokenize{#1}} -- run \texttt{make listings}}}}
+
 % --- Custom commands ---------------------------------------------------------
 \newcommand{\degC}{\ensuremath{^\circ\mathrm{C}}}
 \newcommand{\He}{\textsuperscript{4}He}
@@ -304,3 +337,4 @@
 \newcommand{\fH}{\ensuremath{f_{\mathrm{H_2O}}}}
 \newcommand{\Ea}{\ensuremath{E_a}}
 \newcommand{\todo}[1]{\textcolor{red}{\textbf{[TODO: #1]}}}
+\providecommand{\code}[1]{\texttt{\detokenize{#1}}}

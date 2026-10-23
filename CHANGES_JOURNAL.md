@@ -2512,3 +2512,262 @@ Backup: Chapter2/Writing/chapter2_body.tex.pre_round2_backup_20261001 (= commit 
 - Typos/grammar: consecutive, described, experiment is, experiment, throughout, partial loss of
   radiogenic 4He, manometry, "for both the", "must be", "are given", "step heat records",
   ". The kinetic", "the the", ". This", "helium ... is controlled", "in vacuum".
+
+---
+
+# 2026-10-21 -- Chapter 4 figures integrated; figure scripts fixed
+
+Backup: Chapter4/Writing/Chapter4_main_body_text.tex.pre_figures_backup_20261021.
+Figure additions themselves are not itemized here (per your instruction). Labels all use the
+`fig:ch4-` prefix.
+
+## Chapter4_main_body_text.tex -- changes to existing text
+- Legality constraint (sec:polish): `\todo{Add Spinel 1:1 figure}` replaced by one new sentence
+  citing fig:ch4-spinel-legality, plus the figure.
+- Mass balance, iterative correction (sec:mb-iter): one new closing sentence citing
+  fig:ch4-bulk-parity (HeFESTo Earth isentropic emulator).
+- Regularisation (sec:mb-reg): "(median over rows)" -> "(median over rows; Fig.~\ref{fig:mb-dtd-diag})".
+  The histogram was in the text but never cited.
+- Coverage: the commented-out FIGURE PLACEHOLDERS block (fig:coverage-pt, fig:coverage-comp) was
+  deleted. One sentence was appended to "...defines its domain of applicability." citing
+  fig:ch4-coverage-pt and fig:ch4-coverage-harker-hefesto through -melts120. The figures show the
+  held-out *test* subsets that ship with each emulator, not the training sets.
+- Affinity-naive abundance loss: "activated with a softplus function." -> "... (Fig.~\ref{fig:ch4-softplus})."
+  This figure was also uncited.
+- Temperature model figure: `figures/temperature_model_parity.pdf` -> `temperature_model_parity.pdf`.
+  The old path did not resolve under the \graphicspath, so the figure compiled as a blank box.
+- Material properties (ch4-material-props): one new sentence after the plagioclase H/S sentence
+  citing the property sections in Results (fig:ch4-sections-property-hefesto-earth ... -melts120).
+  The `\todo{figure: 1:1 plots of material properties...}` was left in place.
+- Results: the outline bullets were kept. The phase sections (4), property sections (4, on landscape
+  pages) and performance figure follow them as floats with no new prose.
+
+## Chapter4/Figures -- scripts
+All figures used in the text are now 300 dpi PDFs written to Chapter4/Figures/generated/. Every
+script imports the installed `ngibbs` package; none puts the nGibbs repo on sys.path.
+- ngibbs_thesis_plots.py: PNG at 200 dpi -> PDF at 300 dpi. --out-dir now defaults to generated/
+  next to the script.
+- fig_thermal_softplus.py: writes only fig_thermal_softplus.pdf, now at 300 dpi (was pdf+png, 200 dpi).
+- plot_temperature_model_parity.py: PDF only. The default --out is now
+  generated/temperature_model_parity, not the cwd.
+- px_sp_legality_figure.py:
+  - The publication figure is now generated/px_sp_legality_spinel.pdf, PDF only.
+  - The per-phase diagnostic 1:1 plots are now 300 dpi PDFs in Figures/plots/px_sp_legality/.
+  - The usage line now names the right script.
+- performance_benchmarking_plot_only.py: rewritten.
+  - Before: it needed nGibbs' src/ and scripts/_plot_output on sys.path and read
+    scripts/performance_results1.csv with the old column names.
+  - Now: it reads generated/performance_results1.csv, plots the isomorphic, metamorphic and +fast
+    property variants, and masks the zero-filled GPU rows (<8192).
+  - Uses plot_style.py. Writes performance_results{,_assemblages_per_second,_relative}.pdf.
+- performance_benchmarking.py:
+  - Removed the repo sys.path hack and the `_plot_output` import.
+  - The CSV and PDFs now go to generated/.
+  - Not re-run, because it needs your GPU to produce meaningful timings.
+- Unchanged, already compliant: fig_mass_balance_G_hist.py (re-plotted from its .npz) and
+  make_bulk_reconstruction_figures.py (PDF, 300 dpi, all shipped emulators).
+- Not fixed (note for later): diagnose_pinv_cuda.py still resolves REPO/src/ngibbs and its
+  DEFAULT_MODEL_DIR relative to the nGibbs repo. It is a diagnostic and makes no thesis figure.
+
+## How the figures were generated
+- Run on CPU in a cloud sandbox, against a snapshot of C:\Git_Repositories\nGibbs\src\ngibbs
+  (torch 2.14.1).
+- The snapshot tarballs are in nGibbs\_to_delete\claude_ngibbs_snapshot\ and can be deleted.
+- plot_temperature_model_parity.py reproduced the numbers already in the text: RMSE 27.5 K -> 1.7 K,
+  MAE 1.0 K, p99 6.3 K, max 47 K, n = 10,892.
+
+## Observations (not changed)
+- Undefined refs in Ch. 4 (pre-existing):
+  - sec:results (the label is ch4-results);
+  - sec:overview, sec:affinity, eq:agback, tab:filters;
+  - state-var-sampling (the label is spelled `stae-var-sampling`).
+- "subsection*{Temperature model for isentropic emulators}" is missing its backslash, so it prints
+  as literal text.
+- Citation keys missing from references.bib (14):
+  - Asimow1997, Asimow2001, Brown1981, Davies1977, Ganguly2005, Tirone2016;
+  - GEOROC, PetDB, Gard2019;
+  - Loshchilov2017, smith2019;
+  - SackGhiorso1994, Smith2005, kress1991.
+- Legality text vs. data:
+  - The text says the CaO and MgO corrections are applied to clinopyroxene only.
+  - The px_sp legality run (MELTS 1.0.2 Cr NPT test subset) instead shows orthopyroxene CaO
+    negatives going from 468 to 0. Four OPX MgO negatives remain after correction.
+  - Rates before correction: 5.8% of predicted OPX (text: 6-7%), 1.9% of spinel and 0.12% of CPX.
+- The MELTS 1.0.2 isentropic property section fails ("negative liquid component amounts"). It is not
+  used in the text.
+- The HeFESTo Earth standard rocks have Fe2O3 = 0, which is outside the Earth emulator's training
+  range (0.0018-8.7 wt%). Every row raises a TrainingRangeWarning.
+- The old PNGs and a stray copy of plot_temperature_model_parity.py are still in
+  Figures/generated/. They are superseded by the PDFs and are safe to delete.
+
+
+---
+
+# 2026-10-21b -- Chapter 4 figure revisions (legibility, new loss/activation figures)
+
+Backup of the text before this round: Chapter4/Writing/Chapter4_main_body_text.tex.pre_figures2_backup_20261021.
+New figures are not itemized (per your instruction).
+
+## Chapter4_main_body_text.tex -- changes to existing text
+- Affinity-aware abundance loss: the `\todo{Plot of $y(g/c)$ and epsilon = 0.02, ...}` was replaced by one
+  sentence citing fig:ch4-affinity-activation, plus the figure.
+- After Table tab:affloss: one new sentence citing fig:ch4-affinity-loss, before "The HeFESTo emulators
+  within nGibbs were trained with the affinity-naive objective...".
+- Estimating affinities: one new sentence after "...linear extrapolation of the abundance into negative
+  values." cites fig:ch4-affinity-extrapolation (your new HeFESTo transect figure), plus the figure.
+- fig:ch4-bulk-parity caption (your rewritten version):
+  - "; each panel gives the mean absolute error of both" was removed, since the panels no longer
+    show MAE.
+  - Added "Fe2+ and Fe3+ are conserved as separate elements by the closed-system models."
+- Your rewritten coverage captions were left as they are. My earlier note on pooled subsets no longer
+  applies to them. Note that the P-T panels show only the isothermal subsets (n = 15,000 each); the
+  isentropic bundles carry no temperature.
+- fig:ch4-sections-phase-hefesto-earth caption: key to the HeFESTo phase abbreviations added. The
+  Mars caption now points to it.
+- fig:ch4-performance:
+  - The figure is now included at its natural size (5.0 in) instead of 8.3 cm.
+  - The caption now describes the new styling: GPU solid, CPU dotted, colour = calculation.
+- Property-section landscape figures: the height cap went from 0.82 to 0.78\textheight (one was
+  7.5 pt too tall for the page).
+
+## Chapter4/Figures -- scripts
+Revised figures are drawn at their printed size, so the font sizes in the scripts are the printed
+sizes: text width 5.5 in, landscape pages 9 in, 8-10.5 pt type.
+- fig_affinity_vs_extrapolation.py (yours):
+  - It now defaults to reading generated/affinity_transect.csv and writing
+    generated/fig_affinity_vs_extrapolation.pdf.
+  - plot_style is imported from the script's own folder, so it runs from any cwd.
+  - The copy of the PDF in Figures/ (not generated/) is now stale.
+- New: fig_affinity_activation.py -> generated/fig_affinity_activation.pdf. It plots y/c against g/c on
+  [-3, 3] for eps = 0.02, with eps = 0 for reference and the -3c label floor marked.
+- New: fig_affinity_loss.py -> generated/fig_affinity_loss.pdf.
+  - (a) Heat map of the trusted-cell loss over y/c and y_hat/c on [-1, 1].
+  - (b) The untrusted loss, which depends on y_hat/c only.
+  - The functional form follows ngibbs AffinityModel.affinity_mole_loss; the weights are those of
+    Table tab:affloss.
+- ngibbs_thesis_plots.py:
+  - Density heat maps:
+    - The P-T plots print at half the text width; their title is now just n.
+    - The Harker plots print at the text width with element/oxide panel titles, one shared axis label
+      per figure, no per-panel legends, Fe3 -> Fe3+ and subscripted oxides.
+  - Phase sections print at the text width with column headers (reference code | emulator) and
+    rock names as row labels.
+  - Property sections print at 9 in for the landscape pages, with property names over the top row,
+    rock names as row labels, a single legend and fewer ticks.
+  - All titles, labels, ticks and in-plot phase labels are resized after the ngibbs helpers draw
+    them. The ngibbs package itself is unchanged.
+- make_bulk_reconstruction_figures.py:
+  - Adds plot_parity_thesis(), which writes <label>_bulk_parity.pdf at the text width in a 3-column
+    grid with the legend in the spare panel.
+  - Each panel has only the element name and axes b and \hat b: no MAE notes, no suptitle, no row
+    count.
+  - The package's relerr figure and CSV are unchanged.
+- performance_benchmarking_plot_only.py:
+  - Line style = device (GPU solid, CPU dotted).
+  - Colour = calculation (emulator, then the isomorphic, metamorphic and +fast EOS), sampled from
+    viridis.
+  - Two compact legends (calculation; device) replace the 8-entry legend. Printed at 5.0 x 3.9 in.
+
+## Observations (not changed)
+- `\ref{ch4-training}` (Mass balance, first paragraph) is now undefined; the Training subsection label
+  appears to have been removed in your edits.
+- Eq. eq:affloss does not match the implementation (NN_continuous.AffinityModel.affinity_mole_loss).
+  The new loss figure follows the code.
+  - Present-side hinge: in the code it is w_p * relu(min(y/c, h_p) - y_hat/c)^2, squared and
+    thresholded at min(t, h_p). The text writes ReLU(min(y/c - h_p, 0) - y_hat/c), unsquared.
+  - Untrusted-phase paragraph: it says the hinge applies to predictions *below* -h_n = -0.5. Both
+    the code and Table tab:affloss apply it *above* -0.5.
+- Code defaults vs. Table tab:affloss:
+  - In the code, affinity_present_weight (w_p) defaults to 0 and affinity_hinge_weight (w_n) to 1.0.
+  - The table gives w_p = 2 and w_n = 0.25.
+  - The trainer sets these per episode, so please confirm the table values are the ones used.
+
+## Follow-up (2026-10-22): w_p = 3
+- fig_affinity_loss.py: W_P changed from 2.0 to 3.0 to match the training value (Table tab:affloss
+  now says 3.0). generated/fig_affinity_loss.pdf was regenerated. No text changed.
+
+## Follow-up (2026-10-22): MELTS Harker heat maps on landscape pages
+Backup: Chapter4/Writing/Chapter4_main_body_text.tex.pre_landscape_backup_20261022.
+- Chapter4_main_body_text.tex:
+  - fig:ch4-coverage-harker-melts102 and -melts120 are now wrapped in one landscape block, each
+    [p] on its own page at width=\linewidth, height capped at 0.78\textheight.
+  - Captions and text are unchanged.
+- ngibbs_thesis_plots.py: the MELTS (oxide) Harker grids are now drawn at 9 x 4.6 in, to fill a
+  landscape page. The HeFESTo (element) grids are unchanged (portrait, text width).
+  density_Harker_MELTS102/120.pdf were regenerated.
+
+## Follow-up (2026-10-22): standard-rock paths as lines on the P-T heat maps
+- ngibbs_thesis_plots.py: plot_pt_density now draws each HeFESTo standard rock's P-T path as a red
+  line instead of red x markers. density_PT_HeFESToEarth/Mars.pdf were regenerated.
+- Chapter4_main_body_text.tex, fig:ch4-coverage-pt caption: "Red crosses mark" -> "Red lines mark".
+- Correction to my 2026-10-21b note: the Earth P-T panel contains both test subsets (n = 30,000).
+  Only the Mars panel is limited to the isothermal subset (n = 15,000), because the Mars isentropic
+  bundle carries no temperature.
+
+## Follow-up (2026-10-22): ferric iron in the HeFESTo standard rocks (nGibbs fix)
+- Problem: the nGibbs deployment-test loaders dropped the control-file oxygen and set Fe3 = 0.
+  The standards' ferric iron (implied by excess O) was therefore lost in two places:
+  - in the coverage-plot overlays;
+  - in the emulator inputs for the phase/property sections.
+- Fixed in nGibbs (see nGibbs/ChangeLogs/2026-10-22-hefesto-standards-ferric-iron.md).
+  - Standards now go through ForwardMB's existing O -> Fe3 charge-balance pipeline
+    (InputParser / API.add_ferric_column).
+  - Backups of the three pre-patch nGibbs files are in
+    nGibbs/_to_delete/claude_ngibbs_snapshot/pre_ferric_patch/.
+- Regenerated with the fix:
+  - density_PT_HeFESToEarth/Mars.pdf and density_Harker_HeFESToEarth/Mars.pdf (Fe3+ overlay now
+    nonzero);
+  - all eight HeFESTo sections_phase/sections_property PDFs.
+  - No text changed.
+
+## 2026-10-22: Chapter 4 quality and component tables
+Backup: Chapter4/Writing/Chapter4_main_body_text.tex.pre_tables_backup_20261022.
+
+New script: Chapter4/Tables/make_quality_tables.py.
+- It runs the nGibbs deployment-test quality evaluation (evaluate_emulator_quality) on each
+  emulator's shipped test subset and caches the full metric tables in Chapter4/Tables/quality/*.csv.
+  `--from-csv` rebuilds the .tex without the models.
+- It writes four tables:
+  - tab_quality_melts.tex: MELTS 1.0.2 and 1.2.0, Cr and no-Cr, closed isothermal models.
+  - tab_quality_hefesto.tex: HeFESTo Earth and Mars, (P, T) and (P, S) models.
+  - tab_components_melts.tex and tab_components_hefesto.tex: longtables of phases, components and
+    element formulae from config/projections/compToOxV2.csv.
+- MELTS components are the union of the four MELTS models' ml_indexer.components_in_phases.
+  Liquid components are oxides. Marks: dagger = 1.2.0 only; double dagger = Cr variants only.
+- HeFESTo components are the union of the Earth and Mars models' components_in_phases. Earth lacks
+  nal-phase and kyanite; Mars lacks post-perovskite and alpha-PbO2-type SiO2. These are marked E/M.
+- Quality columns per model:
+  - mean ground-truth abundance (wt% of system, 0 where absent: abundance_gt_mean_wtpct);
+  - phase-presence precision;
+  - phase-presence recall.
+
+Chapter4_main_body_text.tex:
+- Compositional basis: one new sentence after "...not fitted parameters." cites
+  tab:ch4-components-melts and tab:ch4-components-hefesto, followed by \input of both tables.
+- Results: \input of tab_quality_melts and tab_quality_hefesto after the outline bullets. No prose.
+
+nGibbs fix (see nGibbs/ChangeLogs/2026-10-22-quality-unmodelled-phases.md):
+- evaluate_emulator_quality crashed on both HeFESTo Earth test bundles. Those bundles contain
+  pseudowollastonite, which the Earth models dropped as a rare phase.
+- It now aligns the bundle's per-phase columns to the model's phases and drops the 46 test rows
+  that contain the unmodelled phase. The HeFESTo caption states this.
+
+Note: my cloud test build lacks your newer preamble additions. \lstinputlisting and \cachedoutput
+were undefined there, but that is from your new code-listing content, not these tables.
+
+## Follow-up (2026-10-22b): quality tables show phase frequency, 2 decimals
+- make_quality_tables.py:
+  - The first column of each model group is now "Freq." (proportion_in_dataset: fraction of test
+    assemblages in which the phase is present), replacing "Ab." (mean wt% abundance).
+  - All values are given to 2 decimals.
+  - Rows are sorted by mean frequency across models.
+  - Captions were updated to match.
+- tab_quality_melts.tex and tab_quality_hefesto.tex were regenerated from the cached CSVs. No
+  chapter text changed.
+
+## Follow-up (2026-10-23): shaded precision/recall cells in the Chapter 4 quality tables
+- make_quality_tables.py: precision and recall cells are shaded on a one-way scale, linear from
+  white at 1.00 to light red (RGB 232,120,112) at 0.80 and below. Shading uses the unrounded value;
+  n.d. and "--" cells are unshaded. Captions now state the scale.
+- dissertation_preamble.tex: added \usepackage{colortbl} after xcolor (needed for \cellcolor).
+- tab_quality_melts.tex and tab_quality_hefesto.tex were regenerated.

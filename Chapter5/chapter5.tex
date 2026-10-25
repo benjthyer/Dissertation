@@ -22,6 +22,11 @@
 %  Manuscripts/DustMAP/ and out of the thesis) -- see Chapter4/chapter4.tex's
 %  header comment.
 %
+%  2026-10-24: updated to the newer Draaikraal Report.docx (its figures and
+%  captions), the field-data table moved to the SI (Chapter5/chapter5_SI.tex)
+%  and slimmed to one table, and the field-photo album added to the SI. See
+%  CHANGES_JOURNAL.md (2026-10-24).
+%
 %  NOTE: Do NOT include \documentclass or \begin{document} here.
 %        This file is \input{} into dissertation.tex.
 % =============================================================
@@ -35,13 +40,17 @@
   \input{Chapter5/Writing/chapter5_abstract}
 \end{quote}
 
-% --- Field-data table macros (auto-generated -- see the file header) ----------
-% \ChFiveFieldStationTable / \ChFiveStructuralMeasurementsTable. Defined here
-% (rather than only where first used) following the Chapter 3 pattern, so
-% they are available wherever chapter5_body.tex's Sample and Station Data
-% section (\S\ref{sec:ch5-sample-station-data}) invokes them. Regenerate via
-% Chapter5/Figures/write_chapter5_data_table.py after any change to
-% Tables/Draaikraal 2023 BJT.xlsx.
+% --- Field-photo links ------------------------------------------------------
+% \ChFivePhoto{N} prints N as a link to photo N in the SI photo album
+% (anchors ch5-photo-N, written by Chapter5/Figures/write_chapter5_photo_album.py).
+% Used in the chapter text, the SI table, and the album's own captions.
+\providecommand{\ChFivePhoto}[1]{\ifcsname hyperref\endcsname\hyperref[ch5-photo-#1]{#1}\else#1\fi}
+
+% --- Field-data table macro (auto-generated -- see the file header) ----------
+% \ChFiveFieldStationTable, invoked from the SI (Chapter5/Writing/
+% chapter5_SI_body.tex). Defined here, following the Chapter 3 pattern.
+% Regenerate via Chapter5/Figures/write_chapter5_data_table.py after any
+% change to Tables/Draaikraal 2023 BJT.xlsx.
 \input{Chapter5/Writing/chapter5_data_table}
 
 % --- Shared body (Introduction through Acknowledgments) ------------------------

@@ -90,7 +90,8 @@ FAMILIES = {
     'HeFESToEarth': dict(
         model_dir='HeFESToEarth', label='HeFESTo Earth',
         bundles=['HeFESToEarth_NPT_Test_subset*.tar.gz', 'HeFESToEarth_NPS_Test_subset*.tar.gz'],
-        space='elements', singleton='HeFESToEmulator', std_planet='Earth'),
+        space='elements', singleton='HeFESToEmulator', std_planet='Earth',
+        section_rocks=['BASALTadiabat', 'DMMadiabat', 'SILICAadiabat']),
     'MELTS102': dict(
         model_dir='102', label='MELTS 1.0.2',
         bundles=[f'102Closed_{MELTS_VARIANT}_NPT_Test_subset*.tar.gz',
@@ -98,8 +99,8 @@ FAMILIES = {
         space='oxides', singleton='MELTS102Emulator', std_version='102'),
     'MELTS120': dict(
         model_dir='120', label='MELTS 1.2.0',
-        bundles=[f'120SedIgClosed_{MELTS_VARIANT}_NPT_Test_subset*.tar.gz',
-                 f'120SedIgClosed_{MELTS_VARIANT}_NPS_Test_subset*.tar.gz'],
+        bundles=[f'120Closed_{MELTS_VARIANT}_NPT_Test_subset*.tar.gz',
+                 f'120Closed_{MELTS_VARIANT}_NPS_Test_subset*.tar.gz'],
         space='oxides', singleton='MELTS120Emulator', std_version='120'),
 }
 
@@ -196,6 +197,45 @@ def plot_pt_density(name, fam, P, T, std, out_dir):
     print(f'  -> {path}')
 
 
+# Per-family axis overrides for the Harker panels (y = the non-pivot component).
+# HARKER_YMAX caps the y axis (rows above the cap are left out, so the histogram bins span
+# only the shown range); HARKER_LOGY puts y on a log axis (rows with y <= 0 are left out).
+HARKER_YMAX = {'MELTS102': {'Cr2O3': 0.02},
+               'MELTS120': {'P2O5': 0.01, 'Cr2O3': 0.02}}
+HARKER_LOGY = {'MELTS120': {'CO2'}}
+
+
+def _harker_panel_data(name, other, x, y, sxy):
+    """Apply HARKER_YMAX / HARKER_LOGY to one panel: returns x, y, bins, standards, ylim, log."""
+    ymax = HARKER_YMAX.get(name, {}).get(other)
+    logy = other in HARKER_LOGY.get(name, set())
+    x, y = np.asarray(x, float), np.asarray(y, float)
+    keep = np.isfinite(x) & np.isfinite(y)
+    if ymax is not None:
+        keep &= y <= ymax
+    if logy:
+        keep &= y > 0
+    x, y = x[keep], y[keep]
+    if sxy is not None:
+        sx, sy = np.asarray(sxy[0], float), np.asarray(sxy[1], float)
+        sk = np.isfinite(sx) & np.isfinite(sy)
+        if ymax is not None:
+            sk &= sy <= ymax
+        if logy:
+            sk &= sy > 0
+        sxy = (sx[sk], sy[sk])
+    bins, ylim = 50, None
+    if ymax is not None or logy:
+        xb = np.linspace(x.min(), x.max(), 51)
+        if logy:
+            yb = np.geomspace(y.min(), y.max(), 51)
+        else:
+            yb = np.linspace(0.0, ymax, 51)
+            ylim = (0.0, ymax)
+        bins = [xb, yb]
+    return x, y, bins, sxy, ylim, logy
+
+
 def plot_harker_density(name, fam, comp, std_comp, out_dir, ncols=4):
     pivot = 'SiO2' if fam['space'] == 'oxides' else 'Si'
     unit = 'oxide wt frac.' if fam['space'] == 'oxides' else 'cation mol frac.'
@@ -210,8 +250,15 @@ def plot_harker_density(name, fam, comp, std_comp, out_dir, ncols=4):
         sxy = None
         if std_comp is not None and pivot in std_comp and other in std_comp:
             sxy = (std_comp[pivot], std_comp[other])
-        _density_heatmap(ax, comp[pivot], comp[other], '', '', '', bins=50, standard_xy=sxy)
-        ax.locator_params(nbins=3)
+        x, y, bins, sxy, ylim, logy = _harker_panel_data(name, other, comp[pivot], comp[other], sxy)
+        _density_heatmap(ax, x, y, '', '', '', bins=bins, standard_xy=sxy)
+        if logy:
+            ax.set_yscale('log')
+            ax.locator_params(axis='x', nbins=3)
+        else:
+            ax.locator_params(nbins=3)
+        if ylim is not None:
+            ax.set_ylim(*ylim)
         _fonts(ax, title=_tex(other))
     for k in range(len(others), nrows * ncols):
         axes[k // ncols][k % ncols].axis('off')
@@ -249,6 +296,45 @@ def _np(x) -> np.ndarray:
 
 
 _PATHWAY_LABEL = {'isothermal': 'Isothermal (P, T)', 'isentropic': 'Isentropic (P, S)'}
+
+
+def training_mask(emu, conds: Dict[str, np.ndarray]) -> np.ndarray:
+    """True where every condition input of ``emu`` lies inside its training range.
+    ``conds`` maps each of the emulator's condition feature names (as in its
+    ml_indexer.featureNames, e.g. 'Temperature(System_main)') to the values that
+    will be passed under that header, in the emulator's own units. The bounds are
+    the ones its TrainingRangeWarning checks against (the bundle's stats.txt)."""
+    names = list(emu._bound_names[:emu.feature_offset])
+    if set(names) != set(conds):
+        raise ValueError(f'training_mask needs exactly the condition features {names}, got {list(conds)}')
+    keep = np.ones(len(next(iter(conds.values()))), dtype=bool)
+    for name, values in conds.items():
+        lo, hi = emu._bound_ranges[names.index(name)]
+        values = np.asarray(values, dtype=np.float64)
+        keep &= (values >= lo) & (values <= hi)
+    return keep
+
+
+def subset_rows(obj, keep: np.ndarray):
+    """Restrict every per-row array/table in ``obj`` (recursing into dicts) to the
+    rows in ``keep``; anything not of length len(keep) (scalars, paths, titles,
+    per-rock constants) is passed through unchanged."""
+    n = len(keep)
+    if isinstance(obj, dict):
+        return {k: subset_rows(v, keep) for k, v in obj.items()}
+    if isinstance(obj, (pd.DataFrame, pd.Series)) and len(obj) == n:
+        return obj.iloc[np.flatnonzero(keep)].reset_index(drop=True)
+    if isinstance(obj, np.ndarray) and obj.ndim >= 1 and obj.shape[0] == n:
+        return obj[keep]
+    return obj
+
+
+def _restrict_to_training(d, emu, conds, label):
+    """``subset_rows(d, training_mask(emu, conds))``, reporting what was dropped."""
+    keep = training_mask(emu, conds)
+    if not keep.all():
+        print(f'  {label}: {int((~keep).sum())} of {len(keep)} states outside the training range left out')
+    return subset_rows(d, keep)
 
 
 def _save(fig, path):
@@ -331,7 +417,7 @@ def hefesto_sections(name, fam, api, out_dir):
     from ngibbs.deployment_tests._phase_plotting import (
         phase_colors, build_ordered_phases, draw_phase_stack,
     )
-    rocks = find_tables(HEFESTO_STANDARDS / fam['std_planet'])[:3]
+    rocks = find_tables(HEFESTO_STANDARDS / fam['std_planet'], fam.get('section_rocks'))[:3]
     indexer = api.isothermal_emulator.ml_indexer
     mpd = indexer.mass_phasedict
     ordered = build_ordered_phases(mpd)
@@ -367,8 +453,13 @@ def hefesto_sections(name, fam, api, out_dir):
     for pathway in PATHWAYS:
         isen = pathway == 'isentropic'
         header = 'S(J/g/K)(System_main)' if isen else 'T(K)(System_main)'
+        emu = api.isentropic_emulator if isen else api.isothermal_emulator
         rows = []
         for d in data:
+            # GT and emulator are both shown only where this pathway's emulator was trained.
+            d = _restrict_to_training(d, emu, {'P(GPa)(System_main)': d['P'],
+                                               header: d['S'] if isen else d['T']},
+                                      f"{d['title']} ({pathway})")
             second = d['S'] if isen else d['T']
             cm, wpf, T_em = _emulator_assemblage(api, d['P'], second, d['comp'], header, isen)
             T_eval = _np(T_em) if isen else d['T']
@@ -518,8 +609,15 @@ def melts_sections(name, fam, api, out_dir):
         emu = sub.isentropic_emulator if isen else sub.isothermal_emulator
         header = _ENTROPY_FEATURE if isen else 'Temperature(System_main)'
         title = f"{fam['label']} ({MELTS_VARIANT})"
+        if emu is None:
+            warnings.warn(f'{title} has no {pathway} emulator; {pathway} sections skipped.')
+            continue
         rows = []
         for d in data:
+            # GT and emulator are both shown only where this pathway's emulator was trained.
+            d = _restrict_to_training(d, emu, {'Pressure(System_main)': d['P_bar'],
+                                               header: d['S_spec'] if isen else d['T_C']},
+                                      f"{d['title']} ({pathway})")
             second = d['S_spec'] if isen else d['T_C']
             rows.append(dict(d, x=d['T_C'], second=second, em_phase=_emulator_phase_mass_fractions(
                 api, emu, d['P_bar'], second, header, d['bulk'])))

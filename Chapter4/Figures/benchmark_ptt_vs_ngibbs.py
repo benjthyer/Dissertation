@@ -1,47 +1,44 @@
 """
-Benchmark: full PetThermoTools (alphaMELTS) equilibration vs. nGibbs.
+Benchmark: PetThermoTools (alphaMELTS) isobaric cooling paths vs. the nGibbs MELTS emulator.
 
-What is compared, for each batch size N (256 ... 32768):
+Two independent parts, each writing its own CSV to generated/:
 
-  * PTT full equilibration -- N / 256 isobaric MELTS cooling paths
-    (1155 -> 900 C, dT = 1 C, so 256 equilibria per path).  Each path is a
-    sequential MELTS run; the N / 256 paths are distributed across worker
-    processes by ptt.isobaric_crystallisation(multi_processing=True), called
-    in batches of MAX_WORKERS paths so that every worker runs exactly one
-    path.  (A worker process cannot run a second MELTS path: the alphaMELTS
-    library keeps process-global state, so the second path fails on its
-    first step and PTT drops it silently -- with N / 256 > MAX_WORKERS only
-    one path per worker came back.)
+  ptt     benchmark_results_ptt_scaling.csv
+          PTT full equilibration on isobaric MELTS 1.0.2 cooling paths
+          (1200 -> 1000 C, dT = 1 C, so 201 equilibria per path, P = 2 kbar),
+          w * p paths for w in WORKERS and p in PATHS_PER_WORKER, run as p
+          consecutive ptt.multi_path(cores=w) calls of w paths each (one
+          path per worker process per call), timed together.  A worker
+          process cannot solve a second MELTS path: in PTT's path_multi the
+          second path fails on its first step, already counts as done, and is
+          silently dropped (a single multi_path call with p paths per worker
+          returns only ceil(p / 2) of them).  The p-sweep at fixed w gives the
+          per-path cost on w workers (slope) and start-up cost (intercept);
+          plot_benchmark_combined.py extrapolates that line.
 
-  * nGibbsNoProp (CPU and GPU) -- MELTS102Emulator{CPU,GPU}.ForwardMB(
-    outputs=['ptt_out']) on the same N (P, T, bulk) rows: phase assemblage,
-    modes and compositions only.  GPU timing includes host->device transfer
-    and copying the ptt tables back, and is CUDA-synchronised.
-
-  * nGibbs + parallel props (CPU and GPU) -- each of the above plus
-    calc_phase_props_MELTS_parallel on its own output table (alphaMELTS
-    supCalc phase properties on CPU workers, fixed assemblage, no
-    minimisation).  Liquid rows whose composition has a negative SiO2
-    component in the MELTS liquid basis are screened out first (untimed; see
-    screen_melts_liquid) -- MELTS cannot evaluate them and each one costs an
-    OSError plus a library re-initialisation attempt.
-
-GPU lines are skipped (NaN) if CUDA is not available.  PTT is only timed up to
-N = PTT_MAX_N (8192); larger N are left NaN, so that line simply stops there.
-
-NOTE: calc_phase_props_MELTS(_parallel) does NOT equilibrate.  It evaluates the
-MELTS EOS for the assemblage nGibbs already predicted, which is why it is so
-much cheaper than a real PTT path.  The PTT line here is the true
-equilibration cost.
+  ngibbs  benchmark_results_ngibbs_melts.csv
+          MELTS102EmulatorCPU.ForwardMB(outputs=['ptt_out']) on N rows of the
+          same kind of cooling path (N = 16 ... 262144, the batch sizes of the
+          HeFESTo emulator benchmark; one path holds 201 rows), then
+          PetThermoTools' calc_phase_props_MELTS_parallel on its
+          output table (alphaMELTS supCalc phase properties on PTT's default
+          worker count, fixed assemblage, no minimisation).  Liquid rows whose
+          composition has a negative SiO2 component in the MELTS liquid basis
+          are screened out first (untimed; see screen_melts_liquid).  Each N
+          is repeated NGIBBS_REPEATS times (a fresh emulator call, then
+          properties on its own table) and the median of each time is kept.
 
 Every path uses a different bulk composition: a typical MORB with each oxide
-multiplied by N(1, 0.1) noise (seeded, renormalised to 100 wt%).  The same
-compositions and P-T conditions are fed to nGibbs.  The composition sets are
-nested (N = 512 uses the 256 set plus one more path, etc.).
+multiplied by N(1, 0.1) noise (seeded, renormalised to 100 wt%).  The sets are
+nested, so a run with more paths reuses the compositions of every smaller run.
 
-Results: benchmark_results_ptt_vs_ngibbs.csv and three 300 dpi PDFs in
-generated/ next to this script.  Run with --plot-only to re-plot from an
-existing CSV, or --max-log2 K to stop at N = 2**K (e.g. 9 for a quick check).
+Failed equilibria are not counted: the ptt CSV keeps the raw wall time and the
+number of equilibria PTT actually returned, and the plot uses the latter as N.
+
+Usage
+    python benchmark_ptt_vs_ngibbs.py                 # both parts
+    python benchmark_ptt_vs_ngibbs.py --part ptt      # or --part ngibbs
+    python benchmark_ptt_vs_ngibbs.py --out-dir DIR   # write CSVs elsewhere (e.g. a test run)
 
 Uses only the installed ``petthermotools`` and ``ngibbs`` packages
 (pip install -e <checkout>); nothing is put on sys.path.
@@ -54,26 +51,28 @@ import multiprocessing
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 OUT_DIR = SCRIPT_DIR / "generated"
-OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ---- Benchmark settings -------------------------------------------------- #
-T_START_C   = 1155.0
-T_END_C     = 900.0
+T_START_C   = 1200.0
+T_END_C     = 1000.0
 DT_C        = 1.0
-STEPS_PER_PATH = int(round((T_START_C - T_END_C) / DT_C)) + 1   # 256
+STEPS_PER_PATH = int(round((T_START_C - T_END_C) / DT_C)) + 1   # 201
 P_BAR       = 2000.0            # isobaric pressure for every path
 NOISE_SIGMA = 0.1               # multiplicative N(1, sigma) per oxide
 SEED        = 42
-PTT_TIMEOUT = 3600              # s; PTT's default (300 s) can cut off big groups
-PTT_MAX_N   = 8192              # PTT is not timed above this (NaN): its parallel speedup
-                                # saturates well below it, so larger N only adds hours
+PTT_TIMEOUT = 600               # s per path; multi_path allows up to 3x this per wave
+
+WORKERS          = (1, 4, 8)
+PATHS_PER_WORKER = (1, 2, 3, 4, 5)
 MAX_STALLED_PASSES = 1          # abort PTT after this many passes returning no new paths
                                 # (its own loop would retry the same failing workers forever)
 
-# 2^8 = 256 ... 2^15 = 32 768  (N = 128 skipped: < one full path)
-BATCH_SIZES = [2**k for k in range(8, 16)]
+# 2^4 = 16 ... 2^18 = 262 144 rows for the emulator, as in the HeFESTo emulator benchmark
+NGIBBS_SIZES = [2**k for k in range(4, 19)]
+NGIBBS_REPEATS = 3              # median of this many timings per N
 
-CSV_PATH = OUT_DIR / "benchmark_results_ptt_vs_ngibbs.csv"
+PTT_CSV    = "benchmark_results_ptt_scaling.csv"
+NGIBBS_CSV = "benchmark_results_ngibbs_melts.csv"
 
 MORB = {
     "SiO2":  48.68,
@@ -134,104 +133,22 @@ def screen_melts_liquid(ptt_out, phase="liquid1"):
     return int(bad.sum())
 
 
-def plot_results(df):
-    import numpy as np
-    import matplotlib.pyplot as plt
-
-    N = df["N"].to_numpy()
-    lines = [
-        # (label, column, color, linestyle)
-        ("PTT full equilibration",                  "t_ptt_s",               "gray",    "-"),
-        ("nGibbsNoProp (CPU)",                      "t_ngibbs_cpu_s",        "crimson", "-"),
-        ("nGibbs (CPU) + parallel MELTS properties", "t_ngibbs_cpu_props_s", "crimson", "--"),
-        ("nGibbsNoProp (GPU)",                      "t_ngibbs_gpu_s",        "royalblue", "-"),
-        ("nGibbs (GPU) + parallel MELTS properties", "t_ngibbs_gpu_props_s", "royalblue", "--"),
-    ]
-    # Drop lines with no data (e.g. GPU columns on a machine without CUDA)
-    lines = [l for l in lines if l[1] in df and df[l[1]].notna().any()]
-
-    # 1) Wall time
-    plt.figure()
-    for label, col, c, ls in lines:
-        plt.loglog(N, df[col], label=label, color=c, linestyle=ls, marker="o", ms=3)
-    plt.xlabel("Number of Assemblages (N)")
-    plt.ylabel("Wall Time (s)")
-    plt.grid(True, which="both", alpha=0.4)
-    plt.title("MELTS v1.0.2: PTT Equilibration vs. nGibbs — Total Time")
-    plt.legend(fontsize=8)
-    plt.savefig(OUT_DIR / "ptt_vs_ngibbs_time.pdf", dpi=300, bbox_inches="tight")
-    plt.close()
-
-    # 2) Throughput
-    plt.figure()
-    for label, col, c, ls in lines:
-        plt.semilogx(N, N / df[col], label=label, color=c, linestyle=ls, marker="o", ms=3)
-    plt.yscale("log")
-    plt.xlabel("Number of Assemblages (N)")
-    plt.ylabel("Assemblages per second")
-    plt.grid(True, which="both", alpha=0.4)
-    plt.title("MELTS v1.0.2: PTT Equilibration vs. nGibbs — Throughput")
-    plt.legend(fontsize=8)
-    plt.savefig(OUT_DIR / "ptt_vs_ngibbs_per_second.pdf", dpi=300, bbox_inches="tight")
-    plt.close()
-
-    # 3) Speedup relative to PTT
-    plt.figure()
-    for label, col, c, ls in lines[1:]:
-        plt.loglog(N, df["t_ptt_s"] / df[col], label=f"{label} speedup", color=c, linestyle=ls, marker="o", ms=3)
-    plt.axhline(1.0, color="gray", lw=0.8)
-    plt.xlabel("Number of Assemblages (N)")
-    plt.ylabel("Speedup over PTT equilibration (×)")
-    plt.grid(True, which="both", alpha=0.4)
-    plt.title("Relative Speedup of nGibbs over PTT")
-    plt.legend(fontsize=8)
-    plt.savefig(OUT_DIR / "ptt_vs_ngibbs_relative.pdf", dpi=300, bbox_inches="tight")
-    plt.close()
-
-
 # ---- Guard required for multiprocessing on Windows ---------------------- #
 if __name__ == "__main__":
     multiprocessing.freeze_support()
 
     import numpy as np
     import pandas as pd
-    import matplotlib
-    matplotlib.use("Agg")
-
-    if "--plot-only" in sys.argv:
-        plot_results(pd.read_csv(CSV_PATH))
-        sys.exit(0)
-
-    if "--max-log2" in sys.argv:
-        _k = int(sys.argv[sys.argv.index("--max-log2") + 1])
-        BATCH_SIZES = [n for n in BATCH_SIZES if n <= 2**_k]
-
     from time import perf_counter
-    from tqdm import tqdm
+
+    part = sys.argv[sys.argv.index("--part") + 1] if "--part" in sys.argv else "all"
+    if part not in ("all", "ptt", "ngibbs"):
+        sys.exit(f"--part must be ptt, ngibbs or all, not {part!r}")
+    if "--out-dir" in sys.argv:
+        OUT_DIR = Path(sys.argv[sys.argv.index("--out-dir") + 1]).resolve()
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
 
     import petthermotools as ptt
-    from petthermotools.MELTS import calc_phase_props_MELTS_parallel
-    from petthermotools.core_config import MAX_WORKERS
-    import torch
-    from ngibbs.engine.models import MELTS102EmulatorCPU, MELTS102EmulatorGPU
-
-    HAVE_GPU = torch.cuda.is_available() and MELTS102EmulatorGPU is not None
-    if not HAVE_GPU:
-        print("[warn] No CUDA device / GPU emulator -- GPU columns will be NaN.")
-
-    def sync_gpu():
-        if HAVE_GPU:
-            torch.cuda.synchronize()
-
-    def time_ngibbs(emulator, x, gpu):
-        """(seconds, ptt_out) for one ForwardMB call; GPU calls are synchronised."""
-        if gpu:
-            sync_gpu()
-        t0 = perf_counter()
-        out = emulator.ForwardMB(x, headers=input_headers, outputs=["ptt_out"])["ptt_out"]
-        if gpu:
-            sync_gpu()
-        return perf_counter() - t0, out
 
     class PTTStalled(RuntimeError):
         """PTT's retry loop made no progress."""
@@ -242,9 +159,9 @@ if __name__ == "__main__":
         PTT prints that line once per pass of its retry loop (Path.py), i.e.
         after every wave of worker processes, with no context.  A pass that
         returns no new paths prints the same percentage again and PTT simply
-        launches another wave -- so a run of identical 0.0 % lines means the
+        launches another wave -- so a run of identical lines means the
         workers are returning nothing (timeouts or crashes), not progress.
-        This reports paths done, elapsed time, a rough ETA and flags stalls.
+        This reports paths done and elapsed time and aborts on a stall.
         All other output passes through untouched.
         """
 
@@ -272,147 +189,97 @@ if __name__ == "__main__":
         def _progress(self, line):
             pct = float(line.split()[1])
             self.n_pass += 1
-            elapsed = perf_counter() - self.t0
-            msg = (f"    PTT pass {self.n_pass}: {round(pct / 100 * self.n_paths)}/{self.n_paths} paths done "
-                   f"({pct:.1f} %), {elapsed:.0f} s elapsed")
-            if 0 < pct < 100:
-                msg += f", ~{elapsed * (100 - pct) / pct:.0f} s remaining"
             stalled = pct == self.last_pct and pct < 100
-            if stalled:
-                msg += "  [no new paths returned this pass]"
             self.last_pct = pct
-            self.stream.write(msg + "\n")
+            self.stream.write(f"      pass {self.n_pass}: {round(pct / 100 * self.n_paths)}/{self.n_paths} paths "
+                              f"({pct:.1f} %), {perf_counter() - self.t0:.0f} s"
+                              + ("  [no new paths returned]" if stalled else "") + "\n")
             if stalled:
                 self.n_stalled += 1
                 if self.n_stalled >= MAX_STALLED_PASSES:
                     # Raised from inside PTT's print(): unwinds its retry loop,
                     # which otherwise relaunches the same failing workers forever.
-                    raise PTTStalled(f"PTT made no progress for {self.n_stalled} pass(es) "
-                                     f"at {pct:.1f} % -- aborting instead of retrying")
+                    raise PTTStalled(f"no progress for {self.n_stalled} pass(es) at {pct:.1f} %")
 
-    def time_props(ptt_out):
-        """(seconds, liquid rows screened out) for calc_phase_props_MELTS_parallel."""
-        n_screened = screen_melts_liquid(ptt_out)   # untimed, see its docstring
-        t0 = perf_counter()
-        calc_phase_props_MELTS_parallel(ptt_out)
-        return perf_counter() - t0, n_screened
-
-    input_headers = ["Pressure(System_main)", "Temperature(System_main)"] + list(MORB.keys())
-    T_path = np.linspace(T_START_C, T_END_C, STEPS_PER_PATH)   # same grid PTT builds internally
-
-    all_comps = perturbed_compositions(BATCH_SIZES[-1] // STEPS_PER_PATH)
-    all_comps.to_csv(OUT_DIR / "benchmark_ptt_vs_ngibbs_compositions.csv", index=False)
-
-    def ngibbs_input(comps):
-        """(n_paths*256, 2+n_ox) array: every path's full T grid at P_BAR, path-major."""
-        n_paths = len(comps)
-        P = np.full(n_paths * STEPS_PER_PATH, P_BAR)
-        T = np.tile(T_path, n_paths)
+    def path_rows(comps, n_rows):
+        """First n_rows of the path-major (P, T, bulk) table for these paths."""
+        T_path = T_START_C - DT_C * np.arange(STEPS_PER_PATH)   # same grid PTT builds internally
+        T = np.tile(T_path, len(comps))
         C = np.repeat(comps.to_numpy(), STEPS_PER_PATH, axis=0)
-        return np.column_stack([P, T, C]).astype(np.float32)
+        P = np.full(len(T), P_BAR)
+        return np.column_stack([P, T, C])[:n_rows].astype(np.float32)
 
-    print(f"Parallel workers: {MAX_WORKERS}")
+    max_paths = max(max(WORKERS) * max(PATHS_PER_WORKER), -(-NGIBBS_SIZES[-1] // STEPS_PER_PATH))
+    all_comps = perturbed_compositions(max_paths)
+    all_comps.to_csv(OUT_DIR / "benchmark_ptt_vs_ngibbs_compositions.csv", index=False)
     print(f"Path: {T_START_C:.0f} -> {T_END_C:.0f} C, dT = {DT_C} C ({STEPS_PER_PATH} steps), P = {P_BAR:.0f} bar\n")
 
-    # Warm-up so the first timed nGibbs calls don't carry one-off init cost
-    # (CUDA context / kernel selection on the GPU especially)
-    _x_warm = ngibbs_input(all_comps.iloc[:1])
-    MELTS102EmulatorCPU.ForwardMB(_x_warm, headers=input_headers, outputs=["ptt_out"])
-    if HAVE_GPU:
-        MELTS102EmulatorGPU.ForwardMB(_x_warm, headers=input_headers, outputs=["ptt_out"])
-        sync_gpu()
+    # ---- PTT: workers x paths-per-worker grid ------------------------------ #
+    if part in ("all", "ptt"):
+        records = []
+        for w in WORKERS:
+            for p in PATHS_PER_WORKER:
+                n_paths = w * p
+                print(f"  PTT  {w} worker(s) x {p} path(s) = {n_paths} paths ({n_paths * STEPS_PER_PATH} equilibria)")
+                runs = []
+                t0 = perf_counter()
+                try:
+                    # One path per worker per call (see module docstring)
+                    for b0 in range(0, n_paths, w):
+                        bulk = all_comps.iloc[b0:b0 + w].reset_index(drop=True)
+                        with contextlib.redirect_stdout(PTTProgress(w, sys.stdout)):
+                            res = ptt.multi_path(
+                                cores=w, Model="MELTSv1.0.2", bulk=bulk,
+                                T_start_C=T_START_C, T_end_C=T_END_C, dt_C=DT_C, P_bar=P_BAR,
+                                find_liquidus=False, Frac_solid=False, Frac_fluid=False,
+                                timeout=PTT_TIMEOUT, multi_processing=True,
+                            )
+                        # A single-path result is one dict; multi-path is {"Run i": dict}
+                        runs += [res] if "Conditions" in res else [v for v in res.values() if isinstance(v, dict) and "Conditions" in v]
+                except PTTStalled as err:
+                    for proc in multiprocessing.active_children():
+                        proc.terminate()
+                    print(f"      FAILED: {err}")
+                t = perf_counter() - t0
+                n_ok = int(sum(r["Conditions"]["T_C"].notna().sum() if "T_C" in r["Conditions"]
+                               else len(r["Conditions"]) for r in runs))
+                print(f"      {t:8.2f} s  ({len(runs)}/{n_paths} paths, {n_ok}/{n_paths * STEPS_PER_PATH} equilibria)"
+                      f"  -> {n_ok / t:.1f} equilibria/s")
+                records.append(dict(workers=w, paths_per_worker=p, n_paths=n_paths,
+                                    N_requested=n_paths * STEPS_PER_PATH, paths_returned=len(runs),
+                                    equilibria_returned=n_ok, t_s=t))
+                pd.DataFrame(records).to_csv(OUT_DIR / PTT_CSV, index=False)   # save as we go
+        print(f"\n  -> {OUT_DIR / PTT_CSV}\n")
 
-    records = []
-    for N in tqdm(BATCH_SIZES, desc="batch sizes", unit="batch"):
-        n_paths = N // STEPS_PER_PATH
-        comps = all_comps.iloc[:n_paths].reset_index(drop=True)
-        x = ngibbs_input(comps)
-        tqdm.write(f"\n  N={N:>6d} ({n_paths} paths x {STEPS_PER_PATH} steps)")
+    # ---- nGibbs MELTS emulator (CPU) + PTT phase properties ---------------- #
+    if part in ("all", "ngibbs"):
+        from petthermotools.MELTS import calc_phase_props_MELTS_parallel
+        from petthermotools.core_config import MAX_WORKERS
+        from ngibbs.engine.models import MELTS102EmulatorCPU
 
-        # -- nGibbs CPU, then + parallel MELTS properties on its table ----
-        t_cpu, out_cpu = time_ngibbs(MELTS102EmulatorCPU, x, gpu=False)
-        t_cpu_props, n_scr_cpu = time_props(out_cpu)
-        tqdm.write(f"    nGibbsNoProp CPU   {t_cpu:9.3f} s   + props {t_cpu_props:8.3f} s  (total {t_cpu + t_cpu_props:.3f} s)"
-                   f"  [{n_scr_cpu} liquid rows screened]")
+        headers = ["Pressure(System_main)", "Temperature(System_main)"] + list(MORB.keys())
+        # Warm-up so the first timed call doesn't carry one-off init cost
+        MELTS102EmulatorCPU.ForwardMB(path_rows(all_comps.iloc[:1], STEPS_PER_PATH), headers=headers, outputs=["ptt_out"])
 
-        # -- nGibbs GPU, then + parallel MELTS properties on its table ----
-        if HAVE_GPU:
-            t_gpu, out_gpu = time_ngibbs(MELTS102EmulatorGPU, x, gpu=True)
-            t_gpu_props, n_scr_gpu = time_props(out_gpu)
-            tqdm.write(f"    nGibbsNoProp GPU   {t_gpu:9.3f} s   + props {t_gpu_props:8.3f} s  (total {t_gpu + t_gpu_props:.3f} s)"
-                       f"  [{n_scr_gpu} liquid rows screened]")
-        else:
-            t_gpu = t_gpu_props = float("nan")
-            n_scr_gpu = 0
-
-        # -- PTT full equilibration ----------------------------------------
-        if N > PTT_MAX_N:
-            t_ptt = float("nan")
-            runs, n_ptt_ok = [], 0
-            tqdm.write(f"    PTT equilibration  skipped (N > {PTT_MAX_N})")
-        else:
-            n_batches = -(-n_paths // MAX_WORKERS)
-            tqdm.write(f"    PTT equilibration  starting: {n_paths} paths on {MAX_WORKERS} workers "
-                       f"({n_batches} batch(es) of <= {MAX_WORKERS}, one path per worker) ...")
-            runs = []
-            t0 = perf_counter()
-            try:
-                # One path per worker process (see module docstring): PTT only ever
-                # gives a worker more than one path when paths outnumber cores.
-                for b0 in range(0, n_paths, MAX_WORKERS):
-                    batch = comps.iloc[b0:b0 + MAX_WORKERS].reset_index(drop=True)
-                    with contextlib.redirect_stdout(PTTProgress(len(batch), sys.stdout)):
-                        ptt_res = ptt.isobaric_crystallisation(
-                            Model="MELTSv1.0.2", bulk=batch,
-                            T_start_C=T_START_C, T_end_C=T_END_C, dt_C=DT_C, P_bar=P_BAR,
-                            find_liquidus=False, Frac_solid=False, Frac_fluid=False,
-                            timeout=PTT_TIMEOUT, multi_processing=True,
-                        )
-                    # A single-path result is one dict; multi-path is {"Run i": dict}
-                    runs += [ptt_res] if "Conditions" in ptt_res else [v for v in ptt_res.values() if isinstance(v, dict) and "Conditions" in v]
-            except PTTStalled as err:
-                for proc in multiprocessing.active_children():
-                    proc.terminate()
-                tqdm.write(f"    PTT equilibration  FAILED: {err} (keeping the {len(runs)} paths already returned)")
-            t_ptt_raw = perf_counter() - t0
-            n_ptt_ok = int(sum(len(r["Conditions"]) for r in runs))
-
-            # PTT can return fewer equilibria than requested (failed paths are dropped
-            # silently while still counting as "complete"), so the raw wall time covers
-            # only n_ptt_ok equilibria.  Rescale to N, assuming failed rows cost the same.
-            t_ptt = t_ptt_raw * N / n_ptt_ok if n_ptt_ok else float("nan")
-            tqdm.write(f"    PTT equilibration  {t_ptt_raw:9.3f} s raw  ({len(runs)}/{n_paths} paths, {n_ptt_ok}/{N} equilibria returned)"
-                       + (f"  -> {t_ptt:.3f} s scaled to N" if n_ptt_ok and n_ptt_ok != N else ""))
-        tqdm.write(f"    speedup vs PTT: CPU {t_ptt / t_cpu:.0f}x / {t_ptt / (t_cpu + t_cpu_props):.1f}x w/ props, "
-                   f"GPU {t_ptt / t_gpu:.0f}x / {t_ptt / (t_gpu + t_gpu_props):.1f}x w/ props")
-
-        records.append(dict(
-            N=N, n_paths=n_paths,
-            t_ngibbs_cpu_s=t_cpu,
-            t_props_on_cpu_out_s=t_cpu_props,
-            t_ngibbs_cpu_props_s=t_cpu + t_cpu_props,
-            t_ngibbs_gpu_s=t_gpu,
-            t_props_on_gpu_out_s=t_gpu_props,
-            t_ngibbs_gpu_props_s=t_gpu + t_gpu_props,
-            t_ptt_s=t_ptt,
-            t_ptt_raw_s=t_ptt_raw if N <= PTT_MAX_N else float("nan"),
-            ptt_paths_returned=len(runs),
-            ptt_equilibria_returned=n_ptt_ok,
-            liquid_rows_screened_cpu=n_scr_cpu,
-            liquid_rows_screened_gpu=n_scr_gpu,
-        ))
-        pd.DataFrame(records).to_csv(CSV_PATH, index=False)   # save as we go
-
-    # ---- Summary table --------------------------------------------------- #
-    header = (f"{'N':>7}  {'paths':>5}  {'CPU (s)':>9}  {'CPU+props':>10}  {'GPU (s)':>9}  {'GPU+props':>10}  "
-              f"{'PTT (s)':>9}  {'PTT eq ok':>9}  {'PTT/CPU':>8}  {'PTT/GPU':>8}")
-    print("\n" + header)
-    print("-" * len(header))
-    for r in records:
-        print(f"{r['N']:>7d}  {r['n_paths']:>5d}  {r['t_ngibbs_cpu_s']:>9.4f}  {r['t_ngibbs_cpu_props_s']:>10.4f}  "
-              f"{r['t_ngibbs_gpu_s']:>9.4f}  {r['t_ngibbs_gpu_props_s']:>10.4f}  "
-              f"{r['t_ptt_s']:>9.2f}  {r['ptt_equilibria_returned']:>9d}  "
-              f"{r['t_ptt_s'] / r['t_ngibbs_cpu_s']:>7.0f}x  {r['t_ptt_s'] / r['t_ngibbs_gpu_s']:>7.0f}x")
-    print(f"\nResults saved to {CSV_PATH}")
-
-    plot_results(pd.DataFrame(records))
+        records = []
+        for N in NGIBBS_SIZES:
+            x = path_rows(all_comps, N)
+            t_emu, t_props = [], []
+            for _ in range(NGIBBS_REPEATS):
+                # calc_phase_props_MELTS_parallel adds to its table, so every repeat
+                # evaluates properties on the output of its own emulator call
+                t0 = perf_counter()
+                out = MELTS102EmulatorCPU.ForwardMB(x, headers=headers, outputs=["ptt_out"])["ptt_out"]
+                t_emu.append(perf_counter() - t0)
+                n_scr = screen_melts_liquid(out)   # untimed, see its docstring
+                t0 = perf_counter()
+                calc_phase_props_MELTS_parallel(out)
+                t_props.append(perf_counter() - t0)
+            t_emu, t_props = float(np.median(t_emu)), float(np.median(t_props))
+            print(f"  nGibbs N={N:>6d}  emulator {t_emu:8.3f} s  + PTT props {t_props:8.3f} s"
+                  f"  (median of {NGIBBS_REPEATS})  [{n_scr} liquid rows screened]")
+            records.append(dict(N=N, t_ngibbs_cpu_s=t_emu, t_props_s=t_props,
+                                t_ngibbs_cpu_props_s=t_emu + t_props, n_repeats=NGIBBS_REPEATS,
+                                props_workers=MAX_WORKERS, liquid_rows_screened=n_scr))
+            pd.DataFrame(records).to_csv(OUT_DIR / NGIBBS_CSV, index=False)
+        print(f"\n  -> {OUT_DIR / NGIBBS_CSV}")

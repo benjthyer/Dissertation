@@ -159,6 +159,10 @@
 % this writing, a scan of references.bib found zero actual collisions under
 % the new maxnames=2 rule, so this is a forward-looking safety net, not a
 % fix for a live problem.
+% 2026-10-24: switched to uniquelist=minyear. Chapter 5's references made
+% `true' expand lists that only collide across different years (e.g.
+% Latypov et al. 2020 vs. 2022 printed as "Latypov, Chistyakova, et al.,
+% 2022"); minyear expands only when the year is also the same.
 %
 % maxbibnames is set high (effectively "no truncation") so the References
 % list at the end always spells out every author, regardless of how the
@@ -171,7 +175,7 @@
   maxnames   = 2,
   minnames   = 1,
   maxbibnames = 99,
-  uniquelist = true,
+  uniquelist = minyear,      % was true; minyear since 2026-10-24 (see note above)
   giveninits = true,
   uniquename = init,
   natbib     = true,         % provides \citep/\citet/\citealp (natbib syntax),
@@ -277,6 +281,10 @@
 \newenvironment{ChapterSI}{%
   \setcounter{section}{0}
   \renewcommand{\thesection}{\thechapter.\arabic{section}s}
+  % hyperref anchor names: without this, SI section 5.1s and main-text
+  % section 5.1 share the anchor "section.5.1" (pdfTeX "destination with the
+  % same identifier" warning) and links to the SI section land in the chapter.
+  \renewcommand{\theHsection}{\thechapter.\arabic{section}s}
 }{}
 
 % --- Appendix ----------------------------------------------------------------
@@ -291,6 +299,10 @@
 \usepackage{enumitem}
 % pdflscape already loaded above (Figures & tables section) for \chplandscape
 \usepackage{pdfpages}         % include external PDFs (field maps, etc.)
+\usepackage{multicol}         % Chapter 5 SI photo album (photos + captions flow in 3 columns)
+\usepackage{afterpage}        % \afterpage{...}: Chapter 5's landscape map pages are
+                               % placed after the current page fills, instead of
+                               % \begin{landscape} cutting the text page short
 \usepackage{soul}             % \hl{} highlighting -- used once in Chapter 2's
                                % shared body (chapter2_body.tex)
 \usepackage{lineno}           % line numbers — comment out for final version

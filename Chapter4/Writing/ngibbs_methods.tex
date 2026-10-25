@@ -120,7 +120,7 @@ Compositions are supplied by the user either as oxide weight percents or as elem
 molar abundances for any model; oxide inputs are automatically converted internally to the normalized cation abundances expected by nGibbs.
 
 Entropy is offered as a useful alternative to temperature because isentropic paths are the
-natural coordinate for the convecting mantle \citep{Davies1977,Brown1981,Asimow1997,Asimow2001,Ganguly2005,Tirone2016}. Supplying $S$ directly removes an inner iteration for $T$ at every pressure step, which is the dominant cost of constructing
+natural coordinate for the convecting mantle \citep{davies1977,brown1981,asimow1997,asimow2001,ganguly2005,tirone2016}. Supplying $S$ directly removes an inner iteration for $T$ at every pressure step, which is the dominant cost of constructing
 an adiabat by conventional means.
 
 \subsubsection{Redox state} \emph{nGibbs} models closed systems that conserve oxygen content, as well as open systems where oxygen fugacity is imposed. Iron is the major redox-active element in \emph{nGibbs}. Every element besides iron is tracked at a single, fixed oxidation state and therefore the oxygen content of the system is fully specified by the ferric-to-total iron ratio. The only other redox-active element is carbon in \textsc{MELTS} 1.2 emulators, wherein carbon exists as an oxide in melt, fluid, and calcite, and as reduced carbon in graphite. Carbon is only represented as an oxide (CO\textsubscript{2}) in nGibbs, so graphite is represented as C(FeO)\textsubscript{4}(Fe\textsubscript{2}O\textsubscript{3})\textsubscript{-2} in oxide space in order to conserve oxygen. Similarly, native iron phases are represented as (FeO)\textsubscript{3}(Fe\textsubscript{2}O\textsubscript{3})\textsubscript{-1} in oxide space in \emph{nGibbs}.
@@ -200,7 +200,7 @@ components (diopside, clinoenstatite, hedenbergite, alumino-buffonite, buffonite
 essenite, jadeite) as $x_0,\dots,x_6$. Pyroxene has the general formula
 M2\,M1\,T$_2$O$_6$, with one large octahedral site (M2), one small octahedral site
 (M1), and two tetrahedral sites (T); the site occupancies of the seven components
-follow \citet{SackGhiorso1994} and are given in Table~\ref{tab:pxsites}. The
+follow \citet{sackghiorso1994} and are given in Table~\ref{tab:pxsites}. The
 atoms-per-formula-unit totals implied by that table are
 \begin{align}
   \mathrm{Ca} &= x_0+x_2+x_3+x_4+x_5, &
@@ -214,7 +214,7 @@ atoms-per-formula-unit totals implied by that table are
 \begin{table}[t]
 \centering
 \caption{Site occupancies of the seven \textsc{MELTS} pyroxene components
-\citep{SackGhiorso1994}.}
+\citep{sackghiorso1994}.}
 \label{tab:pxsites}
 \begin{tabular}{llll}
 \toprule
@@ -372,7 +372,7 @@ Bulk compositions are sampled from whole-rock analyses in the GEOROC and PetDB
 databases \citep{GEOROC,PetDB}, preferentially weighting the compositional range
 the emulator is intended to serve. Whole rock analyses from GEOROC in particular are weighted towards more evolved compositions, so mafic and ultramafic compostions were more heavily weighted in the  \emph{nGibbs} training datasets than in the original source datasets.  For the \textsc{HeFESTo} models, one fifth of the training data are drawn from the population of compositions between 5 and 20 wt\% MgO, three tenths of the data are drawn from the population of compositions with greater than 20 wt\% MgO, and the remaining half is a mixture of these two mafic and ultramafic populations in random proportions. These base compositions were substantially randomly altered so that \emph{nGibbs} would perform well in a wider variety of parameter spaces, including rock compositions that are uncommon or unknown on Earth's surface. For the Earth model, one quarter of the compositions are not perturbed. For the \textsc{MELTS} emulators, half of the training data is generated from any composition in the compiled database, one fifth of the data are pulled from ultramafic compositions with greater than 25 wt\% MgO, and three tenths of the data are pulled from compositions with greater than 5  wt\% MgO. These bulk compositions are perturbed by guassian noise with a standard deviation of 5\%, a substantially more modest perturbation that that applied to the \textsc{HeFESTo} emulator training data.  
 
-For volatile-focused \textsc{MELTS} 1.2.0 emulators in particular, 35\% of the training and validation datasets are drawn from sedimentary compositions within the Gard database \citep{Gard2019}. Of these sedimentary bulk compositions, about one quarter are drawn from carbonate rich compositions, with CO\textsubscript{2} contents greater than 10 wt\%, whereas the remaining sedimentary compositions contain less than 10 wt\% CO\textsubscript{2}. The remaining 65\% of the training data were drawn from
+For volatile-focused \textsc{MELTS} 1.2.0 emulators in particular, 35\% of the training and validation datasets are drawn from sedimentary compositions within the Gard database \citep{gard2019}. Of these sedimentary bulk compositions, about one quarter are drawn from carbonate rich compositions, with CO\textsubscript{2} contents greater than 10 wt\%, whereas the remaining sedimentary compositions contain less than 10 wt\% CO\textsubscript{2}. The remaining 65\% of the training data were drawn from
 igneous whole rock data from GEOROC and PetDB, similarly to the other models \citep{GEOROC,PetDB}. 
 
 In order to train emulators that perform well in a variety of redox conditions, 
@@ -405,7 +405,7 @@ Although \textsc{HeFESTo} natively calculates isentropes, such a calculation req
 \subsubsection{Execution}
 
 \textsc{MELTS} simulations are driven through \textsc{alphaMELTS} on a window
-\citep{Smith2005} run with GNU parallel. \textsc{HeFESTo} simulations are
+\citep{smithasimow2005} run with GNU parallel. \textsc{HeFESTo} simulations are
 run on the Caltech High Performance Computing cluster as SLURM array jobs. 
 \todo{describe hefesto resampling procedure}
 

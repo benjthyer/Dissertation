@@ -1,0 +1,515 @@
+% =============================================================
+%  chapter5_photo_album.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.
+%  Written by Chapter5/Figures/write_chapter5_photo_album.py from
+%  Workspace/Draaikraal Photo Captions.docx and
+%  Figures/source/Draaikraal_Photos/ (downsampled copies in
+%  Figures/generated/field_photos/). Edit the Word file and rerun:
+%    python3 Chapter5/Figures/write_chapter5_photo_album.py
+%  \input{} by Chapter5/Writing/chapter5_SI_body.tex. Needs multicol,
+%  pdflscape.
+% =============================================================
+\providecommand{\phantomsection}{}
+\providecommand{\ChFivePhoto}[1]{#1}
+\newlength{\ChFivePhotoW}
+\newlength{\ChFivePhotoH}
+\newcommand{\ChFivePhotoBox}[2]{%  {n}{image or placeholder}
+  \begin{minipage}[t]{\ChFivePhotoW}\centering
+  \parbox[c][\ChFivePhotoH][c]{\ChFivePhotoW}{\centering #2}\\[1pt]
+  {\scriptsize\bfseries\phantomsection\label{ch5-photo-#1}#1}
+  \end{minipage}}
+\newcommand{\ChFivePhotoEmpty}{\begin{minipage}[t]{\ChFivePhotoW}\mbox{}\end{minipage}}
+\newcommand{\ChFivePhotoMissing}[1]{%
+  \fcolorbox{gray}{white}{\parbox[c][0.8\ChFivePhotoH][c]{0.8\ChFivePhotoW}{%
+    \centering\color{gray}\scriptsize DrBV#1.jpg not in\\ Draaikraal\_Photos}}}
+\newcommand{\ChFiveCapCols}{2}
+\newenvironment{ChFivePhotoCaptions}{%
+  \par\vspace{6pt}\begin{multicols}{\ChFiveCapCols}\scriptsize\raggedright
+  \setlength{\parskip}{2.5pt}\setlength{\parindent}{0pt}}{\end{multicols}}
+\newcommand{\ChFiveDefItem}[3]{%
+  \expandafter\def\csname ChFiveItemP#1\endcsname{#2}%
+  \expandafter\def\csname ChFiveItemC#1\endcsname{#3}}
+\newcommand{\ChFiveJoin}{\par\vspace{4pt}}   % between items of a plate
+\newcommand{\ChFiveMaxItems}{3}              % items per plate at most
+\newcommand{\ChFivePre}{}\newcommand{\ChFivePost}{}  % around a plate's photos
+\newcount\ChFiveItemN
+\newcount\ChFiveItemI
+\newcount\ChFiveItemJ
+\newcount\ChFiveItemK
+\newsavebox\ChFivePlateBox
+\newsavebox\ChFiveTrialBox
+\newif\ifChFiveGrow
+\newcommand{\ChFiveMakePlate}[2]{%  items {first}..{last}
+  \begin{minipage}[t]{\linewidth}\setlength{\parindent}{0pt}%
+  \noindent\ChFivePre
+  \ChFiveItemK=#1\relax
+  \loop
+    \csname ChFiveItemP\the\ChFiveItemK\endcsname
+    \ifnum\ChFiveItemK<#2 \ChFiveJoin\fi
+    \advance\ChFiveItemK by 1
+  \ifnum\ChFiveItemK<\numexpr#2+1\relax\repeat
+  \ChFivePost
+  \begin{ChFivePhotoCaptions}%
+  \ChFiveItemK=#1\relax
+  \loop
+    \csname ChFiveItemC\the\ChFiveItemK\endcsname
+    \advance\ChFiveItemK by 1
+  \ifnum\ChFiveItemK<\numexpr#2+1\relax\repeat
+  \end{ChFivePhotoCaptions}\end{minipage}}
+% room left on the current page (glue above a box placed mid-page included)
+\newcommand{\ChFiveRoom}{\dimexpr\textheight-\pagetotal-4pt
+  \ifdim\pagetotal>0pt -2\baselineskip-\parskip\fi\relax}
+\newcommand{\ChFiveLayout}{%
+  \ChFiveItemI=1
+  \loop
+    \par\penalty0 % runs TeX's page builder, so \pagetotal is current
+    \global\ChFiveItemJ=\ChFiveItemI
+    \global\setbox\ChFivePlateBox\hbox{\ChFiveMakePlate{\the\ChFiveItemI}{\the\ChFiveItemJ}}%
+    % the first plate may share its page with the text before the album;
+    % if not even one item fits in what is left there, start a fresh page
+    \ifdim\pagetotal>0pt
+      \ifdim\dimexpr\ht\ChFivePlateBox+\dp\ChFivePlateBox\relax>\ChFiveRoom
+        \newpage
+      \fi
+    \fi
+    \ChFiveTryGrow
+    \noindent\usebox\ChFivePlateBox\par\newpage
+    \ChFiveItemI=\numexpr\ChFiveItemJ+1\relax
+  \ifnum\ChFiveItemI<\numexpr\ChFiveItemN+1\relax
+  \repeat}
+\newcommand{\ChFiveTryGrow}{\begingroup
+  \loop
+    \global\ChFiveGrowfalse
+    \ifnum\ChFiveItemJ<\ChFiveItemN
+      \ifnum\numexpr\ChFiveItemJ-\ChFiveItemI+1\relax<\ChFiveMaxItems\relax
+        \setbox\ChFiveTrialBox\hbox{\ChFiveMakePlate{\the\ChFiveItemI}{\the\numexpr\ChFiveItemJ+1\relax}}%
+        \ifdim\dimexpr\ht\ChFiveTrialBox+\dp\ChFiveTrialBox\relax<\ChFiveRoom
+          \global\advance\ChFiveItemJ by 1
+          \global\setbox\ChFivePlateBox\copy\ChFiveTrialBox
+          \global\ChFiveGrowtrue
+        \fi
+      \fi
+    \fi
+  \ifChFiveGrow\repeat
+  \endgroup}
+
+Photographs taken in portrait orientation (photos~\ChFivePhoto{29}, \ChFivePhoto{53}, \ChFivePhoto{54}, \ChFivePhoto{81}, \ChFivePhoto{94}, \ChFivePhoto{99}, \ChFivePhoto{103}, \ChFivePhoto{105}, and \ChFivePhoto{119}) are gathered on landscape pages at the end of the album, so that they print at full height.
+
+
+\par
+\begingroup
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{0.04\linewidth}
+\setlength{\multicolsep}{0pt}
+\setlength{\ChFivePhotoW}{\dimexpr(\linewidth-\columnsep)/2\relax}
+\setlength{\ChFivePhotoH}{0.5625\ChFivePhotoW}% 16:9
+\renewcommand{\ChFiveCapCols}{2}
+\renewcommand{\ChFiveJoin}{\par\vspace{4pt}\noindent}
+\renewcommand{\ChFiveMaxItems}{3}
+
+\ChFiveDefItem{1}
+{\ChFivePhotoBox{1}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV1.jpg}}\hfill
+\ChFivePhotoBox{2}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV2.jpg}}}
+{{\textbf{Photo 1.} \itshape Ducks at Willis Creek Lodge, homebase for fieldwork in Draaikraal.\par}
+{\textbf{Photo 2.} Decimeter scale lenticular inclusions of coarse-grained Anorthositic-Gabbro in magnetic, fine-grained Marginal Sill Phase. Clinopyroxene in inclusions is oikocrystic and up to 3 cm. Found alongside spheroidal pyroxenite aggregates of photo~\ChFivePhoto{4}.\par}}
+
+\ChFiveDefItem{2}
+{\ChFivePhotoBox{3}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV3.jpg}}\hfill
+\ChFivePhotoBox{4}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV4.jpg}}}
+{{\textbf{Photo 3.} The Valley at Draaikraal looking West illustrating the unexpected recessive topography of the Lower Main Zone of the RLS at Draaikraal. The mountains in the distance correspond to the homogeneous middle Main Zone: The Leelo Mountain gabbronorite.\par}
+{\textbf{Photo 4.} Pyroxenite Aggregates (colloquially referred to in the literature as “Tennis Balls”) 1-5 cm in diameter within fine-grained marginal zone gabbronorite. Pyroxenite aggregates have not been observed before this study outside of coarsely crystalline plutonic rocks, and only recently have authors argued that they could be hosted within the Marginal Sill Phase. \citet{mitchell2023} argue \todo{sentence left unfinished in the caption document}. This study offers multiple unambiguous examples of pyroxenite aggregates hosted within fine-grained, magnetic, marginal sill phase.\par}}
+
+\ChFiveDefItem{3}
+{\ChFivePhotoBox{5}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV5.jpg}}\hfill
+\ChFivePhotoBox{6}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV6.jpg}}}
+{{\textbf{Photo 5.} The Steenkampsberg range to the East is intruded with recessive mafic sills of the Marginal Sill Phase.\par}
+{\textbf{Photo 6.} Intersecting, 2 cm wide, anorthositic horizons within the Marginal Sill Phase. The limbs of the right horizon are visibly boudinaged on the right side of the photo. These anorthositic horizons may have originally been planar-horizontal, or may represent subvertical pathways recording fluid flow through a mushy substrate produced by selective dissolution of other phases in (a) horizon(s) of high porosity. These rare anorthositic horizons may be the source of the anorthositic gabbro inclusions from photo~\ChFivePhoto{2}.\par}}
+
+\ChFiveDefItem{4}
+{\ChFivePhotoBox{7}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV7.jpg}}\hfill
+\ChFivePhotoBox{8}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV8.jpg}}}
+{{\textbf{Photo 7.} \itshape Sunset through dried flowers.\par}
+{\textbf{Photo 8.} Boulders typifying the weathering behavior of the resistant Main Zone RLS. These rocks, however, are mapped here and elsewhere \citep{vandermerwe2007,latypovetal2022} to come from the Upper Critical Zone. The upper Critical Zone bears cumulus clinopyroxene in the Draaikraal area in contrast to published stratigraphy \citep{vongruenewaldt1985,sacs1980}, though it is not unheard of \citep{cameron1982}. Abundant, large oikocrystic clinopyroxene is thought to be responsible for the resistant nature of Main Zone rocks \citep{cawthorn2015}. The presence of significant oikocrystic clinopyroxene in the Upper Critical Zone of Draaikraal may serve to replicate the blocky, spheroidal weathering patterns of the Main Zone in the Upper Critical Zone.\par}}
+
+\ChFiveDefItem{5}
+{\ChFivePhotoBox{9}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV9.jpg}}\hfill
+\ChFivePhotoBox{10}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV10.jpg}}}
+{{\textbf{Photo 9.} \todo{No caption for this photo in the caption document.}\par}
+{\textbf{Photo 10.} A typical “tennis ball” pyroxenite aggregate in the coarse-grained upper Critical Zone of the RLS. The right side of the tennis ball seems to be surrounded by a relatively pyroxene-depleted corona within the gabbronorite. \par One potential explanation is that pyroxenite cumulates were mechanically separated into pyroxenite aggregates by differential wetting by an immiscible fluid or magma, as in the model of \citet{lee1979}. A second explanation is that these represent inclusions of coarsely crystalline RLS entrained into incoming gabbronoritic magma \citep{khoza2021}, suggesting that the marginal sill phase represents a distinct magmatic event that followed the emplacement of the coarsely-crystalline RLS, as opposed to the Marginal Sill Phase representing the chilled margin of the coarsely-crystalline RLS as is often interpreted in the literature, most famously by \citet{sharpe1981}. A third model likens pyroxenite aggregates to mafic enclaves in granitoids, suggesting that a pyroxenite sill intruded into a cooler, comparatively rigid mush, disaggregating into rounded enclaves \citep{mitchell2023}.\par}}
+
+\ChFiveDefItem{6}
+{\ChFivePhotoBox{11}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV11.jpg}}\hfill
+\ChFivePhotoBox{12}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV12.jpg}}}
+{{\textbf{Photo 11.} Cussonia Paniculata trees, colloquially referred to as Highveld Cabbage Trees, seen atop spheroidally weathered Upper Critical Zone boulders. These trees preferred the gabbroic rocks of the RLS and Marginal Sill Phase to the quartzite country rocks of the Transvaal Supergroup.\par}
+{\textbf{Photo 12.} The predominantly quartzite Steenkampsberg mountains to the East of the Draaikraal are comparatively poorly vegetated relative to the lands hosting gabbroic rocks near Draaikraal.\par}}
+
+\ChFiveDefItem{7}
+{\ChFivePhotoBox{13}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV13.jpg}}\hfill
+\ChFivePhotoBox{14}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV14.jpg}}}
+{{\textbf{Photo 13.} A south facing perspective of the Draaikraal Valley. The creek covered by trees in the foreground marked the contact of the rotated block of the fine-grained Bushveld floor associated with the Kliprivier synform with the coarse-grained RLS to the South.\par}
+{\textbf{Photo 14.} A contact of Steenkampsberg quartzite and the Marginal Sill Phase gabbro. The topography of the ridge was discordant with respect to the dipping of the strata, but mirrored the trend of the Draaikraal lineament and a plausible axial plane for the Kliprivier Synform.\par}}
+
+\ChFiveDefItem{8}
+{\ChFivePhotoBox{15}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV15.jpg}}\hfill
+\ChFivePhotoBox{16}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV16.jpg}}}
+{{\textbf{Photo 15.} A waterfall viewed from the distance borne of the dramatic topography change from the proud Steenkamsberg quartzite of De Berg to the recessive Critical Zone of the RLS. This is a tributary of the Dwars River.\par}
+{\textbf{Photos 16\textendash17.} \itshape Dramatic vistas developed at the corner of the Kliprivier Synform at the floor of the RLS.\par}}
+
+\ChFiveDefItem{9}
+{\ChFivePhotoBox{17}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV17.jpg}}\hfill
+\ChFivePhotoBox{18}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV18.jpg}}}
+{{\textbf{Photo 17.} \textit{See the caption of photo~\ChFivePhoto{16}.}\par}
+{\textbf{Photos 18\textendash19.} See photo~\ChFivePhoto{15}.\par}}
+
+\ChFiveDefItem{10}
+{\ChFivePhotoBox{19}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV19.jpg}}\hfill
+\ChFivePhotoBox{20}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV20.jpg}}}
+{{\textbf{Photo 19.} \textit{See the caption of photo~\ChFivePhoto{18}.}\par}
+{\textbf{Photo 20.} \itshape Controlled burns were conducted regularly by farmers in the region during the winter (dry season) months.\par}}
+
+\ChFiveDefItem{11}
+{\ChFivePhotoBox{21}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV21.jpg}}\hfill
+\ChFivePhotoBox{22}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV22.jpg}}}
+{{\textbf{Photo 21.} Dark, non-magnetic anastomosing lateral banding in the coarse Marginal Sill Phase gabbro near the contact with the RLS and with the Transvaal sediments. Are these chromitites?\par}
+{\textbf{Photo 22.} Asymmetric ripples preserved in the Steenkampsberg quartzites of the Transvaal supergroup at the margin of the RLS. Despite extensive recrystallization of the quartzites during contact metamorphism, the bedding is preserved and is locally concordant with the marginal sill phase and the RLS. Discordance on the scale of the RLS instead manifests by localized stepwise cross-cutting of bedding in a stair-shaped geometry \citep{cawthorn1998}. These ripples suggest a flow direction to the modern south-southwest.\par}}
+
+\ChFiveDefItem{12}
+{\ChFivePhotoBox{23}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV23.jpg}}\hfill
+\ChFivePhotoBox{24}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV24.jpg}}}
+{{\textbf{Photo 23.} Steeply dipping Steenkampsberg quartzite at the margin of the RLS. The steepest dipping rocks in the Bushveld are along the margin. Near the RLS margin, the meta-sedimentary country rocks, Marginal SIll Phase and the plutonic RLS dip $\sim$ 25° towards the center of the intrusion. The concave geometry of the RLS is thought to have formed when the center of the RLS sank due to isostatic flexure to accommodate the negative buoyancy of the massive intrusion as it underwent densification during cooling and crystallization \citep{webb2004}.\par}
+{\textbf{Photo 24.} A coarse-grained dike/sill within a piece of fine-grained Marginal Sill Phase float exhibiting anastomaosing, non-planar contacts. Such features may be a product of recrystallization during secondary reactive porous flow by metasomatic fluid, or may represent horizons of grain coarsening during prolonged crystallization in regions where evolved fluid accumulated at the contacts of disparate marginal sill phase intrusions.\par}}
+
+\ChFiveDefItem{13}
+{\ChFivePhotoBox{25}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV25.jpg}}\hfill
+\ChFivePhotoBox{26}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV26.jpg}}}
+{{\textbf{Photos 25\textendash26.} The contact of the upper Critical Zone and the Steenkampberg quartzite at Kliprivier farm. The Critical Zone here weathers into boulders like the Main Zone, and is increasingly magnetite rich as it approaches the quartzite country rock. The high mountains on the left in the distance are Main Zone gabbronorite within the RLS, while the high mountains on the right are the metasedimentary Steemkampsberg range. The extreme dropoff directly ahead is caused by the preferential weathering of the lower Critical Zone relative to the resistant Main Zone and the Steenkampsberg quartzite. The local air quality was often poor due to frequent controlled burns and modest air circulation in the Winter.\par}
+{\textbf{Photo 26.} \textit{See the caption of photo~\ChFivePhoto{25}.}\par}}
+
+\ChFiveDefItem{14}
+{\ChFivePhotoBox{27}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV27.jpg}}\hfill
+\ChFivePhotoBox{28}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV28.jpg}}}
+{{\textbf{Photo 27.} Onion skin weathering and exfoliation in the upper Critical Zone of the RLS reminiscent of the weathering of granitic plutons.\par}
+{\textbf{Photo 28.} A typical contact between the Marginal Sill Phase and the Steenkampsberg Quartzite: indistinct and weathered, often with meters of soil separating the units.\par}}
+
+\ChFiveDefItem{15}
+{\ChFivePhotoBox{30}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV30.jpg}}\hfill
+\ChFivePhotoBox{31}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV31.jpg}}}
+{{\textbf{Photo 30.} Hornfelsized Houtenbek shale with a non-foliated, coarsely-crystalline calc-silicate skarn horizon. The calc-silicate rock may have been (partially?) molten during the plastic deformation of the hornfelsized shale.\par}
+{\textbf{Photo 31.} \itshape Sunset over a controlled burn in Draaikraal\par}}
+
+\ChFiveDefItem{16}
+{\ChFivePhotoBox{32}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV32.jpg}}\hfill
+\ChFivePhotoBox{33}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV33.jpg}}}
+{{\textbf{Photo 32.} A budding \emph{Aloe Maculata} (Soap Aloe) on Marginal Sill Phase rock. Near Draaikraal, these plants generally preferred soils produced by weathered quartzite, at hillsides, and where soil was thin, probably due to efficient draining of water during rains. The nearest quartzite to this location was about 100 meters up slope.\par}
+{\textbf{Photo 33.} \itshape Sunset over a controlled burn.\par}}
+
+\ChFiveDefItem{17}
+{\ChFivePhotoBox{34}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV34.jpg}}\hfill
+\ChFivePhotoBox{35}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV35.jpg}}}
+{{\textbf{Photo 34.} Trees following a creek along the Draaikraal Lineament at the eastern margin of the RLS. The Draaikraal lineament demarcates the southern bounds of the deformed rocks of the Kliprivier synform, but extends much further East than the extent of deformation. The model proposed in this work suggests that the Draaikraal Lineament represents a recessive zone altered by percolating fluids escaping at the southern terminus of a southward-flowing intrusion of upper Critical Zone magmas. The lineament’s orientation corresponds reasonably well to the calculated axial plane of folding at the Kliprivier synform. Deformation of the country rock here is proposed to correspond to the splitting of metasedimentary country rocks to form the roof and floor of the intruding magma. Alternatively, this may be a fault as is interpreted by \citet{vandermerwe2007}. In the intermediate foreground, two proudly weathering beds of quartzite sandwich a thick section of recessive fine-grained gabbronorite of the Marginal Sill Phase. Some of this rock is exposed at the bottom right of the photograph: If there is a fault here, the lateral offset is small.\par}
+{\textbf{Photo 35.} Migmatized Quartzose hornfels, showing prominent 1-4 cm anastomasing quartz-rich horizons that preserve clastic texture from the quartzite(?) protolith. Blue-grey horizons are fine grained, but contain some visible feldspar microlites ($<$2 mm) and biotite. Cordierite may be responsible for the rock’s blue color. Weathered faces show vastly different porosity for different layers and more clearly show the resemblance of these rocks to their sedimentary protoliths. These are highly silicified and very difficult to break.\par}}
+
+\ChFiveDefItem{18}
+{\ChFivePhotoBox{36}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV36.jpg}}\hfill
+\ChFivePhotoBox{37}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV37.jpg}}}
+{{\textbf{Photo 36.} Weathered faces of the migmatized quartzose hornfels show deep $\sim$1 cm orbicular indentations.\par}
+{\textbf{Photos 37\textendash38.} Migmatized hornfels with centimeter-scale OPX-quartz pegmatites and voids in pipes and pockets. The camera lens cap is $\sim$ 7cm in diameter for scale. Foliated hornfels are deformed around the pockets of pegamtite and associated void spaces.\par}}
+
+\ChFiveDefItem{19}
+{\ChFivePhotoBox{38}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV38.jpg}}\hfill
+\ChFivePhotoBox{39}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV39.jpg}}}
+{{\textbf{Photo 38.} \textit{See the caption of photo~\ChFivePhoto{37}.}\par}
+{\textbf{Photo 39.} \todo{No caption for this photo in the caption document.}\par}}
+
+\ChFiveDefItem{20}
+{\ChFivePhotoBox{40}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV40.jpg}}\hfill
+\ChFivePhotoBox{41}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV41.jpg}}}
+{{\textbf{Photo 40.} Proudly weathering vertical ridges in migmatized hornfels at the floor of the Bushveld interpreted here to represent upward percolation of a silicic melt/fluid by channelized intergranular flow.\par}
+{\textbf{Photo 41.} Outcrop of Marginal Sill Phase magmas below a University of Pretoria field vehicle for scale.\par}}
+
+\ChFiveDefItem{21}
+{\ChFivePhotoBox{42}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV42.jpg}}\hfill
+\ChFivePhotoBox{43}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV43.jpg}}}
+{{\textbf{Photo 42.} Metapelitic hornfels polished by a creek along the Draaikraal lineament at Kliprivier Farm. The blue may be from fine-grained cordierite, the pink from fine potassium feldspar.\par}
+{\textbf{Photo 43.} \todo{No caption for this photo in the caption document.}\par}}
+
+\ChFiveDefItem{22}
+{\ChFivePhotoBox{44}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV44.jpg}}\hfill
+\ChFivePhotoBox{45}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV45.jpg}}}
+{{\textbf{Photo 44.} \todo{No caption for this photo in the caption document.}\par}
+{\textbf{Photo 45.} \todo{No caption for this photo in the caption document.}\par}}
+
+\ChFiveDefItem{23}
+{\ChFivePhotoBox{46}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV46.jpg}}\hfill
+\ChFivePhotoBox{47}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV47.jpg}}}
+{{\textbf{Photo 46.} \todo{No caption for this photo in the caption document.}\par}
+{\textbf{Photo 47.} \todo{No caption for this photo in the caption document.}\par}}
+
+\ChFiveDefItem{24}
+{\ChFivePhotoBox{48}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV48.jpg}}\hfill
+\ChFivePhotoBox{49}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV49.jpg}}}
+{{\textbf{Photo 48.} Quartzite Cliffs of the Steenkampsberg range near the contact with the RLS at sunset.\par}
+{\textbf{Photo 49.} A roadcut exposure of $\sim$30 cm’s of the UMA, the Upper Mottled Anorthosite, near the village at Draaikraal, south of the Draaikraal Lineament. The mottled anorthosite has an irregular, non-planar lower contact with a coarse-grained feldspathic pyroxenite. The UMA package has a characteristic assemblage of 3 distinct rocks types: Mottled anorthosite, a coarse-grained feldspathic pyroxenite, and a fine-grained green gabbronorite with blebby $<$2 cm clinopyroxene oikocrysts that weakly define modal layering (not pictured here). These distinct lithologies facilitate correlation with UMA to the north of the Draaikraal Lineament.\par}}
+
+\ChFiveDefItem{25}
+{\ChFivePhotoBox{50}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV50.jpg}}\hfill
+\ChFivePhotoBox{51}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV51.jpg}}}
+{{\textbf{Photos 50\textendash51.} A partially exposed contact between a 10 meter migmatized Houtenbek quartzite stringer (above) and fine-grained gabbronorite of the Marginal Sill Phase (below) beneath the floor of the RLS. The section shows clear evidence of local assimilation of melts derived from the sediments into the Marginal sill phase in discrete horizons. Photo~\ChFivePhoto{51} shows 3 discrete horizons (the camera lens cap is $\sim$ 7cm in diameter for scale). The $\sim$15 cm top horizon is a hard, leucocratic, saccharoidal, non-magnetic, aphanitic, crystalline rock composed of an equant dull blue-grey phase (cordierite?), elongate plagioclase microlites, and dark phase (OPX? Amphibole?). Beneath the leucocratic horizon is an aphanitic $\sim$25 cm thick horizon of fine-grained, weakly-magnetic gabbronorite of the Marginal Sill Phase. It weathers to reveal $\sim$2 cm pockmarks, similarly to the hornfels of photo~\ChFivePhoto{36}, and the grain size is small. Beneath it, the grain size of the Marginal Sill Phase gabbronorite coarsens and the magnetism strengthens. In photo~\ChFivePhoto{50}, a $\sim$10 cm dark rock from the Marginal Sill Phase below is compared with the in-place, lighter leucocratic horizon nearing the contact with the meta sedimentary stringer, to show the difference in color.\par}
+{\textbf{Photo 51.} \textit{See the caption of photo~\ChFivePhoto{50}.}\par}}
+
+\ChFiveDefItem{26}
+{\ChFivePhotoBox{52}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV52.jpg}}\hfill
+\ChFivePhotoBox{55}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV55.jpg}}}
+{{\textbf{Photo 52.} A somewhat well-exposed lower contact of a sill (left) of the Marginal Sill Phase with the Steenkampsberg quartzite country rock (right) beneath the floor of the RLS.\par}
+{\textbf{Photo 55.} A horse grazing in front of a freshly burned area exposing rounded boulders of the Porphyritic Gabbronorite just below the level of the Merensky Reef, which is interpreted here to lay within the topographically recessive area behind the near-field hill with trees and in front of the more distant mountains.\par}}
+
+\ChFiveDefItem{27}
+{\ChFivePhotoBox{56}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV56.jpg}}\hfill
+\ChFivePhotoBox{57}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV57.jpg}}}
+{{\textbf{Photo 56.} A small herd of Zebra graze at the RLS’s deformed margin at the Kliprivier synform on a cold and rainy July day. A bed of bright white quartzites stand proud just below the forest in the distance.\par}
+{\textbf{Photo 57.} An example of measurable planar foliation within Marginal Sill Phase fine-grained gabbros revealed by weathering at the Kliprivier synform. Similar planar faces were measured to produce the structural database reported in this work. Such planar foliation nearly always agrees with measured bedding in nearby quartzites, so it is interpreted here similarly to bedding in accordance with Steno's law of original horizontality. A 7 cm lens cap lies above a soggy field map in the bottom center of the photo, for scale.\par}}
+
+\ChFiveDefItem{28}
+{\ChFivePhotoBox{58}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV58.jpg}}\hfill
+\ChFivePhotoBox{59}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV59.jpg}}}
+{{\textbf{Photo 58.} Characteristic blocky weathering of massive, homogeneous Main Zone gabbronorites (Leelo Mt gabbronorite: \citealp{vongruenewaldt1985}) peppered with highveld cabbage trees. This outcrop occurs at the very western edge of the low-lying Draaikraal valley where the main zone assumes its typical relative high relief. A fault or slump has caused the rocks on the western side of the outcrop (left) to dip more steeply than the eastern (right). The highveld cabbage trees here were about 2-3 meters tall.\par}
+{\textbf{Photo 59.} A closeup of a laterite “ironstone” of unit IS. The ironstones are composed of 1-2 cm diameter goethite nodules often surrounding voids or porous-powdery limonite. The rock is cemented with a limonite-hematite matrix, and contains up to 20\% clasts of Steenkampsberg quartzite alluvium up to $\sim$ 1 cm in diameter. This rock type commonly hosted nests of ants.\par}}
+
+\ChFiveDefItem{29}
+{\ChFivePhotoBox{60}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV60.jpg}}\hfill
+\ChFivePhotoBox{61}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV61.jpg}}}
+{{\textbf{Photo 60.} Poorly focused photo of a sheared magnetite pegmatoid inclusion within the marginal zone on the western side of the Kliprivier Monocline. The OPX-dominated pegmatoid contains crystals up to 2 cm. It could represent a region of channelized fluid flow, or may be an altered critical zone inclusion. The host rock and pegmatoid are both strongly magnetic. The matrix contains thin, parallel, proud weathering anastomosing anorthositic bands. This rock is somewhat similar to the Marginal Zone rocks east of Willis Creek Lodge. Given its sandy texture and proximity to beds of Steenkampsberg quartzite and coarsely crystalline RLS rocks, a provocative interpretation would have it be a migmatized quartzite. The pegmatoid is about 15 cm in length.\par}
+{\textbf{Photo 61.} A specimen containing interesting features commonly mapped as “Disturbed Gabbronorite” here, which generally refers to coarsely crystalline gabbronorites immediately stratigraphically above the deformed floor rocks of the Kliprivier Syncline. Large, Euhedral OPX grains are cemented with plagioclase and clinopyroxene oikocrysts, locally differentiated into bands and regions of pyroxenite or OPX phenocrysts in an anorthositic matrix, somewhat resembling the “porphyritic gabbronorite”. Such rocks may record the mechanical separation of pyroxenite and plagioclase to form pyroxenite spheroidal aggregates or “tennis balls”. The lens cap is 5.5 centimeters across.\par}}
+
+\ChFiveDefItem{30}
+{\ChFivePhotoBox{62}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV62.jpg}}\hfill
+\ChFivePhotoBox{63}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV63.jpg}}}
+{{\textbf{Photo 62.} A freshly broken face of coarsely crystalline disturbed gabbronorite. Crystal size varies greatly throughout the hand sample, with some regions dominated by cm-scale crystals and some dominated by mm-scale crystals, suggesting perhaps that these rocks sustained channelized fluid flow in the finely crystalline regions after bulk crystallization. Even in a freshly broken face, the OPX faces appear to have a rusty discoloration. Several elongate feldspar inclusions are visible in the OPX phenocrysts.\par}
+{\textbf{Photo 63.} Planar cleavage in an outcrop of pegmatitic gabbronorite similar to photos~\ChFivePhoto{61} and \ChFivePhoto{62} (of the Disturbed Gabbronorite lithology: Dcg). Structural measurements of such cleavages are used to characterize the Kliprivier monocline.\par}}
+
+\ChFiveDefItem{31}
+{\ChFivePhotoBox{64}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV64.jpg}}\hfill
+\ChFivePhotoBox{65}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV65.jpg}}}
+{{\textbf{Photo 64.} Finely-layered norite of the critical zone (Cz). The lens cap is 5.5 cm. Bands of anorthosite can be thinner than 1 cm. Sometimes these bands are well defined, but often the anorthosite grades into pyroxene-rich norite. The anorthosite bands are wavy and anastamosing. Sometimes they pinch out and become indistinct. The orange coloring on the surface is lichen.\par}
+{\textbf{Photo 65.} Anastamosing cm-scale chromitite bands hosted within mottled anorthosite. The UG-1 layer consistently contains strings of chromitite hosted within mottled anorthosite just below the massive chromitite \citep{voordouw2009,mukherjee2017}. The most famous locality of UG-1 is at Dwars River. Here the oikocrystic pyroxenes are green when fresh, weathering to a rusty red color. A few isolated bands of chromite near the top are quite magnetic, clearly containing significant magnetite. While magnetite spinel is generally absent in the critical zone, including the chromitites, magnetite is common in the Platreef \citep{kinnaird2005}, the basement-contaminated PGE-rich north limb corollary of the critical zone’s Merensky Reef. Because the upper critical zone at Kliprivier Farm also formed at the chamber floor, it may be similar in character and PGE grade to the Platreef \citep{vandermerwe2007}.\par}}
+
+\ChFiveDefItem{32}
+{\ChFivePhotoBox{66}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV66.jpg}}\hfill
+\ChFivePhotoBox{67}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV67.jpg}}}
+{{\textbf{Photo 66.} Massive ($\sim$20 cm) non-magnetic chromitite with deformed blocks of anorthosite, preferentially lying along the bedding planes of the area. The lens cap is 5.5 cm. Anorthosite blocks appear to have been ductilely deformed, perhaps by entrainment within a hot chromite slurry. Like the chromitites hosted within the anorthosites, there are oikocrystic pyroxenes which appear to have crystallized late. The groundmass is chromitite with an abundant feldspar matrix, perhaps only 50\% cumulus chromite, 30\% interstitial plagioclase, 20\% oikocrystic pyroxenes. Particularly in the top right corner, one can see a striking increase in modal chromitite approaching the boundary of the entrained anorthosite block. Despite the last photo resembling UG-1 stringers, it is structurally above this massive chormitite (UG-1 stringers are below: \citealp{voordouw2009,mukherjee2017}). The orange color on the surface is lichen.\par}
+{\textbf{Photo 67.} Leucocratic non-magnetic Marginal Zone (migmatized Transvaal sediments?) immediately above Steenkampsberg quartzite near the RLS floor with regularly spaced, semi-parallel, anastomosing fluid conduit fractures through which a calc-silicate magma was transported upwards into magnetic marginal zone sills. The lens cap is 5.5 cm. Thin patches of proud-weathering calc-silicate pegmatoid are visible below the lens cap.\par}}
+
+\ChFiveDefItem{33}
+{\ChFivePhotoBox{68}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV68.jpg}}\hfill
+\ChFivePhotoBox{69}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV69.jpg}}}
+{{\textbf{Photo 68.} Preserved asymmetric ripples within Steenkampsberg quartzite float. Orange color is lichen. Some amount of recrystallization due to hornfelsization is evident but does not destroy the primary sedimentary banding.\par}
+{\textbf{Photo 69.} Carbonatite rock either as vein cross-cutting quartzite hornfels or as a layer concordant with original bedding; the shallow outcrop made the distinction unclear. In any case, the rock was coarsely crystalline and contained significant grey quartz, clinopyroxene, and a milky-white carbonate mineral (Magnesite? Dolomite?). The hammer is $\sim$10cm across.\par}}
+
+\ChFiveDefItem{34}
+{\ChFivePhotoBox{70}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV70.jpg}}\hfill
+\ChFivePhotoBox{71}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV71.jpg}}}
+{{\textbf{Photo 70.} Migmatized Transvaal sediments near the RLS interspersed with pegmatitic calc-silicate and carbonatite igneous rocks, presumed to have originated in-situ from melting sediments. The hammer head is $\sim$10cm across. The pegmatoids are highly recessive and therefore difficult to sample; they weather significantly faster than the restitic migmatites.\par}
+{\textbf{Photo 71.} Mimgatized shales (?), preserving fine scaled-bedding and showing highly variable susceptibility to weathering and erosion.\par}}
+
+\ChFiveDefItem{35}
+{\ChFivePhotoBox{72}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV72.jpg}}\hfill
+\ChFivePhotoBox{73}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV73.jpg}}}
+{{\textbf{Photos 72\textendash75.} Blobby aggregates of pyroxene of the coarsely crystalline Disturbed Gabbronorite (Dcg) of the Kliprivier Monocline. The orange magnet is the size of a typical pen, $\sim$13 cm long. Could these be precursors to spheroidal aggregates (SAs)? Photo~\ChFivePhoto{72} shows a corona of pyroxene depletion surrounding the pyroxene aggregate.\par}
+{\textbf{Photo 73.} \textit{See the caption of photo~\ChFivePhoto{72}.}\par}}
+
+\ChFiveDefItem{36}
+{\ChFivePhotoBox{74}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV74.jpg}}\hfill
+\ChFivePhotoBox{75}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV75.jpg}}}
+{{\textbf{Photo 74.} \textit{See the caption of photo~\ChFivePhoto{72}.}\par}
+{\textbf{Photo 75.} \textit{See the caption of photo~\ChFivePhoto{72}.}\par}}
+
+\ChFiveDefItem{37}
+{\ChFivePhotoBox{76}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV76.jpg}}\hfill
+\ChFivePhotoBox{77}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV77.jpg}}}
+{{\textbf{Photo 76.} Decimetric xenolith of fine grained marginal zone rock within Disturbed Gabbronorite. The orange magnet is the size of a typical pen, $\sim$13 cm long. The xenolith exhibits strong resistance banding that is subtle or absent in the coarse grained disturbed gabbronoritic host, and the contacts between the two are sharp. Interestingly, aggregates of pyroxenes have glommed to the rims of the xenolith.\par}
+{\textbf{Photo 77.} Decimetric xenolith of fine grained marginal zone rock within Disturbed Gabbronorite. The orange magnet is the size of a typical pen, $\sim$13 cm long. This xenolith has a comparatively diffuse contact with the disturbed gabbronoritic host relative to that of photo~\ChFivePhoto{76}, perhaps suggesting that it had been incorporated within the magma for longer, or had been reheated more after entrainment.\par}}
+
+\ChFiveDefItem{38}
+{\ChFivePhotoBox{78}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV78.jpg}}\hfill
+\ChFivePhotoBox{79}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV79.jpg}}}
+{{\textbf{Photo 78.} Pegmatoidal feldspathic pyroxenite, weathered and fresh faces. This rock bears macroscopic sulfides. The orange magnet is the size of a typical pen, $\sim$13 cm long. Pegmatoidal pyroxenites are reported by \citet{vandermerwe2007} $\sim$10-20 meters downsection of the UG2 chromitite.\par}
+{\textbf{Photo 79.} A well-formed tennis ball pyroxenite spheroidal aggregate in critical zone gabbronorite. Handlens is about 4 cm across. Oikocrystic, bottle-green clinopyroxene is obviously significant in this rock (at least, outside of the spheroidal aggregate), despite it being canonically absent in the critical zone outside of mottled anorthosites, similarly to the Upper Critical Zone tennis ball south of the Draaikraal Lineament in photo~\ChFivePhoto{10}. There is a corona of subtle depletion of pyroxene around this pyroxenite tennis ball as well.\par}}
+
+\ChFiveDefItem{39}
+{\ChFivePhotoBox{80}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV80.jpg}}\hfill
+\ChFivePhotoBox{82}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV82.jpg}}}
+{{\textbf{Photo 80.} Modal layering in an upper critical zone norite.\par}
+{\textbf{Photo 82.} A view to the southwest of the Draaikraal Valley during sunset. Several hills of resistant rock show the region’s general slight dip towards the northwest.\par}}
+
+\ChFiveDefItem{40}
+{\ChFivePhotoBox{83}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV83.jpg}}\hfill
+\ChFivePhotoBox{84}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV84.jpg}}}
+{{\textbf{Photo 83.} \itshape A sunbeam.\par}
+{\textbf{Photo 84.} Northwest of the Kliprivier syncline in the lower Main Zone, far from the margin of the RLS, there still exists patches of anorthosite and pyroxenite (in the upper right). $\sim$13 cm pen for scale. If the RLS is constructed by out-of-sequence sills (see zircon geochronology: \citealp{mungall2016,scoates2021}), the center of the intrusion would be more likely to be heated by neighboring intrusions than the RLS near the intrusion’s margin, and the center would generally be kept hotter for longer due to less conductive heat loss to the country rock, slowly blurring contacts and regions of chemical heterogeneity as is observed in incrementally assembled granodioritic plutons \citep{coleman2004,bartley2006,scoon2023}. Thus, similar processes that constructed the comparatively heterogeneous margin and Critical Zone may have been at work in the Main Zone as well even if these heterogeneities had been effectively erased by thermal cycling.\par}}
+
+\ChFiveDefItem{41}
+{\ChFivePhotoBox{85}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV85.jpg}}\hfill
+\ChFivePhotoBox{86}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV86.jpg}}}
+{{\textbf{Photo 85.} Cenimetric, subtle, and nearly planar modal layering in the lower Main Zone found very close to a spotted anorthosite. Spotted anorthosites (photos~\ChFivePhoto{86} and \ChFivePhoto{111}), are associated with subtle modal layering (also see photo~\ChFivePhoto{112}); whereas the more dramatic mottled anorthosites are associated with much more dramatic modal layering (see photos~\ChFivePhoto{65}, \ChFivePhoto{80}, \ChFivePhoto{105} The handle of the hammer is $\sim$ 4 cm wide. The layering is defined by subtly different modal proportions and grain sizes.\par}
+{\textbf{Photo 86.} A thin ($<$15 cm) band of spotted anorthosite in the mid-lower Main Zone, exposed in weathered and clean faces. The hammer head is about $\sim$5 cm in width. The spotted anorthosites were much harder to spot in the field than the 3 dramatic packages of mottled anorthosites found in the valley and further downsection, both above and below the Draaikraal Lineament. \citet{latypovetal2022} correlated this layer to the Upper Mottled Anorthosite (UMA), and assumed it was laterally continuous with the rocks of photos~\ChFivePhoto{49}, \ChFivePhoto{53}, and \ChFivePhoto{54} south of the Draaikraal Lineament. While I agree that photos~\ChFivePhoto{49}, \ChFivePhoto{53}, and \ChFivePhoto{54} show the UMA, I instead correlate the UMA above the lineament much further to the east (photo~\ChFivePhoto{90}), where I identified the characteristic fine-grained, bright green gabbronorite with blebby, anhedral phenocrystic ($<$2 cm) CPX that I had seen nowhere else but as footwall to the UMA. I also interpret photos~\ChFivePhoto{114} and \ChFivePhoto{117} as belonging to the UMA.\par}}
+
+\ChFiveDefItem{42}
+{\ChFivePhotoBox{87}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV87.jpg}}\hfill
+\ChFivePhotoBox{88}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV88.jpg}}}
+{{\textbf{Photo 87.} Similarly to photo~\ChFivePhoto{86}, this rock was identified as a “mottled anorthosite” by \citet{latypovetal2022} and was correlated to the MMA marker bed. The pen used for scale is about 1 cm in diameter. I instead refer to this unit again as a “spotted anorthosite” since it bears none of the striking features of the MMA seen in photos~\ChFivePhoto{93} and \ChFivePhoto{103}--\ChFivePhoto{109} exposed to the south of the Draaikraal Lineament. I argue that the true corollary to the MMA north of the Draaikraal Lineament is much further east, (see the thick mottled anorthosite package in photo~\ChFivePhoto{115}).\par}
+{\textbf{Photo 88.} A striking valley following the recessive critical zone, where the Boyesendal platinum mine operates to the northeast of Draaikraal. One of the two main tributaries of Dwars River originates here.\par}}
+
+\ChFiveDefItem{43}
+{\ChFivePhotoBox{89}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV89.jpg}}\hfill
+\ChFivePhotoBox{90}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV90.jpg}}}
+{{\textbf{Photo 89.} A late magnetic dolorite dike discordantly cuts the lower main zone at the level of the UMA north of the Draikraal lineament. These rocks are surprisingly weathered compared to the surrounding plutonic rocks, likely due to the abundant right-angle fractures that could have developed during rapid, relatively homogenous cooling into the cold lithosphere millions of years following Bushveld magmatism. Unlike the marginal sill phase, these rocks are clearly unrelated to Bushveld magmatism.\par}
+{\textbf{Photo 90.} Coarse mottled anorthosite, with a $\sim$10 cm wallet for scale. Unfortunately, I did not have the foresight to photograph the unique footwall to these anorthosites in place: the fine-grained, bright green gabbronorite with blebby, anhedral phenocrystic ($<$2 cm) CPX that I found only here and at Draaikraal (at the outcrop in photos~\ChFivePhoto{49}, \ChFivePhoto{53}, and \ChFivePhoto{54}) and in the float traced along strike north of that outcrop. I did sample it, however (D3SG).\par}}
+
+\ChFiveDefItem{44}
+{\ChFivePhotoBox{91}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV91.jpg}}\hfill
+\ChFivePhotoBox{92}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV92.jpg}}}
+{{\textbf{Photo 91.} Homogeneous main zone gabbronorite, far from the RLS margin, with a rounded, fine-grained xenolith. The water bottle is about $\sim$40 cm long. The xenolith appears to be a partially re-equilibrated inclusion of the fine grained marginal zone rocks, bearing the distinctive high-weathering resistance banding seen in photos~\ChFivePhoto{77} (within another xenolith) and 95 (in fine-grained marginal zone).\par}
+{\textbf{Photo 92.} A northwest view of a recessive agricultural valley just north of the Draaikraal Lineament. The blocky weathered rocks in the foreground are homogeneous Main Zone gabbronorite above the UMA. This geomorphological feature occurs around the intersection of the Draaikraal Lineament with a large N-NE trending lineament interpreted by previous workers as a fault within the Main Zone \citep{molyneux2008}.\par}}
+
+\ChFiveDefItem{45}
+{\ChFivePhotoBox{93}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV93.jpg}}\hfill
+\ChFivePhotoBox{95}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV95.jpg}}}
+{{\textbf{Photo 93.} A $\sim$25 cm band of mottled anorthosite (MMA). The hammer head is $\sim$10 cm across. Similarly to other locations in the field area (photo~\ChFivePhoto{81}), the mottles are larger near the bottom of the layer. This outcrop is located just SW of the most impressive MMA outcrop below the Draaikraal Lineament and testifies to the MMA’s southwesterly strike.\par}
+{\textbf{Photo 95.} This a particularly striking example of resistance banding in fine-grained marginal zone sill phase float. The hammer head is $\sim$10 cm across. This feature was immediately noticeable in the fine-grained magnetic marginal zone rocks, but I didn’t photograph it until later, assuming at first that the banding was a secondary, unimportant textural feature. The ubiquitousness of these bands in fine-grained marginal zone rocks and in xenoliths within the plutonic RLS. These bands are most often subparallel and vertical planes. Similar resistance banding is argued to form in sedimentary rocks by localized cataclasis and recrystallization along fault planes during brittle deformation, decreasing the porosity of the affected plane to become more resistant to later chemical weathering \citep{hill1990}. While it is tempting to ascribe the formation of these bands to subsolidus (or near-subsolidus) deformation during isostatic flexture of the cooling RLS, these bands’ formation must predate the intrusion of the Main Zone of the RLS, which includes xenoliths of fine-grained Marginal Zone rocks containing these bands (photo~\ChFivePhoto{91}). An SEM/petrographic investigation of these bands would be helpful to understand their origins and implications.\par}}
+
+\ChFiveDefItem{46}
+{\ChFivePhotoBox{96}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV96.jpg}}\hfill
+\ChFivePhotoBox{97}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV97.jpg}}}
+{{\textbf{Photo 96.} Two $\sim$2 cm spherical pyroxenite aggregates found in a leucocratic Marginal Sill Phase outcrop, and a single $\sim$5 cm pyroxenite aggregate with a long ($\sim$10 cm), thin pyroxenite tail. The hammer’s handle is $\sim$4 cm wide, for scale. This feature is interpreted similarly to a diapir, implying that the pyroxenite aggregate was ductily deformable and migrating through a comparatively rigid/viscous crystal mush. The requirement that the pyroxenite aggregate be ductily deformable is inconsistent with the model of \citet{khoza2021}, in which preexisting and relatively cool pyroxenite layers are brecciated by an intruding (gabbro)noritic magma, but is consistent with the models of \citet{lee1979}, in which pyroxenite is preferentially wetted by a secondary, immiscible bridging liquid; and \citet{mitchell2023}, who argue that pyroxenite SAs are formed similarly to mafic enclaves in granitoids, by disaggregation of an incoming pyroxenitic magma within a pre-existing, comparatively viscous/rigid (gabbro)noritic host.\par}
+{\textbf{Photos 97\textendash98.} Anastomosing, non-planar fine-grained anorthositic (?) veins in the fine-grained Marginal Zone. Similar to veins observed in photo~\ChFivePhoto{6}. The hammer head is $\sim$10 cm across. Anorthositic veins include blocks of host fine-grained Marginal Zone rocks with indistinct, irregular contacts. Such veins may represent incompletely formed anorthositic layers formed by reactive porous flow of a magma or hydrothermal fluid sourced from dehydrating/melting country rocks. Note the presence of modal layering within the anorthosite (?) of photo~\ChFivePhoto{98}.\par}}
+
+\ChFiveDefItem{47}
+{\ChFivePhotoBox{98}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV98.jpg}}\hfill
+\ChFivePhotoBox{100}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV100.jpg}}}
+{{\textbf{Photo 98.} \textit{See the caption of photo~\ChFivePhoto{97}.}\par}
+{\textbf{Photo 100.} \textit{See the caption of photo~\ChFivePhoto{99}.}\par}}
+
+\ChFiveDefItem{48}
+{\ChFivePhotoBox{101}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV101.jpg}}\hfill
+\ChFivePhotoBox{102}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV102.jpg}}}
+{{\textbf{Photo 101.} \textit{See the caption of photo~\ChFivePhoto{99}.}\par}
+{\textbf{Photo 102.} \textit{See the caption of photo~\ChFivePhoto{99}.}\par}}
+
+\ChFiveDefItem{49}
+{\ChFivePhotoBox{104}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV104.jpg}}\hfill
+\ChFivePhotoBox{106}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV106.jpg}}}
+{{\textbf{Photo 104.} Mottled anorthosite (MMA) south of the Draaikraal Lineament. The hammer head is $\sim$10 cm across. Some horizons within this marker contain wavy, deformed bands of pyroxenite and anorthosite between layers of mottled anorthosite.\par}
+{\textbf{Photo 106.} Mottled anorthosite (MMA) south of the Draaikraal Lineament. The hammer head is $\sim$10 cm across. Two exposed faces of a locally planar contact between mottled anorthosite and Main Zone gabbronorite allowed for the measurement of contact’s orientation, which was discordant with the dip of the regional bedding/cleavage. This contact was dipping $\sim$45 degrees to the east.\par}}
+
+\ChFiveDefItem{50}
+{\ChFivePhotoBox{107}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV107.jpg}}\hfill
+\ChFivePhotoBox{108}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV108.jpg}}}
+{{\textbf{Photo 107.} Mottled anorthosite (MMA) south of the Draaikraal Lineament. A pen and clipboard are included for scale. This photo shows that the apparently planar contact between the gabbronorite and mottled anorthosite (measured at the broken faces in picture~\ChFivePhoto{106}) changes strike nearly 180 degrees over less than two meters. Clearly, these contacts are irregular on the meter scale even when sharp and planar at the decimeter scale.\par}
+{\textbf{Photo 108.} Mottled anorthosite (MMA) south of the Draaikraal Lineament. Unfortunately no scale, but the mottles are about 2 cm in diameter. Two layers of mottled anorthosite are separated by pyroxenite slabs mantled by pure anorthosite.\par}}
+
+\ChFiveDefItem{51}
+{\ChFivePhotoBox{109}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV109.jpg}}\hfill
+\ChFivePhotoBox{110}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV110.jpg}}}
+{{\textbf{Photo 109.} Mottled anorthosite (MMA) south of the Draaikraal Lineament. The hammer head is $\sim$10 cm across. The interior of a pyroxenite slab separating two layers of mottled anorthosite (as pictured in photo~\ChFivePhoto{108}) is well exposed by high-angle fracture. The interiors of these pyroxenite slabs are finer grained and more anorthosite rich than the exteriors. In general, I observe coarse grains where mineral phases are well-separated, such as in mottled anorthosites or at anorthosite-pyroxenite interfaces.\par}
+{\textbf{Photo 110.} An apparently planar contact with the Middle Mottled Anorthosite (MMA) and the Main Zone gabbronorite.\par}}
+
+\ChFiveDefItem{52}
+{\ChFivePhotoBox{111}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV111.jpg}}\hfill
+\ChFivePhotoBox{112}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV112.jpg}}}
+{{\textbf{Photo 111.} $\sim$ 12 cm bed of Spotted anorthosite north of the Draaikraal Lineament, upsection of the UMA. The hammer head is $\sim$10 cm across. A blocky, melanocratic xenolith/autolith is included near the middle of the bed, and there is another blobby pyroxene-rich blob mantled by pure anorthosite at the bottom of the bed. The spotty Pyroxenes do not appear oikocrystic. They are larger near the middle of the spotted anorthosite and generally absent near the bottom. The contacts with the host gabbronorite are indistinct and irregular.\par}
+{\textbf{Photo 112.} Fine, planar modal layering in a $\sim$3 meter tall outcrop near the spotted anorthosite of photo~\ChFivePhoto{111}.\par}}
+
+\ChFiveDefItem{53}
+{\ChFivePhotoBox{113}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV113.jpg}}\hfill
+\ChFivePhotoBox{114}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV114.jpg}}}
+{{\textbf{Photo 113.} \itshape Balanced Main Zone gabbronorite boulders just above the UMA. What do you see?\par}
+{\textbf{Photo 114.} Mottled anorthosite North of the Draaikraal Lineament. The hammer head is $\sim$10 cm. This layer is interpreted to belong to the Upper Mottled Anorthosite (UMA), although the green, blebby CPX footwall was not seen. The UMA traced along strike between the other two more certain localities would overlap with the mottled anorthosites photographed here.\par}}
+
+\ChFiveDefItem{54}
+{\ChFivePhotoBox{115}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV115.jpg}}\hfill
+\ChFivePhotoBox{116}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV116.jpg}}}
+{{\textbf{Photo 115.} A thick package (the outcrop is $>$4 meters tall) of mottled anorthosites and planar modal layering interpreted to belong to the Middle Mottled Anorthosite (MMA). Interestingly, the outcrop’s cleavage is markedly discordant with the planar modal layering, which agrees better with bedding and cleavage measured elsewhere.\par}
+{\textbf{Photo 116.} \itshape Ruins of an abandoned house in the highlands to the NE of Draaikraal between the MMA and UMA. A local man named Josiah who assisted me with some field work told me his grandmother lived in this area as a young girl.\par}}
+
+\ChFiveDefItem{55}
+{\ChFivePhotoBox{117}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV117.jpg}}\hfill
+\ChFivePhotoBox{118}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV118.jpg}}}
+{{\textbf{Photo 117.} Mottled anorthosite North of the Draaikraal Lineament within the same unit as the pictured unit of photo~\ChFivePhoto{114}, interpreted as UMA. The hammer head is $\sim$10 cm. The mottles here were as large as 10 cm and were the largest observed in the field area.\par}
+{\textbf{Photo 118.} The massive UG2 chromitite at the northern end of Kliprivier Farm. The lens is 5.5 cm The chromitite contains intercumulus plagioclase and inclusions of pure anorthosite, as well as proud-weathering pyroxene oikocrysts (especially visible in the bottom half of the photo). Very fine chromitite bands penetrate and separate blebby anorthositic blocks. Chromitite grade is especially high at the margins of these blocks. The vibrant orange is lichen. \textit{(Not geolocated.)}\par}}
+
+\ChFiveDefItem{56}
+{\ChFivePhotoBox{120}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV120.jpg}}\hfill
+\ChFivePhotoBox{121}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV121.jpg}}}
+{{\textbf{Photo 120.} Proud weathering, thin bands in Marginal Sill Phase gabbro. The lens cap is 5.5 cm. Such features (similar to photo~\ChFivePhoto{40}) are common near contacts with hornfelsized sediments and may track a permeating silica-rich fluid. \textit{(Not geolocated.)}\par}
+{\textbf{Photo 121.} A colorful fresh face of coarse-grained xenolith of mottled anorthosite with a pyroxenite band within fine-grained marginal sill phase at the same outcrop as photos~\ChFivePhoto{2} and \ChFivePhoto{4}. The lens cap is 5.5 cm. \textit{(Not geolocated.)}\par}}
+
+\ChFiveDefItem{57}
+{\ChFivePhotoBox{122}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV122.jpg}}\hfill
+\ChFivePhotoBox{123}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV123.jpg}}}
+{{\textbf{Photo 122.} A weathered face at the same outcrop as photos~\ChFivePhoto{2}, \ChFivePhoto{4}, and \ChFivePhoto{121}. The handle of the hammer is $\sim$ 4 cm wide. In the center of the photo, the light is uniformly reflecting off a face of a 2 cm pyroxene oikocryst encasing plagioclase. \textit{(Not geolocated.)}\par}
+{\textbf{Photo 123.} Resistance banding in the same outcrop of Marginal Sill Phase Gabbros as photos~\ChFivePhoto{2},\ChFivePhoto{4},\ChFivePhoto{121},and \ChFivePhoto{122}. Unlike photo~\ChFivePhoto{95}, the resistance banding here doesn’t seem to have an obvious preferred orientation. \textit{(Not geolocated.)}\par}}
+
+\ChFiveDefItem{58}
+{\ChFivePhotoBox{124}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV124.jpg}}\hfill
+\ChFivePhotoBox{125}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV125.jpg}}}
+{{\textbf{Photo 124.} Hornfelsized quartzite on the Kliprivier Synform. The lens cap is 5.5 cm. The recrystallized quartz is quite coarse, and the exterior is stained red. The interior of this rock is finely layered. The protolith likely included mud-rich horizons. \textit{(Not geolocated.)}\par}
+{\textbf{Photo 125.} A recrystallized migmatite schist on the Kliprivier Synform. The lens cap is 5.5 cm. The interior of the rock bears a distinctly crystalline texture. The exterior of the rock shows evidence of plastic deformation. \textit{(Not geolocated.)}\par}}
+
+\ChFiveItemN=58
+\ChFiveLayout
+
+\endgroup
+\clearpage
+
+
+\begin{landscape}
+\setlength{\parindent}{0pt}
+\setlength{\columnsep}{0.025\linewidth}
+\setlength{\multicolsep}{0pt}
+\setlength{\ChFivePhotoW}{\dimexpr(\linewidth-2\columnsep)/3\relax}
+\setlength{\ChFivePhotoH}{0.5\textheight}
+\renewcommand{\ChFiveCapCols}{3}
+\renewcommand{\ChFiveJoin}{\hfill}
+\renewcommand{\ChFivePre}{\hspace*{\fill}}%  fewer than four photos: spread evenly
+\renewcommand{\ChFivePost}{\hspace*{\fill}}
+\renewcommand{\ChFiveMaxItems}{3}
+
+\ChFiveDefItem{1}
+{\ChFivePhotoBox{29}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV29.jpg}}}
+{{\textbf{Photo 29.} A Well-foliated hornfelsized inclusion of Houtenbek shale/dolomite within the Marginal Sill Phase on the Kliprivier Synform. The foliation shows clear plastic deformation, indicative of synmagmatic (hot) deformation. While previous authors have argued that the Kliprivier synform preceded Bushveld magmatism \citep{vandermerwe2007}, this work best supports the interpretation that deformation the RLS margin on Kliprivier Farm was synmagmatic.\par}}
+
+\ChFiveDefItem{2}
+{\ChFivePhotoBox{53}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV53.jpg}}}
+{{\textbf{Photo 53.} The same UMA outcrop as pictured in 49. The UMA package includes a striking mottled anorthosite above a coarse feldspathic pyroxenite with cumulus textures and decimeter-scale anorthosite inclusions with indistinct contacts with the host pyroxenite. Most of the anorthositic inclusions within the pyroxenite are roughly situated in a horizon $\sim$15 cm above the base of the feldspathic pyroxenite layer, but one (especially indistinct) inclusion is near the upper contact and is nearly continuous with overlying mottled anorthosite. The two holes in the outcrop were likely from explosives for clearing the outcrop from the road, but may also have been from sampling from previous paleomagnetic or geochemical studies: they are $\sim$ 4 cm across for scale.\par}}
+
+\ChFiveDefItem{3}
+{\ChFivePhotoBox{54}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV54.jpg}}}
+{{\textbf{Photo 54.} The same UMA outcrop as 53 and 49. Beneath the horizon rich in anorthositic inclusions within the UMA coarsely-crystalline feldspathic pyroxenite (Px), there is a systematic coarsening of cumulus pyroxene approaching the lower contact with the the fine-grained poikilitic green gabbronorite (lithologic unit Fgog) just barely visible at the bottom left. Approaching the lower contact, the coarse pyroxenite locally develops fine layers of near pure anorthosite. The lens cap is $\sim$7cm across, for scale.\par}}
+
+\ChFiveDefItem{4}
+{\ChFivePhotoBox{81}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV81.jpg}}}
+{{\textbf{Photo 81.} Weathered and fresh faces of mottled anorthosites of the Transition Zone in Kliprivier, with a $\sim$13 cm pen for scale. Mottled anorthosite in the field area most frequently are a part of a larger package of interesting and unusual rocks, most often with undulatory, irregular, and variably indistinct contacts. Here, 3 distinct layers of $<$40 cm thick mottled anorthosite are interspersed with $<$10 cm pyroxene-rich layers and un-mottled pure anorthosite layers of variable thickness. The size and relative portion of mottles varies throughout the mottled anorthosite layers, but a general trend can be observed: the mottles are larger and more abundant towards the bottom of the layers. The heterogeneity of the mottles and their relative abundance lower in the anorthosites is consistent with the model of \citet{maier2020}, who argued on a geochemical basis that the Bushveld’s mottled anorthosites were formed by reactive porous flow.\par}}
+
+\ChFiveDefItem{5}
+{\ChFivePhotoBox{94}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV94.jpg}}}
+{{\textbf{Photo 94.} Two bands of mottled anorthosite (MMA) separated by subtly modally layered gabbronorite. The hammer handle is $\sim$4 cm wide. The MMA, (and probably the UMA and LMA) contain several remarkable mottled anorthosite beds that are separated by comparatively unremarkable beds exhibiting subtle modal layering, even as modal layering is otherwise rare in the Main Zone. This implies that the processes that generate modal layering and mottled anorthosites are associated or one and the same. Additionally, this photo shows that the mottled anorthosite at the top is more resistant to weathering and erosion than the underlying gabbronorite.\par}}
+
+\ChFiveDefItem{6}
+{\ChFivePhotoBox{99}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV99.jpg}}}
+{{\textbf{Photos 99\textendash102.} Highly migmatized Houtenbek shales in weathered and fresh faces. The hammer head is $\sim$10 cm across. Deformed, fractured, and melted metasedimentary rocks swim in abundant, pink, leucosomal crystalline granite. These photos show that partial melt generated in-situ within the floor rocks is able to effectively separate from the source rocks, and certainly could migrate upward to react/mix with the plutonic RLS and Marginal Zone rocks.\par}}
+
+\ChFiveDefItem{7}
+{\ChFivePhotoBox{103}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV103.jpg}}}
+{{\textbf{Photo 103.} Mottled anorthosite (MMA) south of the Draaikraal Lineament. The hammer head is $\sim$10 cm across. The contacts of the mottled anorthosites in the field area with Main/Critical Zone (gabbro)norite varies greatly. Here, it is irregular and wavy, with undulose, with several non-planar cycles of anorthosite and pyroxenite. Where the anorthositic bands are thin, there are no mottles. The bottom of the gabbronorite here is pyroxene rich and modal plagioclase increases gradually upsection. Photos~\ChFivePhoto{103}--\ChFivePhoto{110} were all taken at the same outcrop: I would argue it was the most interesting outcrop of the field area.\par}}
+
+\ChFiveDefItem{8}
+{\ChFivePhotoBox{105}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV105.jpg}}}
+{{\textbf{Photo 105.} Mottled anorthosite (MMA) south of the Draaikraal Lineament. The hammer head is $\sim$10 cm across. Wavy, irregular alternating layers of pyroxenite and anorthosite, like photos~\ChFivePhoto{103} and \ChFivePhoto{104}, but here there is an apparently planar contact between the mottled anorthosite and the irregular cycles of anorthosite and pyroxenite. This planar contact is clearly discordant with the common orientation of the overlying anorthosite-pyroxenite cycles.\par}}
+
+\ChFiveDefItem{9}
+{\ChFivePhotoBox{119}{\includegraphics[width=\ChFivePhotoW,height=\ChFivePhotoH,keepaspectratio]{Chapter5/Figures/generated/field_photos/DrBV119.jpg}}}
+{{\textbf{Photo 119.} A spherical pyroxenite “Tennis Ball” aggregate at the top left is hosted within porphyritic gabbronorite of the upper Critical Zone just below the UG2. The lens cap is 5.5 cm. An elongate non-spherical pyroxenite aggregate is weathering proud in the bottom left. This elongate aggregate is similar in geometry to anorthosite aggregates within Marginal Sill Phase gabbros (photos~\ChFivePhoto{2} and \ChFivePhoto{4}). \textit{(Not geolocated.)}\par}}
+
+\ChFiveItemN=9
+\ChFiveLayout
+
+\end{landscape}

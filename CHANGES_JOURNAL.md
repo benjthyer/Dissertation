@@ -2771,3 +2771,79 @@ were undefined there, but that is from your new code-listing content, not these 
   n.d. and "--" cells are unshaded. Captions now state the scale.
 - dissertation_preamble.tex: added \usepackage{colortbl} after xcolor (needed for \cellcolor).
 - tab_quality_melts.tex and tab_quality_hefesto.tex were regenerated.
+
+## Follow-up (2026-10-23b): landscape component tables; capped / log Harker axes
+Backup: Chapter4/Writing/Chapter4_main_body_text.tex.pre_harker_caps_backup_20261023.
+- make_quality_tables.py, component tables:
+  - Each family now fills one landscape page, as side-by-side tabulars split at phase boundaries:
+    MELTS in 2 columns, HeFESTo in 3 (scaled to the page width). Type is \scriptsize.
+  - A thin \cmidrule separates phases.
+  - Phases with identical component lists are merged into one entry: MELTS orthopyroxene,
+    clinopyroxene; plagioclase, K-feldspar.
+  - The 12-13 liquid oxide components are listed four per row.
+  - Components found only in MELTS 1.2.0 (e.g. CO2 in fluid and liquid) are now also marked with a
+    dagger.
+  - Both tables were regenerated.
+- ngibbs_thesis_plots.py: new HARKER_YMAX / HARKER_LOGY settings for the Harker panels.
+  - Caps: MELTS 1.0.2 Cr2O3 <= 0.02; MELTS 1.2.0 P2O5 <= 0.01 and Cr2O3 <= 0.02. Rows above a cap
+    are left out, so the bins span only the shown range.
+  - MELTS 1.2.0 CO2 is on a log y axis (CO2-free rows left out).
+  - density_Harker_MELTS102/120.pdf were regenerated.
+- Chapter4_main_body_text.tex: one sentence added to each MELTS Harker caption describing the caps
+  and the log axis:
+  - 182 Cr2O3 rows omitted (1.0.2);
+  - 158 P2O5 and 173 Cr2O3 rows omitted (1.2.0);
+  - CO2-free compositions (about half) omitted from the log panel.
+- Ran your updated plot_temperature_model_parity.py, which writes
+  generated/temperature_model_parity_metrics.tex. The chapter now \input's it and would not compile
+  without it. Values are unchanged (RMSE 27.5 -> 1.7 K, n = 10,892).
+
+---
+
+# 2026-10-24 -- Chapter 5: newer field report, figures, SI table and photo album, Ch. 5 references
+
+## Files moved (nothing deleted)
+- `Chapter5/Draaikraal_Photos/` -> `Chapter5/Figures/source/Draaikraal_Photos/` (117 originals, 1.1 GB; already covered by the `Draaikraal_Photos` line in .gitignore).
+- `Draaikraal Report.docx` (new), `Draaikraal Report old.docx`, `Report_figs.docx`, `Draaikraal Photo Captions.docx` -> `Chapter5/Workspace/`.
+- `Draaikraal 2023 BJT.xlsx` (new copy; cell values identical to the old one) -> `Chapter5/Tables/`.
+- `Kliprivier_Synform.pdf`, `Lithological_map.pdf` -> `Chapter5/Figures/source/kliprivier_synform_map.pdf`, `lithological_map.pdf`.
+- Superseded duplicates (old xlsx, old caption docx, byte-identical structural_map.pdf) -> `_to_delete/Chapter5_superseded_20261024/`.
+- The report's six figures extracted at full resolution into `Chapter5/Figures/source/` (descriptive names).
+
+## The newer report
+Text-diffed against the old one: the only differences are the figures and their captions (Figs. 1a, 1b, 2-5). The body text of `chapter5_body.tex` was therefore kept, and the figures added:
+- Fig. 1a/1b -> `fig:ch5-topo-map` (landscape page, subfigures a/b). It previously showed structural_map.pdf by mistake. The report's newer 1a caption is used; the older 1a caption (still in the Word file, and previously a stray paragraph in the chapter) gave the last two sentences of (a).
+- Fig. 2 -> annotated photo 115 in `fig:ch5-ma-cleavage-photo` (was a \todo).
+- Figs. 3 and 4 -> `fig:ch5-stereonets` (a)/(b). Fig. 5 -> `fig:ch5-strat-column`.
+- The three QGIS maps -> landscape figures `fig:ch5-lithological-map`, `fig:ch5-structural-map`, `fig:ch5-kliprivier-map`, each with a NEW caption written from the map legends (please revise), and one new pointer sentence each (Lithologic Descriptions, Structural Observations) or a parenthetical (Kliprivier Synform).
+- "Figure 1a/3/4/5", "figure 1" in the text -> \ref.
+- Landscape figure pages use \afterpage (new `afterpage` package in the preamble) so they don't cut the text page short.
+- Every "photo(s) N" in the text now links to the SI album via `\ChFivePhoto{N}` (defined in chapter5.tex; converted by `Chapter5/Figures/ch5_photo_refs.py`; the whole edit is reproducible with `Chapter5/Workspace/apply_report_update_20261024.py`). Pre-update copy: `chapter5_body.tex.pre_report_update_20261024`.
+- New paragraph at the end of Field Methods pointing to the SI table and album.
+
+## SI (new `Chapter5/chapter5_SI.tex` + `Writing/chapter5_SI_body.tex`)
+- **Field Station Data**: the "Sample and Station Data" section was removed from the main text; `write_chapter5_data_table.py` now writes one slimmed landscape longtable (`tab:ch5-field-stations`, 236 stations): station, height above MR, lat/lon, elevation, unit, lithology code, structure (type + strike/dip, strike as azimuth from N), photos (linked), description/notes. The separate structural table was dropped -- its rows are a subset of the station sheet. Clean-ups: 'Beddin' -> 'Bedding', 'RzRz' -> 'Rz', Excel-mangled photo cells (99100101102, 114117) split back.
+- **Annotated Field Photographs**: `Chapter5/Figures/write_chapter5_photo_album.py` downsamples the photos (1400 px, EXIF orientation applied, EXIF/GPS stripped -> `Figures/generated/field_photos/`, 32 MB) and parses the caption docx (shared-caption ranges, italic "for-fun" captions, multi-paragraph captions, author-year citations -> \citet/\citep, "photo N" -> links). Layout: journal-style plates -- up to six photos per page (3 rows of 2, portrait) numbered beneath, captions in balanced columns below. TeX grows each plate row by row while it fits. Landscape (2 rows of 3) is one switch away (`LANDSCAPE = True`); it compiled to 34 pages with smaller photos vs 28 for portrait, because a landscape page between Caltech's 1.5 in side margins is only ~5.5 in tall.
+- Gaps flagged in the PDF with \todo: no caption for photos 9, 39, 43-47; photos 118-125 have captions but no image files (placeholder frames); caption 4 has an unfinished sentence ("Mitchell and Scoon, 2023 argue ."). Caption 10's unclosed "(Khoza, 2021," was typeset as \citep{khoza2021},. "Cawthorn, 2016" in caption 8 was cited as cawthorn2015 (same claim as in the chapter text).
+- `dissertation.tex`: a commented `% \input{Chapter5/chapter5_SI}` added under the (still commented) Chapter 5 line.
+
+## references.bib
+- 125 Chapter 5 entries appended (block headed "Chapter 5 (Draaikraal field study)"), converted by `Chapter5/Workspace/make_ch5_bib_entries.py` from the report's Works Cited plus four from the caption Works Cited. No DOIs (none in the source) -- re-export from Zotero with the same keys when convenient. `% VERIFY` marks entries whose journal details were not in the Works Cited or that were identified from the citation context (boudreau1986, eales1986, lee1996, mcbirney1996, vandermerwe1976, wotzlaw2013, button1976, cousins1959, kruger1994, sharpe1982, khoza2021, molyneux2008 -- the last probably Molyneux 1970, Trans. GSSA).
+- Still missing: barnes2021, bourdeau2021, bourdeau2023, cole2013, holness2017.
+
+## Preamble
+- `multicol`, `afterpage` loaded.
+- `uniquelist = minyear` (was `true`): Ch. 5's refs made `true` print "Latypov, Chistyakova, et al., 2022" to separate it from Latypov et al. 2020.
+- `ChapterSI` now also sets `\theHsection`, fixing duplicate hyperref anchors between SI section N.1s and main-text section N.1 (affects every chapter's SI links).
+
+## Verification
+New `_c5test_full.tex` (real class + preamble, Ch. 5 + SI + bibliography) builds with latexmk/biber: 105 pages, no undefined references or labels, no duplicate destinations; the only warnings are the five missing citations above and two small overfull boxes (16 pt from an unbreakable all-caps word, "MODALLAYER...", in one table description; 3.5 pt). Pages checked visually: Fig. 1, maps, stereonets, column, photo 115, table, album.
+
+## Follow-up (2026-10-24b): tall photos on landscape plates; table notes as footnotes
+- Photos 118-125 (added by you, `.JPG`) are now in the album; no more placeholder frames.
+- `write_chapter5_photo_album.py` (layout half rewritten; backup of the previous script in the session only): portrait-orientation photos (29, 53, 54, 81, 94, 99, 103, 105, 119 -- detected from the image size after EXIF rotation) are pulled out of the numbered sequence and gathered at the end of the album on landscape pages, up to four side by side at 0.5 of the landscape page height (~2.7 in, vs ~1.5 in in a 16:9 slot), captions in four columns beneath. With the present caption lengths TeX fits three per page (3 pages); shorter captions would let a fourth on. A generated sentence before the album lists them. Wide photos keep the portrait plates (up to 3 rows of 2). The `LANDSCAPE` switch is gone.
+- Plate fitting now measures against the room left on the current page (`\ChFiveRoom`), so the first plate can share its page with the text before the album.
+- `write_chapter5_data_table.py`: the Description/notes column is gone; lithology description + field notes (79 of 236 stations) are a `\footnote` on the station name, numbered 1.. within the table, so each prints at the foot of the page that lists the station. The table is now portrait (8 pages instead of 14); units moved from the header into the caption.
+- `chapter5_SI_body.tex`: two sentences updated to describe the footnotes and the plates.
+- Verified with `_c5test_full.tex`: 98 pages, no undefined labels/duplicate anchors; warnings unchanged (five missing citations, three small overfull boxes -- two from all-caps station names in the table, "MODALLAYER..." and "XENOLITH").
+- Follow-up: the portrait-photo plates now use three caption columns (and three photo slots, so each caption column sits roughly under its photo), photos still at 0.5 of the page height; still three photos per page, 3 pages. A 0.44-height variant was also built and gave the same page count, so the larger photos were kept.

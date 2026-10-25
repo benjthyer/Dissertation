@@ -1,0 +1,22 @@
+% =============================================================
+%  Chapter 5 Supplementary Information (dissertation-chapter version)
+%
+%  Same wrapper/body split as Chapter1-3's *_SI.tex: this file gives the SI
+%  its divider page (\SItitlepage) and "5.Ns" section numbering (ChapterSI
+%  environment; both defined in dissertation_preamble.tex), then \input{}s
+%  the shared content file Chapter5/Writing/chapter5_SI_body.tex. Edit that
+%  file (or the two generator scripts it points to), not this one.
+%
+%  Relies on \ChFiveFieldStationTable and \ChFivePhoto, both defined via
+%  Chapter5/chapter5.tex (input before this file).
+%
+%  NOTE: Do NOT include \documentclass or \begin{document} here.
+%        This file is \input{} into dissertation.tex.
+% =============================================================
+
+\SItitlepage{Field Studies at Draaikraal}
+
+\begin{ChapterSI}
+\label{sec:ch5-SI}
+\input{Chapter5/Writing/chapter5_SI_body}
+\end{ChapterSI}

@@ -239,23 +239,68 @@ def _row(c2o, comp, phase):
     raise KeyError(f'{comp} ({phase}) not in compToOxV2')
 
 
-def components_table(entries, caption, label, marks_note):
-    """entries: list of (phase, mark, [(component, formula_tex)]). Longtable, two-column page."""
-    out = [r'\begin{footnotesize}', r'\setlength{\tabcolsep}{4pt}',
-           r'\begin{longtable}{@{}l l l@{}}',
-           rf'\caption{{{caption}}}\label{{{label}}}\\', r'\toprule',
-           r'Phase & Component & Formula \\', r'\midrule', r'\endfirsthead',
-           r'\multicolumn{3}{@{}l}{\emph{Table \thetable, continued}}\\', r'\toprule',
-           r'Phase & Component & Formula \\', r'\midrule', r'\endhead',
-           r'\bottomrule', r'\multicolumn{3}{@{}p{0.9\textwidth}}{' + marks_note + r'}\\',
-           r'\endlastfoot', r'\bottomrule', r'\endfoot']
-    for k, (phase, mark, comps) in enumerate(entries):
-        for i, (c, f) in enumerate(comps):
-            ph = (_phase_label(phase) + mark) if i == 0 else ''
-            out.append(f'{ph} & {c} & {f} \\\\')
-        if k < len(entries) - 1:
-            out.append(r'\addlinespace[2pt]')
-    out += [r'\end{longtable}', r'\end{footnotesize}']
+def _merge_identical(entries):
+    """Merge phases whose component lists and formulae are identical (e.g. MELTS
+    orthopyroxene and clinopyroxene) into one entry 'phase A, phase B'."""
+    out = []
+    for phase, mark, rows in entries:
+        for k, (ph2, mk2, rows2) in enumerate(out):
+            if rows2 == rows and mk2 == mark:
+                out[k] = (ph2 + [phase], mk2, rows2)
+                break
+        else:
+            out.append(([phase], mark, rows))
+    return out
+
+
+def _split(entries, ncols):
+    """Split entries at phase boundaries into ncols groups of about equal row count."""
+    sizes = [len(r) for _, _, r in entries]
+    target = sum(sizes) / ncols
+    groups, cur, n = [], [], 0
+    for e, sz in zip(entries, sizes):
+        if cur and n + sz / 2 > target * (len(groups) + 1) and len(groups) < ncols - 1:
+            groups.append(cur)
+            cur = []
+        cur.append(e)
+        n += sz
+    groups.append(cur)
+    return groups
+
+
+def components_table(entries, caption, label, marks_note, ncols=2, size=r'\footnotesize',
+                     fit=False):
+    """One landscape page: the phase/component/formula list split into ``ncols``
+    side-by-side tabulars, with a thin rule between phases.
+    entries: list of (phase, mark, [(component, formula_tex)])."""
+    groups = _split(_merge_identical(entries), ncols)
+    out = [r'\begin{landscape}', r'\begin{table}[p]', r'\centering', size,
+           r'\setlength{\tabcolsep}{4pt}', r'\setlength{\aboverulesep}{0.2ex}',
+           r'\setlength{\belowrulesep}{0.3ex}', rf'\caption{{{caption}}}\label{{{label}}}',
+           r'\noindent']
+    if fit:                      # scale the row of tabulars to exactly the page width
+        out.append(r'\resizebox{\linewidth}{!}{%')
+    for gi, group in enumerate(groups):
+        out += [r'\begin{tabular}[t]{@{}l l l@{}}', r'\toprule', r'Phase & Component & Formula \\',
+                r'\midrule']
+        for k, (phases, mark, rows) in enumerate(group):
+            names = [_phase_label(ph) for ph in phases]
+            for i, (c, f) in enumerate(rows):
+                ph = ''
+                if i < len(names):                 # one phase name per line when merged
+                    ph = names[i] + (',' if i < len(names) - 1 else mark)
+                out.append(f'{ph} & {c} & {f} \\\\')
+            for extra in names[len(rows):]:
+                out.append(f'{extra} & & \\\\')
+            if k < len(group) - 1:
+                out.append(r'\cmidrule{1-3}')
+        out += [r'\bottomrule', r'\end{tabular}']
+        if gi < len(groups) - 1:
+            out.append(r'\hspace{2em}' if fit else r'\hfill')
+    if fit:
+        out.append('}')
+    out += [r'\par\medskip', r'\noindent ' + marks_note,
+            r'\end{table}', r'\end{landscape}']
     return '\n'.join(out) + '\n'
 
 
@@ -282,6 +327,8 @@ def melts_components(c2o):
         rows = []
         for c, _ in comps:
             cr_only = all(c not in cips[l].get(p, []) for l in cips if 'NoCr' in l)
+            only120 = not in120only and all(c not in cips[l].get(p, [])
+                                            for l in cips if l.startswith('MELTS102'))
             name = c
             if p == 'melts-liquid':                      # oxide weight fractions
                 ox = c.replace('wt% ', '')
@@ -289,7 +336,14 @@ def melts_components(c2o):
                 name = re.sub(r'(\d+)', r'$_{\1}$', ox)
             else:
                 f = formula(_row(c2o, c, p), c)
-            rows.append((name + (r'$^{\ddagger}$' if cr_only else ''), f))
+                if c in ('H2O', 'CO2'):
+                    name = re.sub(r'(\d+)', r'$_{\1}$', c)
+            name += (r'$^{\dagger}$' if only120 else '') + (r'$^{\ddagger}$' if cr_only else '')
+            rows.append((name, f))
+        if p == 'melts-liquid':                          # oxides, four per row
+            oxs = [n for n, _ in rows]
+            rows = [('oxides' if i == 0 else '', ', '.join(oxs[i:i + 4]))
+                    for i in range(0, len(oxs), 4)]
         entries.append((p, r'$^{\dagger}$' if in120only else '', rows))
     return entries
 
@@ -341,13 +395,15 @@ def main():
         r'Phases and components of the \textsc{MELTS} emulators, with formulae from the '
         r'component-to-oxide stoichiometry used by \emph{nGibbs}. Liquid components are oxides.',
         'tab:ch4-components-melts',
-        r'$^{\dagger}$\,\textsc{MELTS} 1.2.0 emulators only. $^{\ddagger}$\,Cr variants only.'))
+        r'$^{\dagger}$\,\textsc{MELTS} 1.2.0 emulators only. $^{\ddagger}$\,Cr variants only.',
+        ncols=2, size=r'\scriptsize'))
     (HERE / 'tab_components_hefesto.tex').write_text(components_table(
         hefesto_components(c2o),
         r'Phases and components of the \textsc{HeFESTo} emulators, with formulae from the '
         r'component-to-oxide stoichiometry used by \emph{nGibbs}.',
         'tab:ch4-components-hefesto',
-        r'$^{\mathrm{E}}$\,Earth model only. $^{\mathrm{M}}$\,Mars model only.'))
+        r'$^{\mathrm{E}}$\,Earth model only. $^{\mathrm{M}}$\,Mars model only.',
+        ncols=3, size=r'\scriptsize', fit=True))
     print('tables written to', HERE)
 
 

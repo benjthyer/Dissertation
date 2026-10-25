@@ -31,6 +31,17 @@
 %
 %  Figures for this chapter live in Chapter5/Figures/{source,generated}/
 %  (see the \graphicspath entry in dissertation_preamble.tex).
+%
+%  2026-10-24 update to the newer Draaikraal Report.docx (now in
+%  Chapter5/Workspace/): that report differs from the earlier one only in its
+%  figures and their captions, which are now all in place (Figs. 1a/1b ->
+%  fig:ch5-topo-map, Fig. 2 -> fig:ch5-ma-cleavage-photo, Figs. 3/4 ->
+%  fig:ch5-stereonets, Fig. 5 -> fig:ch5-strat-column). The three QGIS maps
+%  (lithological, structural, Kliprivier Synform) were added as landscape
+%  figures with new captions. The "Sample and Station Data" section moved to
+%  the SI (Chapter5/chapter5_SI.tex), and every "photo N" reference now
+%  links to the SI photo album via \ChFivePhoto{N}. Pre-update copy:
+%  chapter5_body.tex.pre_report_update_20261024.
 % =============================================================
 
 \section{Introduction}
@@ -45,13 +56,21 @@ argument summary) can likely be adapted as a starting point.}
 \section{Field Methods}
 \label{sec:ch5-field-methods}
 \todo{Describe the field campaign: traverse strategy and coverage,
-GPS/geotagging protocol (Section~\ref{sec:ch5-sample-station-data} data
-were collected this way), sampling and photo-documentation conventions,
+GPS/geotagging protocol (the station data of
+Table~\ref{tab:ch5-field-stations} were collected this way), sampling and photo-documentation conventions,
 and the point-count/mineral-percentage estimation approach used in the
-field (columns present but largely unused in
-Table~\ref{tab:ch5-field-stations}). See also the analytical-methods
+field (columns present but largely unused in the field spreadsheet, and
+not tabulated). See also the analytical-methods
 description already written for the stratigraphic column
 (\S\ref{sec:ch5-stratigraphic-column-methods}).}
+
+All field stations, with their locations, interpreted units, structural
+readings, and field descriptions, are listed in
+Table~\ref{tab:ch5-field-stations} of the Supplementary Information
+(\S\ref{sec:ch5-SI-field-data}). Field photographs are cited throughout
+this chapter by number (e.g., photo~\ChFivePhoto{95}); each number links to
+the photograph and its caption in the SI photo album
+(\S\ref{sec:ch5-SI-photo-album}).
 
 
 \section{Geological Background}
@@ -580,35 +599,55 @@ This is thought to be because of the common observation of inversion of
 small pigeonite grains into larger, continuous OPX grains, serving as a
 sort of resistant ``cement'', contributing to the effectiveness of Main
 Zone rocks as dimension stone commonly used as a building material
-\citep{cawthorn2015}. Figure 1a shows that this considerable change in
+\citep{cawthorn2015}. Figure~\ref{fig:ch5-topo-map}a shows that this considerable change in
 topography at Draaikraal from the northern mountains to the southern
 valley occurs despite the continuity of the Main Zone through the
 lineament.
 
-Figure 1a: Geology and Topography of Draaikraal. Yellow represents the
-Main Zone, Oranges are Quartzites and Hornfels, beige is Marginal Zone,
-and Green is Critical Zone. The Critical Zone is readily eroded and
-represents the lowest elevations within the mapped area. The Main Zone
-forms high mountains to the North and West, but is topographically
-recessive near Draaikraal. The Northern mountains are separated from the
-recessive valley to the South by a linear feature (the Draaikraal
-Lineament) marked by a dashed line that does not appear to offset high
-ridges defined by resistant strata highlighted by the gray box. The
-geology was compiled by \citet{molyneux2008}, who did not consider
-more recent mapping that revealed the presence of the Upper Critical
-Zone to the South, terminating beyond the map area \citep{vandermerwe2007}.
-
+% Figs. 1a and 1b of Draaikraal Report.docx (2026-10 version). The 1a caption
+% is the report's newer one; the report's older 1a caption (still in the Word
+% file just above the figure) contributed the last two sentences of (a).
+% Images extracted from the report at full resolution.
+\afterpage{%
+\begin{landscape}
 \begin{figure}[p]
   \centering
-  \includegraphics[width=\textwidth]{structural_map.pdf}
-  \caption{Topographic and geological map of the Draaikraal field area, compiled from
-    \citet{molyneux2008} with the Upper Critical Zone contact to the south added
-    following \citet{vandermerwe2007}. The Draaikraal Lineament (dashed line) separates
-    topographically resistant Main Zone gabbronorites to the north from the recessive
-    Main Zone in the agricultural valley to the south, without offsetting the high
-    ridges of resistant strata (gray box).}
+  \begin{subfigure}[t]{0.495\linewidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.45\textheight,keepaspectratio]{draaikraal_regional_geology_molyneux2008.jpg}
+    \caption{}
+    \label{fig:ch5-topo-map-geology}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.495\linewidth}
+    \centering
+    \includegraphics[width=\linewidth,height=0.45\textheight,keepaspectratio]{draaikraal_regional_topography_satellite.jpg}
+    \caption{}
+    \label{fig:ch5-topo-map-satellite}
+  \end{subfigure}
+  \caption{(a) The field area around Draaikraal with the geological mapping of
+    \citet{molyneux2008}. Due North is up on this map. The generally resistant,
+    topographically high Steenkampsberg Quartzite and hornfels are mapped as orange
+    units on the eastern margin. The Marginal Zone is mapped as the beige color between
+    the quartzite and the RLS. The Main Zone is featured in yellow, the Critical Zone in
+    the NE quadrant is green and exhibits strikingly recessive topography. A regional
+    SW-NE trending fabric is prominent, which agrees with all structural measurements of
+    rock cleavage taken in the lower Main Zone and upper Critical Zone aside from the
+    rotated units associated with the Kliprivier Synform. The dark box outlines an area
+    where SW-NE rock fabrics appear continuous across the Draaikraal Lineament (dashed
+    line). The Main Zone around Draaikraal is unusually recessive relative to the Main
+    Zone north of the Draaikraal Lineament, or to the west. The compilation of
+    \citet{molyneux2008} did not consider more recent mapping that revealed the presence
+    of the Upper Critical Zone to the South, terminating beyond the map area
+    \citep{vandermerwe2007}.
+    (b) The satellite view of the same area as (a), without geology and visual guides
+    for clarity. The Draaikraal Lineament remains clearly visible. Elevations are
+    colormapped such that relative lows are blue and highs are yellow. The Main Zone is
+    generally at higher elevation than the Critical Zone (in the northeast quadrant) and
+    the Upper Zone (to the West), while the quartzitic Steenkampsberg Mountains in the
+    southeast quadrant are locally the highest feature.}
   \label{fig:ch5-topo-map}
 \end{figure}
+\end{landscape}}
 
 \section{Field Observations}
 \label{sec:ch5-field-observations}
@@ -627,6 +666,24 @@ Zone to the South, terminating beyond the map area \citep{vandermerwe2007}.
 \subsection{Lithologic Descriptions}
 \label{sec:ch5-lithologic-descriptions}
 
+Field stations and their lithologies are mapped in
+Figure~\ref{fig:ch5-lithological-map}.
+
+\afterpage{%
+\begin{landscape}
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{lithological_map.pdf}
+  \caption{Lithological map of the Draaikraal field area, eastern limb of the Bushveld
+    Complex. Field stations are colored by lithology over the mappable units (floor,
+    Disturbed Critical Zone, Layered Critical Zone, Transitional Unit, Main Zone). The
+    lower Main Zone anorthosite marker beds (LMA, MMA, UMA, and the spotted
+    anorthosites) are traced in color, and the Draaikraal Lineament is dashed. Station
+    data are listed in Table~\ref{tab:ch5-field-stations}.}
+  \label{fig:ch5-lithological-map}
+\end{figure}
+\end{landscape}}
+
 \subsubsection{Eastern Margin}
 \label{sec:ch5-eastern-margin}
 
@@ -641,7 +698,7 @@ concordantly intercalated with variably metamorphosed, melted, or
 otherwise devolatilized Transvaal sediments of the Steenkampsberg and
 Houtenbek formations. Occasionally, melting and/or reactive porous flow
 of melts through sedimentary layers remineralizes sedimentary layers
-with igneous mineralogy and texture (photos 35, 51, and 52). Concordant
+with igneous mineralogy and texture (photos~\ChFivePhoto{35}, \ChFivePhoto{51}, and \ChFivePhoto{52}). Concordant
 sills of marginal zone magmas and packages of sediment range in
 thickness from 10 to 100s of meters thick, and can be found mutually
 interbedded at least a kilometer from the margin of the RLS. Here, the
@@ -671,7 +728,7 @@ phases, which include apatite, zircon, sulfides, and euhedral chromite.
 
 The Marginal Zone magmas contain igneous xenoliths and are rich in
 paleo-vertical, across-strike features that likely record rising,
-buoyant fluid/magma. Perfect planar resistance banding (photo 95) is the
+buoyant fluid/magma. Perfect planar resistance banding (photo~\ChFivePhoto{95}) is the
 most common structure in the fine grained Marginal Zone and is nearly
 ubiquitous within the unit. Though the resistance bands have seemingly
 random strikes, they most often are steeply dipping and may represent
@@ -680,18 +737,18 @@ fluid conduits along brittle fractures within the Marginal Zone.
 In previous works, isolated meta-sedimentary xenoliths \citep{buick2000}
 were emphasized, but in this study, meta-sedimentary rocks were
 never found as minor xenoliths within magnetic marginal sills, but
-rather as continuous, concordant strata (photos 42, 70, 71) or as
+rather as continuous, concordant strata (photos~\ChFivePhoto{42}, \ChFivePhoto{70}, \ChFivePhoto{71}) or as
 locally abundant disaggregated broken strata cemented within a pink,
-evolved diatexite (photo 100), both designated as a distinct unit: ScP.
+evolved diatexite (photo~\ChFivePhoto{100}), both designated as a distinct unit: ScP.
 
 The magnetic sills of the Marginal Zone (Rz) did include enclaves of
 coarse-grained leucogabbronorite, mottled anorthosite or pyroxenite
-(photos 2,4,6,96). The anorthosite-rich enclaves are rounded, 6-10 cm
+(photos~\ChFivePhoto{2},\ChFivePhoto{4},\ChFivePhoto{6},\ChFivePhoto{96}). The anorthosite-rich enclaves are rounded, 6-10 cm
 along their longest dimension, and are imbricated to be preferentially
 lying flat paleohorizontally within the Marginal Zone, suggesting they
 were weathered/eroded by reaction and/or mechanical transport through
 Marginal Zone magma. Pyroxenitic enclaves are also often spherical
-(photos 4, 96) and may be related to the formation of the pyroxenite
+(photos~\ChFivePhoto{4}, \ChFivePhoto{96}) and may be related to the formation of the pyroxenite
 ``Tennis Ball Marker'' (TBM) of the Main and Critical Zones, described
 further in the discussion. These plagioclase-rich igneous xenoliths
 contain large (\textless3 cm) optically continuous oikocrystic augite
@@ -701,19 +758,19 @@ More commonly observed within the magnetic Marginal Zone sills east of
 Draaikraal are paleovertical structures that suggest buoyant upwelling
 of fluids and melts sourced from the hornfelsized sedimentary rocks.
 These structures included sheared, visco-elastically deformed lenses of
-thin pegmatites, including anorthosite (photo 6), magnetite gabbros
-(photo 60, sheared gabbro \textasciitilde{} 10 x 3 cm), and evolved
-quartz-biotite pegmatites (photo 67: 1x3 cm). In addition to homogeneous
+thin pegmatites, including anorthosite (photo~\ChFivePhoto{6}), magnetite gabbros
+(photo~\ChFivePhoto{60}, sheared gabbro \textasciitilde{} 10 x 3 cm), and evolved
+quartz-biotite pegmatites (photo~\ChFivePhoto{67}: 1x3 cm). In addition to homogeneous
 pegmatites, the Marginal Zone gabbros host paleovertical invasions of
 anastomosing anorthosite derived from anatexis of underlying
-metasedimentary rocks (photos 6, 97). These leucosome intrusions
+metasedimentary rocks (photos~\ChFivePhoto{6}, \ChFivePhoto{97}). These leucosome intrusions
 occasionally carry blocks of meta-sedimentary paleosome or brecciate and
-enclose the Marginal Zone gabbronoritic host rock itself (photo 98).
+enclose the Marginal Zone gabbronoritic host rock itself (photo~\ChFivePhoto{98}).
 
 Near the contact with the migmatite, differential weathering sometimes
 reveals proud, thin, pinched ovate paleovertical structures (5x1 cm
 scale) on weathered faces of Marginal Zone norite that are otherwise
-invisible on a fresh rock face {[}photo 40{]}.
+invisible on a fresh rock face {[}photo~\ChFivePhoto{40}{]}.
 
 The contact between the layered series (Critical and Main Zones) and the
 Marginal Zone is likely a fault contact at the Kliprivier Synform, but
@@ -739,7 +796,7 @@ clast-dominant quartzose sandstone with well-sorted and well-rounded
 coarse quartz grains \textasciitilde1 mm in diameter with no other
 mineral visible. While there is little structure visible internally
 because of the purity of the quartzite, the bedding planes occasionally
-reveal conspicuous asymmetric ripple structures {[}photos 2, 68{]}
+reveal conspicuous asymmetric ripple structures {[}photos~\ChFivePhoto{2}, \ChFivePhoto{68}{]}
 \textless1 cm in height. One in-place ripple structure suggests a
 paleoflow direction towards the South-Southwest. Some quartzites are
 hornfelsized: recrystallized into an interlocking crystalline texture
@@ -759,24 +816,24 @@ pelitic horizons \citep{button1976}. At the margin East of Draaikraal, there
 is a 60 m thick package of melted and metamorphosed sediment containing
 stratiform pegmatites with variable mineralogy. Hornfelsized sediments
 come in two main varieties near Draaikraal: pink, diatexite-supported
-breccias {[}photo 100{]} or dark, high-grade schists {[}photo 29{]} with
+breccias {[}photo~\ChFivePhoto{100}{]} or dark, high-grade schists {[}photo~\ChFivePhoto{29}{]} with
 thin but conspicuous navy, gray, white, tan, and pink bands of
 relatively mafic and felsic minerals have been recrystallized and no
 longer bear clastic textures except for thin seams of clast-dominated
-quartzite in a low-fraction glassy biotite-rich matrix {[}photo 35,
+quartzite in a low-fraction glassy biotite-rich matrix {[}photo~\ChFivePhoto{35},
 large light seam is \textasciitilde4 cm thick{]}. This unit is rarely
 magnetic and most often is visible as continuous, concordant strata
-{[}photo 42{]}. Even when highly brecciated, this unit can be followed
+{[}photo~\ChFivePhoto{42}{]}. Even when highly brecciated, this unit can be followed
 along the strike of the quartzites and Marginal Zone, implying that the
 sediments were not incorporated into Marginal Magmas, but that they
 rather were melted and devolatilized in-situ due to heating from the
 emplacement of adjacent marginal sills. Fluids and melts produced in
 this process are visible as a wide variety of stratiform pegmatites and
 skarns with undulating erosive contacts within comparatively planar
-meta-sediments {[}photo 30: feldspar/wollastonite(?) + Amphibole skarn;
-photo 69: Magnesite, quartz pegmatite with minor siderite{]} and as
+meta-sediments {[}photo~\ChFivePhoto{30}: feldspar/wollastonite(?) + Amphibole skarn;
+photo~\ChFivePhoto{69}: Magnesite, quartz pegmatite with minor siderite{]} and as
 pockets following fluid flow pipes and void spaces that are accommodated
-by the host strata through ductile deformation {[}photo 37, 38:
+by the host strata through ductile deformation {[}photo~\ChFivePhoto{37}, \ChFivePhoto{38}:
 Orthopyroxene and quartz pegmatite{]}. Hornfels in the field area are
 mapped up to 190 meters below the Merensky Reef stratigraphically.
 
@@ -791,15 +848,15 @@ are mapped. The rocks of the Marginal Zone (Rz) are not layered, nor
 considered here to be a part of the RLS on a textural basis. Marginal
 zone rocks weather distinctly from the plutonic RLS phase with abundant,
 sharp, \textasciitilde3 cm-scale potholes and generally are more
-textured and rough {[}photo 36{]} on a weathered surface than RLS rocks,
-which weather spheroidally and proudly {[}photos 8, 11: ``porphyritic''
+textured and rough {[}photo~\ChFivePhoto{36}{]} on a weathered surface than RLS rocks,
+which weather spheroidally and proudly {[}photos~\ChFivePhoto{8}, \ChFivePhoto{11}: ``porphyritic''
 gabbronorite{]}. Xenolith blocks of Marginal Zone norites bearing their
 distinctive resistance banding are found in both the Critical and the
-Main zones {[}Critical Zone: photo 76; Main Zone: 91{]}, though each
+Main zones {[}Critical Zone: photo~\ChFivePhoto{76}; Main Zone: \ChFivePhoto{91}{]}, though each
 xenolith sighting within the Main Zone is proximal to a mottled or
 spotted anorthosite layer. These xenoliths are variably annealed,
-recrystallized, and even ductily deformed {[}Critical Zone: photo 77;
-Main Zone: 84{]}.
+recrystallized, and even ductily deformed {[}Critical Zone: photo~\ChFivePhoto{77};
+Main Zone: \ChFivePhoto{84}{]}.
 
 The RLS is famous for its distinctive and numerous laterally continuous
 stratiform marker horizons, sometimes stretching on a 100-km scale
@@ -808,10 +865,10 @@ Merensky and Bastard pegmatoid reefs, three mottled anorthosite packages
 in the lower Main Zone, the Pyroxenite Marker of the upper Main Zone,
 and the magnetitite cycles of the Upper Zone. In this study, I observe
 and describe the three lower Main Zone magnetic mottled anorthosites
-{[}photos 49, 53, 86, 93, 105, 106, 108, 111{]}, the magnetic chromitite
-UG2 {[}photos 65, 66{]}, and a non-magnetic upper Critical Zone mottled
+{[}photos~\ChFivePhoto{49}, \ChFivePhoto{53}, \ChFivePhoto{86}, \ChFivePhoto{93}, \ChFivePhoto{105}, \ChFivePhoto{106}, \ChFivePhoto{108}, \ChFivePhoto{111}{]}, the magnetic chromitite
+UG2 {[}photos~\ChFivePhoto{65}, \ChFivePhoto{66}{]}, and a non-magnetic upper Critical Zone mottled
 anorthosite that is probably a part of the Merensky Reef footwall
-{[}photo 81{]}, and several packages of xenolith-bearing modally layered
+{[}photo~\ChFivePhoto{81}{]}, and several packages of xenolith-bearing modally layered
 gabbronoritites and spotted anorthosites within the Main Zone (photos ).
 These laterally continuous reefs are mapped and described separately
 from the bulk cumulate rocks of the RLS.
@@ -825,7 +882,7 @@ many now recognize that a thin layer of the upper Critical Zone persists
 much further south towards Tontledoos \citep{vandermerwe2007}. In this
 study, diagnostic Critical Zone lithologies were only observed north of
 the Kliprivier syncline, where typical finely modally layered norites
-and anorthosites are well-exposed (photos 64 and 80), as well as the UG2
+and anorthosites are well-exposed (photos~\ChFivePhoto{64} and \ChFivePhoto{80}), as well as the UG2
 chromitite. The Critical Zone above the Kliprivier Syncline dips
 \textasciitilde15° to the northwest similarly to the majority of the
 Main and Marginal Zone rocks in the field area, but gradually rotates to
@@ -843,13 +900,13 @@ level of the UG2.
 
 This lithology is restricted to the immediate area of the Kliprivier
 synform. Disturbed Gabbronorites are coarse-grained, even pegmatoidal
-(photo 62), with feldspars and pyroxenes up to 3 cms long. This unit was
+(photo~\ChFivePhoto{62}), with feldspars and pyroxenes up to 3 cms long. This unit was
 named in response to \citet{vandermerwe2007}, who said that the
 ``structural change {[}of the Klipriver Synform{]} is reflected in the
 Bushveld rocks, which become highly disturbed and fragmented''.
 Disturbed Gabbronorites are most recognizable for their abundance of
-blobby autoliths of anothosite (photo 61) and pyroxenite (photos 70 and
-72). While it exhibits abundant examples of modal separation, they are
+blobby autoliths of anothosite (photo~\ChFivePhoto{61}) and pyroxenite (photos~\ChFivePhoto{70} and
+\ChFivePhoto{72}). While it exhibits abundant examples of modal separation, they are
 never remotely planar, unlike the majority of the RLS. I interpret this
 unit to be formed by synmagmatic deformation of nascent layered upper
 Critical Zone mushes during the formation of the Kliprivier Synform,
@@ -864,14 +921,14 @@ Gabbronorites are rotated within the Kliprivier synform. Generally, the
 Disturbed Gabbronorites are CPX-poor and sulfide-rich with abundant,
 euhedral \textless1 cm pyroxenes set in an anorthosite matrix that
 effectively isolates the large, euhedral pyroxenes from one another
-{[}photo 62{]}. This unit generally becomes more feldspathic as one
+{[}photo~\ChFivePhoto{62}{]}. This unit generally becomes more feldspathic as one
 moves away from the intruded metasediments of the Kliprivier Syncline
 into the Critical Zone. This lithologic unit contains recrystallized and
-annealed xenolith blocks {[}photos 74, 75, and 77{]} of fine-grained
+annealed xenolith blocks {[}photos~\ChFivePhoto{74}, \ChFivePhoto{75}, and \ChFivePhoto{77}{]} of fine-grained
 Marginal Zone gabbros (Rz) as well as coarse-grained pockets containing
-very large (\textless{} 5cm) oikocrystic pyroxene {[}photo 73{]} and
+very large (\textless{} 5cm) oikocrystic pyroxene {[}photo~\ChFivePhoto{73}{]} and
 large clusters of pyroxene often rimmed by thick anorthosite halos
-{[}photo 72{]}. Disturbed Gabbronorite is mapped between 120-145 meters
+{[}photo~\ChFivePhoto{72}{]}. Disturbed Gabbronorite is mapped between 120-145 meters
 below the Merensky Reef stratigraphically, around the level of the UG1
 in core logs \citep{vandermerwe2007}. \citet{vandermerwe2007} and
 \citet{latypovetal2022} report isolated patches of massive chromite here, but I did
@@ -885,13 +942,13 @@ of Kliprivier farm, there is a small but high-quality exposure of
 chromitite (\textgreater30 cm thick). The bulk of the exposure is a
 melanocratic, non-magnetic, anorthositic chormite, which is modally
 \textasciitilde50\% \textless1mm euhedral chromite set within a fine
-matrix of \textless1 mm plagioclase (photo 66). Structurally above this
+matrix of \textless1 mm plagioclase (photo~\ChFivePhoto{66}). Structurally above this
 massive layer are some thin (\textless1 cm thick) chromitite leaders
-hosted within bright white mottled anorthosite (photo 65). Both layers
+hosted within bright white mottled anorthosite (photo~\ChFivePhoto{65}). Both layers
 contain amoeboid oikocrystic pyroxene-olivine mottles (\textless2cm).
 The mafic silicate mottles and anorthosite matrix seem to have
 crystalized within the interstices of a preexisting framework of a
-continuous chromite crystal slurry {[}photos 65, 66{]}, \citep[see][for similar interpretations]{voordouw2009,mukherjee2017}. The
+continuous chromite crystal slurry {[}photos~\ChFivePhoto{65}, \ChFivePhoto{66}{]}, \citep[see][for similar interpretations]{voordouw2009,mukherjee2017}. The
 massive melanocratic layer includes pure (relatively chromite-free)
 white anorthosite blocks (\textless4x15 cm) that are lying flat and
 dipping west towards the center of the Bushveld complex. These pure
@@ -903,7 +960,7 @@ of some of these blocks, also dipping to the west.
 The anastamosing chromite leaders within the overlying mottled
 anorthosite are sometimes highly magnetic and are a much deeper,
 vitreous black: appearing under hand lens to be \textgreater80\% modally
-chromite/magnetite {[}photo 65{]}.
+chromite/magnetite {[}photo~\ChFivePhoto{65}{]}.
 
 This chromitite package is interpreted as UG2 for a few reasons. First,
 although the anastomosing chromite leader resembles the UG1 stringers,
@@ -925,8 +982,8 @@ Merensky Reef in the direct vicinity of the Kliprivier Synform \citep[Borehole~3
 
 Spectacular outcrops of modally layered norites within the upper
 Critical Zone are observed within the field area at Kliprivier around
-and above the stratigraphic level of the UG2 chromitite (photos 64 and
-80), at stratigraphic heights from 100 to 50 meters below the Merensky
+and above the stratigraphic level of the UG2 chromitite (photos~\ChFivePhoto{64} and
+\ChFivePhoto{80}), at stratigraphic heights from 100 to 50 meters below the Merensky
 Reef. Modal layering is pronounced, with pyroxenite-rich layers being
 separated by near-pure centimetric anorthosite bands. This layering is
 undulose and irregular.
@@ -937,8 +994,8 @@ undulose and irregular.
 This refers to rocks predominantly composed of pyroxenes. Pyroxenites
 are rare in the field area. There was one coarse-grained sulfide-bearing
 feldspathic pyroxenite horizon in the Critical Zone just below the UG2
-(photo 78) as well as a pyroxenite layer just below a mottled
-anorthosite layer in the UMA in the lower Main Zone (photos 53-54).
+(photo~\ChFivePhoto{78}) as well as a pyroxenite layer just below a mottled
+anorthosite layer in the UMA in the lower Main Zone (photos~\ChFivePhoto{53}--\ChFivePhoto{54}).
 
 \subsubsection{Tz: Transitional Zone}
 \label{sec:ch5-zone-tz}
@@ -954,9 +1011,9 @@ Zone is considered to be above the Giant Mottled Anorthosite at the top
 of the Bastard unit, and the Merensky reef is taken to be the top of the
 Upper Critical Zone. \citep{cawthorn2015,mitchell2002,vandermerwe2007}. The Bastard and Merensky pyroxenites and Giant Mottled
 Anorthosite were never observed in the field area, but a
-\textasciitilde50 cm thick mottled anorthosite {[}photo 81{]} was
+\textasciitilde50 cm thick mottled anorthosite {[}photo~\ChFivePhoto{81}{]} was
 observed \textasciitilde50 meters upsection from the UG2 with only
-finely layered norite {[}photo 80{]} and porphyritic gabbronorite
+finely layered norite {[}photo~\ChFivePhoto{80}{]} and porphyritic gabbronorite
 outcropping between the UG2 and the mottled anorthosite. Since
 \citet{vandermerwe2007} reports in core logs that the Merensky Reef is 86 meters
 above the UG2 on Kliprivier and \citet{latypovetal2022} observe unusual
@@ -973,7 +1030,7 @@ Zone, with large, rounded pyroxene phenocrysts set in a white,
 feldspar-rich matrix, used often in mining to locate the Merensky Reef
 \citep{sacs1980,vongruenewaldt1985}. I observe a general textural
 similarity in lower Main Zone Gabbronorites with the unlayered upper
-Critical Zone gabbronorites below the Merensky Reef (photos 10, 79).
+Critical Zone gabbronorites below the Merensky Reef (photos~\ChFivePhoto{10}, \ChFivePhoto{79}).
 These gabbronorites are distinct from the dark and homogeneous
 gabbronorites that compose the majority of the Main Zone (Hg). The
 porphyritic gabbronoite contains large (\textasciitilde\textless{} 1cm),
@@ -987,14 +1044,14 @@ the Main Zone and absent from the Critical Zone \citep{cawthorn2015}.
 However, some cumulus CPX has been reported at the top of the Critical
 Zone \citep{cameron1982,sacs1980}.
 
-The rocks of this unit have well developed cleavage {[}photo 63{]};
+The rocks of this unit have well developed cleavage {[}photo~\ChFivePhoto{63}{]};
 however, they are not visibly layered. I located porphyritic
 gabbronorite south of the Kliprivier Synform at the beginning of the
 second field day and assumed it was Main Zone given the cumulus CPX I
 saw, but now I believe that the porphyritic gabbronorite occurs in the
 upper Critical Zone through the Transition Zone and into the lower Main
 Zone in the vicinity of Draaikraal. The Porphyritic Gabbronorite in this
-field area hosts spherical pyroxenite tennisballs (photos 10, 79), in
+field area hosts spherical pyroxenite tennisballs (photos~\ChFivePhoto{10}, \ChFivePhoto{79}), in
 the same locations as mapped by \citet{harmer1985} and
 \citet{mitchell2023}. Porphyritic Gabbronorite is mapped in the Critical and
 Main Zones 480 meters below the Merensky Reef to 380 meters above,
@@ -1048,33 +1105,31 @@ distinct but non-magnetic anomalous lithologies. The associated unusual
 rocks include: 1) fine green gabbronorites with blebby, anhedral
 phenocrystic (\textless2 cm) clinopyroxene (lithologic code Fgog:
 Fine-grained oikocrystic gabbronorite) associated with the UMA; 2)
-feature-rich, coarse pyroxenites (lithologic code: Px, {[}photos 53,
-54{]}) and 3) blobby pyroxenitic gabbronorites (lithologic code Bap:
+feature-rich, coarse pyroxenites (lithologic code: Px, {[}photos~\ChFivePhoto{53},
+\ChFivePhoto{54}{]}) and 3) blobby pyroxenitic gabbronorites (lithologic code Bap:
 Blobby anorthosite-pyroxenite) that include deformed, irregular,
 decimeter scale blobby pyroxene agglomerations within an anorthositic
-matrix that are interpreted here to be recrystallized blocks {[}photos
-104, 108{]}. Sometimes these blobby anorthosite-pyroxenites exhibit
-modal layering of coarse (\textless2 cm) pyroxene oikocrysts {[}photo
-105{]} within anorthosite. The mottled anorthosites and their associated
+matrix that are interpreted here to be recrystallized blocks {[}photos~\ChFivePhoto{104}, \ChFivePhoto{108}{]}. Sometimes these blobby anorthosite-pyroxenites exhibit
+modal layering of coarse (\textless2 cm) pyroxene oikocrysts {[}photo~\ChFivePhoto{105}{]} within anorthosite. The mottled anorthosites and their associated
 pyroxenites and blobby gabbronorites have undulating, nonplanar contacts
-with one another {[}photo 49{]} and with the underlying common
-gabbronorites {[}photos 107, 103{]}. Sometimes these contacts may be
-drastically discordant from the local strike and dip. In photo 106, the
+with one another {[}photo~\ChFivePhoto{49}{]} and with the underlying common
+gabbronorites {[}photos~\ChFivePhoto{107}, \ChFivePhoto{103}{]}. Sometimes these contacts may be
+drastically discordant from the local strike and dip. In photo~\ChFivePhoto{106}, the
 mottled anorthosite - gabbronorite contact is dipping \textasciitilde70°
 to the East towards the margin of the chamber: a much steeper dip and
 opposite strike than observed in the leucogabbronorites of the immediate
 vicinity. Occasional 3D exposure of the anorthosite-gabbronorite contact
 allowed me to measure the contact rotating 90+ degrees in this outcrop
-within meters (photo 107). It is unclear if these undulating contacts
+within meters (photo~\ChFivePhoto{107}). It is unclear if these undulating contacts
 are evidence for discordance of the mottled anorthosites, since in other
-places the contact appears concordant {[}photo 110{]}, and local
+places the contact appears concordant {[}photo~\ChFivePhoto{110}{]}, and local
 apparent discordance could be the result of thermal erosion of the
 cumulate pile by overlying magmas \citep{roberts2007}.
 
 It is important to note that one outcrop of mottled anorthosite clearly
 showed disagreeing cleavage and planar modal layering, with modal layers
-dipping 50° more eastwardly than the rock cleavage {[}photo 115,
-annotated below in figure 1{]}. This suggests that cleavage and modal
+dipping 50° more eastwardly than the rock cleavage {[}photo~\ChFivePhoto{115}, annotated in
+Figure~\ref{fig:ch5-ma-cleavage-photo}{]}. This suggests that cleavage and modal
 layering are formed by distinct processes that may have occurred at
 different times, with modal layering likely predating the formation of
 rock-cleavage (see Structural Observations section for more details).
@@ -1110,13 +1165,13 @@ Main Zone, but anorthositic beds are significantly smaller (\textless1 m
 thick) and altogether less visually striking than the Mottled
 Anorthosites (MA) unit described above. The spotted anorthosites are
 non-magnetic and bear \textless1 cm spots of equant pyroxenes composing
-\textless20\% of the rock by volume {[}photos 86, 87{]} that sometimes
-contain recrystallized pyroxenite-gabbronorite blocks {[}photo 111{]}.
+\textless20\% of the rock by volume {[}photos~\ChFivePhoto{86}, \ChFivePhoto{87}{]} that sometimes
+contain recrystallized pyroxenite-gabbronorite blocks {[}photo~\ChFivePhoto{111}{]}.
 The Spotted Anorthosites are strongly associated with much thicker
 (\textless10 m) packages of planar, finely layered gabbronorites that
 are unusual within the Main Zone and are more reminiscent of the
-Critical Zone {[}photos 85, 112{]}. These modally layered sections also
-include xenoliths {[}photos 91, 84{]}, which were only observed within
+Critical Zone {[}photos~\ChFivePhoto{85}, \ChFivePhoto{112}{]}. These modally layered sections also
+include xenoliths {[}photos~\ChFivePhoto{91}, \ChFivePhoto{84}{]}, which were only observed within
 the Main Zone in these modally layered packages. These Spotted
 Anorthosite packages are argued here to be distinct and
 stratigraphically above the remarkable and prominent Mottled
@@ -1135,8 +1190,8 @@ understated. Whereas the Ln (Layered Norite) unit of the Critical Zone
 contains vivid, centimeter-scale, near-monomineralic anorthositic bands,
 the modal layering in the Main Zone gabbronorites is millimeter-scale,
 represented by subtle differences in cumulus grain size and modal
-proportions, and the contacts between layers are planar (photos 85 and
-112). The Layered Gabbronorites are associated with Mottled Anorthosites
+proportions, and the contacts between layers are planar (photos~\ChFivePhoto{85} and
+\ChFivePhoto{112}). The Layered Gabbronorites are associated with Mottled Anorthosites
 (MA) or Spotted Anorthosites (SA). When Layered Gabbronorites (Lg) are
 observed in the same outcrops as Mottled or Spotted Anorthosites, the
 locality is assigned to be Mottled or Spotted Anorthosite. Layered
@@ -1145,12 +1200,9 @@ Gabbronorites are mapped here at stratigraphic heights between 400 and
 
 \begin{figure}[htbp]
   \centering
-  \todo{Insert annotated field Photo 115 here (cleavage and modal layering in a
-    Mottled Anorthosite outcrop) -- source image not yet organized into
-    Chapter5/Figures/source/; original reference was to a pandoc-extracted
-    media/image1.jpg that was never carried over with the raw report text.}
+  \includegraphics[width=\linewidth]{photo115_annotated_cleavage_modal_layering.jpg}
   \caption{Cleavage and modal layering forming distinct planes in a Mottled
-    Anorthosite outcrop (annotated Photo 115).}
+    Anorthosite outcrop (annotated photo~\ChFivePhoto{115}).}
   \label{fig:ch5-ma-cleavage-photo}
 \end{figure}
 
@@ -1197,7 +1249,7 @@ dearth of RLS material within the valley alluvium.
 Post-Bushveld Dolerite sills are mapped throughout the field area
 \citep{vandermerwe2007,molyneux2008}, and one such discordant sill was observed
 at the levels of the UMA and MMA north of the Draaikraal Lineament
-within the field area (photo 89). Despite being younger than the
+within the field area (photo~\ChFivePhoto{89}). Despite being younger than the
 surrounding RLS, the sill is significantly more weathered, likely
 because of extensive blocky fracturing hypothesized to result from rapid
 contraction during cooling. The dolerite is moderately magnetic.
@@ -1232,21 +1284,67 @@ stratigraphy calculated here was optimized for discriminating units
 within the upper Critical and lower Main zones. Therefore, the
 stratigraphic heights presented here for the Homogeneous Gabbronite
 lithology are likely overestimated. The interpreted schematic
-stratigraphic column for the region is graphically presented in figure
-5.
+stratigraphic column for the region is graphically presented in
+Figure~\ref{fig:ch5-strat-column}.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\linewidth]{draaikraal_schematic_strat_section.jpg}
+  \caption{The schematic stratigraphic cross section of the RLS in Draaikraal. The
+    Kliprivier Synform is represented by the slab of floor rocks protruding into (and
+    creating) the Disturbed Critical Zone at the halfway point of the column. The
+    Draaikraal Lineament would form from upward percolating fluids trapped and channeled
+    by this protruding slab of floor rocks in a line directly above the slab in this
+    view. The Kliprivier synform is not interpreted to have deformed the RLS above the
+    UG2.}
+  \label{fig:ch5-strat-column}
+\end{figure}
 
 \subsection{Structural Observations}
 \label{sec:ch5-structural-observations}
 
+Structural measurements across the field area, together with the traced
+lower Main Zone anorthosite marker beds, are mapped in
+Figure~\ref{fig:ch5-structural-map}.
+
+\afterpage{%
+\begin{landscape}
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{structural_map.pdf}
+  \caption{Structural map of the Draaikraal field area: strike and dip of bedding,
+    plutonic cleavage, and modal layering, over the mappable units (floor, Disturbed
+    Critical Zone, Layered Critical Zone, Transitional Unit, Main Zone), with the lower
+    Main Zone anorthosite marker beds (LMA, MMA, UMA, and the spotted anorthosites) and
+    the Draaikraal Lineament (dashed). 10~m elevation contour interval. Measurements are
+    listed in Table~\ref{tab:ch5-field-stations}.}
+  \label{fig:ch5-structural-map}
+\end{figure}
+\end{landscape}}
+
 \subsubsection{Kliprivier Synform}
 \label{sec:ch5-kliprivier-synform}
 
-The most interesting large-scale structure in the mapping area is a
+\afterpage{%
+\begin{landscape}
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{kliprivier_synform_map.pdf}
+  \caption{Geological map of the Kliprivier Synform. Field stations are colored by
+    lithology over the mappable units (floor, Disturbed Critical Zone, Layered Critical
+    Zone, Transitional Unit, Main Zone), with bedding and plutonic-cleavage measurements
+    and the Draaikraal Lineament (dashed).}
+  \label{fig:ch5-kliprivier-map}
+\end{figure}
+\end{landscape}}
+
+The most interesting large-scale structure in the mapping area
+(Figure~\ref{fig:ch5-kliprivier-map}) is a
 rotated package of disturbed, pegmatoidal upper Critical Zone
-pyroxenites and gabbronorites {[}photos 61,62, 72-78{]}, well-cleaved
-leuconorite layers {[}photo 63{]}, quartzites {[}photos 28 and 124{]},
-migmatized/hornfelsed argillites and calc-silicate layers {[}photos 29,
-30, and 125{]}, and marginal sills {[}photo 57{]} in the northern
+pyroxenites and gabbronorites {[}photos~\ChFivePhoto{61},\ChFivePhoto{62}, \ChFivePhoto{72}--\ChFivePhoto{78}{]}, well-cleaved
+leuconorite layers {[}photo~\ChFivePhoto{63}{]}, quartzites {[}photos~\ChFivePhoto{28} and \ChFivePhoto{124}{]},
+migmatized/hornfelsed argillites and calc-silicate layers {[}photos~\ChFivePhoto{29},
+\ChFivePhoto{30}, and \ChFivePhoto{125}{]}, and marginal sills {[}photo~\ChFivePhoto{57}{]} in the northern
 portion of Kliprivier Farm. The structure is remarkable because it
 apparently displaces a marginal package of metasediments and
 fine-grained sills over 1.25 kilometers into the plutonic RLS. This
@@ -1279,11 +1377,10 @@ Synform is presented:
   mapped lithologies east of Draaikraal, to a southeastern strike
   dipping southwest. This gradual change in structure is accompanied by
   lithologic changes in the Critical Zone: Near and at the deformed
-  areas, grain-size increases (photo 61) and stratiform modal layering
+  areas, grain-size increases (photo~\ChFivePhoto{61}) and stratiform modal layering
   ceases and is replaced by a heterogeneous rock with abundant
-  fine-grained Marginal Zone xenoliths, anorthosite autoliths (photo 62)
-  and irregular clumps of pyroxene surrounded by anorthosite (photos
-  72-77). I have mapped these lithologies as ``Disturbed Gabbronorite''
+  fine-grained Marginal Zone xenoliths, anorthosite autoliths (photo~\ChFivePhoto{62})
+  and irregular clumps of pyroxene surrounded by anorthosite (photos~\ChFivePhoto{72}--\ChFivePhoto{77}). I have mapped these lithologies as ``Disturbed Gabbronorite''
   (Lithologic code: Dcg).
 \item
   To the south, there is little exposure and no structural data could be
@@ -1324,7 +1421,7 @@ Synform is presented:
 Strike and dip measurements taken from the Kliprivier Synform were
 plotted on a stereonet and analyzed using Stereonet 11 \citep{allmendinger2012,cardozo2013}. Poles to bedding planes of
 quartzites, hornfels, mafic sills, and plutonic rocks were calculated
-and plotted together in stereonet projection in Figure 3. In Figure 4,
+and plotted together in stereonet projection in Figure~\ref{fig:ch5-stereonets}a. In Figure~\ref{fig:ch5-stereonets}b,
 the fold axis is calculated using the poles to the bedding planes. This
 calculated fold axis trends roughly W5°N, plunging 15°, similarly to the
 Draaikraal Lineament. The axial plane also was calculated, assuming it
@@ -1343,28 +1440,26 @@ Zone rocks. Considering that the Kliprivier Synform also rests upon this
 lineament, it is likely that the formation of the Kliprivier Synform is
 related to the Draaikraal Lineament.
 
-\todo{Insert Figure 3 (Kliprivier Synform structural map/cross-section),
-Figure 4, and Figure 5 (interpreted schematic stratigraphic column referenced in
-\S\ref{sec:ch5-stratigraphic-column-methods}) here. Source figures are not yet
-organized into Chapter5/Figures/source/.}
-
-\section{Sample and Station Data}
-\label{sec:ch5-sample-station-data}
-
-The field data underlying \S\ref{sec:ch5-field-observations} -- GPS-located
-stations, stratigraphic heights, interpreted units, and lithologic
-descriptions -- are compiled in Table~\ref{tab:ch5-field-stations}.
-Structural measurements (strike, dip, and structure type) recorded at a
-subset of these and additional dedicated structural stations are compiled
-separately in Table~\ref{tab:ch5-structural-data}. Both tables are
-generated from \texttt{Chapter5/Tables/Draaikraal 2023 BJT.xlsx} by
-\texttt{Chapter5/Figures/write\_chapter5\_data\_table.py}; regenerate after any
-change to the underlying spreadsheet.
-
-\ChFiveFieldStationTable
-
-\ChFiveStructuralMeasurementsTable
-
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{kliprivier_stereonet_bedding_poles.jpg}
+    \caption{}
+    \label{fig:ch5-stereonets-bedding}
+  \end{subfigure}\hfill
+  \begin{subfigure}[t]{0.48\linewidth}
+    \centering
+    \includegraphics[width=\linewidth]{kliprivier_stereonet_fold_axis.jpg}
+    \caption{}
+    \label{fig:ch5-stereonets-fold-axis}
+  \end{subfigure}
+  \caption{Structural analysis of the Kliprivier Synform in stereographic projection
+    (Stereonet 11; \citealp{allmendinger2012,cardozo2013}). (a) Bedding planes and poles
+    to planes of rocks within the Kliprivier Synform. (b) Calculated fold axis and axial
+    plane for the Kliprivier Synform.}
+  \label{fig:ch5-stereonets}
+\end{figure}
 
 \section{Discussion}
 \label{sec:ch5-discussion}
@@ -1393,7 +1488,7 @@ the structure is synmagmatic.
 Structural analysis of the synform is consistent with gentle folding
 along a fold axis plunging shallowly to the west with a subvertical
 axial plane trending roughly E(SE)-W(NW) bisecting the limbs' obtuse
-intersection angle (Figure 4). This deformation is subtle and would not
+intersection angle (Figure~\ref{fig:ch5-stereonets}b). This deformation is subtle and would not
 reverse the original ordering of the layered series and the marginal
 series. A syncline alone cannot explain how the Marginal Zone of the
 deformed, SW dipping limb came to be structurally higher than some of
@@ -1455,10 +1550,10 @@ found \textless200m stratigraphically above the margin with the floor
 rocks irregardless of the stratigraphic position within the layered
 series \citep{lee1979}. This author located isolated
 pyroxenite tennisballs in porphyritic leuconorite in two places above
-and below the Kliprivier Synform {[}photos 8, 79{]}, on regions
+and below the Kliprivier Synform {[}photos~\ChFivePhoto{8}, \ChFivePhoto{79}{]}, on regions
 previously mapped to contain tennisballs \citep{lee1979}. More
 interestingly, this author located spheroidal aggregates of pyroxenite
-in the fine-grained Marginal Zone {[}photos 2, 4, 96{]}. Only very
+in the fine-grained Marginal Zone {[}photos~\ChFivePhoto{2}, \ChFivePhoto{4}, \ChFivePhoto{96}{]}. Only very
 recently have authors argued the marginal zone hosted spheroidal
 aggregates at all. \citet{mitchell2023} used geochemical evidence
 to claim the coarsely crystalline plutonic gabbronorites hosting the
@@ -1470,7 +1565,7 @@ pyroxenite tennis balls or spheroidal aggregates, although those
 observed here in Draaikraal are much more lumpy and irregular than the
 \emph{spheroidal} aggregates (SA) found in the Middelkraal TBM.
 
-In photo 96, the largest pyroxenite SA (\textasciitilde4 cm) resembles a
+In photo~\ChFivePhoto{96}, the largest pyroxenite SA (\textasciitilde4 cm) resembles a
 diapir: It has a long (\textasciitilde15 cm) and thin
 (\textasciitilde\textless1 - 2 mm) pyroxenite tail developed behind it,
 suggesting that it was migrating through a comparatively rigid,
@@ -1507,7 +1602,7 @@ phase, since it allows for the SAs to be formed by disaggregation of a
 comparatively hot ultramafic magma intruded into comparatively cool (and
 therefore rigid) mafic sills.
 
-The diapiric movement of the pyroxenite spheroid in photo 96 serves as
+The diapiric movement of the pyroxenite spheroid in photo~\ChFivePhoto{96} serves as
 good evidence against the second model of \citet{khoza2021}, as Khoza's
 requires the pyroxenite spheroids to be more rigid than the host magma,
 so that they remain consolidated against the flowing host magma. If the
@@ -1524,7 +1619,7 @@ input both can explain the relative softness of the primitive SA
 migrating through more evolved host rocks, and because it explains the
 abundant quartz (\textgreater10\%: \citealp{lee1979}) in the
 pyroxenite SA, which would not be expected for an ultramafic magma with
-high Mg\# and An\#. Photos 97 and 98 exhibit the migration of a distinct
+high Mg\# and An\#. Photos~\ChFivePhoto{97} and \ChFivePhoto{98} exhibit the migration of a distinct
 secondary comagmatic silica-rich fluid through the marginal zone magmas.
 However, \citet{mitchell2023} point out that multiple distinct
 SA-rich horizons of the TBM exist but those that they report were over
@@ -1579,7 +1674,7 @@ Roossenekal-Lydenburg road in their traverse III. I further argue that
 what they have mapped as UMA and MMA north of the Draaikraal lineament
 are actually spotted anorthosites and some lack mottles entirely.
 
-The UMA outcrop on the Roossenekal-Lydenburg road (photos 53, 54)
+The UMA outcrop on the Roossenekal-Lydenburg road (photos~\ChFivePhoto{53}, \ChFivePhoto{54})
 contains a distinct package of a striking magnetic mottled anorthosite,
 \textasciitilde0.5m thick underlain by a \textasciitilde0.5m
 coarse-grained feldspathic pyroxenite with some reacted anorthositic
@@ -1590,13 +1685,13 @@ faces of this rock are a uniquely vivid green color. I was able to
 locate the vivid green fine grained gabbronorite with blebby anhedral
 pyroxene phenocrysts (Fgog) above the Draaikraal Lineament near a cliff
 with a view of the Booysendal PGE mine to the east (Fgog not pictured,
-photos 88 and 90). This outcrop is located along strike to the UMA
+photos~\ChFivePhoto{88} and \ChFivePhoto{90}). This outcrop is located along strike to the UMA
 outcrop south of the Draaikraal lineament, undisplaced and at the same
 stratigraphic height: \textasciitilde{} 500 meters above the Merensky
 Reef.
 
 The anorthosite mapped by \citet{vandermerwe2007} and \citet{latypovetal2022}
-as the UMA north of the Draaikraal Lineament (photo 86) is very small
+as the UMA north of the Draaikraal Lineament (photo~\ChFivePhoto{86}) is very small
 (\textasciitilde10 cm), non-magnetic, and and lacks the associated
 coarse pyroxenite and fine-green gabbronorite lithologies; it does not
 resemble the UMA outcrop on the Roossenekal-Lydenburg road. Furthermore,
@@ -1608,12 +1703,10 @@ displacement.
 
 Similarly, the discordant MMA correlation they offer does not stand up.
 The MMA is supposed to be a striking and very large marker in the lower
-Main Zone (photos 103-109), and yet the outcrop they correlate (photo
-87) is a small exposure with subtle, non-magnetic pyroxene
+Main Zone (photos~\ChFivePhoto{103}--\ChFivePhoto{109}), and yet the outcrop they correlate (photo~\ChFivePhoto{87}) is a small exposure with subtle, non-magnetic pyroxene
 spots/mottles, and no associated blebby or coarsely layered pyroxenites.
 I instead find the concordant correlation of a very large package of
-magnetic mottled anorthosites with coarsely layered pyroxenites at photo
-115 much more plausible.
+magnetic mottled anorthosites with coarsely layered pyroxenites at photo~\ChFivePhoto{115} much more plausible.
 
 Because there are essentially no detailed studies of the lower Main Zone
 anorthosites, \citep[similar to][for the GMA of the
@@ -1775,7 +1868,7 @@ depressurization, cooling, and perhaps magma recharge.
 \label{sec:ch5-cleavage-significance}
 
 Within many of the phaneritic plutonic rocks, there was measurable,
-near-planar cleavage visible (e.g. photos 58 and 63). All measurements
+near-planar cleavage visible (e.g. photos~\ChFivePhoto{58} and \ChFivePhoto{63}). All measurements
 of plutonic rocks reported here are orientations of these cleavage
 structures. Plutonic rock cleavages without modal layering yielded
 measurements that were similar to the regional dip of bedding in the
@@ -1784,7 +1877,7 @@ modal layering these cleavages had strikes rotated 90 degrees from the
 regional strike, interestingly dipping similarly to the exotic limb of
 the Kliprivier Monocline. These 90 degree offset structures could be
 measured very near to one another, sometimes within the same outcrop.
-Photo 115 shows rock cleavage that is discordant with modal layering in
+Photo~\ChFivePhoto{115} shows rock cleavage that is discordant with modal layering in
 a striking outcrop of the MMA.
 
 There may have been multiple processes generating superimposed fabrics

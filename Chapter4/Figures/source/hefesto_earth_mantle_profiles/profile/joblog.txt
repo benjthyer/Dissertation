@@ -1,0 +1,7 @@
+Seq	Host	Starttime	JobRuntime	Send	Receive	Exitval	Signal	Command
+4	:	1792971922.244	   671.590	0	303188	0	0	cd "/home/bthyer/hefesto_earth_mantle_profiles/profile/Simulation4" && $HOME/HeFESTo/HeFESToRepository/main
+1	:	1792971922.237	   696.614	0	302705	0	0	cd "/home/bthyer/hefesto_earth_mantle_profiles/profile/Simulation1" && $HOME/HeFESTo/HeFESToRepository/main
+2	:	1792971922.239	   708.750	0	307565	0	0	cd "/home/bthyer/hefesto_earth_mantle_profiles/profile/Simulation2" && $HOME/HeFESTo/HeFESToRepository/main
+3	:	1792971922.241	   709.281	0	302080	0	0	cd "/home/bthyer/hefesto_earth_mantle_profiles/profile/Simulation3" && $HOME/HeFESTo/HeFESToRepository/main
+5	:	1792971922.247	   718.880	0	306803	0	0	cd "/home/bthyer/hefesto_earth_mantle_profiles/profile/Simulation5" && $HOME/HeFESTo/HeFESToRepository/main
+6	:	1792971922.249	   735.830	0	307576	0	0	cd "/home/bthyer/hefesto_earth_mantle_profiles/profile/Simulation6" && $HOME/HeFESTo/HeFESToRepository/main

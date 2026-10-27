@@ -1,16 +1,17 @@
 """
 Liquid lines of descent of the MELTS Cr standard rocks: alphaMELTS vs nGibbs.
 
-Harker diagrams (liquid SiO2 vs every other liquid oxide, wt%) for the three
-deployment-test standard rocks (Bishop Tuff, Lherzolite, MORB) under isobaric
-cooling. The alphaMELTS liquid (melts-liquid.tbl) is drawn as a solid line in
+Harker diagrams (liquid SiO2 vs every other liquid oxide, wt%) for two of the
+deployment-test standard rocks (Lherzolite, MORB) under isobaric cooling. Bishop
+Tuff is left out so the two mafic curves can be read clearly (add it back to
+ROCK_FAMILY to restore it). The alphaMELTS liquid (melts-liquid.tbl) is drawn as a solid line in
 the rock's color; the nGibbs emulation is drawn as a black dotted line. nGibbs
 runs the Cr sub-API's isothermal (P, T) emulator at the standard's own P-T path
 and bulk composition, exactly as the ``sections_*_isothermal`` figures do.
 
 Each rock is run with the MELTS version in ROCK_FAMILY, and compared with the
 alphaMELTS standard run of that same version: Lherzolite and MORB with MELTS
-1.0.2, Bishop Tuff with MELTS 1.2.0.
+1.0.2.
 
 States outside the emulator's training range (e.g. Bishop Tuff below 700 C)
 are left out of both curves. Rows where the liquid is below LIQ_MIN of the system mass are left out of both
@@ -41,7 +42,8 @@ from ngibbs_thesis_plots import (FAMILIES, FS, LAND_W, MELTS_STANDARDS, MELTS_VA
 LIQ_MIN = 0.01  # minimum liquid mass fraction of the system for a row to be drawn
 OTHERS = ['TiO2', 'Al2O3', 'Cr2O3', 'Fe2O3', 'FeO', 'MgO', 'CaO', 'Na2O', 'K2O', 'P2O5', 'H2O']
 # rock -> FAMILIES key: the emulator and the alphaMELTS standard run it is compared with.
-ROCK_FAMILY = {'BishopTuff': 'MELTS120', 'Lherzolite': 'MELTS102', 'MORB': 'MELTS102'}
+# Bishop Tuff ('BishopTuff': 'MELTS120') is omitted for legibility.
+ROCK_FAMILY = {'Lherzolite': 'MELTS102', 'MORB': 'MELTS102'}
 # Categorical slots 1-3 of the dissertation's figure palette, in fixed order.
 ROCK_COLORS = {'BishopTuff': '#2a78d6', 'Lherzolite': '#eb6834', 'MORB': '#1baf7a'}
 ROCK_LABELS = {'BishopTuff': 'Bishop Tuff', 'Lherzolite': 'Lherzolite', 'MORB': 'MORB'}

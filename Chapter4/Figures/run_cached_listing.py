@@ -12,8 +12,13 @@ runner, so LaTeX never runs Python -- it only reads the cached files:
     generated/<stem>/fig2.pdf ...
     generated/<stem>/source.sha256  hash of the script source the cache was made from
 
-A rerun is skipped while the script's hash matches source.sha256, so editing the
-script (and only that) triggers a fresh calculation. --force reruns regardless.
+Plotting code that would only clutter the listing can live in a companion
+<stem>_plots.py, which is run right after the script in the same namespace (so it
+sees everything the script defined) and is not shown in the thesis.
+
+A rerun is skipped while the hash of the script (and its companion) matches
+source.sha256, so editing either triggers a fresh calculation. --force reruns
+regardless.
 
 The script is executed unmodified (as if run as __main__), from its own directory,
 with the Agg backend and plt.show() disabled.
@@ -57,7 +62,9 @@ class _Tee(io.TextIOBase):
 def run(script, force=False):
     script = (HERE / script).resolve()
     out_dir = OUT_ROOT / script.stem
-    digest = hashlib.sha256(script.read_bytes()).hexdigest()
+    companion = script.with_name(f'{script.stem}_plots.py')
+    sources = [script] + ([companion] if companion.exists() else [])
+    digest = hashlib.sha256(b''.join(s.read_bytes() for s in sources)).hexdigest()
     hash_file = out_dir / 'source.sha256'
 
     if not force and hash_file.exists() and hash_file.read_text().strip() == digest:
@@ -87,8 +94,10 @@ def run(script, force=False):
             # sys.modules['__main__'], so on Windows (spawn) every multiprocessing
             # worker re-imports it and, lacking a __main__ guard, reruns the whole
             # calculation. Left as is, workers re-import this (guarded) runner.
-            code = compile(script.read_text(encoding='utf-8'), str(script), 'exec')
-            exec(code, {'__name__': '__main__', '__file__': str(script), 'print': script_print})
+            namespace = {'__name__': '__main__', '__file__': str(script), 'print': script_print}
+            for source in sources:
+                code = compile(source.read_text(encoding='utf-8'), str(source), 'exec')
+                exec(code, namespace)
     finally:
         os.chdir(cwd)
 

@@ -16,28 +16,13 @@
 %  This stub will be replaced with the full chapter text.
 % =============================================================
 
-\chapter{nGibbs: Fast, Differentiable Phase Equilibria for Multicomponent Silicate Systems via Deep Learning}
+\chapter{nGibbs: Fast Phase Equilibria and Material Property Calculations for General Multicomponent Silicate Systems via Deep Learning}
 \label{ch:ngibbs}
 
 \begin{quote}
   \itshape
-  \todo{One-paragraph chapter summary.}
+  \input{Chapter4/Writing/chapter4_abstract}
 \end{quote}
-
-\section{Introduction}
-\label{sec:ch4-intro}
-\todo{Motivate the need for fast thermodynamic forward models in geodynamics.
-Review current tools (Perple\_X, THERMOCALC, MAGEMin) and their computational
-bottlenecks. State the deep learning acceleration approach.}
-
-\section{Background}
-\label{sec:ch4-background}
-
-\subsection{Gibbs Free Energy Minimization in Petrology}
-\todo{}
-
-\subsection{Machine Learning Surrogates for Physical Models}
-\todo{}
 
 % Methods (design rationale, training data generation, architecture, loss,
 % training, inference). Supersedes the former "Model Architecture" stub
@@ -45,28 +30,3 @@ bottlenecks. State the deep learning acceleration approach.}
 % opens with its own \section{Methods}; edit Chapter4/Writing/Chapter4_main_body_text.tex
 % to change its content.
 \input{Chapter4/Writing/Chapter4_main_body_text.tex}
-
-\section{Uncertainty Quantification}
-\label{sec:ch4-architecture}
-\todo{}
-
-\section{Validation}
-\label{sec:ch4-validation}
-\todo{Benchmark speed and accuracy against classical minimizers on held-out
-$P$--$T$--$X$ points and on known phase diagrams.}
-
-\section{Application to Geodynamic Modeling}
-\label{sec:ch4-results}
-\todo{Demonstrate integration into a geodynamic simulation. Show a
-representative case study.}
-
-\section{Discussion}
-\label{sec:ch4-discussion}
-\todo{Discuss accuracy/speed tradeoffs, generalizability to other
-bulk compositions, and extension to systems relevant to the Bushveld
-Complex (foreshadow Appendix~\ref{app:bushveld} and the Conclusion).}
-
-\section{Conclusions}
-\label{sec:ch4-conclusions}
-\todo{Summarize the ML minimizer performance and implications for
-future thermodynamically coupled geodynamic models.}

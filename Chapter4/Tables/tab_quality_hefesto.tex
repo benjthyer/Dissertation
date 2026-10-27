@@ -2,11 +2,19 @@
 \centering
 \footnotesize
 \setlength{\tabcolsep}{2.2pt}
-\caption{Phase frequency and phase-presence quality of the isothermal ($P$, $T$) and isentropic ($P$, $S$) \textsc{HeFESTo} Earth and Mars emulators on their held-out test subsets (15{,}000 assemblages each; 0 assemblages of each Earth subset contain pseudowollastonite, which the Earth models do not include, and are excluded). Freq.: fraction of test assemblages in which the phase is present in the ground truth (0.00 is below 0.005). Prec./Rec.: precision and recall of the predicted phase presence, shaded from white (1.00) to red (0.80 and below). -- : phase not in the model; n.d.: undefined (no predicted or no true occurrences).}
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+\renewcommand{\arraystretch}{1.15}
+\caption{Prediction and recall statistics of the isothermal ($P$, $T$) and isentropic ($P$, $S$) \textsc{HeFESTo} Earth and Mars emulators evaluated on 
+their validation datasets. The number of samples (\emph{n}) in the training dataset is given immediately below the model name. Freq.: fraction of test assemblages 
+in which the phase is present in the ground truth. Prec./Rec.: precision and recall of the predicted phase presence, shaded from white (1.00) to red (0.80 and below). 
+-- : phase not in the model.}
 \label{tab:ch4-quality-hefesto}
-\begin{tabular}{@{}lrrrrrrrrrrrr@{}}
+\input{Chapter4/Tables/train_sizes}
+\begin{tabular}{@{}l|rrr|rrr|rrr|rrr@{}}
 \toprule
- & \multicolumn{3}{c}{Earth ($P$, $T$)} & \multicolumn{3}{c}{Earth ($P$, $S$)} & \multicolumn{3}{c}{Mars ($P$, $T$)} & \multicolumn{3}{c}{Mars ($P$, $S$)} \\
+ & \multicolumn{3}{|c}{Earth ($P$, $T$)} & \multicolumn{3}{|c}{Earth ($P$, $S$)} & \multicolumn{3}{|c}{Mars ($P$, $T$)} & \multicolumn{3}{|c}{Mars ($P$, $S$)} \\
+ & \multicolumn{3}{|c}{$n = \trainNHeFESToEarthIso$} & \multicolumn{3}{|c}{$n = \trainNHeFESToEarthIsen$} & \multicolumn{3}{|c}{$n = \trainNHeFESToMarsIso$} & \multicolumn{3}{|c}{$n = \trainNHeFESToMarsIsen$} \\
 \cmidrule(lr){2-4}\cmidrule(lr){5-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
 Phase & Freq. & Prec. & Rec. & Freq. & Prec. & Rec. & Freq. & Prec. & Rec. & Freq. & Prec. & Rec. \\
 \midrule

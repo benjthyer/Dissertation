@@ -2847,3 +2847,10 @@ New `_c5test_full.tex` (real class + preamble, Ch. 5 + SI + bibliography) builds
 - `chapter5_SI_body.tex`: two sentences updated to describe the footnotes and the plates.
 - Verified with `_c5test_full.tex`: 98 pages, no undefined labels/duplicate anchors; warnings unchanged (five missing citations, three small overfull boxes -- two from all-caps station names in the table, "MODALLAYER..." and "XENOLITH").
 - Follow-up: the portrait-photo plates now use three caption columns (and three photo slots, so each caption column sits roughly under its photo), photos still at 0.5 of the page height; still three photos per page, 3 pages. A 0.44-height variant was also built and gave the same page count, so the larger photos were kept.
+
+## 2026-10-25: Ch. 4 landscape figure pages, LLDs, Earth-mantle phase figure
+- Landscape block (property transects, EOS terms, LLDs) rendered with rotated pages but unrotated figures, so plots ran off the page. Cause: the portrait timing table (`\input{Chapter4/Tables/tab_eos_terms_timing}`) sat inside `\begin{landscape}`; once it landed on a text page there, the following `[p]` figure pages lost their content rotation. Table moved to just after `\end{landscape}`. Verified in a test build with the real class/preamble and figures.
+- EOS-terms figure height 0.78 -> 0.72 `\textheight` (was "Float too large" by 21 pt; caption hit the page number).
+- `liquid_harker_melts.py`: Bishop Tuff dropped from `ROCK_FAMILY` (Lherzolite + MORB only); caption updated. Needs a rerun to regenerate `liquid_harker_MELTS.pdf`.
+- `nGibbsEarthMantle_plots.py`: P_lid / P_TBL markers now solid black (`color='k', ls='-', lw=1.0`); caption says "solid black lines". Needs `make listings` (script hash changed).
+- Earth-mantle phase figure (6x2): image on its own page (`[H]`, up to 0.94 `\textheight`) with a "caption on the following page" note; the caption and label are in a second `[H]` figure right after it.

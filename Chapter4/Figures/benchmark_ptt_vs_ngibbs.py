@@ -228,11 +228,11 @@ if __name__ == "__main__":
                     for b0 in range(0, n_paths, w):
                         bulk = all_comps.iloc[b0:b0 + w].reset_index(drop=True)
                         with contextlib.redirect_stdout(PTTProgress(w, sys.stdout)):
-                            res = ptt.multi_path(
+                            res = ptt.multi_path( #quiet_engine=False,
                                 cores=w, Model="MELTSv1.0.2", bulk=bulk,
                                 T_start_C=T_START_C, T_end_C=T_END_C, dt_C=DT_C, P_bar=P_BAR,
                                 find_liquidus=False, Frac_solid=False, Frac_fluid=False,
-                                timeout=PTT_TIMEOUT, multi_processing=True,
+                                timeout=PTT_TIMEOUT, multi_processing=True, 
                             )
                         # A single-path result is one dict; multi-path is {"Run i": dict}
                         runs += [res] if "Conditions" in res else [v for v in res.values() if isinstance(v, dict) and "Conditions" in v]

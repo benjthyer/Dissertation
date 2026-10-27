@@ -6,8 +6,8 @@ per-phase scale c: u = y_hat/c (prediction), t = y/c (label).
     untrusted (no label, t=-1):  w_n * relu(u + m)^2 + w_eta * (u + 1)^2
 
 The functional form follows ngibbs.engine.NN_continuous.AffinityModel.affinity_mole_loss;
-the weights are those of Table tab:affloss (h_p = 0.03, w_p = 3, m = 0.5, w_n = 0.25,
-w_eta = 0.05). Panel (a) is the trusted loss as a heat map over t and u in [-1, 1];
+the weights are those of Table tab:affloss (h_p = 0.03, w_p = 3, m = 0.2, w_n = 0.25,
+w_eta = 0.02). Panel (a) is the trusted loss as a heat map over t and u in [-1, 1];
 panel (b) is the untrusted loss, which depends on u only, on the same vertical axis.
 
 Writes generated/fig_affinity_loss.pdf (300 dpi). No ngibbs needed.
@@ -22,8 +22,8 @@ from matplotlib.colors import PowerNorm
 
 OUT = Path(__file__).resolve().parent / 'generated' / 'fig_affinity_loss.pdf'
 H_P, W_P = 0.03, 3.0          # present-side hinge: margin, weight
-MARGIN, W_N = 0.5, 0.25       # untrusted hinge: margin (u > -MARGIN penalised), weight
-W_ETA = 0.05                  # untrusted pull toward u = -1
+MARGIN, W_N = 0.2, 0.25       # untrusted hinge: margin (u > -MARGIN penalised), weight
+W_ETA = 0.02                # untrusted pull toward u = -1
 LIM = 1.0
 N = 801
 

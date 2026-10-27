@@ -1,0 +1,26 @@
+% =============================================================
+%  chapter4_abstract.tex
+%  Shared abstract text for Chapter 4 (nGibbs). Kept separate from
+%  the surrounding \begin{quote}...\end{quote} wrapper in
+%  Chapter4/chapter4.tex for the same reason as the other chapters'
+%  abstract files: the wrapper is class-specific, this raw text is not.
+%  Numbers are written out rather than taken from the results macros,
+%  because the abstract is typeset before those macros are \input.
+% =============================================================
+Thermodynamic models that compute equilibrium phase assemblages by free energy minimization, such as \textsc{MELTS} and
+\textsc{HeFESTo}, are often the computational bottleneck of the workflows that use them. The problems that would benefit most from
+these models include compositional inversions of seismic data, geodynamic models of a chemically heterogeneous mantle, and
+physical models of realistic magmatic systems that are heterogeneous in composition and temperature over space and time. These problems 
+require large numbers of equilibria over a composition space that lookup tables cannot cover. Recently, machine-learning surrogate models have 
+been built to address this need, but those that have been built to date each emulate a narrowly defined slice of their parent model. This chapter presents
+\emph{nGibbs}, a set of general deep-learning emulators that reproduce \textsc{MELTS} 1.0.2 and 1.2.0 and the \textsc{HeFESTo} models of
+Earth's and Mars' mantles across broad ranges of pressure, temperature and bulk composition. Each emulator predicts the full
+equilibrium assemblage, the abundance of every phase and the endmember composition of every solution phase. Like the parent models
+\emph{nGibbs} emulates, phase abundances vary continuously across phase boundaries, and mass is conserved. Physical properties are computed from the
+predicted assemblage with the parent models' own equations of state. On a validation dataset generated from bulk compositions distinct from the training data,
+the emulators predict the presence of the major silicate and oxide phases with precision and recall of 0.93 or better and conserve every element to a median relative error of about
+$5\times10^{-6}\%$. Along a depleted-mantle isentrope, emulated densities and seismic velocities differ from \textsc{HeFESTo} by
+0.02\% on average. The \textsc{HeFESTo} emulators run four orders of magnitude faster than \textsc{HeFESTo} on an ordinary
+CPU, and the \textsc{MELTS} emulators two orders of magnitude faster than \textsc{alphaMELTS}. The emulators are
+differentiable, run on CPUs or GPUs, and are interchangable with \textsc{alphaMELTS} in existing \textsc{PetThermoTools} workflows. These fast, stable, and compositionally
+general models make composition a practical free parameter in seismic inversions and coupled geodynamic models.

@@ -3,27 +3,145 @@
 \section{Introduction}\label{ch4-introduction}
 
 \subsection{Motivation}\label{ch4-motivation}
-MELTS: \citep{ghiorsosack1995,ghiorso2002,gualda2012,ghiorsogualda2015}
-HeFESTo: \citep{stixrude2005,stixrude2011,stixrude2024}
--Motivate the need for fast thermodynamic forward models in geodynamics. Composition space is highly unexplored
--Review current tools (Perple\_X, THERMOCALC, MAGEMin) and their computational bottlenecks. (research and citations)
+Free energy minimizers translate a bulk composition and two intensive variables into a stable phase assemblage, the
+abundance and composition of every phase, and the physical properties that follow from them. The \textsc{MELTS} family of models
+\citep{ghiorsosack1995,ghiorso2002,gualda2012,ghiorsogualda2015} serves this role for silicate liquids and crustal to
+uppermost-mantle conditions, and \textsc{HeFESTo} \citep{stixrude2005,stixrude2011,stixrude2024} serves it for the solid mantle
+from the surface to the core--mantle boundary. Perple\_X \citep{connolly2005} and \textsc{MAGEMin} \citep{riel2022} utilize the 
+database and formulations of~\citet{holland2011},~\citet{holland2018},~and~\citet{holland1998}, which apply from the surface to the 
+core--mantle boundary and support liquids. 
+Each equilibrium requires the solution of a constrained, nonlinear optimization problem, and
+within a larger workflow that solution is often the slowest step. A single \textsc{MAGEMin} minimization takes on the order of
+$10^-1$ s depending on the water content of the system \citep{riel2022,candioti2026}, whereas \textsc{MELTS} is an order of magnitude faster ($10^-2$s per assemblage), 
+and \textsc{HeFESTo} is an order of magnitude slower (seconds per assemblage). Efficient coupling to a geodynamic
+model requires less than 1 ms per point \citep{kerswell2024,candioti2026}.
+Minimizers are also largely serial, while geodynamic solvers are built for distributed or shared-memory parallelism, so the
+thermodynamic calculation dominates the run time of a coupled model \citep{yuan2026,candioti2026}. Robustness is a second cost. A
+\textsc{MELTS} calculation that fails to converge can halt a batch of calculations or require the library to be reinitialized,
+which has limited the use of Monte Carlo methods with these models \citep{gleeson2025}.
 
-Opportunities:
-magma ocean \citep{miyazaki2022,elkins-tanton2011,labrosse2007,elkins-tanton2003}
-Reactive porous flow \citep{boulanger2023}
-mantle composition from MORB:  \citep{smith2005} \citep{herzberg2008}
-Seismic composition inversion (COMPOSITIONAL EFFECTS ON 660 discontinuity: \citep{wood1996, ishii2019})
-composition in geodynamics (\citep{yuan2024})
-compositional control on lower mantle anomalies \citep{hernland2019,hirshmann2010,Jackson2021,yuangurnis2024}
-Jackson, Jennifer M., and Christine Thomas. "Seismic and mineral physics constraints on the D ″layer." Mantle convection and surface expressions (2021): 193-227.
+The common workaround is to precompute a lookup table of properties over pressure and temperature for one or a few bulk
+compositions and to interpolate within it during the geodynamic calculation \citep{connolly2005,zunino2011,rummel2020,yuan2026}. This works
+well when composition is fixed but becomes impractical when composition is itself a variable, because tracking compositional
+evolution requires interpolation in a space of ten or more dimensions \citep{rummel2020,candioti2026}. The problems for which
+thermodynamic coupling matters most are exactly those in which composition varies: open-ended searches over composition space,
+inversions that treat composition as an unknown, and forward models in which every parcel of rock carries its own chemical history.
+These problems need a forward model that is fast, robust, and as general in composition as the thermodynamic model it replaces.
+Several such problems, described below, motivate this chapter.
+%Start here%
+
+\paragraph{Compositional inversion of seismic and geophysical data.} Gibbs energy minimization inside a stochastic sampler allows
+geophysical observations to be inverted directly for mantle composition and thermal state, rather than for seismic velocity alone
+\citep{khan2008}. \citet{khan2008} applied this approach to the Love number, tidal dissipation, mean density and moment of inertia
+of Mars in the system CaO--FeO--MgO--Al$_2$O$_3$--SiO$_2$. \citet{khan2021} later inverted InSight body-wave travel times for the
+upper mantle structure of Mars, but assumed a single homogeneous bulk composition derived from the martian meteorites, so that the
+sampled parameters were primarily thermal. Each forward model in such an inversion is a column of equilibria, and a sampler must
+evaluate many such columns, so the cost of minimization limits how many compositional dimensions can be explored. On Earth, the
+seismic character of the mantle transition zone is sensitive to composition at a level that such inversions could exploit. The
+post-spinel transition in the Mg--Fe binary spans only $\sim$0.01\,GPa, or about 250\,m, at mantle compositions and temperatures,
+which accounts for the observed sharpness of the 660-km discontinuity without requiring chemically distinct upper and lower mantles
+\citep{ishii2019}. The dissolution of aluminous garnet into bridgmanite, in contrast, is expected to produce steep but gradual
+gradients in velocity and density between about 660 and 750\,km \citep{wood1996}. Surrogate-based sensitivity analysis suggests that
+the wadsleyite--ringwoodite transition and the akimotoite-out reaction near 660\,km both shift with mantle fertility
+\citep{hartmeier2026}. Whether lateral variations in discontinuity depth and sharpness reflect temperature, composition, or both is
+therefore a question that a fast, composition-aware forward model could address directly.
+
+%%%%% moved from discussion. Keep?
+For example, the depth, sharpness and velocity contrast of the transition-zone discontinuities depend on both temperature and composition. 
+The binary post-spinel transition is narrow enough to explain the sharpness of the 660-km discontinuity \citep{ishii2019}, garnet dissolution into bridgmanite broadens the velocity and
+density gradients beneath it \citep{wood1996}, and the wadsleyite--ringwoodite and akimotoite--bridgmanite transitions shift with
+mantle fertility \citep{hartmeier2026}. \citet{ishii2019} also proposed that latent heat can thicken the post-spinel transition by up
+to $\sim$7\,km where vertical flow is faster than thermal diffusion, so that maps of discontinuity sharpness could locate upwellings
+and downwellings.
+%%%%%
+
+\paragraph{Composition of the lowermost mantle.} The large low-velocity provinces (LLVPs) and ultralow-velocity zones (ULVZs) at the
+base of the mantle are commonly interpreted as compositionally distinct material. Proposed origins vary wildly, including a crystallizing basal
+magma ocean \citep{labrosse2007}, subducted banded iron formations \citep{dobson2005}, and iron-rich mantle material from the
+Moon-forming impactor that is 2.0--3.5\% denser than the ambient mantle \citep{yuan2023}. \citet{jackson2021} found that assemblages
+containing iron-rich (Mg,Fe)O match the seismic velocity reductions and density increases of many ULVZ case studies, and that the
+range of observations allows multiple distinct but coincident origins. Testing these hypotheses requires searching for compositions,
+including unusual ones unknown on the Earth's surface, whose equilibrium assemblages reproduce observed velocity reductions at core--mantle boundary conditions.
+That search is open-ended in composition space.
+
+\paragraph{A chemically heterogeneous mantle.} The Sr--Nd--Pb isotopic record of oceanic island basalts is described by four
+principal mantle end-members (DMM, HIMU, EMI and EMII) with distinct compositions and proposed origins, from recycled sediment to intra-mantle
+metasomatism \citep{hart1988,stracke2005}. The major
+element and lithological consequences of this heterogeneity are also observable. A mechanical mixture of basalt and harzburgite
+has a different phase assemblage and seismic velocity from pyrolite of the same bulk composition, and such a mixture matches
+transition-zone seismic observations better than pyrolite \citep{xu2008,stixrude2012}. Geodynamic models that compute mineral
+physics self-consistently, however, often represent this heterogeneity with a single variable, the basalt fraction in a
+basalt--harzburgite mixture (e.g., \citealp{nakagawa2010,yuan2026}). That parameterization cannot represent the full range of diverse compositions implied by
+the geochemical record, nor the fate of subducted material that falls off the basalt--harzburgite join, such as sediments, altered
+oceanic crust, or banded iron formations. A flexible approach to modeling this heterogeneity is needed to capture the full complexity 
+of the mantle's composition and dynamics to be able to explain the observed seismic anomalies and plumes \citep{keller2023,dobson2005}.
+
+\paragraph{Magma ocean solidification.} Fractional crystallization of a magma ocean is expected to produce a gravitationally unstable
+cumulate stratigraphy that overturns \citep{elkins-tanton2003,elkins-tanton2011}. One-dimensional overturn models assume that the
+cumulates reorganize on every scale into a monotonic density profile, and \citet{elkins-tanton2003} note that viscosity is likely to
+limit that reorganization and leave a laterally heterogeneous mantle. \citet{miyazaki2022} proposed that Rayleigh--Taylor
+instabilities with length scales below 100\,km leave iron-rich blobs embedded in a high-Mg\# pyroxenite matrix, and that a wet
+mantle of this kind permits plate tectonics and removes atmospheric CO$_2$ more than ten times faster than a homogeneous pyrolitic
+mantle. Testing this hypothesis in a forward geodynamic model requires an equation of state for every parcel as its composition
+and depth change, which is the case that lookup tables handle worst.
+
+\paragraph{Igneous processes at smaller scales.} Recent works have made impressive progress developing physical models for the mechanical behavior of open-system magma mushes \citep{bergantz2015}. 
+Such models aim to describe thermally and chemically heterogeneous and evolving material whose physical properties are a direct consequence of composition and temperature as
+described by thermodynamics, but are necesarily simplified for computational efficiency. Similarly, melt migration within a magma mush is a complex process that is well studied, 
+but produces geochemical signatures which are poorly understood \citep{ohara1981,lesher1988,maier2020,yao2021}. Thermodynamic models of reactive porous 
+flow may elucidate these signatures, but current models treat each melt--mush reaction as a single step, run until the percolating melt and the mush reach thermal equilibrium, 
+whereas natural samples record a protracted, open-system process \citep{boulanger2023} that may be better approximated by spatiotemporally-resolved, local-equilibrium thermodynamics that 
+is significantly more computationally expensive.
 
 \subsection{Previous Work}\label{ch4-prev-work}
--Review the state of surrogate modeling in geodynamics (research and citations) (qian and ETH group)
-{Yuan2026}
 
+Machine-learning surrogates have been developed to address the cost of phase equilibrium calculations, and those built to date
+are each scoped to a particular application. \citet{kerswell2024} trained models that predict bulk physical properties, such as
+density and seismic velocity, of peridotite. \citet{candioti2026} validated the \citet{holland2018} igneous database in
+\textsc{MAGEMin} against crystallization experiments on arc magmas and then trained a multi-task neural network on
+$\sim$980{,}000 \textsc{MAGEMin} equilibria. Their training data span 0.1--10\,kbar, 650--1300\,\textdegree C, and 100 synthetic
+compositions. The network predicts the presence, fraction and
+density of liquid and fluid, the liquid composition, and the system density. Solid properties are computed afterward by difference
+from the system, liquid and fluid properties. Individual minerals are not predicted. The authors report that it runs about 3{,}000 times 
+faster than \textsc{MAGEMin} on 64 CPU threads, framing their results as a proof of concept. They recommend retraining on application-specific data, 
+and argue that a single surrogate spanning porous, mush and suspension flow regimes is impractical \citep{candioti2026}.
+
+\citet{hartmeier2026} present a particularly impressive example of a machine-learning surrogate. They trained a combined classifier 
+and regressor on two million \textsc{MAGEMin} equilibria computed with the \citet{stixrude2022} database. It predicts the fractions of 
+20 phases and the compositions of the solid solutions in the system Na$_2$O--CaO--FeO--MgO--Al$_2$O$_3$--SiO$_2$ over 1--40\,GPa and 500--2500\,\textdegree C. 
+Conservation of mass and compositional closure are softly enforced: entering the loss function as penalties. They achieve relative errors around 1\% 
+for phase fractions and 0.5\% for solid solution compositions. The model's classifier delievers impressive precision and recall, mostly 95\%.
+and up.  \citet{hartmeier2026} also showed that the surrogate's analytical gradients
+identify which inputs control each phase boundary, a use of differentiability that conventional minimizers do not offer.
+
+The IGyTheM model (Integrating Geodynamics with Thermodynamics using Machine Learning; \citealp{yuan2025igythem}) couples a
+\textsc{HeFESTo}-trained surrogate to the Citcom mantle convection code, so that thermodynamically derived density enters the
+momentum equation. Its training database covers 0--140\,GPa and 273--4273\,K. It represents the mantle as a mechanical mixture
+of basalt and harzburgite, so composition enters as a single mixing variable.
+
+These surrogates show that neural networks can replace minimizers at a fraction of the cost. Each, however, emulates a narrow
+slice of its parent model, defined by a compositional subspace (arc magmas, or the basalt--harzburgite join), a pressure range, a
+volatile treatment, or a limited choice of outputs. None of them can be used in place of its parent model for an arbitrary task that the
+parent model could perform.
 
 \subsection{Properties and Innovations of nGibbs}\label{ch4-innovations}
--High level introduction to nGibbs and what its innovation is (full thermodynamic emulator, obeys mass balance, differentiable, flexible, central tool for many geology-relevant tools, which are all written in their own languages and have independent learning curves)
+
+\emph{nGibbs} is designed as a general emulator: one that can stand in for its parent thermodynamic model for essentially any
+calculation that model would be used for, within the parent model's own range of validity. Its released emulators reproduce
+\textsc{HeFESTo} for Earth (0--140\,GPa) and Mars (0--25.5\,GPa), and the closed-system isothermal forms of \textsc{MELTS} 1.0.2 and 1.2.0, with
+and without chromium. Emulators for open-system (buffered oxygen fugacity) \textsc{MELTS} calculations have been
+trained but are not yet released. Similarly to \citet{hartmeier2026}, each emulator predicts the quantities that define the equilibrium assemblage: the 
+phase abundance and chemistry. Building upon \citet{yuan2026}, \emph{nGibbs} computes physical properties which are the thermodynamic consequence of an equilibrium assemblage. 
+
+Four properties distinguish \emph{nGibbs} from the surrogates above. First, its training and validation compositions are drawn from whole-rock
+databases of igneous and, for \textsc{MELTS} 1.2.0, sedimentary rocks, that are
+perturbed to cover exotic compositions that are rare or unknown at Earth's surface (\S\ref{sec:datagen}). Second, conservation of mass is enforced at
+inference rather than only encouraged during training: an iterative, constrained correction adapted from \citet{asimow1998} adjusts
+the predicted assemblage until it reproduces the input bulk composition exactly, without allowing any elemental abundance to become
+negative (\S\ref{sec:massbalance}). Third, phase abundances are continuous across phase boundaries, because the gate and the magnitude of each phase are the same variable
+(\S\ref{sec:continuous}). Fourth, through \textsc{PetThermoTools} \citep{gleeson2025}, they are called through the same interface as
+\textsc{alphaMELTS}, so that existing workflows can seamlessly switch between the emulator and the parent model for benchmarking
+(\S\ref{ch4-ptt-integration}).
 
 \section{Methods}\label{ch4-methods}
 
@@ -184,6 +302,8 @@ The network sees the input vector state variables $u$ and bulk composition $b$, 
   \item one softmax-activated network per chemically-variable phase gives that phase's endmember fractions $\hat x$.
 \end{enumerate}
 
+This workflow is illustrated for a single phase in Fig.~\ref{fig:ch4-forward-pass}.
+
 During inference, the predicted abundance is the rectified affinity,
   \begin{equation}
     \hat n = \max(g, 0).
@@ -196,7 +316,19 @@ Component moles and the reconstructed bulk composition follow from stoichiometry
   \hat b &= \hat m A. \label{eq:bhat}
 \end{align}
 Here $\circ$ is the element-wise product, so $\hat m$ is each component's phase abundance
-multiplied by its fraction in that phase. Mass balance (adjusting $\hat m$ until $\hat b = b$) is enforced only at inference (\S\ref{sec:massbalance}).  
+multiplied by its fraction in that phase. Conservation of mass (adjusting $\hat m$ until $\hat b = b$) is enforced only at inference (\S\ref{sec:massbalance}).
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{cpx_schematic.pdf}
+  \caption{Schematic of a forward pass through the neural network geometry, drawn for a single phase (e.g. clinopyroxene). Every phase has its own
+  mole head, which outputs the signed abundance/affinity $g$, and every phase with variable chemistry also has a
+  chem head, which outputs the softmax-activated endmember fractions $\hat x$. The encoder, in contrast, is not
+  specific to any phase but encoders a single system-wide shared state from $[u, b]$ that is passed to all of the heads. 
+  These are somewhat large models that carry about 30 MB of weights each. A single trained model thus has a larger storage footprint 
+  than all of \textsc{alphaMELTS} or \textsc{HeFESTo}, but remains much faster to run.}
+  \label{fig:ch4-forward-pass}
+\end{figure}
 
 \subsubsection{Thermodynamic justification for softmax activated phase composition prediction}\label{ch4-softmax}
 
@@ -593,14 +725,14 @@ with those computed by \textsc{MELTS}, before and after this correction.
 \end{figure}
 
 %=====================================================================================
-\subsection{Mass balance}
+\subsection{Conservation of mass}
 \label{sec:massbalance}
 %=====================================================================================
 
 The assemblage predicted by the emulator is not strictly constrained to reproduce the bulk composition;
 it is only encouraged to with a loss term during training (\S\ref{ch4-training}). 
 Therefore, a post-processing step is necessary to ensure that the final assemblage is consistent with the requested bulk composition.
-\emph{nGibbs} uses a mass balance correction adapted from \citet{asimow1998}, who find the smallest relative 
+\emph{nGibbs} uses a conservation-of-mass correction adapted from \citet{asimow1998}, who find the smallest relative 
 change to $\hat m$ that makes $\hat b = b$. The implementation in \emph{nGibbs} differs from their procedure most
 strongly in two ways: (1) the minimisation is solved in parallel for thousands of assemblages at once on a GPU, and (2)
 the correction is done iteratively, with constraints enforced at each step so that no elemental abundance becomes negative. 
@@ -626,7 +758,7 @@ $\nu$ & E & Lagrange multipliers, one per element \\
 $\kappa$ & 1 & Regularisation added to the diagonal of $G$ ($10^{-12}$) \\
 \bottomrule
 \end{tabular}
-\caption{Symbols added for the mass balance. Dimensions as in Table~\ref{tab:key}.}
+\caption{Symbols added for conservation of mass. Dimensions as in Table~\ref{tab:key}.}
 \label{tab:mbkey}
 \end{table}
 
@@ -640,7 +772,7 @@ it's residual is given by
   \label{eq:mbr}
 \end{equation}
 
-Mass balance seeks a correction $\delta\hat m$ to the component moles such that
+Conservation of mass seeks a correction $\delta\hat m$ to the component moles such that
 \begin{equation}
   \delta\hat m\, A = \delta b,
   \qquad\text{i.e.}\qquad
@@ -671,8 +803,6 @@ a new variable: $D$, the component abundance-weighted stoichiometry matrix, to r
   D = \operatorname{diag}(\hat m)\, A \quad (\text{C}\times\text{E}),
   \label{eq:agweighted}
 \end{equation}
-A component absent from the assemblage ($\hat m_c = 0$) has a zero row at $D_c$ and, by Eq.~\eqref{eq:agback}, $\delta\hat m_c = 0$ 
-so absent components are never changed.
 
 We therefore formulate the problem as a minimization of Eq.~\eqref{eq:mbobj} subject to the constraints of Eq.~\eqref{eq:agweighted}. 
 In other words: our solution is the smallest relative change to the component moles necessary to satisfy conservation of mass. 
@@ -767,7 +897,7 @@ therefore poses no additional complication.
   \includegraphics[width=8.3cm]{mass_balance_G_hist_DtD_diag_linear.pdf}
   \caption{Histogram of the non-zero diagonal entries of $D^{\!\top} D$ formed by the
   conservation of mass correction (three iterations) on 15{,}000 assemblages of the
-  isentropic (NPS) HeFESTo Earth validation dataset. The dashed line marks $\kappa = 10^{-12}$, a refularization term 
+  isentropic (NPS) HeFESTo Earth validation dataset. The dashed line marks $\kappa = 10^{-12}$, a regularization term 
   that is small enough to not affect the solution.}
   \label{fig:mb-dtd-diag}
 \end{figure}
@@ -824,7 +954,7 @@ all other phases. Thus, \emph{nGibbs} additionally pushes these components to li
 method described in \S\ref{sec:polish}.
 
 Figure~\ref{fig:ch4-bulk-parity} compares the bulk composition reconstructed from the raw network output and from the
-mass-balanced assemblage with the requested bulk composition for the \textsc{HeFESTo} Earth isentropic emulator.
+mass-conserving assemblage with the requested bulk composition for the \textsc{HeFESTo} Earth isentropic emulator.
 
 % Generated by Chapter4/Figures/make_bulk_reconstruction_figures.py (every shipped emulator is written;
 % swap the file name below to show a different one)
@@ -843,11 +973,13 @@ mass-balanced assemblage with the requested bulk composition for the \textsc{HeF
 
 \subsubsection{Bulk composition sampling}
 
-Bulk compositions are sampled from whole-rock analyses in the GEOROC and PetDB
-databases \citep{GEOROC,PetDB}, preferentially weighting the compositional range
-the emulator is intended to serve. Whole rock analyses from GEOROC in particular are weighted towards more evolved compositions, so mafic and ultramafic 
-compostions were more heavily weighted in the  \emph{nGibbs} training datasets than in the original source datasets.  For the \textsc{HeFESTo} models, 
-one fifth of the training data are drawn from the population of compositions between 5 and 20 wt\% MgO, three tenths of the data are drawn from the population 
+Bulk compositions are sampled from whole-rock analyses in the \href{https://georoc.eu/georoc/new-start.asp}{GEOROC} database in 2022 and the EarthChem 
+\href{https://earthchem.org/synthesis?mapViewCenter=0,0}{PetDB} database on April 2025. Only samples with total weight percent within 2\% of 100 were kept, then 
+all samples were renormalized to a total = 100\%. Evolved compositions are more common in the GEOROC database in particular, so evolved compositions were downsampled 
+to be symmetric with respect to mafic and ultramafic compositions. The prefiltered dataset included all GEOROC entries, whereas only mafic and ultramafic compositions were pulled from PetDB. 
+A document containing a supersample of citations for the studies that measured these compositions can be found on the nGibbs \href{https://github.com/benjthyer/nGibbs}{GitHub} page. 
+
+For the \textsc{HeFESTo} models, one fifth of the training data are drawn from the population of compositions between 5 and 20 wt\% MgO, three tenths of the data are drawn from the population 
 of compositions with greater than 20 wt\% MgO, and the remaining half is a mixture of these two mafic and ultramafic populations in random proportions. 
 Roughly 80\% of these base compositions were substantially randomly altered so that \emph{nGibbs} would perform well in a wider variety of parameter spaces, 
 including rock compositions that are uncommon or unknown on Earth's surface. For the Earth model, one quarter of the compositions are not perturbed. 
@@ -861,7 +993,7 @@ and half are performed with batch crystallization, whereas only half of the igne
 For volatile-focused \textsc{MELTS} 1.2.0 emulators in particular, 35\% of the training and validation datasets are drawn from batch crystallization of sedimentary compositions 
 within the Gard database \citep{gard2019}. Of these sedimentary bulk compositions, about one quarter are drawn from carbonate rich compositions, 
 with CO\textsubscript{2} contents greater than 10 wt\%, whereas the remaining sedimentary compositions contain less than 10 wt\% CO\textsubscript{2}. 
-The remaining 65\% of the training data were drawn from igneous whole rock data from GEOROC and PetDB, similarly to the other models \citep{GEOROC,PetDB}. 
+The remaining 65\% of the training data were drawn from igneous whole rock data from GEOROC and PetDB, similarly to the other models. 
 
 In order to train emulators that perform well in a variety of redox conditions, 
 each sampled composition is randomly assigned an oxygen fugacity from -5 to +5 log$_{10}\Delta$FMQ for \textsc{MELTS} training data, or -7 to +3 log$_{10}\Delta$FMQ for \textsc{HeFESTo} training data. Open 
@@ -880,14 +1012,14 @@ emulating the regions of a model that are not themselves trusted. Excluding thes
 oxides also removes two dimensions from the component basis at small cost to
 the applications the emulators target.
 
-\subsubsection{State-variable sampling}\label{stae-var-sampling}
+\subsubsection{State-variable sampling}\label{state-var-sampling}
 
 For the \textsc{MELTS} 1.0.2 and 1.2.0 emulator families, each sampled composition is isobarically cooled from 1800\textdegree C in 1\textdegree C increments
 at a random pressure between 1 and 12000 bars. These computed assemblages have well-defined entropies and therefore are acceptable for use in training isentropic models. 
 
 \textsc{HeFESTo} Earth and Mars models are each trained around a core of (approximately) adiabatic simulations at reasonable potential temperatures 
 (1200--1650\textdegree C for Earth; 500--1750\textdegree C for Mars). These adiabats are supplemented with cooler conditions due to a conductive lid regime near the surface, 
-which is assumed to be between 0-250 km thick for Earth and 100-700 km thick for Mars.  \todo{Potential temperature citations?}. 
+which is assumed to be between 0-250 km thick for Earth and 100-700 km thick for Mars. % \todo{Potential temperature citations?}. 
 Similarly, warmer conditions are modeled at the approach to the core-mantle boundary (CMB) for the Earth model, which assume a mantle temperature between 
 3200--4700\textdegree C at the CMB and a 100-300km width conductive layer
 
@@ -958,7 +1090,7 @@ space for all models in Figs.~\ref{fig:ch4-coverage-harker-hefesto}--\ref{fig:ch
     \label{fig:ch4-coverage-pt-mars}
   \end{subfigure}
   \caption{Pressure--temperature distribution of the validation datasets of the \textsc{HeFESTo} Earth (a) and
-  Mars (b) emulators. Red lines mark the deployment-test standard rock paths used in
+  Mars (b) emulators. Red lines mark the deployment-test reference composition paths used in
   Figs.~\ref{fig:ch4-sections-phase-hefesto-earth}--\ref{fig:ch4-sections-property-hefesto-mars}.}
   \label{fig:ch4-coverage-pt}
 \end{figure}
@@ -979,9 +1111,9 @@ space for all models in Figs.~\ref{fig:ch4-coverage-harker-hefesto}--\ref{fig:ch
     \includegraphics[width=\linewidth]{density_Harker_HeFESToMars.pdf}
     \label{fig:ch4-coverage-harker-hefesto-mars}
   \end{subfigure}
-  \caption{Harker diagrams of the validation datasets of the \textsc{HeFESTo} Earth (a) and Mars (b)
+  \caption{Harker diagrams of the validation datasets (as a proxy for the training data) of the \textsc{HeFESTo} Earth (a) and Mars (b)
   emulators in cation mole fraction, as two-dimensional histograms with a logarithmic
-  color scale. Red crosses mark the deployment-test standard rocks.}
+  color scale. Red crosses mark the deployment-test reference compositions.}
   \label{fig:ch4-coverage-harker-hefesto}
 \end{figure}
 
@@ -989,9 +1121,9 @@ space for all models in Figs.~\ref{fig:ch4-coverage-harker-hefesto}--\ref{fig:ch
 \begin{figure}[p]
   \centering
   \includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{density_Harker_MELTS102.pdf}
-  \caption{Harker diagrams of the validation datasets of the closed-system \textsc{MELTS} 1.0.2 emulators
+  \caption{Harker diagrams of the validation datasets (as a proxy for the training data) of the closed-system \textsc{MELTS} 1.0.2 emulators
   (Cr variant) in oxide weight fraction,
-  as two-dimensional histograms with a logarithmic color scale. Red crosses mark the deployment-test standard rocks.}
+  as two-dimensional histograms with a logarithmic color scale. Red crosses mark the deployment-test reference compositions.}
   \label{fig:ch4-coverage-harker-melts102}
 \end{figure}
 
@@ -1011,8 +1143,8 @@ Four operations are applied to prepare \textsc{MELTS} and \textsc{HeFESTo} outpu
 
 \subsubsection{Consistency filtering} Rows are removed where the reference code's output
 is internally inconsistent, e.g. where the composition reconstructed from the
-reported assemblage disagrees with the stated bulk composition beyond tolerance. The fractions
-actually removed are reported in Table~\ref{tab:filters}.
+reported assemblage disagrees with the stated bulk composition beyond tolerance. 
+%% TODO? Add table with filter loss? "The fractions actually removed are reported in Table~\ref{tab:filters}."
 
 \subsubsection{Compositional filtering} A series of filters is applied to remove rows containing phases with unusual compositions generally not seen in nature. These
 compositions are considered to be MELTS idiosyncrasies that needn't be passed on to nGibbs. 
@@ -1033,7 +1165,7 @@ to be effectively learned and are removed from the component basis entirely to s
 This operates on entire rows; assemblages with rare phases are discarded
 for containing a rare phase at any low modal proportion. It is presumed that this operation is minimally damaging, because very few assemblages are affected by design. 
 
-\subsection{Shuffling} The training and validation datasets are shuffled to remove any correlation between the order of the rows and the order in which they were generated.
+\subsubsection{Shuffling} The training and validation datasets are shuffled to remove any correlation between the order of the rows and the order in which they were generated.
 Conventional dataloaders in PyTorch can automatically shuffle data during training, but this option is not available for \emph{nGibbs}, because
 its datasets are too large to fit in memory and instead were streamed in static batches of 1,000,000 rows each from disk (SK hynix Platinum P41, 2 TB). 
 The order of that these batches are streamed is shuffled every epoch, but the contents of each bundle are fixed. 
@@ -1058,12 +1190,14 @@ This overfitting metric is instrumental to develop an emulator that can be effec
 
 Compositions were assigned in the ratio 80:20 between training and validation. 
 The validation partition is used every epoch for model selection, to tune adaptive regularization, and for early stopping. 
-Unless otherwise stated, all performance metric presented here in Section~\ref{sec:results} are for the validation datasets; the emulator's performance on the training datasets is not reported. 
+Unless otherwise stated, all performance metric presented here in Section~\ref{ch4-results} are for the validation datasets; the emulator's performance on the training datasets is not reported. 
 
 
 
 %=====================================================================================
-\subsubsection{The training objective}
+\subsection{Training}\label{ch4-training}
+
+\subsubsection{The objective}
 %=====================================================================================
 
 For each batch the trainer minimizes
@@ -1102,7 +1236,7 @@ The reconstructed bulk (Eq.~\ref{eq:bhat}) is compared with the input bulk over 
 \begin{equation}
   L_b = \sum_{e:\, b_e > 0} \rho(\hat b_e, b_e),
 \end{equation}
-This measures how far the raw predictions are from satisfying mass balance, which reduces
+This measures how far the raw predictions are from satisfying conservation of mass, which reduces
 the correction that has to be applied at inference (\S\ref{sec:massbalance}). This backpropagation graph for this loss is complex
 and covers the entire network, thus it can cause exploding gradients when applied to untrained networks. Here it is only applied late in training 
 to further improve the model's performance after it already produces strong predictions.
@@ -1131,8 +1265,8 @@ activated with a softplus function (Fig.~\ref{fig:ch4-softplus}).
   The softplus function is a smooth approximation of the ReLU function, which is used to activate the predicted phase abundances $\hat g$ in the affinity-na\"{i}ve model. As training
   proceeds, the softmax function collapses to the ReLU function, while allowing the model to learn a smooth transition from zero to positive values in the earlier stages of training.
   The smoothing scale $\Upsilon$ controls the strength of the smoothing, with larger values producing a smoother transition from zero to positive values. The lower plot is $\tanh(g/\Upsilon)$, 
-  which is the weight of the BCE loss on binary phase presence/absence. This binary loss is similarly is scaled by the smoothing scale $\Upsilon$ so that near the loss is not applied 
-  to near 0 predictions to avoid teaching the model discontinuous behavior across 0.}
+  which is the weight of the BCE loss on binary phase presence/absence. This binary loss is similarly is scaled by the smoothing scale $\Upsilon$ so that the loss is weak near saturation to avoid 
+  teaching the model discontinuous behavior across 0.}
   \label{fig:ch4-softplus}
 \end{figure}
 
@@ -1173,14 +1307,12 @@ is thermodyamically similar to a just-saturated phase, a subtlety that the BCE l
 The weight $c$ depends on $g$, a model output. Thus, we normalize the BCE loss by the sum of the weights $\sum_j^P c_j$ so that the model 
 is not encouraged to make near-zero predictions for $g$ simply to minimize the BCE loss.
 
-\subsubsection{Affinity-aware abundance loss.} 
+\subsubsection{Affinity-aware abundance loss}\label{sec:affinity}
 The affinity-aware model is trained to predict an activated abundance $y$, a transformed version of the signed abundance $g$ that remaps negative values 
 but preserves positive values. Unlike an affinity-na\"{i}ve model, there exists a ground truth $g$ that is used to supervise the affinity-aware model even
 for phases that are absent.   
 
-\subsection{Estimating affinities ($g$) from $dn/dT$ of isobaric transects}
-
-Affinities are positive for absent phases and 0 for present phases. They are expressed in units of energy, not molar abundances. This unit mismatch produces an undesirable discontinuity at zero if unaccounted for, reducing the information
+\paragraph{Estimating affinities ($g$) from $dn/dT$ of isobaric transects.} Affinities are positive for absent phases and 0 for present phases. They are expressed in units of energy, not molar abundances. This unit mismatch produces an undesirable discontinuity at zero if unaccounted for, reducing the information
 content of the affinities within the context of the molar abundances that we seek to predict well. If the affinities are scaled well, they smoothly transition into molar abundances at saturation, 
 reinforcing physical $dn/dt$ values even near zero, where other approaches might learn spurious patterns near the boundary in response to the objective function changing 
 character across the boundary. This smoothness constraint is simply that $g$ be continuous at exactly 0, which can be written:
@@ -1209,13 +1341,14 @@ Figure~\ref{fig:ch4-affinity-extrapolation} compares labels built both ways alon
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.7\textwidth]{fig_affinity_vs_extrapolation.pdf}
-  \caption{Activated abundance labels $y/c$ for garnet, $\gamma$-iron and akimotoite along a \textsc{HeFESTo} transect of the
-  HTZ composition from 20 to 25\,GPa in 10\,MPa steps. Blue: labels built from \textsc{HeFESTo}'s own phase affinities,
+  \caption{Activated and scaled abundance labels $y/c$ for garnet, $\gamma$-iron and akimotoite along a \textsc{HeFESTo} isentrope of Hartzburgite 
+  (\citet{stixrude2024} after \citet{workman2005})from 20 to 25\,GPa in 10\,MPa steps. Blue: scaled abundance and affinity labels built from \textsc{HeFESTo}'s own phase affinities,
   rescaled by the ratio of $|dn/dP|$ to $|dA/dP|$ at saturation (Eq.~\eqref{eq:affinity_rescaling}, in pressure rather
   than temperature). Orange dashed: labels built without affinities, by extrapolating $dn/dP$ through zero
   (Eq.~\eqref{eq:affinity_extrapolation}). Both are floored at $g = -3c$ and activated with $y = c\tanh(g/c)$ below zero.
   The scale $c$, given above each panel, is the median $|dn/dP|$ at saturation times 0.25\,GPa, bounded between one fifth
-  of the phase's maximum abundance and that maximum.}
+  of the phase's maximum abundance and that maximum. The extrapolated labels are nearly identical to the affinity-based labels near the saturation boundary, 
+  but sometimes diverge further away. The far-field divergences are relatively unimportant because they have little bearing on the predicted assemblage, unlike the near-field behavior.}
   \label{fig:ch4-affinity-extrapolation}
 \end{figure}
 
@@ -1286,7 +1419,7 @@ The activation is shown in Fig.~\ref{fig:ch4-affinity-activation}.
   \caption{The activation of Eq.~\eqref{eq:y} in units of the per-phase scale $c$, for $\varepsilon = 0.02$ (solid) and
   $\varepsilon = 0$ (dashed). Above zero $y = g$; below zero the $\tanh$ term saturates at $y/c = -1$ (dotted), and the
   $\varepsilon g$ term keeps a small slope there. The dash-dotted line marks the floor of $-3c$ applied to the
-  ground-truth $g$.}
+  ground-truth $g$. This saturation behavior ensures that the loss is dominanted by saturated or near-saturated phases, which are the cases that matter during inference.}
   \label{fig:ch4-affinity-activation}
 \end{figure}
 
@@ -1306,11 +1439,12 @@ the affinity-aware objective wraps terms for both regression error and binary ph
 
 For trusted phases ($y \in \mathbb{R}$), the loss function is a combination of the MSE and a corrective positive hinge loss. The first term is the MSE of the predicted activated abundance $\hat y$ against the ground truth $y$, normalized by the scale factor $c$. 
 The corrective positive hinge loss penalizes the underprediction of phase abundance for low-abundance phases. This term is a response to the observation that
-the loss for untrusted phases was leading to underprediction of present phases near saturation. A hinge loss uses $\min$ or $\max$ functions to apply a loss only to 
-one side of a threshold. This hinge loss is applied only to phases which are present in the ground truth ($s=1$) with abundances less than the threshold $h_p = 0.03$, that are underpredicted by $\hat y/c$. 
+the loss for untrusted phases was leading to underprediction of present phases near saturation, which most obviously manifests in an imbalanced high precision and low recall. 
+A hinge loss uses $\min$ or $\max$ functions to apply a loss only to one side of a threshold. This hinge loss is applied only to phases which are present in the ground truth ($s=1$) 
+with abundances less than the threshold $h_p = 0.03$, that are underpredicted by $\hat y/c$. 
 
 For untrusted phases ($y \notin \mathbb{R}$), the loss function is a combination of a negative hinge loss and a weak pull towards $-c$. The hinge loss is stronger, but is only
-applied to predictions that are above the threshold $-h_n = -0.5$. The combination of these losses is a compromise that 
+applied to predictions that are above the threshold $h_n = -0.2$. The combination of these losses is a compromise that 
 recognizes that untrusted phases are absent and probably would have affinities mapping to decisive undersaturation at $y\approx-c$, however, because this is not known explicitly,
 only unlikely near-saturation predictions ($\hat y$) are substantially penalized.
 
@@ -1328,9 +1462,9 @@ Symbol & Value & Meaning \\
 $h_p$ & $0.03$ & Predicted abundance threshold for low-abundance, present phases, below which underpredictions are penalized \\
 $w_p$ & $3.0$ & Weight of the underprediction penalty for present phases \\
 \multicolumn{3}{@{}l}{\emph{Untrusted (absent) phases, $y \notin \mathbb{R}$}}\\
-$h_n$ & $-0.5$ & Predicted abundance threshold for untrusted absent phases, below which are penalized \\
+$h_n$ & $-0.2$ & Predicted abundance threshold for untrusted absent phases, above which are penalized \\
 $w_n$ & $0.25$ & Weight of the near-saturation penalty for untrusted absent phases \\
-$w_\eta$ & $0.05$ & Weight of the weak pull towards $-c$ for untrusted absent phases \\
+$w_\eta$ & $0.02$ & Weight of the weak pull towards $-c$ for untrusted absent phases \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -1344,11 +1478,8 @@ Figure~\ref{fig:ch4-affinity-loss} maps the loss over $y/c$ and $\hat y/c$ for t
   \includegraphics{fig_affinity_loss.pdf}
   \caption{The affinity-aware abundance loss (Eq.~\eqref{eq:affloss}) in units of $c$, with the values of
   Table~\ref{tab:affloss}. (a) Trusted phases, as a function of the label $y/c$ and the prediction $\hat y/c$
-  (square-root colour scale; white contours at 0.01, 0.05, 0.2, 0.5, 1, 2 and 4; dashed line $\hat y = y$). The loss is
-  $(\hat y/c - y/c)^2$, plus, for present phases ($y > 0$), the hinge
-  $w_p\,\operatorname{ReLU}\!\big(\min(y/c, h_p) - \hat y/c\big)^2$, which makes underpredicting a present phase cost
-  more than overpredicting it. (b) Untrusted phases, which have no label and depend on $\hat y/c$ alone:
-  $w_n\,\operatorname{ReLU}(\hat y/c + 0.5)^2 + w_\eta(\hat y/c + 1)^2$. The dotted line marks $\hat y/c = -0.5$, above
+  (square-root color scale; white contours at 0.01, 0.05, 0.2, 0.5, 1, 2 and 4; dashed line $\hat y = y$). 
+  (b) Untrusted phases, which are absent, have no label, and depend on $\hat y/c$ alone. The dotted line marks $\hat y/c = h_n = -0.2$, above
   which the hinge applies. The functional forms follow the \emph{nGibbs} implementation.}
   \label{fig:ch4-affinity-loss}
 \end{figure}
@@ -1365,7 +1496,7 @@ permitting the estimation of $dn/dT$ at saturation.
 \subsubsection{Training schedule}\label{ch4-training-schedule}
 %=====================================================================================
 
-All models were trained on an NVIDIA GeForce RTX 5070 Ti GPU with 16 GB of VRAM. Datasets were often too large to fit in memory, and so were streamed from disk in batches.
+All models were trained on an NVIDIA GeForce RTX 5070 Ti GPU with 16 GB of VRAM. Datasets were often too large to fit in memory, and so were streamed from disk in batches of n=$10^6$.
 
 
 Quality prediction of equilibrium phase assemblages that conserve mass is a complex task with highly covariate errors. These models
@@ -1383,19 +1514,20 @@ as the encoder evolves in isolation from the mole heads that depend on it. It is
 predicting phase abundances would also be useful for predicting phase chemistry. Thus, after the second training episode completes, the whole model produces reasonably good
 abundance and chemistry predictions that both are built upon the same encoder. 
 
-Finally, for the third stage, all heads are unfrozen and the model is trained jointly with all losses except for the bulk loss are applied. For the affinity-na\"{i}ve model, the
+Finally, for the third stage, all heads are unfrozen and the model is trained jointly with all losses except for the bulk loss are applied. For these two stages, an early stopping patience is 
+implemented that stops training after 10 epochs of no improvement in the model's performance against the valiadation dataset. For the affinity-na\"{i}ve model, the
 smoothing temperature $T=aT_0$ is annealed during this third stage onward, with $a$ linearly decaying from 1 to 0 by the end of training. Bulk loss is the most complex 
-and best captures the systemic error covariation between the abundance and chemistry predictions within the constraint that mass be conserved. The bulk loss is
-applied in concert with the other losses in the forth stage of training. 
+and best captures the systemic error covariation between the abundance and chemistry predictions within the constraint that mass be conserved; it is
+applied in concert with the other losses in the forth stage of training, and the adaptive dropout is disabled for stability. Instead, an adaptive input noise is applied as a regularization.
 
-This sequential training schedule is summarized as follows:
+This sequential training schedule is summarized as follows (the losses from an example training history is shown in Fig.~\ref{fig:ch4-train-history}):
 \begin{enumerate}[nosep]
-  \item train the encoder and chemistry heads, with the mole heads frozen and
+  \item train the uninitialized encoder and chemistry heads, with the mole heads frozen and
         $\lambda_n = \lambda_s = 0$;
-  \item tune the mole heads, with the encoder and chemistry heads frozen and
+  \item train the uninitialized mole heads, with the encoder and chemistry heads frozen and
         $\lambda_x = 0$;
-  \item train everything jointly, with $\lambda_b = 0$.
-  \item train everything jointly, with $\lambda_b > 0$.
+  \item whole model annealing by training everything jointly with $\lambda_b = 0$.
+  \item whole model annealing with a mass conservation constraint, by training everything jointly with $\lambda_b > 0$.
 \end{enumerate}
 
 The AdamW optimizer is used with weight decay set at $10^-4$ for the encoder
@@ -1405,11 +1537,22 @@ and chemistry heads. No weight decay is used on the mole heads.
 loss exceeds 1.05 times the training loss, the dropout rate (outside the mole heads) is raised by a small amount, such as 0.005. If the validation loss is below the
 training loss, dropout is lowered by an even smaller amount, such as 0.001.
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth,height=0.85\textheight,keepaspectratio]{train_history.pdf}
+  \caption{Training history of the \textsc{MELTS} 1.0.2 emulator, NoCr variant, across the four stages of the training schedule (dashed lines mark stage boundaries).
+  From top to bottom: learning rate, weighted loss, adaptive dropout rate, and input noise amplitude. The loss panel shows the total training loss and its chemistry, moles, and
+  bulk components, with per-epoch validation loss as points. The bulk loss is zero until the fourth stage, when it is switched on and noise injection begins.
+  The learning rate follows a single-cycle schedule in stages 1 and 2 and cosine warm restarts at a lower maximum in stages 3 and 4. Dropout and noise are adjusted
+  adaptively from the validation-to-training loss ratio.}
+  \label{fig:ch4-train-history}
+\end{figure}
+
 \subsubsection{Temperature model for isentropic emulators}
  
 The isentropic emulators take pressure and specific entropy as inputs instead of 
 pressure and temperature. Temperature, therefore, is not known \emph{a priori} for an isentropic \emph{nGibbs} 
-emulator, unlike true free energy minimizers. Because temperature is a required input to calculate material properties
+emulator, unlike for true free energy minimizers for which temperature emerges as a consequence of the minimization. Because temperature is a required input to calculate material properties
 (see \S\ref{ch4-material-props}), we must retrieve the temperature from the isentropic emulator's output. Thermodynamically, 
 temperature is uniquely defined by the entropy and pressure for an equilibrium assemblage, but recovering it requires an iterative 
 optimization. To avoid this, \emph{nGibbs} implements a separate temperature satellite model for isentropic emulators that predicts the temperature of 
@@ -1459,10 +1602,10 @@ In order to support use its use in geodynamic or other physical simulations, \em
 relative to the free energy minimizations performed by \textsc{MELTS} and \textsc{HeFESTo}, so there is little benefit to emulating them
 with a neural network. Furthermore, because these properties are computed from the predicted phase assemblage, they are self-consistent, thermodynamically grounded, and flexible to 
 adapt to changes with the parameters of the reference thermodynamic models. These are implemented as vectorized Python (NumPy/PyTorch) translations 
-of the \textsc{MELTS} models taken from the open source MAGMA C library (\href{https://github.com/magmasource/MAGMA/commit/705a0fb}), 
-and the \textsc{HeFESTo} models from the open source \textsc{HeFESTo} fortran repository (\href{https://github.com/stixrude/HeFESToRepository/commit/9566177}). Parameters 
+of the \textsc{MELTS} models taken from the open source MAGMA C library (\href{https://github.com/magmasource/MAGMA/commit/705a0fb}{commit \texttt{705a0fb}}), 
+and the \textsc{HeFESTo} models from the open source \textsc{HeFESTo} fortran repository (\href{https://github.com/stixrude/HeFESToRepository/commit/9566177}{commit \texttt{9566177}}). Parameters 
 for the equations of state are taken from the MAGMA C library for \textsc{MELTS} except for the apatite reference volume, and for \textsc{HeFESTo} from the library
-(\href{https://github.com/stixrude/HeFESTo_Parameters_010123/commit/ff99dd0}). The \textsc{MELTS} emulators in \emph{nGibbs} use $15.8228$ J\,bar$^{-1}$ for the apatite reference volume,
+(\href{https://github.com/stixrude/HeFESTo_Parameters_010123/commit/ff99dd0}{commit \texttt{ff99dd0}}). The \textsc{MELTS} emulators in \emph{nGibbs} use $15.8228$ J\,bar$^{-1}$ for the apatite reference volume,
 instead of the $16.4025$ J\,bar$^{-1}$ given in the MAGMA C library so that the volume and density calculations would be consistent with \textsc{alphaMELTS 2.3.1} output. 
 
 Given a phase assemblage, its phase compositions, and a pressure and temperature, \emph{nGibbs} returns density, $G$, $S$, $V$, $C_p$, for both \textsc{MELTS} and 
@@ -1470,12 +1613,35 @@ Given a phase assemblage, its phase compositions, and a pressure and temperature
 $K_T$, $\alpha$ (referring to the shear wave velocity, compressional wave velocity, isentropic 
 and isothermal bulk moduli, and the thermal expansivity respectively) for \textsc{HeFESTo} only. These properties are computed for each phase and are aggregated 
 to bulk properties. The equations differ from the source codes only in how they are organized and the algorithms use to execute them.
- 
+
+For the \textsc{HeFESTo} properties, the emulator is able to vectorize the isomorphic terms most effectively, whereas the metamorphic terms are more computationally expensive,
+because they require solving the molar pressure and temperature derivatives $(dn/dp)_T$ and $(dn/dT)_P$. Because the metamorphic terms are only necesary for 
+accurate calculation of the bulk $C_p$, $K_S$, $K_T$, and $\alpha$ (\ref{fig:ch4-eos-terms}), these terms are only evaluated by nGibbs when the user requests properties that need them 
+(Listing~\ref{lst:ch4-hefesto-props}). Thus, it is significantly cheaper to provide $S$, $\rho$, $V_p$, and $V_s$ without the other terms, if they are not 
+necessary.
+
+\begin{lstlisting}[style=thesispython, caption={Computing bulk \textsc{HeFESTo} properties for an \emph{nGibbs} assemblage,
+requesting either the isomorphic terms only or the metamorphic terms as well (pseudocode).},
+label={lst:ch4-hefesto-props}]
+from ngibbs.engine.models import HeFESToEmulatorCPU
+input_array = pd.read_csv('bulk_composition.csv')
+PROPERTY_VARIANTS = {
+    'isomorphic':  ('rho', 'Vp', 'Vs', 'S'),
+    'metamorphic': ('rho', 'Vp', 'Vs', 'S', 'cptot', 'KStot'),
+    '+fast':       ('rho', 'Vp_fast', 'Vs', 'S', 'cptot', 'KStot'),
+}
+output = HeFESToEmulatorCPU.ForwardMB(input_array, outputs=['component_moles'])
+properties = HeFESToEmulatorCPU._compute_bulk_EOS_properties(
+    output['component_moles'],
+    PT=torch.tensor(input_array[['P(GPa)(System_main)', 'T(K)(System_main)']]),
+    property_names=PROPERTY_VARIANTS['isomorphic'])
+\end{lstlisting}
+
 \textsc{MELTS} and \textsc{HeFESTo} evaluate these equations of state sequentially for one phase at one $(T,P,\mathbf{X})$ state per call, whereas
 \emph{nGibbs} operates on thousands of states in parallel. The translation, therefore, is a reorganization of the source code to operate on arrays.
 
 These equations of state were empiracally validated through comparison against property outputs from \textsc{MELTS} and \textsc{HeFESTo}. Against \textsc{alphaMELTS} 2.3.1
-output on the \textsc{MELTS} 1.2.0 standard reference calculations, bulk $S$, $V$, $H$ and $C_p$ computed from the true assemblage agree to within $0.07\%$ (mean relative error). 
+output on the \textsc{MELTS} 1.2.0 reference calculations, bulk $S$, $V$, $H$ and $C_p$ computed from the true assemblage agree to within $0.07\%$ (mean relative error). 
 There remain undiagnosed systematic disagreement between the \emph{nGibbs} implementation for plagioclase $H$ and $S$.
 Figs.~\ref{fig:ch4-sections-property-hefesto-earth}--\ref{fig:ch4-sections-property-melts120}
 compare the bulk properties reported by each reference code with those computed by \emph{nGibbs} from the reference code's own
@@ -1484,7 +1650,8 @@ assemblage and from the emulator's predicted assemblage.
 \subsection{Performance benchmarking}\label{ch4-benchmarking}
 
 Both \textsc{HeFESTo} and \textsc{MELTS} are parallelized by running independent simulations in separate processes, so their wall time depends on the
-number of workers as well as on the number of assemblages $N$. Each was timed at 1, 4 and 8 workers on a 4-core, 8-thread Intel i7-11370H laptop CPU. 
+number of workers as well as on the number of assemblages $N$. Each was timed on two machines: at 1, 4 and 8 workers on a 4-core, 8-thread Intel i7-11370H laptop CPU with
+24 GB of RAM, and at 1, 4, 8, 16 and 20 workers on the 20-core Intel Core i7-14700H desktop CPU with 32GB of RAM.
 
 \textsc{MELTS} 1.0.2 was timed through \textsc{PetThermoTools} (\code{multi_path}) on isobaric cooling paths at 2\,kbar from 1200 to 1000\,\degC{} in 1\,\degC{}
 steps (201 equilibria per path), each with its own MORB-like bulk composition (every oxide of a typical MORB multiplied by
@@ -1498,32 +1665,229 @@ A total of 3 adiabats per worker are measured, run through GNU parallel \citep{t
 was not timed. Both reference codes are timed along paths, where each state is seeded from the last. This is their most efficient mode of use, so the comparison 
 does not favor the emulators. The relative speedup of \emph{nGibbs} is particularly impressive when applied to independent states.
 
-The emulators were timed on the CPU only, on a single \code{ForwardMB} call per batch after an untimed warm-up call. The \textsc{MELTS}
+The emulators were timed on a single \code{ForwardMB} call per batch after an untimed warm-up call. The \textsc{MELTS}
 1.0.2 emulator was given the same cooling paths as \textsc{PetThermoTools}, truncated to the same batch sizes as the \textsc{HeFESTo} emulator, $N = 16$--$262{,}144$ rows. The \textsc{HeFESTo}
-Earth isentropic emulator was given a 0--140\,GPa pressure sweep at $S = 2.5$\,J\,g$^{-1}$\,K$^{-1}$, including mass balance and temperature
+Earth isentropic emulator was given a 0--140\,GPa pressure sweep at $S = 2.5$\,J\,g$^{-1}$\,K$^{-1}$, including conservation of mass and temperature
 prediction. Material properties are then added on top of each emulator. For \textsc{HeFESTo} this is the \emph{nGibbs} equations of state with every
 term evaluated (\S\ref{ch4-material-props}). For \textsc{MELTS} it is the \textsc{PetThermoTools} property calculator
 (\code{calc_phase_props_MELTS_parallel}), which calls the \textsc{alphaMELTS} supplemental calculator for the predicted assemblage
 without minimization, in parallel over \textsc{PetThermoTools}' default worker count. This route is faster than the vectorized
-translation for large batches (Fig.~\ref{fig:ch4-melts-props-performance}). Liquids whose composition has a negative SiO$_2$ component in the \textsc{MELTS} liquid basis cannot be
-evaluated by \textsc{alphaMELTS} and are removed before timing. \textsc{MELTS} emulator times are the median of three repeats; all other times are single wall-clock
-measurements.
-\todo{State the benchmarking machine (CPU, cores/threads, RAM) for the PTT and HeFESTo runs.}
+translation for large batches (Fig.~\ref{fig:ch4-melts-props-performance}). Some rare low-temperature liquids develop negative atoms after the mass conservation
+correction. For these, the liquid properties cannot be evaluated by \textsc{alphaMELTS} and are removed before timing. \textsc{MELTS} emulator times are the 
+median of three repeats; all other times are single wall-clock measurements.
 
 \section{Results}\label{ch4-results}
-
--Quality Tables for MELTS and HeFESTo (chemical errors, mole fractions, material properties, deployment tests)
--Figures
-    - Phase sections P|S for HeFESTo,  T|P for MELTS
-    - Phase diagrams for HeFESTo, MELTS in these same spaces
-    - Isentrope properties for HeFESTo
-    - Density curves by phase for MELTS?
-    - LLD's for MELTS,
-    - computational speed comparisons
 
 % Quality tables (deployment tests) generated by Chapter4/Tables/make_quality_tables.py
 \input{Chapter4/Tables/tab_quality_melts}
 \input{Chapter4/Tables/tab_quality_hefesto}
+% Numbers quoted below, generated by Chapter4/Tables/make_results_macros.py
+\input{Chapter4/Tables/results_macros}
+
+The released emulators were evaluated against validation test subsets of 15{,}000 assemblages per model, 
+and along reference-composition paths computed directly with \textsc{alphaMELTS} and
+\textsc{HeFESTo}. The training sets contain $10^7$- $10^8$ assemblages per model. We report the results in the order in which a
+user meets them: which phases are predicted, whether the predicted assemblage conserves mass, how closely phase proportions and
+physical properties follow the parent model along representative paths, and how long the calculation takes.
+
+\subsection{Phase presence}\label{ch4-results-presence}
+
+Tables~\ref{tab:ch4-quality-melts} and~\ref{tab:ch4-quality-hefesto} give the precision and recall of the predicted phase presence.
+For the \textsc{MELTS} emulators, liquid is predicted with precision and recall of \PresLiquidRange{}, and the common silicate phases
+(clinopyroxene, orthopyroxene, plagioclase and olivine) with \PresMeltsCommonRange{}. The \textsc{HeFESTo} emulators reach \PresHefFloor{} or better for the
+silicate and oxide phases present in more than about 10\% of test assemblages, including garnet, the (Mg,Fe)$_2$SiO$_4$
+polymorphs, bridgmanite, post-perovskite, ferropericlase and Ca-perovskite. The exceptions are the Ca-ferrite phase in the Mars
+isentropic emulator (recall \PresCaFerriteMarsIsenRecall) and $\gamma$-iron, which is present in \PresGammaFreqRange\% of test assemblages but has a recall as low as
+\PresGammaRecallLow. The isothermal and isentropic \textsc{HeFESTo} emulators perform similarly.
+
+Classification quality declines for phases that are rare in the training data and stable only over narrow ranges of pressure,
+temperature or composition. In the \textsc{MELTS} emulators these are graphite (precision \PresGraphitePrec), Fe--Ni alloy (\PresAlloyRange{} in
+either metric), leucite (\PresLeuciteRange) and nepheline (\PresNephelinePrec{} precision in \textsc{MELTS} 1.2.0 without Cr), each present in \PresRareFreqMax\% of test
+assemblages or fewer. Spinel recall falls to \PresSpinelRecallNoCr{} in the \textsc{MELTS} 1.2.0 emulator without Cr, where spinel is less frequent than
+in the Cr-bearing model. In the \textsc{HeFESTo} emulators the weakest phases are akimotoite (\PresAkimotoiteRange), $\alpha$-iron
+(\PresAlphaIronRange), $\varepsilon$-iron in the Mars models (recall \PresEpsRecallMars, frequency \PresEpsFreqMars) and the NAL phase in the Mars models (recall
+\PresNalRecallMars).
+
+\subsection{Mass conservation}\label{ch4-results-mass}
+
+Without correction, the elemental bulk composition reconstructed from the raw network output differs from the requested
+composition by a median of \MassRawMedianRange\% per element, depending on the emulator, and \MassRawFracRange\% of element abundances are in error by
+more than 1\% (Fig.~\ref{fig:ch4-bulk-parity}). The largest raw errors are in minor and trace components, such as Cr and Fe$^{3+}$,
+where the network assigns small amounts of an element to assemblages whose bulk composition contains little of it. After the
+correction of \S\ref{sec:massbalance}, the median relative error falls to about $\MassMBMedian\%$ for every emulator, the 99th
+percentile to \MassMBPNinetyNine\% or less, and fewer than \MassMBFracGtOne\% of element abundances differ from the request by more than 1\%.
+
+\subsection{Phase proportions along reference paths}\label{ch4-results-sections}
+
+Figures~\ref{fig:ch4-sections-phase-hefesto-earth} and~\ref{fig:ch4-sections-phase-hefesto-mars} compare phase proportions along
+isentropes of reference compositions computed with \textsc{HeFESTo} and with the isentropic emulators, given pressure, entropy and
+bulk composition. For basalt, depleted MORB mantle and Si-enriched pyrolite on Earth, the emulator reproduces the sequence of phase
+assemblages from the surface to 140\,GPa, including the olivine--wadsleyite--ringwoodite transitions, the post-spinel transition near
+23--25\,GPa and the post-perovskite transition between about 120 and 130\,GPa, with phase proportions that are visually
+indistinguishable over most of each path. The visible differences are confined to thin fields, such as the narrow akimotoite field
+in basalt near 25--30\,GPa, and to small ripples in otherwise smooth phase proportions. The Mars emulator reproduces the basalt,
+harzburgite and shergottite paths to 25\,GPa with the same fidelity, including the stishovite, kyanite and $\gamma$-iron fields of
+the enriched compositions. The largest differences on the Mars paths are small shifts of the clinopyroxene--garnet boundary in the
+shergottite between about 15 and 18\,GPa.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{sections_phase_HeFESToEarth_isentropic.pdf}
+  \caption{Phase abundances for isentropes of reference compositions for the \textsc{HeFESTo} Earth model. Reference compositions are
+  basalt and Depleted MORB Mantle from \citet{stixrude2024} after \citet{workman2005}, and Si-enriched pyrolite (after \citet{mcdonough1995}) reference compositions. 
+  Phases: plg, plagioclase; sp, spinel; opx, orthopyroxene; cpx, clinopyroxene; c2c, high-pressure clinopyroxene;
+  gt, garnet; ol, olivine; wa, wadsleyite; ri, ringwoodite; il, akimotoite; pv, bridgmanite; ppv, post-perovskite;
+  cpv, Ca-perovskite; cf, Ca-ferrite-structured phase; nal, NAL phase; mw, ferropericlase; qtz, quartz; coes, coesite;
+  st, stishovite; apbo, $\alpha$-PbO$_2$-structured SiO$_2$; ky, kyanite; feg, $\gamma$-iron.}
+  \label{fig:ch4-sections-phase-hefesto-earth}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{sections_phase_HeFESToMars_isentropic.pdf}
+  \caption{As Fig.~\ref{fig:ch4-sections-phase-hefesto-earth}, for the \textsc{HeFESTo} Mars model and the basalt, harzburgite (\citet{stixrude2024} after \citet{workman2005}),
+  and shergottite \citep{stolper1979} reference compositions. Phase abbreviations as in Fig.~\ref{fig:ch4-sections-phase-hefesto-earth}.}
+  \label{fig:ch4-sections-phase-hefesto-mars}
+\end{figure}
+
+Figures~\ref{fig:ch4-sections-phase-melts102} and~\ref{fig:ch4-sections-phase-melts120} show isobaric cooling of the Bishop Tuff,
+a lherzolite and a MORB with the closed-system isothermal \textsc{MELTS} emulators. Both emulators reproduce the liquidus and the
+order and temperatures of phase appearance for all three compositions. The lherzolite paths, which span 700--1800\,\textdegree C in
+\textsc{MELTS} 1.0.2 and 1330--1800\,\textdegree C in \textsc{MELTS} 1.2.0, are matched closely throughout, including the
+clinopyroxene-out reaction near 1380\,\textdegree C in \textsc{MELTS} 1.0.2. Where \textsc{alphaMELTS} changes abruptly, the
+emulator smooths the change. The MORB solidus near 1030\,\textdegree C, at which the \textsc{alphaMELTS} liquid fraction falls from
+several percent to zero over a few degrees, is spread by the emulator over a few tens of degrees, and a small, sharp step in
+alkali-feldspar abundance near 780\,\textdegree C in the \textsc{MELTS} 1.0.2 Bishop Tuff path is absent from the emulator's.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{sections_phase_MELTS102_isothermal.pdf}
+  \caption{Phase mass fractions during isobaric cooling of the \textsc{MELTS} 1.0.2 reference compositions (Cr variant):
+  Bishop Tuff \citep{hildreth1979}, lherzolite \citep{dasgupta2007}, and MORB \citep{allan1989}, each at the pressure given in its panel title.
+  \textsc{alphaMELTS} (left) and the closed-system isothermal emulator, given pressure, temperature and bulk
+  composition (right).}
+  \label{fig:ch4-sections-phase-melts102}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=\textwidth]{sections_phase_MELTS120_isothermal.pdf}
+  \caption{As Fig.~\ref{fig:ch4-sections-phase-melts102}, for the \textsc{MELTS} 1.2.0 reference compositions and the
+  closed-system \textsc{MELTS} 1.2.0 isothermal emulator (Cr variant).}
+  \label{fig:ch4-sections-phase-melts120}
+\end{figure}
+
+\subsection{Liquid lines of descent}\label{ch4-results-lld}
+
+Figure~\ref{fig:ch4-liquid-harker-melts} compares the liquid compositions along the lherzolite and MORB cooling paths. The
+emulator follows the \textsc{alphaMELTS} liquid lines of descent closely for MgO, FeO, Fe$_2$O$_3$, Al$_2$O$_3$ and Cr$_2$O$_3$,
+including the inflections at which phases enter or leave the assemblage. The differences grow as the liquid fraction becomes small.
+For the most evolved lherzolite liquids (SiO$_2 > 52$\,wt\%), the emulator underestimates Na$_2$O and K$_2$O and overestimates
+CaO, and its path extends to about 56\,wt\% SiO$_2$ where \textsc{alphaMELTS} stops near 54.5\,wt\%. For the last MORB liquids,
+H$_2$O and P$_2$O$_5$ diverge from \textsc{alphaMELTS} by up to about 0.4 and 0.15\,wt\%, respectively. These are the states in
+which the liquid holds a small fraction of the system's mass, so an error in the liquid composition has little effect on mass
+balance and is weakly constrained by it.
+
+
+% Liquid lines of descent generated by Chapter4/Figures/liquid_harker_melts.py
+\begin{landscape}
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{liquid_harker_MELTS.pdf}
+  \caption{Liquid lines of descent during isobaric cooling of the lherzolite and MORB \textsc{MELTS} 1.0.2 reference
+  compositions (Cr variant; Fig.~\ref{fig:ch4-sections-phase-melts102}): Harker
+  diagrams of liquid SiO$_2$ against each other liquid oxide, in wt\%. Solid, colored by rock: \textsc{alphaMELTS}; black dotted: the
+  closed-system \textsc{MELTS} 1.0.2 isothermal emulator, given pressure, temperature and bulk
+  composition. Only states with at least 1\% liquid by mass (as predicted by \textsc{alphaMELTS}) are shown.}
+  \label{fig:ch4-liquid-harker-melts}
+\end{figure}
+\end{landscape}
+
+\subsection{Material properties and temperature}\label{ch4-results-properties}
+
+\input{Chapter4/Figures/generated/sections_HeFESToEarth_entropy_macros}
+\input{Chapter4/Figures/generated/eos_terms_DMM_macros}
+Along the \textsc{HeFESTo} Earth isentropes (Fig.~\ref{fig:ch4-sections-property-hefesto-earth}), density, $V_P$, $V_S$ and
+temperature computed from the emulator's assemblage and predicted temperature cannot be distinguished from those of \textsc{HeFESTo}
+at the scale of the figure. The emulator also places the peaks in $C_p$, $K_S$ and $\alpha$ at the phase transitions in the
+correct positions and with the correct amplitudes. The entropy calculated from the predicted assemblage and temperature stays within about
+\EosSClosureMax\,J\,g$^{-1}$\,K$^{-1}$, or \EosSClosureMaxPct\%, of the entropy imposed on the isentrope, and its mean error on the DMM path is \EosErrS\%. The temperature model that supplies this
+temperature is evaluated in Fig.~\ref{fig:temperature_model}. The \textsc{HeFESTo} Mars isothermal emulator (Fig.~\ref{fig:ch4-sections-property-hefesto-mars}) 
+similarly reproduces the \textsc{HeFESTo} properties along the reference paths to 25\,GPa, including the peaks in $C_p$, $K_S$ and $\alpha$ at the phase transitions for 
+the basalt and harburgite reference compositions. The shergottite composition is the most exotic to the training domain of the Mars model, and thus the $C_p$, $K_S$ and $\alpha$ predictions,
+which are dependent on more tempermental metamorphic terms, are far less accurate. Even for the shergottite composition, the density, $V_P$, $V_S$ and temperature are indistinguishable
+from \textsc{HeFESTo} at the scale of the figure.
+
+\begin{landscape}
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{sections_property_HeFESToEarth_isentropic.pdf}
+  \caption{Bulk properties along the \textsc{HeFESTo} Earth reference composition paths of Fig.~\ref{fig:ch4-sections-phase-hefesto-earth}
+  (one row per reference composition): density, $V_P$, $V_S$, $S$, $C_p$, $K_S$ and $\alpha$ against pressure. Black: \textsc{HeFESTo};
+  red dashed: the isentropic emulator's predicted assemblage, at its predicted temperature, evaluated with the \emph{nGibbs}
+  equations of state (\S\ref{ch4-material-props}); blue dotted: the \textsc{HeFESTo} assemblage evaluated with the same
+  equations of state. The right-hand column compares the true temperature with that of the temperature model
+  (Fig.~\ref{fig:temperature_model}).}
+  \label{fig:ch4-sections-property-hefesto-earth}
+\end{figure}
+\end{landscape}
+
+\begin{landscape}
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{sections_property_HeFESToMars_isothermal.pdf}
+  \caption{As Fig.~\ref{fig:ch4-sections-property-hefesto-earth}, for the \textsc{HeFESTo} Mars model and the reference
+  composition paths of Fig.~\ref{fig:ch4-sections-phase-hefesto-mars}, with the isothermal emulator.}
+  \label{fig:ch4-sections-property-hefesto-mars}
+\end{figure}
+\end{landscape}
+
+Figure~\ref{fig:ch4-eos-terms} separates the error of the emulator from that of the equations of state for the DMM isentrope. With
+every term included, the mean relative errors of the emulator's properties against \textsc{HeFESTo} are \EosErrRho\% for $\rho$, $V_P$
+and $V_S$, \EosErrS\% for $S$, \EosErrCp\% for $C_p$, \EosErrKs\% for $K_S$ and \EosErrAlp\% for $\alpha$. The same equations of state applied to the
+\textsc{HeFESTo} assemblage give \EosErrHefCp\%, \EosErrHefKs\% and \EosErrHefAlp\% for $C_p$, $K_S$ and $\alpha$, so most of the remaining error comes from
+the equation-of-state translation rather than from the emulated assemblage. The metamorphic terms are necessary for these three
+properties: without them, the errors are \EosErrNoMetaCp\% in $C_p$, \EosErrNoMetaKs\% in $K_S$ and \EosErrNoMetaAlp\% in $\alpha$, because the peaks at the phase
+transitions are missing. The order--disorder (``fast'') term reduces the error in $V_P$ from \EosErrVpNoFast\% to \EosErrVp\% and affects no other
+property.
+
+
+% Generated by Chapter4/Figures/ngibbs_thesis_plots.py --only eos_terms
+\begin{landscape}
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\linewidth,height=0.72\textheight,keepaspectratio]{eos_terms_HeFESToEarth_DMM.pdf}
+  \caption[\textsc{HeFESTo} Earth DMM properties with successively more equation-of-state terms]{Bulk properties along
+  the \textsc{HeFESTo} Earth DMM adiabat of Fig.~\ref{fig:ch4-sections-property-hefesto-earth}, evaluated with
+  successively more terms of the \emph{nGibbs} \textsc{HeFESTo} equations of state (one row per level). Isomorphic: the
+  properties of each phase at fixed composition. +metamorphic: adds the change of the equilibrium assemblage with
+  temperature and pressure to $C_p$, $K_S$ and $\alpha$. +fast: also adds the intra-phase order-disorder relaxation to
+  $V_P$, which completes the set of terms in \textsc{HeFESTo}'s reported properties; $\rho$, $V_S$ and $S$ have no
+  phase-change term and are the same at every level. Line styles as in Fig.~\ref{fig:ch4-sections-property-hefesto-earth},
+  with the emulator's assemblage at the temperature-model temperature; the numbers in each panel are the mean relative
+  errors against \textsc{HeFESTo} of the emulator assemblage (red) and of the \textsc{HeFESTo} assemblage (blue). Timings for
+  each level are in Table~\ref{tab:ch4-eos-terms-timing}.}
+  \label{fig:ch4-eos-terms}
+\end{figure}
+\end{landscape}
+
+For \textsc{MELTS} 1.0.2 (Fig.~\ref{fig:ch4-sections-property-melts102}), the properties of the emulated lherzolite and MORB
+assemblages overlie those of \textsc{alphaMELTS}, including the abrupt changes in density and volume at the MORB solidus. The
+Bishop Tuff shows the largest differences, in density, volume and enthalpy below about 900\,\textdegree C, which coincide with the
+alkali-feldspar step described above.
+
+\begin{landscape}
+\begin{figure}[p]
+  \centering
+  \includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{sections_property_MELTS102_isothermal.pdf}
+  \caption{Bulk properties during isobaric cooling of the \textsc{MELTS} 1.0.2 reference compositions of
+  Fig.~\ref{fig:ch4-sections-phase-melts102} (one row per rock): density, $S$, $C_p$, $V$ and $H$ against temperature.
+  Black: \textsc{alphaMELTS}; red dashed: the isothermal emulator's predicted assemblage evaluated with the multi-threaded \textsc{PetThermoTools}
+  property solver (\S\ref{ch4-material-props}); blue dotted: the \textsc{alphaMELTS} assemblage evaluated similarly.}
+  \label{fig:ch4-sections-property-melts102}
+\end{figure}
+\end{landscape}
+
 
 % ---------------------------------------------------------------------------
 % Results figures. Phase and property sections generated by
@@ -1531,120 +1895,59 @@ measurements.
 % Chapter4/Figures/performance_benchmarking_plot_only.py.
 % ---------------------------------------------------------------------------
 
+
+
+
+% Portrait table: kept OUTSIDE the landscape block. A table placed inside it
+% landed on a text page there and left the following [p] figure pages with a
+% rotated page but unrotated content (figures ran off the page).
+\input{Chapter4/Tables/tab_eos_terms_timing_macros}
+\input{Chapter4/Tables/tab_eos_terms_timing}
+
+\subsection{Computational performance}\label{ch4-results-performance}
+
+Table~\ref{tab:ch4-eos-terms-timing} and Fig.~\ref{fig:ch4-performance} compare the wall time of the emulators and EOS implementations of \emph{nGibbs}, with the source
+parent models. For $2^{15}$ (\EosTimingN) assemblages on the \textsc{HeFESTo} Earth isentrope, \textsc{HeFESTo} running on all
+available workers is extrapolated to need about \EosHefLaptop\,s on the 4-core laptop and \EosHefDesktop\,s on the 20-core desktop. The
+emulator alone, including mass balance and temperature, takes \EosEmuLo--\EosEmuHi\,s on either CPU, a speed-up of about \EosEmuSpeedLo{} (desktop) to
+\EosEmuSpeedHi{} (laptop), and \EosGpuEmuLo--\EosGpuEmuHi\,s on a GPU. Adding the full equations of state brings the totals to \EosFullDesktop\,s (desktop CPU) and
+\EosFullLaptop\,s (laptop CPU), still \EosFullSpeedLo--\EosFullSpeedHi{} times faster than \textsc{HeFESTo}. Most of the property cost lies in the metamorphic and
+order--disorder terms; with only the isomorphic terms, the GPU totals are \EosGpuIsoDesktop\,s (desktop) and \EosGpuIsoLaptop\,s (laptop).
+
+
+% Generated by Chapter4/Figures/plot_benchmark_combined.py (laptop: generated/, desktop: source/desktop_performance/)
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=\textwidth]{sections_phase_HeFESToEarth_isentropic.pdf}
-  \caption{Phase abundances along the deployment-test standard paths of the \textsc{HeFESTo} Earth model, for the
-  basalt, Depleted MORB Mantle (\citet{stixrude2024} after \citet{workman2005}), and Si-enriched pyrolite (after \citet{mcdonough1995}) standards. 
-  Phases: plg, plagioclase; sp, spinel; opx, orthopyroxene; cpx, clinopyroxene; c2c, high-pressure clinopyroxene;
-  gt, garnet; ol, olivine; wa, wadsleyite; ri, ringwoodite; il, akimotoite; pv, bridgmanite; ppv, post-perovskite;
-  cpv, Ca-perovskite; cf, Ca-ferrite-structured phase; nal, NAL phase; mw, ferropericlase; qtz, quartz; coes, coesite;
-  st, stishovite; apbo, $\alpha$-PbO$_2$-structured SiO$_2$; ky, kyanite; feg, $\gamma$-iron.
-  Only states inside the emulator's training range are shown. }
-  \label{fig:ch4-sections-phase-hefesto-earth}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{sections_phase_HeFESToMars_isentropic.pdf}
-  \caption{As Fig.~\ref{fig:ch4-sections-phase-hefesto-earth}, for the \textsc{HeFESTo} Mars model and its basalt, harzburgite (\citet{stixrude2024} after \citet{workman2005}),
-  and shergottite \citep{stolper1979} standards. Phase abbreviations as in Fig.~\ref{fig:ch4-sections-phase-hefesto-earth}.}
-  \label{fig:ch4-sections-phase-hefesto-mars}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{sections_phase_MELTS102_isothermal.pdf}
-  \caption{Phase mass fractions during isobaric cooling of the \textsc{MELTS} 1.0.2 standard rocks (Cr variant):
-  Bishop Tuff \citep{hildreth1979}, lherzolite \citep{dasgupta2007}, and MORB \citep{allan1989}, each at the pressure given in its panel title.
-  \textsc{alphaMELTS} (left) and the closed-system isothermal emulator, given pressure, temperature and bulk
-  composition (right). Only states inside the emulator's training range are shown.}
-  \label{fig:ch4-sections-phase-melts102}
-\end{figure}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\textwidth]{sections_phase_MELTS120_isothermal.pdf}
-  \caption{As Fig.~\ref{fig:ch4-sections-phase-melts102}, for the \textsc{MELTS} 1.2.0 standard rocks and the
-  closed-system \textsc{MELTS} 1.2.0 isothermal emulator (Cr variant).}
-  \label{fig:ch4-sections-phase-melts120}
-\end{figure}
-
-\begin{landscape}
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{sections_property_HeFESToEarth_isentropic.pdf}
-  \caption{Bulk properties along the \textsc{HeFESTo} Earth standard paths of Fig.~\ref{fig:ch4-sections-phase-hefesto-earth}
-  (one row per standard rock): density, $V_P$, $V_S$, $S$, $C_p$, $K_S$ and $\alpha$ against pressure. Black: \textsc{HeFESTo};
-  red dashed: the isentropic emulator's predicted assemblage, at its predicted temperature, evaluated with the \emph{nGibbs}
-  equations of state (\S\ref{ch4-material-props}); blue dotted: the \textsc{HeFESTo} assemblage evaluated with the same
-  equations of state. The right-hand column compares the \textsc{HeFESTo} temperature with that of the temperature model
-  (Fig.~\ref{fig:temperature_model}). Only states inside the emulator's training range are shown.}
-  \label{fig:ch4-sections-property-hefesto-earth}
-\end{figure}
-
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{sections_property_HeFESToMars_isentropic.pdf}
-  \caption{As Fig.~\ref{fig:ch4-sections-property-hefesto-earth}, for the \textsc{HeFESTo} Mars model and the standard
-  paths of Fig.~\ref{fig:ch4-sections-phase-hefesto-mars}.}
-  \label{fig:ch4-sections-property-hefesto-mars}
-\end{figure}
-
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{sections_property_MELTS102_isothermal.pdf}
-  \caption{Bulk properties during isobaric cooling of the \textsc{MELTS} 1.0.2 standard rocks of
-  Fig.~\ref{fig:ch4-sections-phase-melts102} (one row per rock): density, $S$, $C_p$, $V$ and $H$ against temperature.
-  Black: \textsc{alphaMELTS}; red dashed: the isothermal emulator's predicted assemblage evaluated with the \emph{nGibbs}
-  equations of state (\S\ref{ch4-material-props}); blue dotted: the \textsc{alphaMELTS} assemblage evaluated with the same
-  equations of state. Only states inside the emulator's training range are shown.}
-  \label{fig:ch4-sections-property-melts102}
-\end{figure}
-
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{sections_property_MELTS120_isentropic.pdf}
-  \caption{As Fig.~\ref{fig:ch4-sections-property-melts102}, for the \textsc{MELTS} 1.2.0 standard rocks, with the
-  isentropic emulator, given pressure, specific entropy and bulk composition; its assemblage is evaluated at the
-  temperature predicted by the temperature model. The right-hand column compares the \textsc{alphaMELTS} temperature with
-  that prediction.}
-  \label{fig:ch4-sections-property-melts120}
-\end{figure}
-
-% Liquid lines of descent generated by Chapter4/Figures/liquid_harker_melts.py
-\begin{figure}[p]
-  \centering
-  \includegraphics[width=\linewidth,height=0.78\textheight,keepaspectratio]{liquid_harker_MELTS.pdf}
-  \caption{Liquid lines of descent during isobaric cooling of the \textsc{MELTS} standard rocks (Cr variant): Harker
-  diagrams of liquid SiO$_2$ against each other liquid oxide, in wt\%. Lherzolite and MORB use \textsc{MELTS} 1.0.2
-  (Fig.~\ref{fig:ch4-sections-phase-melts102}) and Bishop Tuff uses \textsc{MELTS} 1.2.0
-  (Fig.~\ref{fig:ch4-sections-phase-melts120}). Solid, colored by rock: \textsc{alphaMELTS}; black dotted: the
-  closed-system isothermal emulator of the same \textsc{MELTS} version, given pressure, temperature and bulk
-  composition. Only states inside the emulator's training range and with at least 1\% liquid by mass are shown.}
-  \label{fig:ch4-liquid-harker-melts}
-\end{figure}
-\end{landscape}
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics{performance_results.pdf}
-  \caption{Wall time against the number of assemblages evaluated in one batch, for the \textsc{HeFESTo} Earth isentropic
-  emulator (including mass balance and temperature prediction) and for the \emph{nGibbs} bulk-property calculation on
-  its output, on the GPU (solid) and CPU (dotted). Colour identifies the calculation. Inputs are a 0--140\,GPa pressure sweep at
-  $S = 2.5$\,J\,g$^{-1}$\,K$^{-1}$ for a fixed ultramafic bulk composition. Property variants: isomorphic (fixed-composition
-  equations of state: $\rho$, $V_P$, $V_S$, $S$), metamorphic (adds the phase-change contributions to $C_p$ and
-  $K_S$), and +fast (adds the order--disorder relaxation correction to $V_P$). GPU timings are shown
-  only for batches of 8{,}192 assemblages or more.}
+  \includegraphics[width=\linewidth]{benchmark_combined_time_machines.pdf}
+  \caption{Wall time against the number of assemblages $N$ for the reference codes and the emulators
+  (\S\ref{ch4-benchmarking}) on (a) a 4-core Intel i7-11370H laptop and (b) a 20-core Intel i7-14700H desktop, on shared
+  axes. Markers are measured \textsc{HeFESTo} and
+  \textsc{alphaMELTS} (via \textsc{PetThermoTools}) runs, with marker shape giving the worker count; each dotted line is a
+  straight-line fit through the runs of one worker count, or through the origin for a single run, extrapolated to the largest $N$.
+  The \emph{nGibbs} \textsc{HeFESTo} emulator performance for was measured on the CPU for $N < 8192$ and on the GPU for $N \geq 8192$. 
+  This cross-over is managed automatically by the \emph{nGibbs} \code{ForwardMB} function.
+  All other emulator curves are CPU-only timings.
+ \todo{Redo emulator benchmarks on desktop following performance improvements.}}
   \label{fig:ch4-performance}
 \end{figure}
 
-The sequential approach is more efficient for evaluating fewer states because previous calculations can be reused and previous states 
-become good initial guesses for optimization problems, but the vectorized approach becomes faster when many states are evaluated at once. For MELTS, properties, the 
+The speed-up of \emph{nGibbs} over \textsc{MELTS} is smaller than for HeFESTo because \textsc{alphaMELTS} is itself much faster than \textsc{HeFESTo}, and is timed favorably
+here along cooling paths on which each equilibrium starts from the previous one. On the laptop, \textsc{alphaMELTS} through
+\textsc{PetThermoTools} reached at most about 67 equilibria per second (8 workers), against about 8{,}500 assemblages per second for
+the emulator on a single CPU call of 262{,}144 assemblages, a factor of about 130. On the desktop the corresponding rates are about
+800 equilibria per second (20 workers) and 24{,}000 assemblages per second, a factor of about 30. When properties are added through
+the \textsc{PetThermoTools} property calculator, which dominates the cost for large batches, the factors fall to about 26 (laptop)
+and 15 (desktop). The emulator's cost is nearly constant below about $10^3$ assemblages, where fixed overheads dominate, and grows
+roughly linearly above about $10^4$ (Fig.~\ref{fig:ch4-performance}). The crossover points between the vectorized and sequential
+property routes for \textsc{MELTS} are shown in Fig.~\ref{fig:ch4-melts-props-performance}.
+
+For the \textsc{MELTS} property calculation benchmark, the sequential approach is more efficient for evaluating fewer states because previous calculations can be reused and previous states 
+become good initial guesses for optimization problems, but a vectorized approach becomes faster when many states are evaluated at once. A multi-threaded approach, however, is able to leverage 
+benefits afforded to both sequential and parallel workflows. For MELTS properties, the 
 vectorized translation is faster than the single-threaded sequential workflow, but slower than the multi-threaded workflow leveraged by the \textsc{PetThermoTools} 
-\code{calc_phase_props_MELTS_parallel()} function for more than about 2000 states. The single-threaded sequential workflow avoids the overhead cost of deploying multiple 
-threads, and is fastest for fewer than about 700 states. The vectorized approach is the fastest between 700 and 2000 states evaluated at once, but because nGibbs performs 
-well for much larger batch sizes, we generally recommend that users calculate properties using the vectorized translation. 
+\code{calc_phase_props_MELTS_parallel()} function \citep{gleeson2025} for more than about 2000 states (Fig.~\ref{fig-ch4-melts-props-performance}). The single-threaded sequential workflow 
+avoids the overhead cost of deploying multiple threads, and is fastest for fewer than about 700 states. The vectorized approach is the fastest between 700 and 2000 states evaluated at once, but because this speedup is marginal and 
+\emph{nGibbs} is meant for applications at much larger batch sizes, we generally recommend that users calculate properties using the multi-threaded implementation in \textsc{PetThermoTools}. 
 
 % MELTS property-calculation benchmark: data from petthermotools/Unit_tests/benchmark_ngibbs_props.py,
 % plotted by Chapter4/Figures/plot_melts_props_benchmark.py.
@@ -1652,12 +1955,12 @@ well for much larger batch sizes, we generally recommend that users calculate pr
   \centering
   \includegraphics{benchmark_melts_props_time.pdf}
   \caption{Wall time to compute \textsc{MELTS} 1.0.2 phase and bulk properties for an assemblage table predicted by the
-  \textsc{MELTS} 1.0.2 emulator, against the number of assemblages. Vectorized: the \emph{nGibbs} array translation of the
+  \textsc{MELTS} 1.0.2 emulator, against the number of assemblages, benchmarked on the 4-core Intel i7-11370H laptop.  Vectorized: the \emph{nGibbs} array translation of the
   \textsc{MELTS} equations of state (\S\ref{ch4-material-props}), taken as the difference between an emulator call with and without
   properties. Sequential: the \textsc{alphaMELTS} supplemental calculator called once per state and phase through
   \textsc{PetThermoTools}, in one process or split across \textsc{PetThermoTools}' default number of worker processes.
-  No calculation includes free-energy minimization. Inputs are a fixed MORB composition on a balanced P--T grid over 2--10\,kbar
-  and 900--1400\,\degC{}. \todo{State the worker count of the parallel run.}}
+  No calculation includes free-energy minimization. Inputs are a fixed MORB composition on a P--T grid over 2--10\,kbar
+  and 900--1400\,\degC{}.}
   \label{fig:ch4-melts-props-performance}
 \end{figure}
 
@@ -1668,6 +1971,54 @@ well for much larger batch sizes, we generally recommend that users calculate pr
 % when the script changes.
 % ---------------------------------------------------------------------------
 
+\section{Application}\label{ch4-application}
+
+\subsection{Availability and installation}\label{ch4-availability}
+
+\emph{nGibbs} is open source and available at \url{https://github.com/benjthyer/nGibbs}
+\todo{Zenodo DOI for the release used in this chapter}. 
+It can be installed from PyPI with
+
+\begin{lstlisting}[style=thesispython]
+pip install ngibbs
+\end{lstlisting}
+
+\noindent The \textsc{MELTS} emulators are also available through \textsc{PetThermoTools} (\code{pip install petthermotools}) with
+the \code{"nMELTS"} model keywords described in \S\ref{ch4-ptt-integration}. Running the emulators on a GPU requires a CUDA-enabled
+installation of PyTorch.
+
+\subsection{Petthermotools Integration}\label{ch4-ptt-integration}
+
+\textsc{PetThermoTools} \citep{gleeson2025} is a Python package that runs \textsc{alphaMELTS} for Python
+\citep{antoshechkinaghiorso2018} and \textsc{MAGEMin} \citep{riel2022} through one interface. It serves as a front end interface that 
+allows users to interact with different thermodynamic models through a single, consistent API, which accesses different underlying models through a
+\code{Model} keyword argument. Its outputs are \textsc{pandas} DataFrames keyed by phase in the
+\textsc{alphaMELTS} naming convention, and it runs independent calculations in separate child processes so that a failed
+\textsc{MELTS} calculation does not halt a batch \citep{gleeson2025}. The \textsc{MELTS} emulators of \emph{nGibbs} are now also integrated within
+\textsc{PetThermoTools}, accessible with the \code{Model} keyword of a \textsc{MELTS} model preceded by the letter \texttt{n} (e.g.\ \code{"nMELTSv1.0.2"}), and their predicted
+assemblages are returned in the same structure as an \textsc{alphaMELTS} result. This serves two purposes. First, it makes
+\emph{nGibbs} accessible to users who already work in \textsc{PetThermoTools} and who need not learn a separate interface. Second,
+it makes the emulators straightforward to benchmark, because the same function call can be run with the emulator and with the
+\textsc{MELTS} model it replaces, and the results compared directly. \citet{gleeson2025} argued that a common interface would
+encourage systematic comparison of thermodynamic models across $P$--$T$--$X$ space, and the same reasoning applies to comparing an
+emulator with its parent.
+
+By default, the emulator output is passed to the \textsc{PetThermoTools} property calculator, which calls the \textsc{alphaMELTS} 
+supplemental calculator for each predicted phase without performing a minimization, returning material properties for each phase and for the bulk assemblage. 
+For applications where these properties are not required, this step can be bypassed by apppending the \texttt{NoProp} to the \code{Model} keyword (e.g.\ \code{"nMELTSv1.0.2NoProp"}),
+resulting in significantly faster performance. At this time, \emph{nGibbs} through \textsc{PetThermoTools} is only supported on the CPU. Users interested in running nGibbs on their 
+cuda-enabled GPU may do so through the \emph{nGibbs} interface directly.
+
+\subsubsection{Phase diagrams}
+
+Listing~\ref{lst:ch4-phase-diagram} computes the same phase diagram for a Mauna Loa primary melt twice, once with
+\textsc{rhyolite-MELTS}~1.0.2 and once with the \emph{nGibbs} emulator, changing only the \code{Model} keyword. The emulator needs no
+initial guess and no path from a neighboring state, so it evaluates the grid as one batch. In the run shown, the emulator returned
+the diagram in about a tenth of the wall time of \textsc{rhyolite-MELTS}, although the two calls are not identical in workload
+because \textsc{PetThermoTools} also applies grid refinement to the \textsc{MELTS} calculation \citep{gleeson2025}. The phase fields produced by the two
+calculations are compared in Fig.~\ref{fig:ch4-phase-diagram}.
+
+% Example using PTT to use nGibbs (as nMELTS) interchangably with rhyolite-MELTS.
 \lstinputlisting[style=thesispython, caption={Phase diagram of a Mauna Loa primary melt computed with
 \textsc{rhyolite-MELTS}~1.0.2 and with \emph{nGibbs} through \textsc{PetThermoTools}.},
 label={lst:ch4-phase-diagram}]{Chapter4/Figures/nGibbsPhaseDiagram.py}
@@ -1680,42 +2031,228 @@ label={lst:ch4-phase-diagram}]{Chapter4/Figures/nGibbsPhaseDiagram.py}
   \IfFileExists{Chapter4/Figures/generated/nGibbsPhaseDiagram/fig1.pdf}%
     {\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{nGibbsPhaseDiagram/fig1.pdf}}%
     {\fbox{Missing cached figure -- run \texttt{make listings}}}
-  \caption[Mauna Loa primary melt phase diagram: \emph{nGibbs} vs.\ \textsc{rhyolite-MELTS}]{Stable phase assemblages for the Mauna Loa primary melt
-  \todo{cite Wieser et al. 2025 -- not yet in references.bib} over 1100--1400\,\degC{} and 250--5000\,bar,
+  \caption[Mauna Loa primary melt phase diagram: \emph{nGibbs} vs.\ \textsc{rhyolite-MELTS}]{Stable phase assemblages for the Mauna Loa primary melt \citep{wieser2025}
+   over 1100--1400\,\degC{} and 250--5000\,bar,
   from \emph{nGibbs} (top) and \textsc{rhyolite-MELTS}~1.0.2 (bottom), produced by Listing~\ref{lst:ch4-phase-diagram}.}
   \label{fig:ch4-phase-diagram}
 \end{figure}
 
+\subsection{Seismic inversions of the thermochemical structure of planetary mantles}\label{ch4-mcmc-inversions}
+
+Seismic data constrain the thermal and compositional structure of planetary mantles \citep{stixrude2012,jackson2020,khan2018,wood1996}. 
+A thermochemical inversion of seismic data begins with a forward model: bulk composition and thermal profiles are converted to 
+density and seismic velocities that follow from a phase assemblage predicted through free energy minimization. These seismic and density profiles 
+then are compared with seismic and physical observations \citep{khan2008,khan2021}. A Markov chain Monte Carlo (MCMC) sampler 
+requires many thousands of such likelihood evaluations, which in turn each require many free energy minimizations. Every additional
+compositional parameter enlarges the volume the sampler must explore. This is why compositional dimensions are often fixed, as
+in the InSight inversion of \citet{khan2021}, which assumed a single bulk composition derived from the martian meteorites.
+
+The \textsc{HeFESTo} emulators are well-suited to this problem. Listing~\ref{lst:ch4-earth-mantle} builds 201 whole-mantle profiles
+which span the earth's interior from 0--135\,GPa, as an example workflow for this problem. Each profile is a conductive lid over an isentropic mantle over a conductive
+thermal boundary layer at the core--mantle boundary; the lid and isentrope follow the geophysical parameterization of
+\citet{khan2021}. Across the set, adiabat entropy, pressure at the adiabatic-conductive interfaces, temperature of the mantle at the core--mantle boundary, 
+and composition of the mantle are varied. The isentropic segments are evaluated first in parallel as a single batch with the isentropic emulator, which also predicts their temperatures. 
+Both conductive layers are then evaluated as a second batch with the isothermal emulator, and the vectorized \textsc{HeFESTo} equations of state
+return density, $V_P$, $V_S$ and bulk modulus using isomorphic terms only for every node (Figs.~\ref{fig:ch4-earth-mantle} and~\ref{fig:ch4-earth-mantle-phases}). 
+In the run shown, a total of 35{,}175 assemblages, completes in under 5 seconds on a GPU, whereas the true HeFESTo calculation would take about 10 hours.  At that rate an inversion can sample 
+bulk composition alongside the thermal parameters, rather than fixing it in advance, enabling future studies to use seismic data to constrain composition with a level of detail
+that has never before been possible. The Mars emulators can be used in the same way: they are trained to 25.5\,GPa, which spans the pressure at the martian core--mantle
+boundary of $\sim$20\,GPa estimated by \citet{khan2008}. We are already exploring this avenue in ongoing work.
+
+On Earth, where seismic data are abundant, density and velocity profiles are more tightly constrained and carry more chemical information.
+A joint inversion for temperature and composition beneath plumes and subduction zones could separate the thermal
+contribution to discontinuity topography and sharpness from the compositional one, and could test whether the transition zone is
+compositionally stratified relative to the mantle above and below it. The 2024 \textsc{HeFESTo} database, which the Earth emulator
+reproduces, includes ferric iron, the high-spin to low-spin transition in ferropericlase, and native iron phases
+\citep{stixrude2024}. Those additions make the emulator a candidate forward model for the iron-rich compositions proposed for ULVZs
+and LLVPs \citep{dobson2005,jackson2021,yuan2023}. Some of these candidates, however, such as banded iron formation with up to 85\,wt\% iron
+oxide \citep{dobson2005}, lie far outside the composition range of the current training data and would require targeted
+training data before the emulator can be applied to them.
+
 % ---------------------------------------------------------------------------
-% Lithosphere-asthenosphere profiles with the HeFESTo Mars emulators. Code below
-% is Chapter4/Figures/nGibbsMarsLithosphere.py verbatim (from the nGibbs
-% HeFESTo_tutorial notebook); output and figure cached as above.
+% Whole-mantle profiles with the HeFESTo Earth emulators. Code below is
+% Chapter4/Figures/nGibbsEarthMantle.py verbatim; the plotting code for both
+% figures is in nGibbsEarthMantle_plots.py and not shown. Output and figures
+% cached as above.
 % ---------------------------------------------------------------------------
 
-\lstinputlisting[style=thesispython, caption={Seismic profiles of 375 conductive-lithosphere, adiabatic-asthenosphere
-columns of mixed bulk silicate Earth and bulk silicate Mars composition, computed in parallel with the \textsc{HeFESTo} Mars
-isentropic and isothermal emulators and the vectorized \textsc{HeFESTo} equations of state.},
-label={lst:ch4-mars-lithosphere}]{Chapter4/Figures/nGibbsMarsLithosphere.py}
+\lstinputlisting[style=thesispython, caption={Seismic and phase profiles of 201 whole-mantle columns (a conductive lid, an
+adiabatic mantle and a conductive boundary layer at the core--mantle boundary) of basalt mixed with silica-rich pyrolite, computed
+in parallel with the \textsc{HeFESTo} Earth isentropic and isothermal emulators and the vectorized \textsc{HeFESTo} equations of
+state.},
+label={lst:ch4-earth-mantle}]{Chapter4/Figures/nGibbsEarthMantle.py}
 
 \noindent Output:
-\cachedoutput{Chapter4/Figures/generated/nGibbsMarsLithosphere/prints.txt}
+\cachedoutput{Chapter4/Figures/generated/nGibbsEarthMantle/prints.txt}
 
 \begin{figure}[H] % [H]: keep directly under the listing output
   \centering
-  \IfFileExists{Chapter4/Figures/generated/nGibbsMarsLithosphere/fig1.pdf}%
-    {\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{nGibbsMarsLithosphere/fig1.pdf}}%
+  \IfFileExists{Chapter4/Figures/generated/nGibbsEarthMantle/fig1.pdf}%
+    {\includegraphics[width=\linewidth,height=0.8\textheight,keepaspectratio]{nGibbsEarthMantle/fig1.pdf}}%
     {\fbox{Missing cached figure -- run \texttt{make listings}}}
-  \caption[Conductive-lithosphere, adiabatic-asthenosphere profiles from the \textsc{HeFESTo} Mars emulators]{Temperature,
-  density, $V_P$, $V_S$ and bulk modulus against pressure for four of the 375 profiles produced by
-  Listing~\ref{lst:ch4-mars-lithosphere}. Temperature rises linearly from 220\,K at the surface to the base of the
-  conductive lid (crosses), below which it follows the isentrope. $X_\mathrm{Mars}$ is the fraction of bulk silicate Mars
-  \todo{cite Yoshizaki and McDonough 2020 -- not yet in references.bib} mixed with bulk silicate Earth \citep{mcdonough1995}.}
-  \label{fig:ch4-mars-lithosphere}
+  \caption[Whole-mantle profiles from the \textsc{HeFESTo} Earth emulators]{Temperature, density, $V_P$ and $V_S$ against
+  pressure for every 20th of the 201 profiles produced by Listing~\ref{lst:ch4-earth-mantle}, colored by basalt fraction.
+  Temperature is linear in pressure in the conductive lid (from 300\,K at the surface) and in the core--mantle boundary layer, and
+  follows the isentrope between them; black lines join the transitions of the plotted profiles. The end members are the silica-rich pyrolite (after \citet{mcdonough1995})
+  and basalt reference compositions from \citet{stixrude2024} after \citet{workman2005}.}
+  \label{fig:ch4-earth-mantle}
 \end{figure}
 
+% Full-page image, caption on the following page (the caption is too long to
+% share a page with the figure). Both [H] so they stay together and in order.
+\clearpage
+\begin{figure}[H]
+  \centering
+  \IfFileExists{Chapter4/Figures/generated/nGibbsEarthMantle/fig2.pdf}%
+    {\includegraphics[width=\linewidth,height=0.94\textheight,keepaspectratio]{nGibbsEarthMantle/fig2.pdf}}%
+    {\fbox{Missing cached figure -- run \texttt{make listings}}}
+  \par\smallskip{\footnotesize\itshape Figure~\ref{fig:ch4-earth-mantle-phases}; caption on the following page.}
+\end{figure}
+\begin{figure}[H]
+  \caption[Phase abundances along the Earth profiles: \textsc{HeFESTo} vs.\ \emph{nGibbs}]{Phase mass fractions along six of the
+  profiles of Listing~\ref{lst:ch4-earth-mantle}, with basalt fractions even spaced between 1.0 to 0.0, computed with
+  \textsc{HeFESTo} (left) and with the \emph{nGibbs} emulators (right). Both profiles are computed with the same workflow: 
+  the isentrope is evaluated first between the base of the conductive lid and the top of the core--mantle conductive boundary layer, 
+  then the conductive layers are evaluated along linear paths between the surface temperature and the CMB temperature and the isentropic
+  temperature at the top and bottom of the isentrope. 
+  Each panel gives the basalt fraction $X_{bas}$, the isentrope entropy $S$ (J\,g$^{-1}$\,K$^{-1}$), the pressure at the base of the lid 
+  $P_{lid}$ and the pressure at the top of the core--mantle boundary layer $P_{TBL}$ (GPa), which are also marked by solid black lines. The 
+  pressure axis condenses the relatively uninteresting middle mantle between 30 and 105 GPa to represent a disproportionately small part of 
+  the plot in order to emphasize the portions of the mantle where minerology strongly evolves as a function of depth. The 6 profiles evaluated by HeFESTo
+  took 29.8 minutes on the 4-core Intel i7-11370H laptop, while all 201 profiles evaluated by the \emph{nGibbs} emulators are completed in under 5
+  seconds on the same machine.}
+  \label{fig:ch4-earth-mantle-phases}
+\end{figure}
+
+\subsection{Mantle thermochemistry beneath spreading centers}\label{ch4-morb-inversion}
+
+An emulator of \textsc{phMELTS} is planned. \textsc{phMELTS} uses the \textsc{pMELTS} calibration for mantle melting and it approximates 
+the storage of water in nominally anhydrous minerals by
+partitioning H$_2$O into a hidden reservoir \citep{asimow2004,smithasimow2005}. This model shows that trace amounts of water can have a
+significant effect on mantle melting \citep{asimowlangmuir2003,asimow2004}. A fast emulator of polybaric melting followed by crystallization
+may allow individual mid-ocean ridge basalts to be inverted for the potential temperature, source composition and water content
+of the mantle that produced them, and repeating the inversion along ridge segments would build a map of mantle thermochemistry
+beneath spreading centers.
+
+Existing methods for recovering primary magmas show why such an inversion is difficult. PRIMELT2 restores a lava to its primary
+magma by adding or subtracting olivine alone and infers potential temperature from the primary magma's MgO content
+\citep{herzberg2008}. It cannot be applied to lavas that have also fractionated clinopyroxene, which usually happens once the
+liquid has evolved below 7--10\,wt\% MgO, and applying olivine addition to such lavas yields primary magmas with too much MgO and
+source temperatures that are too high \citep{herzberg2008}. PRIMARSMELT, the martian member of the same family, has the same
+restriction: liquids that have fractionated olivine, clinopyroxene and plagioclase cannot be easily inverted by this method without
+a significant increase in computational cost and uncertainty \citep{hernandezmontenegro2024}. This restriction effectively excludes every lava that has
+evolved beyond olivine-only fractionation.
+
+Multiple saturation is also ambiguous evidence of origin. \citet{asimowlonghi2004} showed that aggregate liquids from polybaric
+near-fractional melting can display near-intersections of liquidus surfaces that cannot be distinguished experimentally from true
+multiple saturation points, so a multiply saturated liquid need not be a single batch that equilibrated with its residue. They did show, however, 
+that such multiple saturation points preserve information about the average pressure at which the constituent increments of
+liquid were extracted \citep{asimowlonghi2004}. Lavas with complex melting and differentiation history likely encode some of this information in their
+geochemistry, but attempting to recover it requires a fast and flexible forward model that properly treats melting and multi-phase fractionation
+together. A \textsc{phMELTS} emulator would provide such a forward model. Whether the
+inversion is well posed for a given suite of lavas, given the trade-offs among potential temperature, source fertility and water
+content, remains to be tested.
+
 \section{Discussion}\label{ch4-discussion}
-- Compare to other surrogate models in geodynamics (research and citations)
-- Discuss model limitations and future work 
-- Discuss affinity aware vs naive performance
-- use cases: compositionally aware seismic inversion (Mars profiles)
-- transition zone search: depth, strength, width of transition zone as a function of composition, plot colored ternaries for depth, strength, width of transition zone
+
+\subsection{Strengths}\label{ch4-discussion-strengths}
+
+The central result of this chapter is that a single emulator per parent model can reproduce that model's phase equilibria across
+a broad range of composition, pressure, and temperature conditions and needn't be restricted to a single compositional path or magma series. 
+The \emph{nGibbs} \textsc{HeFESTo} Earth emulator follows basaltic, peridotitic and Si-enriched compositions from the surface to 140\,GPa, and the
+\textsc{MELTS} emulators follow compositions from lherzolite to rhyolite, with the same network in each case
+(\S\ref{ch4-results-sections}). The surrogates reviewed in \S\ref{ch4-prev-work} were each trained on a narrower slice: arc magmas
+with fixed water content \citep{candioti2026}, or compositions near the basalt--harzburgite join
+\citep{hartmeier2026,yuan2025igythem}.
+
+The emulators predict the same quantities as their parent models, the abundance of every phase and the composition of every
+solution phase, so physical properties are computed with the parent model's own equations of state rather than learned as separate
+targets. These differences are far smaller than the uncertainty of the thermodynamic databases themselves \citep{ghiorsosack1995,ghiorso2002,stixrude2005,riel2022,holland1998}. 
+For most applications, therefore, the choice of database matters more than the choice between the emulator and its parent.
+
+Like the parent models, mass balance is enforced exactly rather than encouraged. This is a requirement for reactive transport and for any calculation that
+removes or adds material step by step, such as fractional crystallization, where a small bias per step would accumulate.
+\citet{hartmeier2026} penalize mass-balance violations during training and report small residual deviations, while the surrogate of
+\citet{candioti2026} closes mass balance only for the bulk solid, by difference.
+
+The emulators are fast without a GPU. On a 4-core laptop CPU, the \textsc{HeFESTo} Earth emulator is four orders of magnitude faster
+than \textsc{HeFESTo} on the same machine, and a GPU adds a further factor of 3--8 (\S\ref{ch4-results-performance}). Because \emph{nGibbs} 
+reaches its largest CPU speed-up on a 4-core laptop, it is usable on ordinary workstations. Through \textsc{PetThermoTools}, it is also usable without
+learning a new interface (\S\ref{ch4-ptt-integration}).
+
+\subsection{Limitations}\label{ch4-discussion-limitations}
+
+An emulator can be no more accurate than its parent model. The \textsc{MELTS} emulators inherit the known limitations of
+\textsc{MELTS}, including its calibration toward low-pressure, nearly anhydrous experiments \citep{ghiorsosack1995} and its poor
+treatment of hydrous minerals such as amphibole \citep{candioti2026}. The \textsc{HeFESTo} emulators inherit a database that has no
+silicate liquid. The emulators are also reliable only inside their training coverage
+(Figs.~\ref{fig:ch4-coverage-pt}--\ref{fig:ch4-coverage-harker-melts120}). Compositions far from that coverage, such as banded iron
+formation or carbonatite, need targeted training data and validation before use.
+
+Three systematic weaknesses appear in the results. First, phases that are rare and stable over narrow ranges are predicted less
+reliably (\S\ref{ch4-results-presence}). Akimotoite is the most consequential of these for mantle applications, because its stability
+near the 660-km discontinuity is one of the composition-sensitive reactions that a transition-zone inversion would aim to resolve
+\citep{hartmeier2026}; oversampling its stability field is a priority before that application. Second, the emulator smooths sharp features 
+in the parent model, such as the MORB solidus in \textsc{MELTS}, over a few tens of degrees. This follows from the
+continuous architecture (\S\ref{sec:continuous}), which is correct for continuous phase-out reactions but blurs changes that are nearly
+discontinuous, as at this solidus. Third, properties that depend on derivatives of the phase proportions ($C_p$, $K_S$
+and $\alpha$) and liquid compositions at small melt fractions carry larger errors than phase proportions do
+(\S\ref{ch4-results-lld} and~\ref{ch4-results-properties}) and require higher fidelity predictions. Applications that rely on these quantities, such as latent-heat
+effects at phase transitions or the composition of the last liquids, should check them against the parent model.
+
+The speed advantage also has limits. Fixed overheads make the emulators no faster than the parent model for very small batches,
+and the advantage over \textsc{alphaMELTS} on a multicore machine is about one to two orders of magnitude, not four, especially once
+properties are computed through \textsc{PetThermoTools} (\S\ref{ch4-results-performance}). The emulators pay off most when many
+states are evaluated together, as in the inversions and coupled models of \S\ref{ch4-application}.
+
+Finally, the release is deliberately partial. Only the closed-system isothermal \textsc{MELTS} emulators and the \textsc{HeFESTo}
+emulators are released; th open-system \textsc{MELTS} emulators await further testing. Emulator error is not yet 
+propagated into downstream calculations, which an
+inversion would need in its likelihood. Planned work includes a \textsc{pHMELTS} emulator (\S\ref{ch4-morb-inversion}), targeted
+training for rare phases and unusual compositions, and a systematic map of the depth, width and velocity contrast of the
+transition-zone discontinuities as functions of composition.
+
+\section{Conclusions}\label{ch4-conclusions}
+
+This chapter introduced \emph{nGibbs}, a set of deep-learning emulators of the \textsc{MELTS} 1.0.2 and 1.2.0 and \textsc{HeFESTo}
+thermodynamic models. Its goal is to stand in for its parent models in essentially any calculation they would be used for, rather
+than for one composition range or one set of outputs. Four design choices support that goal:
+\begin{enumerate}
+  \item  Each emulator predicts the full equilibrium assemblage, so thermodynamically consistentphysical properties follow from the parent model's own equations of state. 
+  \item  Phase abundances are predicted as rectified affinities, which keeps them continuous across phase boundaries like the parent model they emulate.
+  \item  Mass is conserved exactly at inference by a constrained correction that itself is constrained to produce legal (non-negative) atomic abundances.
+\end{enumerate} 
+The training compositions are drawn from whole-rock databases of igneous rocks that span the breadth of compositional diversity of igneous rock compositions known on Earth. 
+\textsc{MELTS} 1.2.0 is additionally trained on a database of sedimentary rock compositions, and \textsc{HeFESTo} models are strongly perturbed to cover compositions that are rare or unknown 
+at Earth's surface. The validation data are drawn from distinct bulk compositions to ensure that the emulators generalize to new compositions.
+
+The released emulators reproduce their parent models closely within their training coverage. The major silicate and oxide phases are predicted
+with precision and recall of 0.93 or better. Element abundances are conserved to a median relative error of about $5\times10^{-6}\%$.
+Phase proportions, densities and seismic velocities along reference paths are nearly indistinguishable
+from those of \textsc{alphaMELTS} and \textsc{HeFESTo}. Subtle behaviors observed in liquid lines of descent are learned and reproduced by the emulators. 
+Errors are largest for rare phases with narrow stability fields, such as akimotoite and the native iron phases. They are also larger where sharp changes occur in the parent model, 
+for material properties such as heat capacity, bulk modulus and thermal expansivity that depend on molar derivatives; and for liquid compositions at small melt fractions. 
+These differences remain smaller than the uncertainties of the underlying thermodynamic databases for most applications. They do, however, mark where
+targeted training data are needed before specific applications, such as resolving akimotoite stability near the 660-km discontinuity.
+
+The emulators are fast enough to change what is computationally practical. On a 4-core laptop CPU, the \textsc{HeFESTo} Earth
+emulator evaluates $2^{15}$ assemblages about 22{,}000 times faster than \textsc{HeFESTo}, and about 1{,}100 times faster with the
+full equations of state. A set of 201 whole-mantle profiles of phase equilibria, density, and sound velocity, comprising about 35{,}000 assemblages, takes under 5\,s on a GPU,
+compared with about 10 hours for \textsc{HeFESTo}. The \textsc{MELTS} emulators run two orders of magnitude faster than
+\textsc{alphaMELTS} and, through \textsc{PetThermoTools}, can replace it in existing workflows by changing a single keyword.
+
+Several applications follow directly from this speed and generality. In seismic inversions of the Earth's and Mars' mantles, bulk
+composition can be sampled alongside the thermal parameters rather than fixed in advance. Composition-dependent transition-zone
+structure and candidate compositions for ultralow-velocity zones can be explored systematically. Geodynamic models can carry a
+chemically heterogeneous mantle, or the cumulates of a solidifying magma ocean, without reducing composition to a single mixing
+variable. Planned extensions include an emulator of \textsc{pHMELTS} for inverting mid-ocean ridge basalts for the thermochemical
+state of the mantle beneath spreading centers, and spatially resolved models of reactive porous flow in crystal mushes.
+
+
+\section*{Code and Data Availability}\label{ch4-code-availability}
+
+The \emph{nGibbs} source code is available at \url{https://github.com/benjthyer/nGibbs} and can be installed
+with \code{pip install ngibbs} (\S\ref{ch4-availability}).
+\todo{Add the Zenodo DOI of the release used in this chapter}
+Subsets (n = 15,000) of the validation datasets are shipped with every PyPI installation of nGibbs. 
+Subsets of the training datasets are available \todo{on zenodo} and the full training datasets are available on request from the author. 

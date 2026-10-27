@@ -92,6 +92,7 @@ NEG_TOL = 1e-4                  # an oxide is negative when its wt% < -NEG_TOL (
 MAX_PLOT_POINTS = 30000
 FIG_PHASE = 'spinel'            # phase of the publication figure ('' to skip)
 FIG_OXIDES = ('FeO', 'Al2O3', 'MgO')
+PUB_MIN_LIMITS = {'FeO': -10.0, 'Al2O3': -10.0}   # publication figure: axes go no lower than this (wt%)
 SEED = 1337
 
 PASSES = ('uncorrected', 'corrected')
@@ -240,9 +241,9 @@ def plot_phase(path, phase, pass_name, mode, wt_true, wt_pred, both, any_neg, ox
         lo, hi = limits[c]
         ax.plot([lo, hi], [lo, hi], color=INK_2, lw=1, ls='--', zorder=1)
         ax.axhline(0, color=GRID, lw=1, zorder=0)
-        ax.scatter(wt_true[legal, c], wt_pred[legal, c], s=1, c=C_LEGAL, alpha=0.1,
+        ax.scatter(wt_true[legal, c], wt_pred[legal, c], s=1.5, c=C_LEGAL, alpha=0.2,
                    linewidths=0, zorder=2, rasterized=True)
-        ax.scatter(wt_true[neg, c], wt_pred[neg, c], s=3, c=C_NEG, alpha=0.35,
+        ax.scatter(wt_true[neg, c], wt_pred[neg, c], s=6, c=C_NEG, alpha=0.7,
                    linewidths=0, zorder=3, rasterized=True)
         ax.set_xlim(lo, hi)
         ax.set_ylim(lo, hi)
@@ -301,11 +302,13 @@ def plot_pub_figure(path_base, phase, ox_sel, oxides, wt_true, wt_pred_by_pass,
             for j, c in enumerate(ox_sel):
                 ax = axes[r, j]
                 lo, hi = limits[c]
+                if oxides[c] in PUB_MIN_LIMITS:
+                    lo = max(lo, PUB_MIN_LIMITS[oxides[c]])
                 ax.axhline(0, color=GRID, lw=0.6, zorder=0)
                 ax.plot([lo, hi], [lo, hi], color=INK_2, lw=0.7, ls='--', zorder=1)
-                ax.scatter(wt_true[legal, c], wt_pred[legal, c], s=1, c=C_LEGAL, alpha=0.1,
+                ax.scatter(wt_true[legal, c], wt_pred[legal, c], s=1.5, c=C_LEGAL, alpha=0.2,
                            linewidths=0, zorder=2, rasterized=True)
-                ax.scatter(wt_true[bad, c], wt_pred[bad, c], s=3, c=C_NEG, alpha=0.3,
+                ax.scatter(wt_true[bad, c], wt_pred[bad, c], s=6, c=C_NEG, alpha=0.7,
                            linewidths=0, zorder=3, rasterized=True)
                 ax.set_xlim(lo, hi)
                 ax.set_ylim(lo, hi)

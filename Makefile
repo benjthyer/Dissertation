@@ -87,7 +87,7 @@ figures-ch%:
 # Chapter4/Figures/generated/<stem>/ and skips the rerun while the script's
 # source hash is unchanged, so this is cheap to call every time. Needs the
 # environment with petthermotools/nGibbs (PYTHON=... make listings).
-LISTING_SCRIPTS := nGibbsPhaseDiagram.py nGibbsMarsLithosphere.py
+LISTING_SCRIPTS := nGibbsPhaseDiagram.py nGibbsEarthMantle.py
 
 listings:
 	cd Chapter4/Figures && $(PYTHON) run_cached_listing.py $(LISTING_SCRIPTS)

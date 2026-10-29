@@ -10,6 +10,25 @@ photo~\\ChFivePhoto{N} by hand.
 """
 import re
 
+# Field photos left out of the album and the station table (2026-10-27, at the
+# author's request): photographs without geological content (1, 7, 20, 31, 33,
+# 56, 83) and uncaptioned frames (9, 39, 43-47). Their DrBV<n>.jpg files stay
+# in Figures/source/Draaikraal_Photos; the remaining photos keep their field
+# numbers, so the album's numbering has gaps.
+EXCLUDED_PHOTOS = frozenset({1, 7, 9, 20, 31, 33, 39, 43, 44, 45, 46, 47, 56, 83})
+
+# The thesis reproduces only these photos (Appendix A photo album, two per page,
+# in order of first citation in Chapter 5, portrait photos last); the others go
+# to the separate supplementary photo album (Chapter5/chapter5_photo_supplement.tex).
+# Author's selection, 2026-10-27.
+APPENDIX_PHOTOS = frozenset({111, 53, 29, 59, 61, 62, 65, 66, 72, 76, 77, 4, 2, 95,
+                             96, 98, 100, 86, 87, 90, 49, 109})
+# 2026-10-28: 119 -> supplement. 2026-10-29: 86, 87, 90 back from the (removed)
+# anorthosite mosaic, plus 49 and 109 from it.
+# Photos shown as main-text figures instead: photo -> figure label.
+MAIN_TEXT_PHOTOS = {60: 'fig:ch5-photo60-deformation',
+                    115: 'fig:ch5-ma-cleavage-photo'}   # annotated photo 115 (Results)
+
 _NUM = r'\d{1,3}'
 _ITEM = rf'{_NUM}(?:\s*[-–]\s*{_NUM})?'
 _SEP = r'(?:\s*,\s*and\s+|\s*,\s*|\s+and\s+|\s*&\s*|\s+)'

@@ -2854,3 +2854,197 @@ New `_c5test_full.tex` (real class + preamble, Ch. 5 + SI + bibliography) builds
 - `liquid_harker_melts.py`: Bishop Tuff dropped from `ROCK_FAMILY` (Lherzolite + MORB only); caption updated. Needs a rerun to regenerate `liquid_harker_MELTS.pdf`.
 - `nGibbsEarthMantle_plots.py`: P_lid / P_TBL markers now solid black (`color='k', ls='-', lw=1.0`); caption says "solid black lines". Needs `make listings` (script hash changed).
 - Earth-mantle phase figure (6x2): image on its own page (`[H]`, up to 0.94 `\textheight`) with a "caption on the following page" note; the caption and label are in a second `[H]` figure right after it.
+
+## 2026-10-27: Ch. 5 literature review -> Appendix B; Ch. 5 SI -> Appendix A
+Moves and reorders only -- no sentence of text changed (checked by `Chapter5/Workspace/move_litreview_to_appendix_20261027.py`, which also did the move: every non-comment text line of the old body is accounted for exactly once).
+- **Chapter 5**: the regional review (Layered Mafic Intrusions through The Transformation Hypothesis, ~3,400 words) left `chapter5_body.tex`. What remained of "Geological Background" (Previous work near Kliprivier and Draaikraal; Topographic `Inversion' + Fig. `ch5-topo-map`) is now `\section{Geologic Setting of the Draaikraal Area}` (label unchanged) and sits *before* Field Methods: Introduction -> Geologic Setting -> Field Methods -> Field Observations -> Discussion -> Conclusions.
+- **Appendix A** (`ChapterA/chapterA.tex`, replaces the old placeholder stub; stub kept as `.pre_litreview_move_20261027`): "Draaikraal Field Station Data and Annotated Photographs" -- inputs the unchanged `Chapter5/Writing/chapter5_SI_body.tex`. Labels `app:bushveld` (used by the Conclusion todo) and `app:draaikraal-field-data`. `Chapter5/chapter5_SI.tex` is retired (no longer input; marked at its top).
+- **Appendix B** (new `ChapterB/chapterB.tex` + `ChapterB/Writing/chapterB_body.tex`): "The Bushveld Complex: A Review of the Literature", label `app:bushveld-review`. Headings promoted one level. New order: Layered Mafic Intrusions -> The Bushveld Event and RLS -> Structure and Relationship to Country Rocks -> Isotopic and Volatile Constraints on the RLS (NEW grouping heading over Radiogenic / Stable / Volatile Phases) -> Petrological Debates (Open or Closed; Magma Chamber Scales; Monomineralic Rocks; Merensky Reef; The Transformation Hypothesis, moved here from under Structure so that its closing isotope summary follows the isotope section and the review ends on local crustal contamination). Old `sec:ch5-*` labels kept.
+- **dissertation.tex**: appendices block un-commented and moved *before* `\backmatter` (memoir does not number chapters in backmatter), after the Conclusion and before the References; `\input{Chapter5/chapter5_SI}` commented out. Backup `dissertation.tex.pre_litreview_move_20261027`.
+- `_c5test_full.tex` now builds Ch. 5 + Appendices A/B: 97 pages, no undefined references/labels; only the five known missing citations (barnes2021, bourdeau2021, bourdeau2023, cole2013, holness2017).
+- Text now stale (NOT edited, per no-text-change rule): Ch. 5 Field Methods says the table is in "the Supplementary Information"; the Introduction \todo refers to "the literature review immediately below"; Appendix B's "This study centers on the Rustenburg Layered Series" and "(... ; this work)" in The Transformation Hypothesis; `chapter5_SI_body.tex` says "maps of the main text".
+
+---
+
+# 2026-10-27 -- Broken `\ref` sweep (Chapter 4 focus)
+
+Method: walked the `\input` tree from `dissertation.tex` (46 files), compared every
+`\ref/\eqref/\autoref/\nameref/\pageref` target against every `\label` (and listing
+`label=` keys) and against the `\newlabel` entries in the last `dissertation.aux`.
+Only Chapter 4 (`Chapter4/Writing/Chapter4_main_body_text.tex`) had unresolved
+targets; no duplicate labels anywhere; no Fig/Table/Eq/Section word-vs-label-type
+mismatches; no label-before-caption floats. (Backup: `Chapter4_main_body_text.tex.pre_refs_backup_20261027`.)
+
+Fixed (obvious typos):
+- l.1664 `\ref{stae-var-sampling}` -> `\ref{state-var-sampling}`
+- l.1949 `\ref{fig-ch4-melts-props-performance}` -> `\ref{fig:ch4-melts-props-performance}`
+
+Left for decision (target does not exist):
+- l.1647 `\ref{fig:ch4-sections-property-melts120}` -- there is no MELTS 1.2.0 bulk-property
+  figure environment (only `-melts102`, `-hefesto-earth`, `-hefesto-mars`), although
+  `Chapter4/Figures/sections_property_MELTS120_isothermal.pdf` (and `_isentropic`) exist.
+
+Related, not `\ref`s (citation keys with no entry in `references.bib`):
+`wieser2025` (Ch4 l.2035; bib has `wieser2025a`/`wieser2025b`), `jackson2020` (Ch4 l.2043;
+bib has `jackson2021`), `holness2017`, `barnes2021`, `bourdeau2021`, `bourdeau2023`, `cole2013`
+(Ch5 l.1192/1324/1325/1335; `bourdeau2023` also ChapterB l.325).
+
+## 2026-10-27 (later) -- Added missing Bushveld citations to references.bib
+
+Added `holness2017`, `barnes2021`, `bourdeau2021`, `bourdeau2023`, `cole2013` (backup:
+`references.bib.pre_citations_20261027`). Holness 2017 was completed from the Springer record
+(Holness, Cawthorn & Roberts; CMP 172(11):102; doi 10.1007/s00410-017-1423-4) -- the pasted
+reference listed only Holness as author and "20" as the page. Open: `chapter5_body.tex` l.1335
+now cites `cole2015`, which is not in the bib (the entry added is keyed `cole2013`).
+
+## 2026-10-27b: Ch. 5 / App. A-B cross-references
+- Diagnosis of the "??", unlinked photo numbers and misaligned field-table header in dissertation.pdf (18:29 build): that PDF came from a single pdflatex pass (dissertation.log: "Please (re)run Biber", "Rerun to get outlines right"; no .blg). All Ch. 5 / App. A / App. B labels exist; longtable needs a second pass to align its header. A full latexmk build (cloud test, placeholder images) gives 439 pages, 0 undefined references, 0 undefined citations, table aligned, photo numbers linked.
+- Chapter4/Writing/Chapter4_main_body_text.tex l.722: `\TODO{` -> `\todo{` (undefined command; the error stops latexmk after its first pass).
+- chapter5_body.tex (backup `.pre_reflinks_20261027`): plain-text pointers made live without changing their wording -- three "Structural Observations" mentions -> \hyperref[sec:ch5-structural-observations]; "the Discussion below" -> \hyperref[sec:ch5-discussion]. Stale editorial wording fixed: Field Methods "of the Supplementary Information" / "SI photo album" -> Appendix~\ref{app:draaikraal-field-data}; Introduction \todo now points to Appendix~\ref{app:bushveld-review}.
+- chapter5_SI_body.tex (backup `.pre_reflinks_20261027`): "maps of the main text" -> "maps of Chapter~\ref{ch:draaikraal}".
+- Open (author decisions): empty "(photos )" in the RLS-units paragraph; which Discussion subsection "see the Discussion below" means; Ch. 5 has no in-text pointer to Appendix B; App. B's "This study centers on..." / "this work".
+
+## 2026-10-27c: photo album pruning; Appendix B cross-citations from Ch. 5
+### Build
+- Your `make thesis` run (dissertation.log 21:50) completed: biber ran, 0 undefined references. The perl "Setting locale failed" / code-page lines are harmless warnings from MiKTeX's perl.
+- Verified again after the changes below (cloud build, placeholder images): 450 pages, 0 errors, 0 undefined references/citations/hyper-references.
+
+### Photo album and station table
+- New `EXCLUDED_PHOTOS` in `Chapter5/Figures/ch5_photo_refs.py`: 1, 7, 9, 20, 31, 33, 39, 43-47, 56, 83 -- left out of the album (`write_chapter5_photo_album.py`) and the station table's Photos column (`write_chapter5_data_table.py`; photos 1 and 20 were listed there). JPGs and the Word captions are untouched. Both outputs regenerated. Backups `*.pre_photo_exclusions_20261027`.
+- Shared captions: the "See the caption of photo N" entries are gone; a shared caption ("Photos 99-102") is printed once and its photos form one unbreakable block on a single plate. A group that mixes orientations stays on the portrait pages (photo 99 moved there from the landscape pages to sit with 100-102). The 99-102 and 103 captions already matched the text you sent, word for word.
+- `chapter5_SI_body.tex`: added "Gaps in the numbering are photographs without geological content, which are not reproduced."; "cited in the main text" -> "cited in Chapter~\ref{ch:draaikraal}".
+
+### Citations of Appendix B added to Chapter 5 (`chapter5_body.tex`, backup `.pre_appB_xrefs_20261027`)
+Subsections of the appendix are unnumbered in this class, so references to them print the section number plus the title (`\S\ref{..}, ``\nameref{..}''`).
+| App. B section | Ch. 5 location | Sentence (abridged) |
+|---|---|---|
+| B.1 Layered Mafic Intrusions | Discussion, Significance of Rock Cleavage... | "a primary fabric (modal layering) developed by gravity and crystal settling (§B.1)" |
+| B.2 The Bushveld Event and RLS | Field Obs., The Rustenburg Layered Series (RLS) | "...is subdivided into the Lower Zone, Critical Zone, Main Zone, and Upper Zone (§B.2)." |
+| B.3 Structure and Relationship to Country Rocks | Discussion, Origin of the Kliprivier Monocline... | "...intruded as stacked sills from the North and terminated here, lopolithically deforming the overlying country rocks (§B.3)." |
+| B.4 Radiogenic Isotope Stratigraphy | Discussion, Origin of the Mottled Anorthosites | "UMA and Pyroxenite Marker ... demarcate significant geochemical and isotopic changes ... most often ascribed to magma recharge (§B.4, ...)." |
+| B.4 Stable Isotopes | Discussion, Origin of Spheroidal Pyroxenite Aggregates | "secondary fluids ... predominantly sourced from devolatilized and variably melted country rocks (Schiffries & Rye 1990; Buick et al. 2000, see also §B.4, ...)" |
+| B.4 Unusual Volatile Phases | Discussion, Rethinking the Marginal Zone | "The Merensky Reef represents a structural trap for a reduced supercritical carbon-based fluid (Ballhaus & Stumpfl 1985, see also §B.4, ...)." |
+| B.5 Open or Closed System | Discussion, Rethinking the Marginal Zone | "The isotopic homogeneity of the Upper Zone (§B.5, ...) allows for a more orthomagmatic interpretation" |
+| B.5 Spatial and Temporal Scales of Magma Chambers | Discussion, Rethinking the Marginal Zone | "...propose that the Marginal and Lower Zones was assembled incrementally by magmas of different compositions (see also §B.5, ...)." |
+| B.5 Origin of Enigmatic Monomineralic Igneous Rocks | Discussion, Origin of the Mottled Anorthosites | "...extreme reverse zoning of plagioclase surrounding mottles (Maier et al. 2020, see also §B.5, ...)." |
+| B.5 Origin of the Merensky Reef and PGE Mineralization | Discussion, Origin of the Kliprivier Monocline... | "...aside from the traditional targets: the UG2 chromitite layer and the Merensky Reef (§B.5, ...)." |
+| B.5 The Transformation Hypothesis | Geologic Setting, Previous work near Kliprivier and Draaikraal | van Biljon: "(see the Discussion below for elaboration)" -> "(see §B.5, ``The Transformation Hypothesis'' for elaboration)" (author's request) |
+
+## 2026-10-27d: shared caption 99-102 -> "Photos 100-102"
+- `write_chapter5_photo_album.py`: portrait photos are again always gathered separately at the end. A shared caption is printed with the first of its photos in the main (landscape-photo) sequence and labelled with just those photos ("Photos 100-102"); a portrait member of the group gets "See the caption of photos 100-102" (photo 99). Shared-caption groups stay together on one plate. Album regenerated; full build clean (0 undefined references).
+- Photo triage for the planned essential-appendix / supplement split: `Chapter5/Workspace/photo_triage_20261027.md`.
+
+## 2026-10-27e: Photo 60 deformation-history figure
+- New `Chapter5/Figures/fig_photo60_deformation.py` -> `Chapter5/Figures/generated/photo60_deformation_schematic.{pdf,png}`: the three pencil sketches digitized (traced coordinates, smoothed; each panel keeps the orientation it was drawn in) and joined by arrows: (1) Mafic pegmatitic melt accumulates in lenses in migmatized sediment -> (2) Synmagmatic plastic deformation produces sigmoid geometry -> (3) Post-magmatic brittle failure along annealed fault. Original sketch photos saved in `Chapter5/Figures/source/photo60_sketches/`. Needs matplotlib + scipy (not in the Linux VM; run from your conda env).
+- `chapter5_body.tex` (backup `.pre_photo60_fig_20261027`): new figure `fig:ch5-photo60-deformation` -- (a) photo 60, (b) the schematic -- placed in the Rz (fine-grained gabbro) section after the paragraph that cites photo 60; that citation now also points to the figure. Caption written from the photo-60 album caption and the three event labels (please check).
+- Verified in a full build: 0 undefined references; figure lands on one page (p. 335 in the test build).
+
+## 2026-10-27f: symmetric stage-2 sigmoid; Appendix A album = 21 selected photos; supplementary photo album
+- `fig_photo60_deformation.py`: stage (2) sigmoid made point-symmetric (one traced edge, the other its 180-degree rotation), so the top tapers to the same "shark fin" as the bottom; shear arrows mirrored too.
+- Photo-60 figure moved from the Rz description to Discussion > Origin of the Kliprivier Monocline, after "...requires that the structure is synmagmatic (see also Figure~\ref{fig:ch5-photo60-deformation})." The Rz citation of the figure stays.
+- `ch5_photo_refs.py`: `APPENDIX_PHOTOS` = 2, 4, 29, 53, 59, 61, 62, 65, 66, 72, 76, 77, 86, 87, 90, 95, 96, 98, 100, 111, 119 (author's selection); `MAIN_TEXT_PHOTOS` = {60: fig:ch5-photo60-deformation}.
+- `write_chapter5_photo_album.py` now writes four files:
+  - `Writing/chapter5_photo_album.tex` -- Appendix A: the selection, two per page, ordered by first citation in chapter5_body.tex (uncited 59 and 119 last in their group), landscape photos stacked full-width, then portrait photos side by side. TeX measures each pair's captions and gives the photos the remaining height (max 0.42 \textheight landscape / 0.6 portrait), so pairs always share a page. Order: 95, 100, 2, 4, 96, 98, 76, 77, 86, 111, 65, 66, 62, 61, 72, 87, 90, 59 | 29, 53, 119.
+  - `Writing/chapter5_photo_supplement_album.tex` -- all other photos (89), compact six-per-plate layout, shared captions per document (e.g. "Photos 73-75", "Photos 101-102", 99 -> "See the caption of photos 101-102").
+  - `Writing/chapter5_photo_index.tex` / `chapter5_photo_supplement_index.tex` -- define \ChFivePhoto per document: links for photos reproduced in that document (photo 60 -> its figure), plain numbers otherwise. chapter5.tex now \input{}s the thesis index instead of defining \ChFivePhoto itself.
+- New stand-alone `Chapter5/chapter5_photo_supplement.tex` (caltech class + shared preamble + bibliography); `make photo-supplement` builds `chapter5_photo_supplement.pdf` at the repository root.
+- Text: Appendix A album intro rewritten; Field Methods photo sentence and the station-table caption now say unlinked numbers are in the supplementary photo album.
+- Verified: thesis builds with 0 undefined references/citations, Appendix A album = 12 pages; supplement builds (23 pages) with 0 undefined references. Backups `*.pre_appendix_split_20261027`, `Makefile.pre_photo_supplement_20261027`.
+
+## 2026-10-28: Appendix A album -- photos first, captions shrink
+- Photo 119 moved to the supplement (`APPENDIX_PHOTOS`, 20 photos now; portrait page = 29 + 53).
+- `write_chapter5_photo_album.py` (backup `.pre_fullsize_photos_20261028`): photos are set at full size first (landscape: full text width, <= 0.45 \textheight; portrait: 0.48 text width, <= 0.62 \textheight). Captions are single-spaced and take the room left: \small, \footnotesize, \scriptsize are tried in turn, each by setting the finished page in a trial box, and the largest size at which the page fits is kept (same size for both captions on a page). Only if \scriptsize still does not fit are the photos shrunk, by exactly the overflow. The choice per page is written to the LaTeX log ("ChFive album: ...").
+- Test build (placeholder images with the real aspect ratios): captions \small on 2 pages, \footnotesize on 3, \scriptsize on 5; photos shrunk on 4 of those (to 87-96% of full height: 65/66, 86/111, 95/100, 96/98). Thesis and supplement build with 0 undefined references.
+
+## 2026-10-28b: supplement in the two-per-page layout; numerical order in both albums
+- `write_chapter5_photo_album.py` (backup `.pre_numeric_order_20261028`): the supplementary album now uses the same layout as Appendix A (two photos per page at full size, captions single-spaced and shrunk \small -> \footnotesize -> \scriptsize to fit; photos shrunk only as a last resort). The old six-per-plate code is no longer called.
+- Both albums are in numerical order, landscape photos first, then portrait. Appendix A: 2, 4, 59, 61, 62, 65, 66, 72, 76, 77, 86, 87, 90, 95, 96, 98, 100, 111 | 29, 53.
+- Shared captions: printed with the first photo of the group in that document; each other photo of the group gets "See the caption of photos N-M" (every photo now has its own caption slot).
+- Text: Appendix A album intro and the supplement's intro updated to describe the order/layout.
+- Test build: thesis 0 undefined refs (Appendix A captions: \small on 2 pages, \footnotesize 1, \scriptsize 7, photos shrunk on 4); supplement 90 photos, 49 pages, 0 undefined refs (captions \small on 34 pages, \footnotesize 4, \scriptsize 6, photos shrunk on 3).
+
+## 2026-10-28c: Chapter 5 split into Methods / Results / Discussion; corrections; anorthosite comparison
+Moves done by `Chapter5/Workspace/restructure_methods_results_20261028.py` (word-level audit printed by the script; backups `chapter5_body.tex.pre_methods_results_20261028`, `chapter5_abstract.tex.pre_methods_results_20261028`). Text moved verbatim unless noted.
+### New order
+Introduction -> Geologic Setting -> **Methods** (Field Methods; Mapping Criteria; Structural Measurements; Stratigraphic Column Analytical Methods) -> **Results: Field Observations** (Lithologic Descriptions; **Rock Cleavage and Modal Layering** (new); Structural Observations) -> Discussion -> Conclusions.
+### Moved to Methods
+- `\section{Field Methods and Observations}` -> `\section{Methods}` (label sec:ch5-methods); your Field Methods subsection kept as is. "recorded in supplementary Table~\ref{app:draaikraal-field-data}" (printed "Table A") -> "recorded in Table~\ref{tab:ch5-field-stations} (Appendix~\ref{app:draaikraal-field-data})".
+- Mapping Criteria (new heading): the magnetism-discriminant paragraph from Rz ("The contact between the layered series ... such a resistance banding."; the Rz sentence "Fine-grained Marginal Zone gabbros are mapped up to 120 m..." stays in Rz) and the Lg assignment rule ("When Layered Gabbronorites (Lg) are observed in the same outcrops...").
+- Structural Measurements (new heading): "All measurements of plutonic rocks reported here are orientations of near-planar rock cleavage (\S...)" (from the Discussion cleavage section; "these cleavage structures" reworded because it lost its antecedent) + the stereonet procedure sentences from the Kliprivier Synform subsection (Stereonet 11, poles, fold axis from poles, obtuse vs acute bisector justification).
+- Stratigraphic Column Analytical Methods: whole subsubsection (+ the stratigraphic-column figure) promoted to a Methods subsection.
+### Results
+- Section renamed "Results: Field Observations" (label unchanged); intro sentence now lists three parts.
+- New subsection **Rock Cleavage and Modal Layering** (label sec:ch5-cleavage-layering), placed before Structural Observations: the observation paragraph of the former Discussion cleavage section + the photo-115 observation paragraph from the Mottled Anorthosite unit + the annotated photo-115 figure.
+- Kliprivier Synform: stereonet results kept ("The calculated fold axis (Figure~\ref{fig:ch5-stereonets}b) trends roughly W5°N ...", axial plane, similarity to the lineament).
+### Interpretations moved to the Discussion
+- Dcg "I interpret this unit to be formed by synmagmatic deformation ..." -> Origin of the Kliprivier Synform, after the photo-60 sentence ("this unit" -> "the Disturbed Gabbronorite (Dcg; \S\ref{sec:ch5-unit-dcg})").
+- "Considering that the Kliprivier Synform also rests upon this lineament, it is likely ..." -> end of the same subsection, with a new lead-in sentence "The axial plane of the Kliprivier Synform is similar in orientation to the Draaikraal Lineament (\S\ref{sec:ch5-kliprivier-synform})."
+- Mottled Anorthosite unit: "Though this particular contested correlation by Latypov et al. ..." -> Correlation subsection, after "...some lack mottles entirely."
+- Photo-115 interpretation "This suggests that cleavage and modal layering are formed by distinct processes ..." -> opens the Discussion cleavage section, as "The discordance of rock cleavage and modal layering (\S...; Figure...) suggests ..."; the "(see Structural Observations section ...)" pointer dropped.
+### Corrections requested
+- Stratigraphic-column regional dip: 15° to the north**west**. Layered Gabbronorite heights: 400-1050 **meters**. Ironstone laterites: "\ChFivePhoto{38}" -> "(photo~\ChFivePhoto{59})". Main Zone xenolith photos: 76 removed -> "(photos~91 and 111)". Transitional Zone: "OPX abundance decreases" -> "OPX decreases". Photo 60: "~10 x 3 cm" -> "~15 cm". Displacement: "over 1.25 kilometers" (body) and "~1 km" (abstract) -> "over 1 km".
+- laccolith: "lopolithically deforming" (Discussion) and "lopolithic deformation" (abstract) -> laccolith-. Appendix B's "lopolith" (the Bushveld as a whole) untouched.
+- Naming: the feature is "Kliprivier Synform" throughout Chapter 5 and its abstract (16 "Kliprivier Monocline/Syncline/synform" -> "Kliprivier Synform", incl. the Discussion heading "Origin of the Kliprivier Synform and Draaikraal Lineament" and "[of the Klipriver Synform]" in the van der Merwe quote); "syncline" survives only in van der Merwe's quoted name, "monocline" only as your interpretation (Discussion, Conclusions). Photo captions (Word file) not changed.
+### Mottled-anorthosite comparison (new, DRAFT)
+- `Chapter5/Writing/chapter5_ma_correlation.tex`: Table `tab:ch5-ma-correlation` (six outcrops: reference / Latypov et al. / this work, for UMA and MMA; height, thickness, magnetism, texture and associated lithologies -- all from the chapter text and captions, `\todo{?}` where not stated) and six-photo Figure `fig:ch5-ma-correlation` (49, 86, 90 / 109, 87, 115) with a caption condensed from the album captions. \input{} in the Correlation subsection after a new pointer sentence.
+- `ch5_photo_refs.py`: `MAIN_TEXT_PHOTOS` += 49, 86, 87, 90, 109, 115 (links now go to the figure panels); 86, 87, 90 removed from `APPENDIX_PHOTOS` (album now 17 photos); 49, 109, 115 leave the supplement. Albums regenerated.
+
+## 2026-10-29: anorthosite comparison table layout
+- `chapter5_ma_correlation.tex` (backup `.pre_rowspacing_20261029`): coordinates on their own line under each outcrop name (`\newline{\scriptsize ...}`, proper minus signs, tab separators removed); `\addlinespace` between rows; straight quotes -> ``...''; removed a stray empty row after the photo-86 row; added the missing `\\` that ended the photo-87 row (the "MMA of this work" row was running into its last cell); `\todo{coordinates}` for the photo-115 row. No wording changed.
+
+## 2026-10-29b: qualifiers on the mottled-anorthosite correlation (Discussion)
+Backups `chapter5_body.tex.pre_correlation_qualifiers_20261029`, `chapter5_ma_correlation.tex.pre_correlation_qualifiers_20261029`.
+- New paragraph after "...some lack mottles entirely.": distinguishes the confident claim (the northern UMA/MMA of van der Merwe and Latypov et al. are spotted anorthosites) from the tentative one (which northern package is the UMA vs the MMA).
+- "This outcrop is located along strike ... undisplaced and at the same stratigraphic height: ~500 meters" -> author's wording: correlation by the Fgog/pyroxenite/mottled-anorthosite sequence, ~170 m lower (398 vs 564 m; Table 5.1), constant strike/dip caveat (§5.3), ~6.5 km along strike.
+- New paragraph: the northern package could be the MMA; argument unchanged either way.
+- Latypov et al. UMA: "approximately 1000 meters" -> "~1030 m"; "500 meters of stratigraphic displacement" -> "~470 m".
+- New closing paragraph (author's wording) before "Because there are essentially no detailed studies...": no exact height match needed; along-strike thickness variation; correlation follows petrography and needs the smallest lateral change; no fault required.
+- "Though this particular contested correlation..." now ends "(see the end of this subsection)".
+- Fig. 5.9 caption (c): "Latypov et al. (2022) correlated this outcrop with the LMA."
+- Not done (author's choice): strike-normalized mismatch figures; Methods uncertainty sentence.
+
+## 2026-10-29c: sulfide SEM grid moved from Ch. 1 to Ch. 3, merged with marcasite
+Backups `Chapter1/Writing/chapter1_body.tex.pre_semfig_move_20261029`, `Chapter3/Writing/HeInSulfides_Main_Body.tex.pre_semfig_move_20261029`.
+- Ch. 1 (`chapter1_body.tex`, shared with TubeMethodPaper.tex, so the journal paper loses it too): removed Figure `fig:mineral-grid` and its "(Fig.~\ref{fig:mineral-grid})" pointer in the Introduction. Ch. 1 SI section `sem-imaging-of-buffered-and-decomposed-sulfides` left in place (still cited from Ch. 3).
+- Ch. 3: new 3x3 Figure `fig:ch3-sulfide-sem-grid` (rows pyrite / arsenopyrite / marcasite; columns Control / Buffered / Unbuffered) placed after the Fe-S fS2-T figure in "Stabilizing Sulfides for Helium Step Heat Experiments", with a new one-sentence pointer paragraph. Marcasite "Unbuffered" = the former vacuum image; open-air marcasite image dropped from the figure (file kept). Former `fig:ch3-marcasite-grid` removed; all refs in the Discussion ("Effectiveness of the Ampoule Method...") point to the new label; "pyrite and arsenopyrite surfaces" -> "pyrite, arsenopyrite, and marcasite surfaces"; "(open-air marcasite not shown)" added.
+- Image files (LVPy_*, Asp_*/asp_*, .pdf + .tif) moved Chapter1/Figures/source -> Chapter3/Figures/source.
+- Flag: buffered pyrite/marcasite filenames say "600_8Hr" but SI methods say encapsulated runs were 400 °C, 8-11 h; the new caption follows the methods ("400°C for at least 4 hours") and drops the old marcasite caption's "600°C, 8 hours".
+
+## 2026-10-29d: Ch. 3 step-heat experiments table spacing and headers
+Backup `Chapter3/Writing/HeInSulfides_Main_Body.tex.pre_tablespacing_20261029`.
+- Table `tab:ch3-step-heat-tubes`: added `\addlinespace[6pt]` after each body row (none after the last).
+- Column headers: "Geometric factor G (eqn 2.2, Ch.1)" -> "Geometric factor G"; "VR (eqn 5.4, Ch.1)" -> "VR" (both in the first-page and continuation headers).
+
+## 2026-10-29e: Ch. 3 He age vs. apatite inclusion size figure widened
+- `fig:ch3-he-age-vs-inclusion-size`: `width=0.7\textwidth` -> `width=\textwidth`.
+
+## 2026-10-29f: table sizes, Ch. 3 geochron footnote symbols, significant figures (Ken's review)
+Backups: `*.pre_sigfig_20261029` next to every file touched below.
+- **Ch. 2 main-text step-heat tables** (`tab:ch2-distilled-3he`, `tab:ch2-distilled-4he`, `chapter2_body.tex`): now set at body-text size (`\let\scriptsize\normalsize` group around each landscape longtable, `\tabcolsep` 5pt). Headers regrouped (omega / ln(D/a^2) / 4He/3He spanning LB-m-UB) so the 13-column 4He table fits. ln(D/a^2) to 2 dp; 4He/3He ratios to integers.
+- **Ch. 3 geochron tables** (`write_chapter3_geochron_tables.py` -> `chapter3_geochron_tables.tex`): "Note" column removed from the main, trace-element SI, and full SI tables. Sample names now carry `*` (excluded: early/old protocol -- Gympie 013023PVGyPy-1..4, Durango 2211DApA/C/D, 2022StDApA) or a dagger (excluded: outlier -- 0413PyGy-4 and Gogebic 041323MG16b), with footnotes under the table. Value/uncertainty pairs are now `r@{}l` column pairs so the +/- signs align. Main and trace tables at `\small`; full SI table stays `\tiny` (3.5pt column sep).
+- **Rounding, Ch. 3 geochron**: U, Th, Sm, eU 2 dp; Zr 1 dp; 4He 1 dp; ages 1 dp, 0 dp where 2-sigma > 10 Ma. Durango: U, Th, Sm, eU 1 dp. Gogebic hematite: U, eU 1 dp. Cu/As/Ag/Sb: uncertainty to 2 sig figs, value to same place. Uncertainties always to the same decimal place as the value.
+- **Rounding, other tables** (uncertainty to 2 sig figs, value to the same place; ln(D/a^2) 2 dp): Ch. 2 SI permeation-step tables (`fig_permstep_isothermal_fits.py`, rerun), Ch. 2 SI permeation-step 3He table (`chapter2goethite_SI_body.tex`), Ch. 3 3He step-heat tables (`write_chapter3_stepheat_tables.py`, rerun; time to whole minutes; the hand-edited captions in the .tex were preserved -- note the script's caption text differs from them), Ch. 1 SI permeation tables (`chapter1_SI_body.tex`; m values recovered to the needed precision from the 'Distilled ...' sheets of `Chapter1/Tables/MCEmptyTubeData.xlsx` where unambiguous; dropped trailing zeros restored in n0/nt columns), Ch. 2 thermal-history table t_peak to whole Ma (`fig_winsor_mdd_report.py`, `mdd_free_report_values.tex` edited directly), Ch. 1 Table 1.1 geometric factor G to whole cm^-2.
+- **Build fix**: `HeInSulfides_Main_Body.tex` line 630 `\hl{...}` was missing its closing brace (swallowed the rest of Ch. 3); brace added. Backup `HeInSulfides_Main_Body.tex.pre_hlfix_20261029`.
+
+## 2026-10-29f: Ch. 4 D^T D histogram widened by 1 inch
+- `mass_balance_G_hist_DtD_diag_linear.pdf` figure: `width=8.3cm` -> `width=10.84cm` (+2.54 cm).
+
+## 2026-10-29g: proofreading pass (unresolved references, typos, grammar, spelling)
+Every edit is listed in `Claude outputs/proofreading_changes_20261029.md`; backups `*.pre_proof_20261029` next to each file.
+- **Unresolved references/citations fixed**: `\ref{gibson2000,mitchell1998}` (Ch. 2, a \ref used as a citation) -> `\citet{gibsonstuwe2000} and \citet{mitchell1998}`; missing bib keys `gibson2000`->`gibsonstuwe2000`, `farley2012`->`farleyflowers2012` (Intro, Ch. 2), `Ngcobo2026`->`ngcobo2026`, `reiners1999`->`reinersfarley1999`, `guenther2013`->`guenthner2013` (Intro); `\S\ref{sec:ch2-si-mdd}` now points at a new SI section heading "Multiple Diffusion Domain and Thermal History Modeling" (the MDD subsections were previously filed under the gamma_eff calibration section). Hand-typed citations converted to \cite commands (Ch. 2 intro list, Shuster et al. 2005, Bassal et al. 2022, Holcombe et al., Anderson 2005/Ganguly 2008; "Reiners and Farley, 1997" -> reinersfarley1999 (the 1999 titanite paper; no 1997 entry exists); added bib entries cherniakwatson2011, ganguly2008). Hard-coded "supplementary figures 9/10/11", "Table 1", "Chapters 1 and 2", "eqn ... in Chapter 1/2" and a dangling "Diffusive Steady State Assumption for Permeation" section name replaced with \ref. Full draft build: 0 undefined references, 0 multiply defined labels, all citation keys present in references.bib.
+- **Typos/grammar/spelling**: ~470 edits across Introduction, Ch. 1-5 (+SI), Appendix B; field notes/photo captions via `Chapter5/Figures/ch5_spelling.py`. Conventions applied: American spelling (favour/colour/modelling/-ise), "gases" not "gasses", kelvin without degree sign, `$10^{-1}$` exponent braces, curly TeX quotes, \citet vs \citep usage, Zone/Complex/Reef capitalization in Ch. 5/App. B, lowercase compass directions in prose.
+
+## 2026-10-29h: author-contribution statements, Published Content page, AI statement
+Backups: `*.pre_credits_20261029` next to every existing file touched.
+- New `Chapter<n>/Writing/chapter<n>_contributions.tex` (n = 1-5): CRediT statement in a new `chaptercredit` environment (defined in `dissertation_preamble.tex`), `\input{}` right after each chapter's abstract in `Chapter<n>/chapter<n>.tex`. Lines marked `% VERIFY` need confirming before the final deposit.
+- New `Introduction/published_content.tex`, `\input{}` in `dissertation.tex` after the acknowledgements: "Published Content and Contributions" (no published papers yet; lists manuscripts in preparation) plus a "Use of Generative AI" statement.
+
+## 2026-10-29c: anorthosite photo mosaic removed
+- `chapter5_ma_correlation.tex`: the six-photo figure `fig:ch5-ma-correlation` (and its caption) deleted; only Table 5.1 remains. Body pointer now: "...compared in Table~\ref{tab:ch5-ma-correlation}; their photographs are in Appendix~\ref{app:draaikraal-field-data}."
+- `ch5_photo_refs.py`: 49, 86, 87, 90, 109 -> `APPENDIX_PHOTOS` (Appendix A album now 22 photos, with their original album captions); `MAIN_TEXT_PHOTOS` = {60: photo-60 figure, 115: annotated photo-115 figure `fig:ch5-ma-cleavage-photo`}. Albums regenerated. Backups `*.pre_mosaic_removal_20261029`.
+
+## 2026-10-29i: Zenodo software/data in front matter; nGibbs DOI in Ch. 4
+Backups: `*.pre_zenodo_20261029`.
+- `references.bib`: added `thyer2026ngibbs` (nGibbs v0.1.0b4, 10.5281/zenodo.21345830) and `thyer2026dustmap` (DustMAP 0.0.1, 10.5281/zenodo.18895490).
+- `Chapter4_main_body_text.tex`: the two "Zenodo DOI for the release" \todo{}s (Availability and installation; Code and Data Availability) replaced with the v0.1.0b4 Zenodo citation. The training-data "\todo{on zenodo}" is left as is.
+- `Introduction/published_content.tex`: added "Software and data" (nGibbs; Ch. 2 goethite datasets, 10.5281/zenodo.22113166) and "Related software" (DustMAP, not part of the thesis).

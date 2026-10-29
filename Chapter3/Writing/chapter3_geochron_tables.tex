@@ -12,251 +12,253 @@
 %  \ChThreeGeochronMainTraceSITable / \ChThreeGeochronSITable (invoked from
 %  HeInSulfides_SI_body.tex) are available wherever needed.
 %
-%  NOTE on the split (see module docstring for the full rationale): the
-%  original single 14-column main-text table overflowed the landscape text
-%  width by ~4in. Cu/As/Ag/Sb now live only in the new
-%  \ChThreeGeochronMainTraceSITable; the main table keeps Zr (fits within
-%  width) plus U/Th/Sm/eU/4He/Age.
+%  Rounding and footnote-symbol conventions: see the comment block above
+%  DEFAULT_PREC in the generator script.
 % =============================================================
 \newcommand{\ChThreeGeochronMainTable}{%
+{\let\scriptsize\small
 \begin{landscape}
-\begin{footnotesize}
-\begin{longtable}{l r r r r r r r r l}
-\caption{U-Th/He geochronology results for the four sample suites discussed in the main text: Kidd Creek pyrite, Gympie pyrite, and the Durango apatite and Gogebic (MI-43) hematite standards run alongside them, including U, Th, and Sm (the radiogenic-budget elements quantified by ICPMS, \S\ref{sec:ch3-experimental-methods-geochronology}) plus Zr, also measured as a ratio to spike vanadium; `--' denotes below detection or not measured for that aliquot. The remaining ICPMS trace elements measured the same way (Cu, As, Ag, Sb) are reported separately in the Supplementary Information (Table~\ref{tab:ch3-main-geochron-trace}) rather than here, to keep this table within the page width. Ages are the atmospheric-He-corrected `Age (Ma Atm=1Ra Corr.)' value; \textdagger\ marks the handful of early aliquots analyzed before a tube blank was available, for which the uncorrected measured age is reported instead. Excluded aliquots (\S\ref{ch3-results-gympie-ages}) are noted in the last column, as are the first four Durango apatite aliquots (2211DApA, 2211DApC, 2211DApD, 2022StDApA), analyzed under the early ``old method'' protocol that predated the warm atmosphere-degassing step (\S\ref{ch3-geochron-helium-methods}, Fig.~\ref{fig:ch3-durango-age-vs-ra}). The complete compilation, including localities not discussed in the main text, is given in the Supplementary Information (Table~\ref{tab:ch3-si-geochron}).}\label{tab:ch3-main-geochron}\\
+\setlength{\tabcolsep}{4pt}
+\begin{longtable}{l r r@{}l r@{}l r@{}l r@{}l r r r@{}l}
+\caption{U-Th/He geochronology results for the four sample suites discussed in the main text: Kidd Creek pyrite, Gympie pyrite, and the Durango apatite and Gogebic (MI-43) hematite standards run alongside them, including U, Th, and Sm (the radiogenic-budget elements quantified by ICPMS, \S\ref{sec:ch3-experimental-methods-geochronology}) plus Zr, also measured as a ratio to spike vanadium; `--' denotes below detection or not measured for that aliquot. The remaining ICPMS trace elements measured the same way (Cu, As, Ag, Sb) are reported separately in the Supplementary Information (Table~\ref{tab:ch3-main-geochron-trace}) rather than here, to keep this table within the page width. Ages are the atmospheric-He-corrected `Age (Ma Atm=1Ra Corr.)' value. $^{*}$ marks aliquots analyzed under the early (``old method'') protocol that predated the warm atmosphere-degassing step (\S\ref{ch3-geochron-helium-methods}, Fig.~\ref{fig:ch3-durango-age-vs-ra}), and, for the first four Gympie aliquots, also the Parr-vessel HCl digestion (\S\ref{ch3-results-gympie-ages}); $^{\dagger}$ marks outliers excluded from interpretation (\S\ref{ch3-results-gympie-ages}; \S\ref{sec:ch3-experimental-methods-geochronology} for Gogebic 041323MG16b). Uncertainties are 2$\sigma$ and are given to the same decimal place as the value: U, Th, Sm, and eU to 0.01~ppm (0.1~ppm for Durango apatite, and for U and eU in Gogebic hematite), Zr to 0.1~ppm, $^4$He to 0.1~ncc, and ages to 0.1~Ma, or to 1~Ma where the uncertainty exceeds 10~Ma. The complete compilation, including localities not discussed in the main text, is given in the Supplementary Information (Table~\ref{tab:ch3-si-geochron}).}\label{tab:ch3-main-geochron}\\
 \toprule
-Sample & Mass & U & Th & Sm & Zr & eU & $^4$He & Age & Note \\
-& (mg) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ncc) & (Ma) & \\
-\midrule
-\endfirsthead
-\multicolumn{10}{l}{\textit{(continued)}} \\
-\toprule
-Sample & Mass & U & Th & Sm & Zr & eU & $^4$He & Age & Note \\
-& (mg) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ncc) & (Ma) & \\
-\midrule
-\endhead
-\midrule
-\multicolumn{10}{r}{\textit{continued on next page}} \\
-\endfoot
-\bottomrule
-\endlastfoot
-
-\multicolumn{10}{l}{\textbf{Kidd Creek Pyrite (Archean VMS, $\sim$2716 Ma host)}} \\
-2211KC\_Py\_ST05\_C & 4.77 & 0.918$\pm$0.054 & 1.641$\pm$0.040 & 0.099$\pm$0.006 & -- & 1.312 & 470.80 & 694.9$\pm$29.1 &  \\
-2211KC\_Py\_ST05\_A & 3.23 & 0.686$\pm$0.013 & 2.640$\pm$0.050 & 0.134$\pm$0.009 & -- & 1.320 & 305.56 & 644.1$\pm$8.4 &  \\
-2211KC\_Py\_ST05\_B & 1.74 & 0.879$\pm$0.052 & 1.593$\pm$0.033 & 0.203$\pm$0.012 & -- & 1.261 & 159.83 & 621.3$\pm$25.6 &  \\
-2211KC\_Py\_ST05\_D & 1.98 & 0.659$\pm$0.021 & 0.911$\pm$0.029 & 0.037$\pm$0.005 & -- & 0.878 & 165.82 & 810.8$\pm$19.6 &  \\
-011123KCPyST05C & 1.28 & 0.510$\pm$0.019 & 0.732$\pm$0.051 & 0.384$\pm$0.070 & 9.13$\pm$2.64 & 0.686 & 158.07 & 1595.9$\pm$46.0 &  \\
-011423KCPyST05A & 2.41 & 1.706$\pm$0.024 & 4.047$\pm$0.115 & 1.176$\pm$0.071 & 28.91$\pm$2.25 & 2.678 & 389.20 & 591.0$\pm$7.7 &  \\
-011423KCPyST05B & 4.04 & 1.999$\pm$0.052 & 3.383$\pm$0.086 & 2.205$\pm$0.130 & 41.16$\pm$3.86 & 2.811 & 534.00 & 465.2$\pm$8.8 &  \\
-011423KCPyST05C & 3.93 & 0.834$\pm$0.038 & 1.969$\pm$0.062 & 0.492$\pm$0.047 & 15.46$\pm$1.10 & 1.307 & 281.60 & 539.9$\pm$16.3 &  \\
-011423KCPyST05D & 1.46 & 0.441$\pm$0.024 & 0.850$\pm$0.088 & 0.073$\pm$0.035 & 7.43$\pm$2.53 & 0.645 & 71.24 & 731.3$\pm$34.6 &  \\
-013023KCPyST05As1 & 1.66 & 0.905$\pm$0.019 & 7.933$\pm$0.215 & 11.476$\pm$0.420 & 6.85$\pm$1.82 & 2.809 & 259.45 & 551.5$\pm$10.3 &  \\
-013023KCPyST05Cu1 & 1.05 & 0.324$\pm$0.074 & 1.001$\pm$0.122 & 0.249$\pm$0.085 & 4.91$\pm$2.77 & 0.564 & 55.14 & 860.1$\pm$120.5 &  \\
-013023KCPyST05Cu2 & 1.56 & 0.867$\pm$0.018 & 9.902$\pm$0.264 & 16.538$\pm$0.625 & 8.81$\pm$2.16 & 3.244 & 268.77 & 523.4$\pm$10.0 &  \\
-\midrule
-\multicolumn{10}{l}{\textbf{Gympie Pyrite (Permo-Triassic orogenic Au)}} \\
-013023PVGyPy-1 & 3.81 & 0.065$\pm$0.004 & 0.064$\pm$0.011 & 0.128$\pm$0.022 & 1.22$\pm$0.75 & 0.080 & 34.71 & 928.3$\pm$50.9 & excl.: early protocol \\
-013023PVGyPy-2 & 1.15 & 0.272$\pm$0.016 & 0.254$\pm$0.040 & 0.320$\pm$0.065 & 3.58$\pm$2.43 & 0.333 & 47.71 & 1008.0$\pm$51.7 & excl.: early protocol \\
-013023PVGyPy-3 & 1.81 & 0.128$\pm$0.006 & 0.159$\pm$0.024 & 0.173$\pm$0.047 & -- & 0.167 & 31.64 & 763.3$\pm$34.8 & excl.: early protocol \\
-013023PVGyPy-4 & 1.82 & 0.280$\pm$0.041 & 0.358$\pm$0.031 & 0.647$\pm$0.049 & 7.15$\pm$3.71 & 0.366 & 52.23 & 638.1$\pm$69.5 & excl.: early protocol \\
-0413PyGy-1 & 3.54 & 0.462$\pm$0.006 & 0.587$\pm$0.027 & 0.589$\pm$0.069 & 56.95$\pm$3.43 & 0.603 & 53.03 & 233.1$\pm$3.4 &  \\
-0413PyGy-2 & 1.67 & 0.232$\pm$0.014 & 0.362$\pm$0.032 & 0.375$\pm$0.058 & 40.37$\pm$3.17 & 0.319 & 15.12 & 257.4$\pm$12.6 &  \\
-0413PyGy-3 & 1.32 & 0.747$\pm$0.018 & 0.721$\pm$0.047 & 0.775$\pm$0.124 & 72.56$\pm$3.28 & 0.920 & 30.29 & 235.2$\pm$5.3 &  \\
-0413PyGy-4 & 1.85 & 0.862$\pm$0.016 & 0.791$\pm$0.037 & 0.489$\pm$0.071 & 77.41$\pm$5.18 & 1.052 & 126.53 & 622.9$\pm$10.2 & excl.: outlier \\
-062123GyPyHClb & 2.15 & 0.636$\pm$0.022 & 0.583$\pm$0.050 & 0.498$\pm$0.028 & 89.48$\pm$7.17 & 0.776 & 32.69 & 191.1$\pm$6.1 &  \\
-062123GyPyHClc & 9.43 & 0.331$\pm$0.007 & 0.394$\pm$0.011 & 0.375$\pm$0.022 & 65.54$\pm$2.35 & 0.425 & 126.01 & 306.4$\pm$5.0 &  \\
-230625GyPyHCl & 2.38 & 0.477$\pm$0.007 & 0.463$\pm$0.041 & 0.971$\pm$0.053 & 64.39$\pm$2.99 & 0.588 & 35.29 & 227.5$\pm$4.5 &  \\
-230625GyPyUnAbr & 2.32 & 0.615$\pm$0.011 & 0.518$\pm$0.044 & 0.782$\pm$0.053 & 61.55$\pm$2.84 & 0.739 & 50.13 & 285.0$\pm$5.5 &  \\
-230628GyPyHClab & 6.17 & 0.627$\pm$0.007 & 0.716$\pm$0.034 & 0.785$\pm$0.051 & 96.43$\pm$3.82 & 0.799 & 133.56 & 264.7$\pm$3.6 &  \\
-230628GyPyHClc & 4.03 & 0.585$\pm$0.023 & 0.478$\pm$0.025 & 0.650$\pm$0.045 & 64.98$\pm$6.53 & 0.699 & 78.96 & 275.6$\pm$9.1 &  \\
-230628GyPyUnAbrA & 2.53 & 0.308$\pm$0.013 & 0.371$\pm$0.042 & 0.396$\pm$0.032 & 63.98$\pm$3.08 & 0.397 & 31.76 & 303.6$\pm$12.3 &  \\
-230628GyPyUnAbrB & 1.57 & 0.468$\pm$0.012 & 0.410$\pm$0.068 & 0.632$\pm$0.049 & 64.38$\pm$6.01 & 0.567 & 23.90 & 261.8$\pm$8.9 &  \\
-\midrule
-\multicolumn{10}{l}{\textbf{Durango Apatite Standard (accepted age 32.1 Ma; Farley 2000)}} \\
-2211DApA & 0.81 & 10.375$\pm$0.104 & 193.585$\pm$3.785 & 25.000$\pm$0.909 & -- & 56.835 & 141.43 & 31.7$\pm$0.5 & old method: pre-degassing \\
-2211DApC & 0.82 & 10.830$\pm$0.127 & 206.180$\pm$4.095 & 24.512$\pm$0.743 & -- & 60.313 & 181.23 & 36.8$\pm$0.6 & old method: pre-degassing \\
-2211DApD & 0.31 & 12.593$\pm$0.188 & 272.219$\pm$4.710 & 31.500$\pm$1.123 & -- & 77.926 & 81.50 & 29.4$\pm$0.4 & old method: pre-degassing \\
-2022StDApA & 0.30 & 12.615$\pm$0.216 & 230.680$\pm$5.529 & 71.500$\pm$1.955 & -- & 67.979 & 69.61 & 29.5$\pm$0.6 & old method: pre-degassing \\
-011123DAp1 & 0.53 & 10.233$\pm$0.205 & 206.604$\pm$7.328 & 135.566$\pm$5.575 & 10.47$\pm$7.17 & 59.818 & 96.71 & 31.2$\pm$0.9 &  \\
-011123DAp2 & 0.58 & 10.892$\pm$0.116 & 200.372$\pm$5.387 & 126.983$\pm$5.017 & -- & 58.982 & 107.43 & 32.2$\pm$0.7 &  \\
-011123DAp3 & 0.79 & 11.203$\pm$0.092 & 226.208$\pm$5.951 & 120.190$\pm$4.386 & -- & 65.493 & 164.65 & 32.7$\pm$0.7 &  \\
-011423DAp1 & 0.93 & 9.901$\pm$0.107 & 196.551$\pm$5.118 & 133.065$\pm$4.774 & -- & 57.073 & 165.93 & 32.2$\pm$0.7 &  \\
-011423DAp2 & 1.51 & 11.131$\pm$0.122 & 204.980$\pm$4.486 & 129.139$\pm$4.798 & -- & 60.326 & 286.66 & 32.5$\pm$0.6 &  \\
-011423DAp3 & 0.98 & 11.494$\pm$0.150 & 223.171$\pm$5.900 & 123.673$\pm$4.393 & -- & 65.055 & 203.52 & 32.9$\pm$0.7 &  \\
-011423DAp4 & 0.81 & 11.773$\pm$0.142 & 235.763$\pm$6.994 & 125.741$\pm$5.204 & 8.92$\pm$4.03 & 68.356 & 170.67 & 31.8$\pm$0.8 &  \\
-062123DAp & 0.30 & 13.397$\pm$0.173 & 266.573$\pm$7.381 & 142.947$\pm$10.021 & 5.04$\pm$2.79 & 77.375 & 72.66 & 32.3$\pm$0.7 &  \\
-062523DAp & 0.85 & 11.074$\pm$0.097 & 211.843$\pm$5.315 & 123.774$\pm$8.205 & 2.71$\pm$1.71 & 61.916 & 161.32 & 31.6$\pm$0.7 &  \\
-062823DAp & -- & -- & -- & -- & -- & -- & 177.58 & 31.9$\pm$0.4 &  \\
-Average for > 0.5 mg & -- & -- & -- & -- & -- & -- & -- & 32.1$\pm$0.2 &  \\
-\midrule
-\multicolumn{10}{l}{\textbf{Gogebic Iron Range BIF Hematite Standard (MI-43; 571 Ma)}} \\
-2211HemMSA & 1.37 & 11.793$\pm$0.131 & 0.039$\pm$0.012 & 0.344$\pm$0.029 & -- & 11.802 & 750.58 & 450.1$\pm$4.8 &  \\
-2211HemMSB & 2.12 & 8.765$\pm$0.117 & 0.059$\pm$0.007 & 0.343$\pm$0.017 & -- & 8.779 & 1070.17 & 554.8$\pm$7.0 &  \\
-041323MG16a & 0.46 & 9.199$\pm$0.134 & 0.000$\pm$0.000 & 1.559$\pm$0.192 & -- & 9.199 & 240.72 & 549.4$\pm$7.7 &  \\
-041323MG16b & 0.49 & 2.153$\pm$0.057 & 0.089$\pm$0.083 & 0.866$\pm$0.154 & 19.36$\pm$5.03 & 2.174 & 188.74 & 1539.7$\pm$35.2 &  \\
-041323MG16d & 0.28 & 11.281$\pm$0.193 & 0.000$\pm$0.000 & 1.548$\pm$0.344 & -- & 11.281 & 174.28 & 531.8$\pm$8.3 &  \\
-041323MG16e & 0.42 & 12.062$\pm$0.467 & 0.441$\pm$0.268 & 1.864$\pm$0.457 & 31.06$\pm$24.33 & 12.168 & 257.09 & 489.6$\pm$17.8 &  \\
-062123MS & 0.32 & 10.072$\pm$0.102 & 0.000$\pm$0.260 & 1.808$\pm$0.101 & -- & 10.072 & 187.09 & 561.8$\pm$5.5 &  \\
-230625MSHm & 0.23 & 11.371$\pm$0.121 & 0.000$\pm$0.398 & 1.811$\pm$0.183 & -- & 11.371 & 148.88 & 549.4$\pm$6.0 &  \\
-230628MSHm & 0.42 & 9.747$\pm$0.111 & 0.000$\pm$0.204 & 1.633$\pm$0.167 & -- & 9.747 & 244.96 & 579.5$\pm$6.4 &  \\
-\end{longtable}
-\end{footnotesize}
-\end{landscape}
-}
-
-\newcommand{\ChThreeGeochronMainTraceSITable}{%
-\begin{landscape}
-\begin{footnotesize}
-\begin{longtable}{l r r r r l}
-\caption{Cu, As, Ag, and Sb (measured as ratios to spike vanadium by the same ICPMS run as U, Th, Sm, and Zr, \S\ref{sec:ch3-experimental-methods-geochronology}) for the same Kidd Creek, Gympie, Durango, and Gogebic aliquots reported in Table~\ref{tab:ch3-main-geochron}, in the same row order; `--' denotes below detection or not measured for that aliquot. Sample notes are repeated from Table~\ref{tab:ch3-main-geochron} for reference.}\label{tab:ch3-main-geochron-trace}\\
-\toprule
-Sample & Cu & As & Ag & Sb & Note \\
-& (ppm) & (ppm) & (ppm) & (ppm) & \\
-\midrule
-\endfirsthead
-\multicolumn{6}{l}{\textit{(continued)}} \\
-\toprule
-Sample & Cu & As & Ag & Sb & Note \\
-& (ppm) & (ppm) & (ppm) & (ppm) & \\
-\midrule
-\endhead
-\midrule
-\multicolumn{6}{r}{\textit{continued on next page}} \\
-\endfoot
-\bottomrule
-\endlastfoot
-
-\multicolumn{6}{l}{\textbf{Kidd Creek Pyrite (Archean VMS, $\sim$2716 Ma host)}} \\
-2211KC\_Py\_ST05\_C & -- & -- & -- & -- &  \\
-2211KC\_Py\_ST05\_A & -- & -- & -- & -- &  \\
-2211KC\_Py\_ST05\_B & -- & -- & -- & -- &  \\
-2211KC\_Py\_ST05\_D & -- & -- & -- & -- &  \\
-011123KCPyST05C & 248.36$\pm$27.86 & 49.38$\pm$12.69 & 3.88$\pm$0.98 & 15.91$\pm$0.94 &  \\
-011423KCPyST05A & 555.10$\pm$38.86 & 5922.20$\pm$397.89 & 7.82$\pm$1.12 & 35.69$\pm$0.95 &  \\
-011423KCPyST05B & 1365.56$\pm$58.41 & 1604.14$\pm$109.70 & 12.62$\pm$1.04 & 22.44$\pm$0.41 &  \\
-011423KCPyST05C & 780.58$\pm$52.49 & 8026.88$\pm$487.81 & 11.17$\pm$1.64 & 21.97$\pm$0.46 &  \\
-011423KCPyST05D & 146.71$\pm$19.63 & 11440.33$\pm$796.21 & 2.13$\pm$1.35 & 24.09$\pm$0.73 &  \\
-013023KCPyST05As1 & 17.41$\pm$7.76 & 47121.03$\pm$2800.88 & -- & 38.45$\pm$0.81 &  \\
-013023KCPyST05Cu1 & 314.00$\pm$30.30 & 11923.72$\pm$782.77 & 3.52$\pm$2.05 & 23.93$\pm$1.33 &  \\
-013023KCPyST05Cu2 & 102.88$\pm$20.20 & 410116.35$\pm$23437.59 & -- & 1235.42$\pm$29.55 &  \\
-\midrule
-\multicolumn{6}{l}{\textbf{Gympie Pyrite (Permo-Triassic orogenic Au)}} \\
-013023PVGyPy-1 & 42.50$\pm$7.50 & 202426.65$\pm$12489.88 & 0.73$\pm$0.41 & 138.00$\pm$3.18 & excl.: early protocol \\
-013023PVGyPy-2 & 196.52$\pm$14.56 & 1045127.96$\pm$63721.03 & 3.15$\pm$1.26 & 733.74$\pm$21.57 & excl.: early protocol \\
-013023PVGyPy-3 & 15.93$\pm$8.91 & 433911.06$\pm$27230.00 & 2.81$\pm$0.86 & 345.22$\pm$9.92 & excl.: early protocol \\
-013023PVGyPy-4 & 38.76$\pm$16.89 & 616561.59$\pm$36135.06 & 1.67$\pm$0.79 & 333.74$\pm$7.83 & excl.: early protocol \\
-0413PyGy-1 & 43.08$\pm$8.28 & 552.38$\pm$44.66 & 9.26$\pm$1.92 & 70.17$\pm$4.40 &  \\
-0413PyGy-2 & 33.14$\pm$8.87 & 164.64$\pm$37.86 & 8.78$\pm$2.05 & 12.54$\pm$3.70 &  \\
-0413PyGy-3 & 95.81$\pm$27.83 & 3445.18$\pm$214.54 & 7.91$\pm$4.05 & 61.53$\pm$5.65 &  \\
-0413PyGy-4 & 30.30$\pm$10.79 & 3814.85$\pm$170.90 & 7.41$\pm$2.90 & 82.93$\pm$4.53 & excl.: outlier \\
-062123GyPyHClb & 29.50$\pm$5.71 & 3594.31$\pm$91.81 & 4.76$\pm$1.64 & 186.80$\pm$5.22 &  \\
-062123GyPyHClc & 21.71$\pm$3.17 & 499.31$\pm$18.48 & 2.30$\pm$1.11 & 6.36$\pm$0.19 &  \\
-230625GyPyHCl & 30.60$\pm$5.78 & 13394.39$\pm$344.59 & 4.16$\pm$1.53 & 144.68$\pm$5.06 &  \\
-230625GyPyUnAbr & 11.48$\pm$2.49 & 101443.33$\pm$2285.09 & 2.85$\pm$1.18 & 166.23$\pm$5.89 &  \\
-230628GyPyHClab & 60.99$\pm$6.34 & 297125.64$\pm$8329.25 & 72.30$\pm$26.22 & 222.09$\pm$12.53 &  \\
-230628GyPyHClc & 23.00$\pm$4.19 & 33613.36$\pm$1092.63 & 7.65$\pm$3.09 & 183.41$\pm$11.95 &  \\
-230628GyPyUnAbrA & 30.71$\pm$4.04 & 1615.76$\pm$61.65 & 4.60$\pm$1.97 & 96.60$\pm$6.99 &  \\
-230628GyPyUnAbrB & 12.00$\pm$5.29 & 1498.79$\pm$70.73 & 7.27$\pm$3.08 & 45.68$\pm$3.40 &  \\
-\midrule
-\multicolumn{6}{l}{\textbf{Durango Apatite Standard (accepted age 32.1 Ma; Farley 2000)}} \\
-2211DApA & -- & -- & -- & -- & old method: pre-degassing \\
-2211DApC & -- & -- & -- & -- & old method: pre-degassing \\
-2211DApD & -- & -- & -- & -- & old method: pre-degassing \\
-2022StDApA & -- & -- & -- & -- & old method: pre-degassing \\
-011123DAp1 & -- & 924.97$\pm$72.80 & 118.08$\pm$10.69 & 89.07$\pm$4.68 &  \\
-011123DAp2 & -- & 910.07$\pm$100.20 & -- & 26.32$\pm$2.87 &  \\
-011123DAp3 & -- & 803.92$\pm$55.21 & -- & 49.44$\pm$1.01 &  \\
-011423DAp1 & -- & 787.88$\pm$50.76 & 1.79$\pm$1.42 & 28.71$\pm$0.83 &  \\
-011423DAp2 & -- & 846.83$\pm$57.62 & -- & 17.66$\pm$0.58 &  \\
-011423DAp3 & -- & 820.23$\pm$71.82 & -- & 23.65$\pm$0.54 &  \\
-011423DAp4 & -- & 810.88$\pm$61.16 & -- & 42.87$\pm$2.29 &  \\
-062123DAp & -- & 665.14$\pm$204.98 & -- & -- &  \\
-062523DAp & 24.94$\pm$8.99 & 799.92$\pm$156.54 & -- & -- &  \\
-062823DAp & -- & -- & -- & -- &  \\
-Average for > 0.5 mg & -- & -- & -- & -- &  \\
-\midrule
-\multicolumn{6}{l}{\textbf{Gogebic Iron Range BIF Hematite Standard (MI-43; 571 Ma)}} \\
-2211HemMSA & -- & -- & -- & -- &  \\
-2211HemMSB & -- & -- & -- & -- &  \\
-041323MG16a & -- & 338.77$\pm$109.12 & -- & -- &  \\
-041323MG16b & 77.04$\pm$34.63 & 1310.34$\pm$209.47 & 10.81$\pm$9.03 & -- &  \\
-041323MG16d & -- & 3960.06$\pm$226.90 & 20.03$\pm$15.53 & -- &  \\
-041323MG16e & -- & 8490.93$\pm$1373.53 & -- & -- &  \\
-062123MS & -- & 2717.17$\pm$112.31 & 3.63$\pm$1.42 & 18.83$\pm$0.96 &  \\
-230625MSHm & -- & 1849.86$\pm$128.15 & 78.00$\pm$29.79 & 89.12$\pm$4.54 &  \\
-230628MSHm & -- & 443.71$\pm$19.65 & 3.06$\pm$1.63 & 93.15$\pm$7.07 &  \\
-\end{longtable}
-\end{footnotesize}
-\end{landscape}
-}
-
-\newcommand{\ChThreeGeochronSITable}{%
-{\let\scriptsize\tiny\setlength{\tabcolsep}{0.75pt}
-\begin{landscape}
-\begin{footnotesize}
-\begin{longtable}{l r r r r r r r r r r r r l}
-\caption{U-Th/He geochronology results for all remaining sample suites in the compilation, not discussed in the main text: Kidd Creek replicate/mass-only aliquots, Franklin (NJ) pyrite and fluorite, Rustenberg/Pilanesberg pyrite, Magnet Cove carbonatite pyrite, French Creek magnetite/pyrite, and Salzburg arsenopyrite. Reported here for completeness, with the full trace-element suite (Cu, As, Zr, Ag, Sb) retained since these aliquots are not duplicated in the main text; columns and conventions as in Table~\ref{tab:ch3-main-geochron}.}\label{tab:ch3-si-geochron}\\
-\toprule
-Sample & Mass & U & Th & Sm & Cu & As & Zr & Ag & Sb & eU & $^4$He & Age & Note \\
-& (mg) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ncc) & (Ma) & \\
+Sample & Mass & \multicolumn{2}{c}{U} & \multicolumn{2}{c}{Th} & \multicolumn{2}{c}{Sm} & \multicolumn{2}{c}{Zr} & eU & $^4$He & \multicolumn{2}{c}{Age} \\
+ & (mg) & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & (ppm) & (ncc) & \multicolumn{2}{c}{(Ma)} \\
 \midrule
 \endfirsthead
 \multicolumn{14}{l}{\textit{(continued)}} \\
 \toprule
-Sample & Mass & U & Th & Sm & Cu & As & Zr & Ag & Sb & eU & $^4$He & Age & Note \\
-& (mg) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ncc) & (Ma) & \\
+Sample & Mass & \multicolumn{2}{c}{U} & \multicolumn{2}{c}{Th} & \multicolumn{2}{c}{Sm} & \multicolumn{2}{c}{Zr} & eU & $^4$He & \multicolumn{2}{c}{Age} \\
+ & (mg) & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & (ppm) & (ncc) & \multicolumn{2}{c}{(Ma)} \\
 \midrule
 \endhead
 \midrule
 \multicolumn{14}{r}{\textit{continued on next page}} \\
 \endfoot
 \bottomrule
+\multicolumn{14}{@{}l}{$^{*}$Excluded: analyzed under the early (old) protocol (\S\ref{ch3-geochron-helium-methods}, \S\ref{ch3-results-gympie-ages}).} \\
+\multicolumn{14}{@{}l}{$^{\dagger}$Excluded: outlier (\S\ref{ch3-results-gympie-ages}, Fig.~\ref{fig:ch3-gogebic-he-vs-eu}).} \\
 \endlastfoot
 
-\multicolumn{14}{l}{\textbf{Kidd Creek Pyrite (replicate / mass-only aliquots)}} \\
-2211KC\_Py\_ST05\_DU1 & 2.09 & 0.78$\pm$0.03 & 1.76$\pm$0.04 & 0.08$\pm$0.01 & -- & -- & -- & -- & -- & 1.20 & -- & -- &  \\
-2211KC\_Py\_ST05\_DU2 & 2.98 & 0.80$\pm$0.01 & 2.19$\pm$0.06 & 0.02$\pm$0.00 & -- & -- & -- & -- & -- & 1.33 & -- & -- &  \\
-2211KC\_Py\_ST05\_DU3 & 1.77 & 0.77$\pm$0.03 & 1.93$\pm$0.06 & 0.10$\pm$0.01 & -- & -- & -- & -- & -- & 1.23 & -- & -- &  \\
-12122022KCPyST05A & 14.35 & -- & -- & -- & -- & -- & -- & -- & -- & -- & 1422.90 & -- &  \\
-12122022KCPyST05B & 10.52 & -- & -- & -- & -- & -- & -- & -- & -- & -- & 960.74 & -- &  \\
-12122022KCPyST05C & 12.19 & -- & -- & -- & -- & -- & -- & -- & -- & -- & 1203.97 & -- &  \\
-12122022KCPyST05D & 9.60 & -- & -- & -- & -- & -- & -- & -- & -- & -- & 865.75 & -- &  \\
+\multicolumn{14}{l}{\textbf{Kidd Creek Pyrite (Archean VMS, $\sim$2716 Ma host)}} \\
+2211KC\_Py\_ST05\_C & 4.77 & 0.92 & $\pm$0.05 & 1.64 & $\pm$0.04 & 0.10 & $\pm$0.01 & -- &  & 1.31 & 470.8 & 695 & $\pm$29 \\
+2211KC\_Py\_ST05\_A & 3.23 & 0.69 & $\pm$0.01 & 2.64 & $\pm$0.05 & 0.13 & $\pm$0.01 & -- &  & 1.32 & 305.6 & 644.1 & $\pm$8.4 \\
+2211KC\_Py\_ST05\_B & 1.74 & 0.88 & $\pm$0.05 & 1.59 & $\pm$0.03 & 0.20 & $\pm$0.01 & -- &  & 1.26 & 159.8 & 621 & $\pm$26 \\
+2211KC\_Py\_ST05\_D & 1.98 & 0.66 & $\pm$0.02 & 0.91 & $\pm$0.03 & 0.04 & $\pm$0.00 & -- &  & 0.88 & 165.8 & 811 & $\pm$20 \\
+011123KCPyST05C & 1.28 & 0.51 & $\pm$0.02 & 0.73 & $\pm$0.05 & 0.38 & $\pm$0.07 & 9.1 & $\pm$2.6 & 0.69 & 158.1 & 1596 & $\pm$46 \\
+011423KCPyST05A & 2.41 & 1.71 & $\pm$0.02 & 4.05 & $\pm$0.12 & 1.18 & $\pm$0.07 & 28.9 & $\pm$2.2 & 2.68 & 389.2 & 591.0 & $\pm$7.7 \\
+011423KCPyST05B & 4.04 & 2.00 & $\pm$0.05 & 3.38 & $\pm$0.09 & 2.21 & $\pm$0.13 & 41.2 & $\pm$3.9 & 2.81 & 534.0 & 465.2 & $\pm$8.8 \\
+011423KCPyST05C & 3.93 & 0.83 & $\pm$0.04 & 1.97 & $\pm$0.06 & 0.49 & $\pm$0.05 & 15.5 & $\pm$1.1 & 1.31 & 281.6 & 540 & $\pm$16 \\
+011423KCPyST05D & 1.46 & 0.44 & $\pm$0.02 & 0.85 & $\pm$0.09 & 0.07 & $\pm$0.03 & 7.4 & $\pm$2.5 & 0.64 & 71.2 & 731 & $\pm$35 \\
+013023KCPyST05As1 & 1.66 & 0.90 & $\pm$0.02 & 7.93 & $\pm$0.21 & 11.48 & $\pm$0.42 & 6.8 & $\pm$1.8 & 2.81 & 259.4 & 552 & $\pm$10 \\
+013023KCPyST05Cu1 & 1.05 & 0.32 & $\pm$0.07 & 1.00 & $\pm$0.12 & 0.25 & $\pm$0.09 & 4.9 & $\pm$2.8 & 0.56 & 55.1 & 860 & $\pm$121 \\
+013023KCPyST05Cu2 & 1.56 & 0.87 & $\pm$0.02 & 9.90 & $\pm$0.26 & 16.54 & $\pm$0.62 & 8.8 & $\pm$2.2 & 3.24 & 268.8 & 523.4 & $\pm$10.0 \\
 \midrule
-\multicolumn{14}{l}{\textbf{Franklin, NJ Pyrite (marble/volcanics, $\sim$1.3--1.0 Ga)}} \\
-2211GFr\_PyA & 2.49 & 0.29$\pm$0.01 & 0.05$\pm$0.01 & 0.02$\pm$0.00 & -- & -- & -- & -- & -- & 0.31 & 51.29 & 529.1$\pm$22.1 &  \\
-2211GFr\_PyB & 3.00 & 1.78$\pm$0.02 & 0.01$\pm$0.01 & 0.01$\pm$0.00 & -- & -- & -- & -- & -- & 1.78 & 66.87 & 106.9$\pm$1.3 &  \\
-2211StFr\_PyA & 1.45 & 0.64$\pm$0.03 & 0.02$\pm$0.01 & 0.02$\pm$0.00 & -- & -- & -- & -- & -- & 0.65 & 42.84 & 322.2$\pm$14.8 &  \\
-2211StFr\_PyB & 2.53 & 0.12$\pm$0.01 & 0.00$\pm$0.00 & 0.91$\pm$0.04 & -- & -- & -- & -- & -- & 0.12 & 57.76 & 1256.6$\pm$124.3 &  \\
-2211AtmFr\_PyC & 1.93 & 1.00$\pm$0.02 & 0.01$\pm$0.01 & 0.02$\pm$0.00 & -- & -- & -- & -- & -- & 1.00 & 55.14 & 223.2$\pm$4.6 &  \\
+\multicolumn{14}{l}{\textbf{Gympie Pyrite (Permo-Triassic orogenic Au)}} \\
+013023PVGyPy-1$^{*}$ & 3.81 & 0.06 & $\pm$0.00 & 0.06 & $\pm$0.01 & 0.13 & $\pm$0.02 & 1.2 & $\pm$0.7 & 0.08 & 34.7 & 928 & $\pm$51 \\
+013023PVGyPy-2$^{*}$ & 1.15 & 0.27 & $\pm$0.02 & 0.25 & $\pm$0.04 & 0.32 & $\pm$0.07 & 3.6 & $\pm$2.4 & 0.33 & 47.7 & 1008 & $\pm$52 \\
+013023PVGyPy-3$^{*}$ & 1.81 & 0.13 & $\pm$0.01 & 0.16 & $\pm$0.02 & 0.17 & $\pm$0.05 & -- &  & 0.17 & 31.6 & 763 & $\pm$35 \\
+013023PVGyPy-4$^{*}$ & 1.82 & 0.28 & $\pm$0.04 & 0.36 & $\pm$0.03 & 0.65 & $\pm$0.05 & 7.1 & $\pm$3.7 & 0.37 & 52.2 & 638 & $\pm$70 \\
+0413PyGy-1 & 3.54 & 0.46 & $\pm$0.01 & 0.59 & $\pm$0.03 & 0.59 & $\pm$0.07 & 56.9 & $\pm$3.4 & 0.60 & 53.0 & 233.1 & $\pm$3.4 \\
+0413PyGy-2 & 1.67 & 0.23 & $\pm$0.01 & 0.36 & $\pm$0.03 & 0.37 & $\pm$0.06 & 40.4 & $\pm$3.2 & 0.32 & 15.1 & 257 & $\pm$13 \\
+0413PyGy-3 & 1.32 & 0.75 & $\pm$0.02 & 0.72 & $\pm$0.05 & 0.77 & $\pm$0.12 & 72.6 & $\pm$3.3 & 0.92 & 30.3 & 235.2 & $\pm$5.3 \\
+0413PyGy-4$^{\dagger}$ & 1.85 & 0.86 & $\pm$0.02 & 0.79 & $\pm$0.04 & 0.49 & $\pm$0.07 & 77.4 & $\pm$5.2 & 1.05 & 126.5 & 623 & $\pm$10 \\
+062123GyPyHClb & 2.15 & 0.64 & $\pm$0.02 & 0.58 & $\pm$0.05 & 0.50 & $\pm$0.03 & 89.5 & $\pm$7.2 & 0.78 & 32.7 & 191.1 & $\pm$6.1 \\
+062123GyPyHClc & 9.43 & 0.33 & $\pm$0.01 & 0.39 & $\pm$0.01 & 0.37 & $\pm$0.02 & 65.5 & $\pm$2.4 & 0.43 & 126.0 & 306.4 & $\pm$5.0 \\
+230625GyPyHCl & 2.38 & 0.48 & $\pm$0.01 & 0.46 & $\pm$0.04 & 0.97 & $\pm$0.05 & 64.4 & $\pm$3.0 & 0.59 & 35.3 & 227.5 & $\pm$4.5 \\
+230625GyPyUnAbr & 2.32 & 0.61 & $\pm$0.01 & 0.52 & $\pm$0.04 & 0.78 & $\pm$0.05 & 61.5 & $\pm$2.8 & 0.74 & 50.1 & 285.0 & $\pm$5.5 \\
+230628GyPyHClab & 6.17 & 0.63 & $\pm$0.01 & 0.72 & $\pm$0.03 & 0.78 & $\pm$0.05 & 96.4 & $\pm$3.8 & 0.80 & 133.6 & 264.7 & $\pm$3.6 \\
+230628GyPyHClc & 4.03 & 0.58 & $\pm$0.02 & 0.48 & $\pm$0.03 & 0.65 & $\pm$0.04 & 65.0 & $\pm$6.5 & 0.70 & 79.0 & 275.6 & $\pm$9.1 \\
+230628GyPyUnAbrA & 2.53 & 0.31 & $\pm$0.01 & 0.37 & $\pm$0.04 & 0.40 & $\pm$0.03 & 64.0 & $\pm$3.1 & 0.40 & 31.8 & 304 & $\pm$12 \\
+230628GyPyUnAbrB & 1.57 & 0.47 & $\pm$0.01 & 0.41 & $\pm$0.07 & 0.63 & $\pm$0.05 & 64.4 & $\pm$6.0 & 0.57 & 23.9 & 261.8 & $\pm$8.9 \\
 \midrule
-\multicolumn{14}{l}{\textbf{Franklin, NJ Fluorite}} \\
-011423FrFl2 & 1.40 & 3.19$\pm$0.03 & 0.24$\pm$0.07 & 0.21$\pm$0.04 & 32.17$\pm$10.03 & -- & 1.82$\pm$1.13 & 10.23$\pm$1.72 & 35.81$\pm$0.74 & 3.25 & 76.81 & 168.7$\pm$1.9 &  \\
-011423FrFl3 & 1.03 & 5.35$\pm$0.08 & 0.20$\pm$0.06 & 0.34$\pm$0.09 & -- & -- & 5.80$\pm$1.56 & -- & 30.63$\pm$0.71 & 5.40 & 99.90 & 179.3$\pm$2.8 &  \\
+\multicolumn{14}{l}{\textbf{Durango Apatite Standard (accepted age 32.1 Ma; Farley 2000)}} \\
+2211DApA$^{*}$ & 0.81 & 10.4 & $\pm$0.1 & 193.6 & $\pm$3.8 & 25.0 & $\pm$0.9 & -- &  & 56.8 & 141.4 & 31.7 & $\pm$0.5 \\
+2211DApC$^{*}$ & 0.82 & 10.8 & $\pm$0.1 & 206.2 & $\pm$4.1 & 24.5 & $\pm$0.7 & -- &  & 60.3 & 181.2 & 36.8 & $\pm$0.6 \\
+2211DApD$^{*}$ & 0.31 & 12.6 & $\pm$0.2 & 272.2 & $\pm$4.7 & 31.5 & $\pm$1.1 & -- &  & 77.9 & 81.5 & 29.4 & $\pm$0.4 \\
+2022StDApA$^{*}$ & 0.30 & 12.6 & $\pm$0.2 & 230.7 & $\pm$5.5 & 71.5 & $\pm$2.0 & -- &  & 68.0 & 69.6 & 29.5 & $\pm$0.6 \\
+011123DAp1 & 0.53 & 10.2 & $\pm$0.2 & 206.6 & $\pm$7.3 & 135.6 & $\pm$5.6 & 10.5 & $\pm$7.2 & 59.8 & 96.7 & 31.2 & $\pm$0.9 \\
+011123DAp2 & 0.58 & 10.9 & $\pm$0.1 & 200.4 & $\pm$5.4 & 127.0 & $\pm$5.0 & -- &  & 59.0 & 107.4 & 32.2 & $\pm$0.7 \\
+011123DAp3 & 0.79 & 11.2 & $\pm$0.1 & 226.2 & $\pm$6.0 & 120.2 & $\pm$4.4 & -- &  & 65.5 & 164.7 & 32.7 & $\pm$0.7 \\
+011423DAp1 & 0.93 & 9.9 & $\pm$0.1 & 196.6 & $\pm$5.1 & 133.1 & $\pm$4.8 & -- &  & 57.1 & 165.9 & 32.2 & $\pm$0.7 \\
+011423DAp2 & 1.51 & 11.1 & $\pm$0.1 & 205.0 & $\pm$4.5 & 129.1 & $\pm$4.8 & -- &  & 60.3 & 286.7 & 32.5 & $\pm$0.6 \\
+011423DAp3 & 0.98 & 11.5 & $\pm$0.1 & 223.2 & $\pm$5.9 & 123.7 & $\pm$4.4 & -- &  & 65.1 & 203.5 & 32.9 & $\pm$0.7 \\
+011423DAp4 & 0.81 & 11.8 & $\pm$0.1 & 235.8 & $\pm$7.0 & 125.7 & $\pm$5.2 & 8.9 & $\pm$4.0 & 68.4 & 170.7 & 31.8 & $\pm$0.8 \\
+062123DAp & 0.30 & 13.4 & $\pm$0.2 & 266.6 & $\pm$7.4 & 142.9 & $\pm$10.0 & 5.0 & $\pm$2.8 & 77.4 & 72.7 & 32.3 & $\pm$0.7 \\
+062523DAp & 0.85 & 11.1 & $\pm$0.1 & 211.8 & $\pm$5.3 & 123.8 & $\pm$8.2 & 2.7 & $\pm$1.7 & 61.9 & 161.3 & 31.6 & $\pm$0.7 \\
+062823DAp & -- & -- &  & -- &  & -- &  & -- &  & -- & 177.6 & 31.9 & $\pm$0.4 \\
+Average for > 0.5 mg & -- & -- &  & -- &  & -- &  & -- &  & -- & -- & 32.1 & $\pm$0.2 \\
 \midrule
-\multicolumn{14}{l}{\textbf{Rustenberg/Pilanesberg(?) Pyrite}} \\
-013023BVPy H-3026-1 & 1.03 & 2.50$\pm$0.31 & 1.04$\pm$0.09 & 0.29$\pm$0.07 & 173.63$\pm$26.23 & 3328.64$\pm$233.02 & 10.86$\pm$5.67 & -- & 152.60$\pm$3.84 & 2.75 & 226.12 & 747.3$\pm$79.0 &  \\
-041323BVPy1 & 0.95 & 0.56$\pm$0.02 & 0.17$\pm$0.05 & 0.05$\pm$0.05 & 105.69$\pm$27.36 & 391.95$\pm$59.38 & -- & -- & -- & 0.60 & 45.43 & 724.9$\pm$19.9 &  \\
-041323BVPy2 & 0.53 & 2.07$\pm$0.28 & 2.34$\pm$0.41 & 0.77$\pm$0.45 & 484.42$\pm$455.64 & 22900.08$\pm$4862.73 & 130.29$\pm$59.21 & -- & 680.02$\pm$100.62 & 2.63 & 70.82 & 490.3$\pm$52.8 &  \\
-062123BVPyHCla & 1.22 & 3.13$\pm$0.12 & 0.81$\pm$0.07 & 0.25$\pm$0.01 & 95.87$\pm$10.25 & 582.38$\pm$13.15 & 12.17$\pm$2.15 & 2.43$\pm$0.97 & 10.07$\pm$0.42 & 3.33 & 241.19 & 571.5$\pm$19.2 &  \\
-062123BVPyHClb & 0.53 & 1.46$\pm$0.05 & 0.25$\pm$0.18 & 0.16$\pm$0.01 & 102.76$\pm$11.05 & 1499.31$\pm$44.51 & 7.89$\pm$4.05 & 3.30$\pm$1.37 & 10.48$\pm$0.72 & 1.52 & 1046.06 & 5109.8$\pm$58.3 &  \\
-230628BVPyUnAbrB & 0.75 & 2.15$\pm$0.07 & 0.42$\pm$0.13 & 0.14$\pm$0.02 & 64.34$\pm$12.08 & 996.13$\pm$55.99 & -- & 3.09$\pm$1.39 & 3.54$\pm$0.32 & 2.25 & 233.66 & 1244.1$\pm$39.2 &  \\
-230628BVPyUnAbrC & 1.11 & 0.50$\pm$0.13 & 0.12$\pm$0.09 & 0.09$\pm$0.02 & 979.31$\pm$62.60 & 1028.86$\pm$34.43 & -- & 7.63$\pm$3.34 & 4.60$\pm$0.29 & 0.53 & 723.21 & 5050.8$\pm$429.6 &  \\
-230628BVPyUnAbrC & 0.60 & 29.01$\pm$0.40 & 5.44$\pm$0.33 & 2.01$\pm$0.17 & 138.48$\pm$15.53 & 728.93$\pm$53.84 & 202.97$\pm$10.19 & 11.80$\pm$4.77 & 10.59$\pm$0.76 & 30.32 & 881.54 & 474.1$\pm$6.0 &  \\
-\midrule
-\multicolumn{14}{l}{\textbf{Magnet Cove Carbonatite Pyrite, Arkansas ($\sim$100 Ma)}} \\
-011123MCARPy1 & 3.38 & 0.06$\pm$0.00 & 0.41$\pm$0.03 & 0.31$\pm$0.03 & 15.72$\pm$4.66 & 3.86$\pm$1.22 & 1.63$\pm$0.65 & 1.10$\pm$0.48 & 18.58$\pm$0.78 & 0.16 & 9.67 & 177.1$\pm$7.5 &  \\
-011123MCARPy2 & 3.90 & 0.01$\pm$0.00 & 0.20$\pm$0.01 & 0.02$\pm$0.01 & 56.98$\pm$6.51 & 62.10$\pm$8.60 & 1.58$\pm$0.65 & -- & 11.49$\pm$0.88 & 0.06 & 3.25 & 52.2$\pm$4.7 &  \\
-\midrule
-\multicolumn{14}{l}{\textbf{French Creek, PA Magnetite and Pyrite ($\sim$130 Ma)}} \\
-062123FCHCl & 4.36 & 0.01$\pm$0.00 & 0.00$\pm$0.02 & 0.01$\pm$0.00 & 8.97$\pm$2.49 & 29.58$\pm$2.10 & -- & 21.25$\pm$6.89 & 7.65$\pm$1.10 & 0.01 & 1.55 & 218.0$\pm$52.4 &  \\
-062123FCMagHCl & 3.84 & 0.06$\pm$0.00 & 0.00$\pm$0.02 & 0.05$\pm$0.00 & -- & 81.88$\pm$3.18 & -- & 0.71$\pm$0.29 & 15.55$\pm$0.44 & 0.06 & 2.67 & 97.7$\pm$5.5 &  \\
-230625FCHFa & 3.41 & 0.63$\pm$0.05 & 0.71$\pm$0.03 & 0.34$\pm$0.02 & 209.62$\pm$15.43 & 1118.04$\pm$38.65 & 7.76$\pm$0.88 & 5.71$\pm$2.12 & 19.75$\pm$0.77 & 0.80 & 276.46 & 953.2$\pm$53.0 &  \\
-230625FCMagHCl & 4.07 & 0.05$\pm$0.00 & 0.00$\pm$0.02 & 0.02$\pm$0.00 & -- & 85.58$\pm$8.67 & -- & 0.74$\pm$0.33 & 4.22$\pm$0.19 & 0.05 & 3.60 & 137.1$\pm$7.7 &  \\
-\midrule
-\multicolumn{14}{l}{\textbf{Salzburg, Austria Arsenopyrite}} \\
-230625SBAsPy & 2.52 & 0.96$\pm$0.01 & 1.29$\pm$0.05 & 0.11$\pm$0.01 & 78.87$\pm$11.98 & 187365.67$\pm$4344.31 & 24.74$\pm$1.67 & 3.67$\pm$1.41 & 94.85$\pm$3.82 & 1.27 & 33.95 & 106.2$\pm$1.3 &  \\
+\multicolumn{14}{l}{\textbf{Gogebic Iron Range BIF Hematite Standard (MI-43; 571 Ma)}} \\
+2211HemMSA & 1.37 & 11.8 & $\pm$0.1 & 0.04 & $\pm$0.01 & 0.34 & $\pm$0.03 & -- &  & 11.8 & 750.6 & 450.1 & $\pm$4.8 \\
+2211HemMSB & 2.12 & 8.8 & $\pm$0.1 & 0.06 & $\pm$0.01 & 0.34 & $\pm$0.02 & -- &  & 8.8 & 1070.2 & 554.8 & $\pm$7.0 \\
+041323MG16a & 0.46 & 9.2 & $\pm$0.1 & 0.00 & $\pm$0.00 & 1.56 & $\pm$0.19 & -- &  & 9.2 & 240.7 & 549.4 & $\pm$7.7 \\
+041323MG16b$^{\dagger}$ & 0.49 & 2.2 & $\pm$0.1 & 0.09 & $\pm$0.08 & 0.87 & $\pm$0.15 & 19.4 & $\pm$5.0 & 2.2 & 188.7 & 1540 & $\pm$35 \\
+041323MG16d & 0.28 & 11.3 & $\pm$0.2 & 0.00 & $\pm$0.00 & 1.55 & $\pm$0.34 & -- &  & 11.3 & 174.3 & 531.8 & $\pm$8.3 \\
+041323MG16e & 0.42 & 12.1 & $\pm$0.5 & 0.44 & $\pm$0.27 & 1.86 & $\pm$0.46 & 31.1 & $\pm$24.3 & 12.2 & 257.1 & 490 & $\pm$18 \\
+062123MS & 0.32 & 10.1 & $\pm$0.1 & 0.00 & $\pm$0.26 & 1.81 & $\pm$0.10 & -- &  & 10.1 & 187.1 & 561.8 & $\pm$5.5 \\
+230625MSHm & 0.23 & 11.4 & $\pm$0.1 & 0.00 & $\pm$0.40 & 1.81 & $\pm$0.18 & -- &  & 11.4 & 148.9 & 549.4 & $\pm$6.0 \\
+230628MSHm & 0.42 & 9.7 & $\pm$0.1 & 0.00 & $\pm$0.20 & 1.63 & $\pm$0.17 & -- &  & 9.7 & 245.0 & 579.5 & $\pm$6.4 \\
 \end{longtable}
-\end{footnotesize}
+\end{landscape}
+}
+}
+
+\newcommand{\ChThreeGeochronMainTraceSITable}{%
+{\let\scriptsize\small
+\begin{landscape}
+\setlength{\tabcolsep}{8pt}
+\begin{longtable}{l r@{}l r@{}l r@{}l r@{}l}
+\caption{Cu, As, Ag, and Sb (measured as ratios to spike vanadium by the same ICPMS run as U, Th, Sm, and Zr, \S\ref{sec:ch3-experimental-methods-geochronology}) for the same Kidd Creek, Gympie, Durango, and Gogebic aliquots reported in Table~\ref{tab:ch3-main-geochron}, in the same row order; `--' denotes below detection or not measured for that aliquot. Uncertainties are 2$\sigma$, rounded to two significant figures, with each value rounded to the same decimal place. Footnote symbols ($^{*}$, $^{\dagger}$) as in Table~\ref{tab:ch3-main-geochron}.}\label{tab:ch3-main-geochron-trace}\\
+\toprule
+Sample & \multicolumn{2}{c}{Cu} & \multicolumn{2}{c}{As} & \multicolumn{2}{c}{Ag} & \multicolumn{2}{c}{Sb} \\
+ & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} \\
+\midrule
+\endfirsthead
+\multicolumn{9}{l}{\textit{(continued)}} \\
+\toprule
+Sample & \multicolumn{2}{c}{Cu} & \multicolumn{2}{c}{As} & \multicolumn{2}{c}{Ag} & \multicolumn{2}{c}{Sb} \\
+ & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{9}{r}{\textit{continued on next page}} \\
+\endfoot
+\bottomrule
+\multicolumn{9}{@{}l}{$^{*}$Excluded: analyzed under the early (old) protocol (\S\ref{ch3-geochron-helium-methods}, \S\ref{ch3-results-gympie-ages}).} \\
+\multicolumn{9}{@{}l}{$^{\dagger}$Excluded: outlier (\S\ref{ch3-results-gympie-ages}, Fig.~\ref{fig:ch3-gogebic-he-vs-eu}).} \\
+\endlastfoot
+
+\multicolumn{9}{l}{\textbf{Kidd Creek Pyrite (Archean VMS, $\sim$2716 Ma host)}} \\
+2211KC\_Py\_ST05\_C & -- &  & -- &  & -- &  & -- &  \\
+2211KC\_Py\_ST05\_A & -- &  & -- &  & -- &  & -- &  \\
+2211KC\_Py\_ST05\_B & -- &  & -- &  & -- &  & -- &  \\
+2211KC\_Py\_ST05\_D & -- &  & -- &  & -- &  & -- &  \\
+011123KCPyST05C & 248 & $\pm$28 & 49 & $\pm$13 & 3.88 & $\pm$0.98 & 15.91 & $\pm$0.94 \\
+011423KCPyST05A & 555 & $\pm$39 & 5920 & $\pm$400 & 7.8 & $\pm$1.1 & 35.69 & $\pm$0.95 \\
+011423KCPyST05B & 1366 & $\pm$58 & 1600 & $\pm$110 & 12.6 & $\pm$1.0 & 22.44 & $\pm$0.41 \\
+011423KCPyST05C & 781 & $\pm$52 & 8030 & $\pm$490 & 11.2 & $\pm$1.6 & 21.97 & $\pm$0.46 \\
+011423KCPyST05D & 147 & $\pm$20 & 11440 & $\pm$800 & 2.1 & $\pm$1.4 & 24.09 & $\pm$0.73 \\
+013023KCPyST05As1 & 17.4 & $\pm$7.8 & 47100 & $\pm$2800 & -- &  & 38.45 & $\pm$0.81 \\
+013023KCPyST05Cu1 & 314 & $\pm$30 & 11920 & $\pm$780 & 3.5 & $\pm$2.1 & 23.9 & $\pm$1.3 \\
+013023KCPyST05Cu2 & 103 & $\pm$20 & 410000 & $\pm$23000 & -- &  & 1235 & $\pm$30 \\
+\midrule
+\multicolumn{9}{l}{\textbf{Gympie Pyrite (Permo-Triassic orogenic Au)}} \\
+013023PVGyPy-1$^{*}$ & 42.5 & $\pm$7.5 & 202000 & $\pm$12000 & 0.73 & $\pm$0.41 & 138.0 & $\pm$3.2 \\
+013023PVGyPy-2$^{*}$ & 197 & $\pm$15 & 1045000 & $\pm$64000 & 3.1 & $\pm$1.3 & 734 & $\pm$22 \\
+013023PVGyPy-3$^{*}$ & 15.9 & $\pm$8.9 & 434000 & $\pm$27000 & 2.81 & $\pm$0.86 & 345.2 & $\pm$9.9 \\
+013023PVGyPy-4$^{*}$ & 39 & $\pm$17 & 617000 & $\pm$36000 & 1.67 & $\pm$0.79 & 333.7 & $\pm$7.8 \\
+0413PyGy-1 & 43.1 & $\pm$8.3 & 552 & $\pm$45 & 9.3 & $\pm$1.9 & 70.2 & $\pm$4.4 \\
+0413PyGy-2 & 33.1 & $\pm$8.9 & 165 & $\pm$38 & 8.8 & $\pm$2.1 & 12.5 & $\pm$3.7 \\
+0413PyGy-3 & 96 & $\pm$28 & 3450 & $\pm$210 & 7.9 & $\pm$4.0 & 61.5 & $\pm$5.7 \\
+0413PyGy-4$^{\dagger}$ & 30 & $\pm$11 & 3810 & $\pm$170 & 7.4 & $\pm$2.9 & 82.9 & $\pm$4.5 \\
+062123GyPyHClb & 29.5 & $\pm$5.7 & 3594 & $\pm$92 & 4.8 & $\pm$1.6 & 186.8 & $\pm$5.2 \\
+062123GyPyHClc & 21.7 & $\pm$3.2 & 499 & $\pm$18 & 2.3 & $\pm$1.1 & 6.36 & $\pm$0.19 \\
+230625GyPyHCl & 30.6 & $\pm$5.8 & 13390 & $\pm$340 & 4.2 & $\pm$1.5 & 144.7 & $\pm$5.1 \\
+230625GyPyUnAbr & 11.5 & $\pm$2.5 & 101400 & $\pm$2300 & 2.8 & $\pm$1.2 & 166.2 & $\pm$5.9 \\
+230628GyPyHClab & 61.0 & $\pm$6.3 & 297100 & $\pm$8300 & 72 & $\pm$26 & 222 & $\pm$13 \\
+230628GyPyHClc & 23.0 & $\pm$4.2 & 33600 & $\pm$1100 & 7.6 & $\pm$3.1 & 183 & $\pm$12 \\
+230628GyPyUnAbrA & 30.7 & $\pm$4.0 & 1616 & $\pm$62 & 4.6 & $\pm$2.0 & 96.6 & $\pm$7.0 \\
+230628GyPyUnAbrB & 12.0 & $\pm$5.3 & 1499 & $\pm$71 & 7.3 & $\pm$3.1 & 45.7 & $\pm$3.4 \\
+\midrule
+\multicolumn{9}{l}{\textbf{Durango Apatite Standard (accepted age 32.1 Ma; Farley 2000)}} \\
+2211DApA$^{*}$ & -- &  & -- &  & -- &  & -- &  \\
+2211DApC$^{*}$ & -- &  & -- &  & -- &  & -- &  \\
+2211DApD$^{*}$ & -- &  & -- &  & -- &  & -- &  \\
+2022StDApA$^{*}$ & -- &  & -- &  & -- &  & -- &  \\
+011123DAp1 & -- &  & 925 & $\pm$73 & 118 & $\pm$11 & 89.1 & $\pm$4.7 \\
+011123DAp2 & -- &  & 910 & $\pm$100 & -- &  & 26.3 & $\pm$2.9 \\
+011123DAp3 & -- &  & 804 & $\pm$55 & -- &  & 49.4 & $\pm$1.0 \\
+011423DAp1 & -- &  & 788 & $\pm$51 & 1.8 & $\pm$1.4 & 28.71 & $\pm$0.83 \\
+011423DAp2 & -- &  & 847 & $\pm$58 & -- &  & 17.66 & $\pm$0.58 \\
+011423DAp3 & -- &  & 820 & $\pm$72 & -- &  & 23.65 & $\pm$0.54 \\
+011423DAp4 & -- &  & 811 & $\pm$61 & -- &  & 42.9 & $\pm$2.3 \\
+062123DAp & -- &  & 670 & $\pm$200 & -- &  & -- &  \\
+062523DAp & 24.9 & $\pm$9.0 & 800 & $\pm$160 & -- &  & -- &  \\
+062823DAp & -- &  & -- &  & -- &  & -- &  \\
+Average for > 0.5 mg & -- &  & -- &  & -- &  & -- &  \\
+\midrule
+\multicolumn{9}{l}{\textbf{Gogebic Iron Range BIF Hematite Standard (MI-43; 571 Ma)}} \\
+2211HemMSA & -- &  & -- &  & -- &  & -- &  \\
+2211HemMSB & -- &  & -- &  & -- &  & -- &  \\
+041323MG16a & -- &  & 340 & $\pm$110 & -- &  & -- &  \\
+041323MG16b$^{\dagger}$ & 77 & $\pm$35 & 1310 & $\pm$210 & 10.8 & $\pm$9.0 & -- &  \\
+041323MG16d & -- &  & 3960 & $\pm$230 & 20 & $\pm$16 & -- &  \\
+041323MG16e & -- &  & 8500 & $\pm$1400 & -- &  & -- &  \\
+062123MS & -- &  & 2720 & $\pm$110 & 3.6 & $\pm$1.4 & 18.83 & $\pm$0.96 \\
+230625MSHm & -- &  & 1850 & $\pm$130 & 78 & $\pm$30 & 89.1 & $\pm$4.5 \\
+230628MSHm & -- &  & 444 & $\pm$20 & 3.1 & $\pm$1.6 & 93.2 & $\pm$7.1 \\
+\end{longtable}
+\end{landscape}
+}
+}
+
+\newcommand{\ChThreeGeochronSITable}{%
+{\let\scriptsize\tiny
+\begin{landscape}
+\setlength{\tabcolsep}{3.5pt}
+\begin{longtable}{l r r@{}l r@{}l r@{}l r@{}l r@{}l r@{}l r@{}l r@{}l r r r@{}l}
+\caption{U-Th/He geochronology results for all remaining sample suites in the compilation, not discussed in the main text: Kidd Creek replicate/mass-only aliquots, Franklin (NJ) pyrite and fluorite, Rustenburg/Pilanesberg pyrite, Magnet Cove carbonatite pyrite, French Creek magnetite/pyrite, and Salzburg arsenopyrite. Reported here for completeness, with the full trace-element suite (Cu, As, Zr, Ag, Sb) retained since these aliquots are not duplicated in the main text; columns, rounding, and conventions as in Table~\ref{tab:ch3-main-geochron} (Cu, As, Ag, and Sb rounded as in Table~\ref{tab:ch3-main-geochron-trace}).}\label{tab:ch3-si-geochron}\\
+\toprule
+Sample & Mass & \multicolumn{2}{c}{U} & \multicolumn{2}{c}{Th} & \multicolumn{2}{c}{Sm} & \multicolumn{2}{c}{Cu} & \multicolumn{2}{c}{As} & \multicolumn{2}{c}{Zr} & \multicolumn{2}{c}{Ag} & \multicolumn{2}{c}{Sb} & eU & $^4$He & \multicolumn{2}{c}{Age} \\
+ & (mg) & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & (ppm) & (ncc) & \multicolumn{2}{c}{(Ma)} \\
+\midrule
+\endfirsthead
+\multicolumn{22}{l}{\textit{(continued)}} \\
+\toprule
+Sample & Mass & \multicolumn{2}{c}{U} & \multicolumn{2}{c}{Th} & \multicolumn{2}{c}{Sm} & \multicolumn{2}{c}{Cu} & \multicolumn{2}{c}{As} & \multicolumn{2}{c}{Zr} & \multicolumn{2}{c}{Ag} & \multicolumn{2}{c}{Sb} & eU & $^4$He & \multicolumn{2}{c}{Age} \\
+ & (mg) & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & \multicolumn{2}{c}{(ppm)} & (ppm) & (ncc) & \multicolumn{2}{c}{(Ma)} \\
+\midrule
+\endhead
+\midrule
+\multicolumn{22}{r}{\textit{continued on next page}} \\
+\endfoot
+\bottomrule
+\endlastfoot
+
+\multicolumn{22}{l}{\textbf{Kidd Creek Pyrite (replicate / mass-only aliquots)}} \\
+2211KC\_Py\_ST05\_DU1 & 2.09 & 0.78 & $\pm$0.03 & 1.76 & $\pm$0.04 & 0.08 & $\pm$0.01 & -- &  & -- &  & -- &  & -- &  & -- &  & 1.20 & -- & -- &  \\
+2211KC\_Py\_ST05\_DU2 & 2.98 & 0.80 & $\pm$0.01 & 2.19 & $\pm$0.06 & 0.02 & $\pm$0.00 & -- &  & -- &  & -- &  & -- &  & -- &  & 1.33 & -- & -- &  \\
+2211KC\_Py\_ST05\_DU3 & 1.77 & 0.77 & $\pm$0.03 & 1.93 & $\pm$0.06 & 0.10 & $\pm$0.01 & -- &  & -- &  & -- &  & -- &  & -- &  & 1.23 & -- & -- &  \\
+12122022KCPyST05A & 14.35 & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- & 1422.9 & -- &  \\
+12122022KCPyST05B & 10.52 & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- & 960.7 & -- &  \\
+12122022KCPyST05C & 12.19 & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- & 1204.0 & -- &  \\
+12122022KCPyST05D & 9.60 & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- &  & -- & 865.7 & -- &  \\
+\midrule
+\multicolumn{22}{l}{\textbf{Franklin, NJ Pyrite (marble/volcanics, $\sim$1.3--1.0 Ga)}} \\
+2211GFr\_PyA & 2.49 & 0.29 & $\pm$0.01 & 0.05 & $\pm$0.01 & 0.02 & $\pm$0.00 & -- &  & -- &  & -- &  & -- &  & -- &  & 0.31 & 51.3 & 529 & $\pm$22 \\
+2211GFr\_PyB & 3.00 & 1.78 & $\pm$0.02 & 0.01 & $\pm$0.01 & 0.01 & $\pm$0.00 & -- &  & -- &  & -- &  & -- &  & -- &  & 1.78 & 66.9 & 106.9 & $\pm$1.3 \\
+2211StFr\_PyA & 1.45 & 0.64 & $\pm$0.03 & 0.02 & $\pm$0.01 & 0.02 & $\pm$0.00 & -- &  & -- &  & -- &  & -- &  & -- &  & 0.65 & 42.8 & 322 & $\pm$15 \\
+2211StFr\_PyB & 2.53 & 0.12 & $\pm$0.01 & 0.00 & $\pm$0.00 & 0.91 & $\pm$0.04 & -- &  & -- &  & -- &  & -- &  & -- &  & 0.12 & 57.8 & 1257 & $\pm$124 \\
+2211AtmFr\_PyC & 1.93 & 1.00 & $\pm$0.02 & 0.01 & $\pm$0.01 & 0.02 & $\pm$0.00 & -- &  & -- &  & -- &  & -- &  & -- &  & 1.00 & 55.1 & 223.2 & $\pm$4.6 \\
+\midrule
+\multicolumn{22}{l}{\textbf{Franklin, NJ Fluorite}} \\
+011423FrFl2 & 1.40 & 3.19 & $\pm$0.03 & 0.24 & $\pm$0.07 & 0.21 & $\pm$0.04 & 32 & $\pm$10 & -- &  & 1.8 & $\pm$1.1 & 10.2 & $\pm$1.7 & 35.81 & $\pm$0.74 & 3.25 & 76.8 & 168.7 & $\pm$1.9 \\
+011423FrFl3 & 1.03 & 5.35 & $\pm$0.08 & 0.20 & $\pm$0.06 & 0.34 & $\pm$0.09 & -- &  & -- &  & 5.8 & $\pm$1.6 & -- &  & 30.63 & $\pm$0.71 & 5.40 & 99.9 & 179.3 & $\pm$2.8 \\
+\midrule
+\multicolumn{22}{l}{\textbf{Rustenburg/Pilanesberg(?) Pyrite}} \\
+013023BVPy H-3026-1 & 1.03 & 2.50 & $\pm$0.31 & 1.04 & $\pm$0.09 & 0.29 & $\pm$0.07 & 174 & $\pm$26 & 3330 & $\pm$230 & 10.9 & $\pm$5.7 & -- &  & 152.6 & $\pm$3.8 & 2.75 & 226.1 & 747 & $\pm$79 \\
+041323BVPy1 & 0.95 & 0.56 & $\pm$0.02 & 0.17 & $\pm$0.05 & 0.05 & $\pm$0.05 & 106 & $\pm$27 & 392 & $\pm$59 & -- &  & -- &  & -- &  & 0.60 & 45.4 & 725 & $\pm$20 \\
+041323BVPy2 & 0.53 & 2.07 & $\pm$0.28 & 2.34 & $\pm$0.41 & 0.77 & $\pm$0.45 & 480 & $\pm$460 & 22900 & $\pm$4900 & 130.3 & $\pm$59.2 & -- &  & 680 & $\pm$100 & 2.63 & 70.8 & 490 & $\pm$53 \\
+062123BVPyHCla & 1.22 & 3.13 & $\pm$0.12 & 0.81 & $\pm$0.07 & 0.25 & $\pm$0.01 & 96 & $\pm$10 & 582 & $\pm$13 & 12.2 & $\pm$2.1 & 2.43 & $\pm$0.97 & 10.07 & $\pm$0.42 & 3.33 & 241.2 & 572 & $\pm$19 \\
+062123BVPyHClb & 0.53 & 1.46 & $\pm$0.05 & 0.25 & $\pm$0.18 & 0.16 & $\pm$0.01 & 103 & $\pm$11 & 1499 & $\pm$45 & 7.9 & $\pm$4.0 & 3.3 & $\pm$1.4 & 10.48 & $\pm$0.72 & 1.52 & 1046.1 & 5110 & $\pm$58 \\
+230628BVPyUnAbrB & 0.75 & 2.15 & $\pm$0.07 & 0.42 & $\pm$0.13 & 0.14 & $\pm$0.02 & 64 & $\pm$12 & 996 & $\pm$56 & -- &  & 3.1 & $\pm$1.4 & 3.54 & $\pm$0.32 & 2.25 & 233.7 & 1244 & $\pm$39 \\
+230628BVPyUnAbrC & 1.11 & 0.50 & $\pm$0.13 & 0.12 & $\pm$0.09 & 0.09 & $\pm$0.02 & 979 & $\pm$63 & 1029 & $\pm$34 & -- &  & 7.6 & $\pm$3.3 & 4.60 & $\pm$0.29 & 0.53 & 723.2 & 5051 & $\pm$430 \\
+230628BVPyUnAbrC & 0.60 & 29.01 & $\pm$0.40 & 5.44 & $\pm$0.33 & 2.01 & $\pm$0.17 & 138 & $\pm$16 & 729 & $\pm$54 & 203.0 & $\pm$10.2 & 11.8 & $\pm$4.8 & 10.59 & $\pm$0.76 & 30.32 & 881.5 & 474.1 & $\pm$6.0 \\
+\midrule
+\multicolumn{22}{l}{\textbf{Magnet Cove Carbonatite Pyrite, Arkansas ($\sim$100 Ma)}} \\
+011123MCARPy1 & 3.38 & 0.06 & $\pm$0.00 & 0.41 & $\pm$0.03 & 0.31 & $\pm$0.03 & 15.7 & $\pm$4.7 & 3.9 & $\pm$1.2 & 1.6 & $\pm$0.7 & 1.10 & $\pm$0.48 & 18.58 & $\pm$0.78 & 0.16 & 9.7 & 177.1 & $\pm$7.5 \\
+011123MCARPy2 & 3.90 & 0.01 & $\pm$0.00 & 0.20 & $\pm$0.01 & 0.02 & $\pm$0.01 & 57.0 & $\pm$6.5 & 62.1 & $\pm$8.6 & 1.6 & $\pm$0.7 & -- &  & 11.49 & $\pm$0.88 & 0.06 & 3.2 & 52.2 & $\pm$4.7 \\
+\midrule
+\multicolumn{22}{l}{\textbf{French Creek, PA Magnetite and Pyrite ($\sim$130 Ma)}} \\
+062123FCHCl & 4.36 & 0.01 & $\pm$0.00 & 0.00 & $\pm$0.02 & 0.01 & $\pm$0.00 & 9.0 & $\pm$2.5 & 29.6 & $\pm$2.1 & -- &  & 21.2 & $\pm$6.9 & 7.6 & $\pm$1.1 & 0.01 & 1.5 & 218 & $\pm$52 \\
+062123FCMagHCl & 3.84 & 0.06 & $\pm$0.00 & 0.00 & $\pm$0.02 & 0.05 & $\pm$0.00 & -- &  & 81.9 & $\pm$3.2 & -- &  & 0.71 & $\pm$0.29 & 15.55 & $\pm$0.44 & 0.06 & 2.7 & 97.7 & $\pm$5.5 \\
+230625FCHFa & 3.41 & 0.63 & $\pm$0.05 & 0.71 & $\pm$0.03 & 0.34 & $\pm$0.02 & 210 & $\pm$15 & 1118 & $\pm$39 & 7.8 & $\pm$0.9 & 5.7 & $\pm$2.1 & 19.75 & $\pm$0.77 & 0.80 & 276.5 & 953 & $\pm$53 \\
+230625FCMagHCl & 4.07 & 0.05 & $\pm$0.00 & 0.00 & $\pm$0.02 & 0.02 & $\pm$0.00 & -- &  & 85.6 & $\pm$8.7 & -- &  & 0.74 & $\pm$0.33 & 4.22 & $\pm$0.19 & 0.05 & 3.6 & 137.1 & $\pm$7.7 \\
+\midrule
+\multicolumn{22}{l}{\textbf{Salzburg, Austria Arsenopyrite}} \\
+230625SBAsPy & 2.52 & 0.96 & $\pm$0.01 & 1.29 & $\pm$0.05 & 0.11 & $\pm$0.01 & 79 & $\pm$12 & 187400 & $\pm$4300 & 24.7 & $\pm$1.7 & 3.7 & $\pm$1.4 & 94.9 & $\pm$3.8 & 1.27 & 33.9 & 106.2 & $\pm$1.3 \\
+\end{longtable}
 \end{landscape}
 }
 }

@@ -27,7 +27,9 @@ anywhere in the chapter links here.
 
 Caption-document conventions honoured:
   * "16-17:", "25 and 26:", "72-75:" -- one caption shared by several photos;
-    it is printed under the first, and the others point back to it.
+    it is printed once, with the first of them (labelled "Photos 16-17"), and
+    the group is kept on the same pages even if it mixes orientations.
+  * Photos in ch5_photo_refs.EXCLUDED_PHOTOS are left out altogether.
   * Captions set in italics in Word are the "for-fun" (non-geological) photos
     and stay italic here; italic runs inside a roman caption become \\emph.
   * A paragraph without a leading number continues the previous caption.
@@ -53,14 +55,20 @@ import docx
 from PIL import Image, ImageOps
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from ch5_photo_refs import link_photo_refs  # noqa: E402
+from ch5_spelling import fix as fix_spelling  # noqa: E402
+from ch5_photo_refs import (APPENDIX_PHOTOS, EXCLUDED_PHOTOS,  # noqa: E402
+                            MAIN_TEXT_PHOTOS, link_photo_refs)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CH5 = os.path.normpath(os.path.join(HERE, '..'))
 SRC_DIR = os.path.join(HERE, 'source', 'Draaikraal_Photos')
 OUT_DIR = os.path.join(HERE, 'generated', 'field_photos')
 DOCX = os.path.join(CH5, 'Workspace', 'Draaikraal Photo Captions.docx')
-OUT_TEX = os.path.join(CH5, 'Writing', 'chapter5_photo_album.tex')
+OUT_TEX = os.path.join(CH5, 'Writing', 'chapter5_photo_album.tex')            # Appendix A
+OUT_INDEX = os.path.join(CH5, 'Writing', 'chapter5_photo_index.tex')          # thesis links
+OUT_SUPP = os.path.join(CH5, 'Writing', 'chapter5_photo_supplement_album.tex')
+OUT_SUPP_INDEX = os.path.join(CH5, 'Writing', 'chapter5_photo_supplement_index.tex')
+BODY_TEX = os.path.join(CH5, 'Writing', 'chapter5_body.tex')
 # path as seen by LaTeX (compiled from the repository root)
 TEX_IMG_DIR = 'Chapter5/Figures/generated/field_photos'
 
@@ -71,8 +79,8 @@ QUALITY = 82
 # Applied in order to the LaTeX-escaped caption text. Each pattern is reported
 # if it no longer matches anything (e.g. after the Word file is edited).
 CITATIONS = [
-    ('Mitchell and Scoon, 2023 argue .',
-     r'\citet{mitchell2023} argue \todo{sentence left unfinished in the caption document}.'),
+    ('(Mitchell and Scoon, 2023)',
+     r'\citep{mitchell2023}'),
     ('(UG-1 stringers are below: Voordouw et al., 2009; Mukherjee et al., 2017)',
      r'(UG-1 stringers are below: \citealp{voordouw2009,mukherjee2017})'),
     ('(Voordouw et al., 2009; Mukherjee et al., 2017)', r'\citep{voordouw2009,mukherjee2017}'),
@@ -137,6 +145,7 @@ def downsample(n, fname):
 
 # --- captions --------------------------------------------------------------------
 def tex_escape(s):
+    s = fix_spelling(s)
     out = []
     for ch in s:
         out.append({
@@ -406,7 +415,8 @@ def fmt_list(ns):
 
 def main():
     os.makedirs(OUT_DIR, exist_ok=True)
-    photos = photo_numbers()
+    photos = {n: f for n, f in photo_numbers().items() if n not in EXCLUDED_PHOTOS}
+    print(f'  left out (EXCLUDED_PHOTOS in ch5_photo_refs.py): {sorted(EXCLUDED_PHOTOS)}')
     redone, tall = 0, set()
     for n, f in sorted(photos.items()):
         dst, did = downsample(n, f)
@@ -417,10 +427,13 @@ def main():
     print(f'{len(photos)} photos ({redone} downsampled this run) -> {OUT_DIR}')
     print(f'  portrait-orientation photos: {sorted(tall)}')
 
-    caps = parse_captions()
+    caps = [c for c in parse_captions()
+            if not set(range(c['first'], c['last'] + 1)) <= EXCLUDED_PHOTOS]
     by_photo = {}
     for c in caps:
         for n in range(c['first'], c['last'] + 1):
+            if n in EXCLUDED_PHOTOS:
+                continue
             if n in by_photo:
                 print(f'  WARNING: photo {n} has more than one caption')
             by_photo[n] = c
@@ -431,47 +444,259 @@ def main():
             print(f'  NOTE: citation pattern no longer found: {pat!r}')
 
     all_n = sorted(set(photos) | set(by_photo))
-    cells = {}
-    no_caption, no_photo = [], []
-    for n in all_n:
+    in_app = sorted(n for n in all_n if n in APPENDIX_PHOTOS and n not in MAIN_TEXT_PHOTOS)
+    in_supp = [n for n in all_n if n not in APPENDIX_PHOTOS and n not in MAIN_TEXT_PHOTOS]
+    missing = sorted(APPENDIX_PHOTOS - set(all_n))
+    if missing:
+        print(f'  WARNING: APPENDIX_PHOTOS not in the album: {missing}')
+
+    # Both albums: two large photos per page, in numerical order, landscape
+    # photos first, then portrait photos (author's choice, 2026-10-28).
+    def key(n):
+        return (n in tall, n)
+
+    # --- Appendix A (in the thesis) ---------------------------------------------
+    app_order = sorted(in_app, key=key)
+    app_caps = doc_captions(in_app, by_photo, tex_of, tall)
+    write_index(OUT_INDEX, {n: f'ch5-photo-{n}' for n in in_app} | dict(MAIN_TEXT_PHOTOS),
+                'the thesis (Appendix A album + main-text figures)')
+    with open(OUT_TEX, 'w', encoding='utf-8') as f:
+        f.write(appendix_tex(app_order, app_caps, tall, photos, APP_HEADER))
+    print(f'Wrote {OUT_TEX}: {len(in_app)} photos, order {app_order}')
+
+    # --- supplementary photo album (separate document): everything else ----------
+    supp_order = sorted(in_supp, key=key)
+    supp_caps = doc_captions(in_supp, by_photo, tex_of, tall)
+    write_index(OUT_SUPP_INDEX, {n: f'ch5-photo-{n}' for n in in_supp},
+                'the supplementary photo album')
+    with open(OUT_SUPP, 'w', encoding='utf-8') as f:
+        f.write(appendix_tex(supp_order, supp_caps, tall, photos, SUPP_HEADER))
+    print(f'Wrote {OUT_SUPP}: {len(in_supp)} photos '
+          f'({sum(n in tall for n in in_supp)} portrait)')
+    print(f'  photos without a caption: {[n for n in all_n if n not in by_photo]}')
+    print(f'  captions without a photo: {[n for n in all_n if n not in photos]}')
+    print(f'  italic (for-fun) captions: {[c["first"] for c in caps if c["italic"]]}')
+
+
+# --- per-document captions -------------------------------------------------------
+def _span(ns):
+    if len(ns) == 1:
+        return f'photo {ns[0]}', rf'photo~\ChFivePhoto{{{ns[0]}}}'
+    if ns == list(range(ns[0], ns[-1] + 1)):
+        return (f'photos {ns[0]}\\textendash{ns[-1]}',
+                rf'photos~\ChFivePhoto{{{ns[0]}}}--\ChFivePhoto{{{ns[-1]}}}')
+    return ('photos ' + ', '.join(map(str, ns)),
+            'photos~' + ', '.join(rf'\ChFivePhoto{{{n}}}' for n in ns))
+
+
+def doc_captions(doc_ns, by_photo, tex_of, tall):
+    """n -> (label, body) for the photos of one document (Appendix A or the
+    supplement). A caption shared by several photos is printed once, with the
+    first of its photos *in this document* in the landscape-photo sequence,
+    labelled with just those photos ("Photos 101-102"); every other photo of
+    the group here gets a pointer to it (each photo has its own caption slot
+    in the two-per-page layout)."""
+    doc = set(doc_ns)
+    out = {}
+    for n in doc_ns:
         c = by_photo.get(n)
         if c is None:
-            no_caption.append(n)
-            label, body = f'Photo {n}.', r'\todo{No caption for this photo in the caption document.}'
-        elif c['first'] == n:
-            label = (f'Photo {n}.' if c['last'] == n else
-                     f'Photos {c["first"]}\\textendash{c["last"]}.')
-            body = tex_of[id(c)]
+            out[n] = (f'Photo {n}.', r'\todo{No caption for this photo in the caption document.}')
+            continue
+        grp = [m for m in range(c['first'], c['last'] + 1) if m in doc]
+        home = [m for m in grp if m not in tall] or grp
+        if n == home[0]:
+            txt = _span(home)[0]
+            out[n] = (txt[0].upper() + txt[1:] + '.', tex_of[id(c)])
         else:
-            label = f'Photo {n}.'
-            body = (r'\textit{See the caption of photo~\ChFivePhoto{' + str(c['first']) + '}.}')
-        if n not in photos:
-            no_photo.append(n)
-        cells[n] = (photo_tex(n, n in photos), caption_par(label, body))
+            out[n] = (f'Photo {n}.', r'\textit{See the caption of ' + _span(home)[1] + '.}')
+    return out
 
-    wide_n = [n for n in all_n if n not in tall]
-    tall_n = [n for n in all_n if n in tall]
-    wide_items = []
-    for i in range(0, len(wide_n), 2):
-        row = wide_n[i:i + 2]
-        ps = [cells[n][0] for n in row] + [r'\ChFivePhotoEmpty'] * (2 - len(row))
-        wide_items.append(('\\hfill\n'.join(ps), '\n'.join(cells[n][1] for n in row)))
-    tall_items = [(cells[n][0], cells[n][1]) for n in tall_n]
 
-    parts = [MACROS]
-    if tall_n:
-        parts.append(f'Photographs taken in portrait orientation (photos~{fmt_list(tall_n)}) '
-                     'are gathered on landscape pages at the end of the album, so that they '
-                     'print at full height.\n')
-    parts += [WIDE_SETUP, items_tex(wide_items), WIDE_END]
-    if tall_n:
-        parts += [TALL_SETUP, items_tex(tall_items), TALL_END]
-    with open(OUT_TEX, 'w', encoding='utf-8') as f:
-        f.write('\n'.join(parts))
-    print(f'Wrote {OUT_TEX}: {len(wide_n)} wide + {len(tall_n)} tall photos, {len(caps)} captions')
-    print(f'  photos without a caption: {no_caption}')
-    print(f'  captions without a photo: {no_photo}')
-    print(f'  italic (for-fun) captions: {[c["first"] for c in caps if c["italic"]]}')
+def first_mentions():
+    """photo -> character offset of its first \ChFivePhoto citation in the
+    chapter text (comment lines ignored; ranges count for every photo)."""
+    txt = open(BODY_TEX, encoding='utf-8').read()
+    txt = '\n'.join('' if l.lstrip().startswith('%') else l for l in txt.split('\n'))
+    first = {}
+    for m in re.finditer(r'\\ChFivePhoto\{(\d+)\}(?:--\\ChFivePhoto\{(\d+)\})?', txt):
+        a = int(m.group(1)); b = int(m.group(2) or a)
+        for n in range(a, b + 1):
+            first.setdefault(n, m.start())
+    return first
+
+
+def write_index(path, targets, where):
+    lines = [
+        '% ' + '=' * 61,
+        f'%  {os.path.basename(path)} -- AUTO-GENERATED by',
+        '%  Chapter5/Figures/write_chapter5_photo_album.py, DO NOT EDIT BY HAND.',
+        f'%  Defines \\ChFivePhoto{{N}} for {where}: photo numbers',
+        '%  reproduced in this document print as links to them; the others',
+        '%  print as plain numbers.',
+        '% ' + '=' * 61,
+        r'\providecommand{\ChFivePhotoLink}[2]{\ifcsname hyperref\endcsname'
+        r'\expandafter\hyperref\expandafter[#1]{#2}\else#2\fi}',
+        r'\DeclareRobustCommand{\ChFivePhoto}[1]{%',
+        r'  \ifcsname ChFivePhotoTarget-#1\endcsname',
+        r'    \expandafter\ChFivePhotoLink\csname ChFivePhotoTarget-#1\endcsname{#1}%',
+        r'  \else #1\fi}',
+    ]
+    for n, lab in sorted(targets.items()):
+        lines.append(rf'\expandafter\def\csname ChFivePhotoTarget-{n}\endcsname{{{lab}}}')
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(lines) + '\n')
+    print(f'Wrote {path}: {len(targets)} link targets')
+
+
+APP_HEADER = r"""% =============================================================
+%  chapter5_photo_album.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.
+%  Appendix A photo album: the photos in ch5_photo_refs.APPENDIX_PHOTOS,
+%  two large photos per page, in numerical order, landscape photos first
+%  and portrait photos after them. Written by
+%  Chapter5/Figures/write_chapter5_photo_album.py from
+%  Workspace/Draaikraal Photo Captions.docx; rerun it after editing the
+%  captions or the selection. The other photos are in
+%  chapter5_photo_supplement_album.tex (Chapter5/chapter5_photo_supplement.tex).
+% =============================================================
+"""
+SUPP_HEADER = r"""% =============================================================
+%  chapter5_photo_supplement_album.tex -- AUTO-GENERATED, DO NOT EDIT BY HAND.
+%  Supplementary photo album: every kept field photo NOT reproduced in the
+%  thesis, same two-per-page layout as the Appendix A album, numerical order,
+%  landscape photos first. Written by
+%  Chapter5/Figures/write_chapter5_photo_album.py; \input{} by
+%  Chapter5/chapter5_photo_supplement.tex.
+% =============================================================
+"""
+APP_MACROS = r"""\providecommand{\phantomsection}{}
+\providecommand{\ChFivePhoto}[1]{#1}
+% Two photos per page, photos at full size: landscape photos at the full text
+% width (at most \ChFiveBigMax tall), portrait photos at 0.48 of it (at most
+% \ChFiveTallMax tall). The captions (single-spaced) take the room that is left:
+% TeX tries \small, \footnotesize, \scriptsize in turn and keeps the largest size
+% at which both captions fit (the same size for both captions of a page). Only
+% if even \scriptsize does not fit are the photos shrunk, just enough to make room.
+% Each trial sets the whole page in a box and measures it.
+\newsavebox\ChFiveImgA
+\newsavebox\ChFivePageBox
+\newsavebox\ChFiveImgB
+\newsavebox\ChFiveCapA
+\newsavebox\ChFiveCapB
+\newlength\ChFiveImgH
+\newlength\ChFiveImgW
+\newlength\ChFiveCapW
+\newif\ifChFiveFits
+\newcommand{\ChFiveBigMax}{0.45\textheight}
+\newcommand{\ChFiveTallMax}{0.62\textheight}
+\newcommand{\ChFiveCapFont}{\small}
+\newcommand{\ChFiveTotal}[1]{\dimexpr\ht#1+\dp#1\relax}
+\newcommand{\ChFiveSetImg}[2]{%  {box}{image}
+  \sbox#1{\includegraphics[width=\ChFiveImgW,height=\ChFiveImgH,keepaspectratio]{#2}}}
+\newcommand{\ChFiveSetCaps}{%
+  \sbox\ChFiveCapA{\parbox[t]{\ChFiveCapW}{\def\baselinestretch{1}\ChFiveCapFont\raggedright
+    \setlength{\parskip}{2pt}\ChFiveCapTextA}}%
+  \sbox\ChFiveCapB{\parbox[t]{\ChFiveCapW}{\def\baselinestretch{1}\ChFiveCapFont\raggedright
+    \setlength{\parskip}{2pt}\ChFiveCapTextB}}}
+\newcommand{\ChFiveCapsHeight}{% stacked (landscape) or side by side (portrait)
+  \ifChFiveSideBySide
+    \ifdim\ChFiveTotal\ChFiveCapA>\ChFiveTotal\ChFiveCapB \ChFiveTotal\ChFiveCapA
+    \else\ChFiveTotal\ChFiveCapB\fi
+  \else\dimexpr\ChFiveTotal\ChFiveCapA+\ChFiveTotal\ChFiveCapB\relax\fi}
+\newif\ifChFiveSideBySide
+\newcommand{\ChFiveTryFont}[1]{%  fits = the finished page (\ChFivePage) is no taller than the text block
+  \ifChFiveFits\else
+    \renewcommand{\ChFiveCapFont}{#1}\ChFiveSetCaps
+    \setbox\ChFivePageBox\vbox{\ChFivePage}%
+    \ifdim\dimexpr\ht\ChFivePageBox+\dp\ChFivePageBox+\topskip+2pt\relax<\textheight
+      \ChFiveFitstrue\fi
+  \fi}
+\newcommand{\ChFiveFit}{%
+  \ChFiveFitsfalse
+  \ChFiveTryFont{\small}\ChFiveTryFont{\footnotesize}%
+  \ChFiveTryFont{\scriptsize}}
+\newcommand{\ChFiveBigOne}[4]{%  {width}{n}{image box}{caption box}
+  \begin{minipage}[t]{#1}\centering
+  \phantomsection\label{ch5-photo-#2}%
+  \usebox#3\par
+  \vspace{4pt}\raggedright\usebox#4\par
+  \end{minipage}}
+% Final check: the page is set in a trial box and, if it is still taller than
+% the text block, both photos are shrunk by exactly the excess (a few passes).
+\newcount\ChFiveIter
+\newif\ifChFiveTooTall
+\newlength\ChFiveExcess
+\newcommand{\ChFiveSettle}[3]{%  {page content}{img1}{img2}
+  \ChFiveIter=0
+  \loop
+    \setbox\ChFivePageBox\vbox{#1}%
+    \setlength\ChFiveExcess{\dimexpr\ht\ChFivePageBox+\dp\ChFivePageBox-\textheight+\topskip+2pt\relax}%
+    \ChFiveTooTallfalse
+    \ifnum\ChFiveIter<6 \ifdim\ChFiveExcess>0pt \ChFiveTooTalltrue\fi\fi
+  \ifChFiveTooTall
+    \ifdim\ht\ChFiveImgA>\ht\ChFiveImgB
+      \setlength\ChFiveImgH{\ht\ChFiveImgA}\else\setlength\ChFiveImgH{\ht\ChFiveImgB}\fi
+    \ifChFiveSideBySide\else\setlength\ChFiveExcess{0.5\ChFiveExcess}\fi
+    \setlength\ChFiveImgH{\dimexpr\ChFiveImgH-\ChFiveExcess-1pt\relax}%
+    \ChFiveSetImg\ChFiveImgA{#2}\ChFiveSetImg\ChFiveImgB{#3}%
+    \advance\ChFiveIter by 1
+  \repeat}
+\newcommand{\ChFiveReport}[2]{\typeout{ChFive album: photos #1 and #2, captions
+  \expandafter\string\ChFiveCapFont\ifnum\ChFiveIter>0 \space (photos shrunk)\fi}}
+% landscape-orientation photos: one above the other, full text width
+\newcommand{\ChFiveWidePair}[6]{%  {n1}{img1}{cap1}{n2}{img2}{cap2}
+  \ChFiveSideBySidefalse
+  \setlength\ChFiveImgW{\linewidth}\setlength\ChFiveImgH{\ChFiveBigMax}%
+  \setlength\ChFiveCapW{\linewidth}%
+  \ChFiveSetImg\ChFiveImgA{#2}\ChFiveSetImg\ChFiveImgB{#5}%
+  \def\ChFiveCapTextA{#3}\def\ChFiveCapTextB{#6}%
+  \def\ChFivePage{\noindent\ChFiveBigOne{\linewidth}{#1}\ChFiveImgA\ChFiveCapA\par\vfill
+    \noindent\ChFiveBigOne{\linewidth}{#4}\ChFiveImgB\ChFiveCapB\par}%
+  \ChFiveFit
+  \ChFiveSettle{\ChFivePage}{#2}{#5}\ChFiveReport{#1}{#4}%
+  \ChFivePage\vfill\clearpage}
+\newcommand{\ChFiveWideOne}[3]{%
+  \setlength\ChFiveImgW{\linewidth}\setlength\ChFiveImgH{\ChFiveBigMax}%
+  \setlength\ChFiveCapW{\linewidth}\renewcommand{\ChFiveCapFont}{\small}%
+  \ChFiveSetImg\ChFiveImgA{#2}\def\ChFiveCapTextA{#3}\def\ChFiveCapTextB{}\ChFiveSetCaps
+  \noindent\ChFiveBigOne{\linewidth}{#1}\ChFiveImgA\ChFiveCapA\par\clearpage}
+% portrait-orientation photos: side by side, each 0.48 of the text width
+\newcommand{\ChFiveTallPair}[6]{%
+  \ChFiveSideBySidetrue
+  \setlength\ChFiveImgW{0.48\linewidth}\setlength\ChFiveImgH{\ChFiveTallMax}%
+  \setlength\ChFiveCapW{0.48\linewidth}%
+  \ChFiveSetImg\ChFiveImgA{#2}\ChFiveSetImg\ChFiveImgB{#5}%
+  \def\ChFiveCapTextA{#3}\def\ChFiveCapTextB{#6}%
+  \def\ChFivePage{\noindent\ChFiveBigOne{0.48\linewidth}{#1}\ChFiveImgA\ChFiveCapA\hfill
+    \ChFiveBigOne{0.48\linewidth}{#4}\ChFiveImgB\ChFiveCapB\par}%
+  \ChFiveFit
+  \ChFiveSettle{\ChFivePage}{#2}{#5}\ChFiveReport{#1}{#4}%
+  \ChFivePage\clearpage}
+\newcommand{\ChFiveTallOne}[3]{%
+  \setlength\ChFiveImgW{0.48\linewidth}\setlength\ChFiveImgH{\ChFiveTallMax}%
+  \setlength\ChFiveCapW{0.48\linewidth}\renewcommand{\ChFiveCapFont}{\small}%
+  \ChFiveSetImg\ChFiveImgA{#2}\def\ChFiveCapTextA{#3}\def\ChFiveCapTextB{}\ChFiveSetCaps
+  \noindent\ChFiveBigOne{0.48\linewidth}{#1}\ChFiveImgA\ChFiveCapA\par\clearpage}
+"""
+
+
+def appendix_tex(order, caps, tall, photos, header):
+    def img(n):
+        return f'{TEX_IMG_DIR}/DrBV{n}.jpg' if n in photos else 'example-image'
+
+    def cap(n):
+        label, body = caps[n]
+        return rf'\textbf{{{label}}} {body}' if label else ''
+
+    wide = [n for n in order if n not in tall]
+    talls = [n for n in order if n in tall]
+    out = [header + APP_MACROS, r'\clearpage']
+    for seq, kind in ((wide, 'Wide'), (talls, 'Tall')):
+        for i in range(0, len(seq), 2):
+            pair = seq[i:i + 2]
+            args = ''.join(rf'{{{n}}}{{{img(n)}}}{{{cap(n)}}}' for n in pair)
+            out.append(rf'\ChFive{kind}{"Pair" if len(pair) == 2 else "One"}' + args)
+    return '\n'.join(out) + '\n'
 
 
 if __name__ == '__main__':

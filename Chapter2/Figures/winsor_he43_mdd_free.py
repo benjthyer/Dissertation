@@ -11,7 +11,10 @@ published):
 
 Step 1 (3He only): f_j and r_j are fitted to the per-step (fractional) and
 cumulative 3He yields of the water-saturated experiment, equally weighted
-(Farley & Flowers 2012, supplement A2). Because only ~15% of the 3He was
+(Farley & Flowers 2012, supplement A2). The six low-signal steps (< 0.1 pccSTP
+3He; thermochr_utils.low_signal_HTWin0601b_mask) are excluded from the misfit
+and from the Arrhenius chi^2; their gas still counts toward the cumulative
+yields and their durations toward the laboratory schedule. Because only ~15% of the 3He was
 released before fusion, domains that barely degas in the experiment are
 constrained only through their summed fraction; their individual sizes are
 bounded by LOG10_R_BOUNDS.
@@ -26,6 +29,7 @@ from scipy.optimize import least_squares
 
 import winsor_he43_model as M
 import winsor_he43_mdd as D
+from thermochr_utils import low_signal_HTWin0601b_mask
 
 LOG10_R_BOUNDS = (-6.0, 3.0)      # r_j = a_j / a0
 _LT = np.linspace(-16, 8, 12001)  # log10 tau grid for the lab inversion
@@ -68,14 +72,22 @@ def ref_lab_tau(F_total, f, r):
 # ---------------------------------------------------------------------------
 # Step 1: 3He fit
 # ---------------------------------------------------------------------------
+def he3_data(spec):
+    """3He data with the mask of steps used in the fit (low-signal steps excluded)."""
+    d = D.he3_data(spec)
+    d['keep'] = ~low_signal_HTWin0601b_mask(M.MASTER_XLSX)
+    return d
+
+
 def residuals(theta, n, d, weighting='absolute'):
     f, r = unpack(theta, n)
     F_mod = mixture_F(d['tau_hrd'], f, r)          # tau_hrd = Stage 1 reference tau
     dF_mod = np.diff(np.r_[0.0, F_mod])
     dF_obs = np.diff(np.r_[0.0, d['F_meas']])
+    k = d.get('keep', np.ones(F_mod.size, bool))
     if weighting == 'relative':
-        return np.r_[(dF_mod - dF_obs) / dF_obs, (F_mod - d['F_meas']) / d['F_meas']]
-    return np.r_[dF_mod - dF_obs, F_mod - d['F_meas']]
+        return np.r_[((dF_mod - dF_obs) / dF_obs)[k], ((F_mod - d['F_meas']) / d['F_meas'])[k]]
+    return np.r_[(dF_mod - dF_obs)[k], (F_mod - d['F_meas'])[k]]
 
 
 def fit_domains(spec, n, weighting='absolute', init=None, n_starts=60,
@@ -84,7 +96,7 @@ def fit_domains(spec, n, weighting='absolute', init=None, n_starts=60,
     init=(f_prev, r_prev) from an (n-1)-domain fit warm-starts the search by
     adding one domain at a range of sizes (Farley & Flowers: add domains one
     at a time); the fit therefore cannot get worse with n."""
-    d = D.he3_data(spec)
+    d = he3_data(spec)
     rng = np.random.default_rng(seed)
     lo = np.r_[np.full(n - 1, -15.0), np.full(n, LOG10_R_BOUNDS[0])]
     hi = np.r_[np.full(n - 1, 15.0), np.full(n, LOG10_R_BOUNDS[1])]
@@ -117,14 +129,15 @@ def fit_domains(spec, n, weighting='absolute', init=None, n_starts=60,
     n_obs, k = resid.size, 2 * n - 1
     F_mod = mixture_F(d['tau_hrd'], f, r)
     lnD_mod = D.apparent_lnD(F_mod, d['t_s'])
-    chi2_arr = float(np.sum(((lnD_mod - d['lnD']) / d['sigma']) ** 2))
+    kk = d['keep']
+    chi2_arr = float(np.sum(((lnD_mod - d['lnD']) / d['sigma'])[kk] ** 2))
     tau_end = d['tau_hrd'][-1]
     released = np.array([M.uniform_F(tau_end / rj ** 2)[0] for rj in r])
     return dict(n=n, f=f, r=r, weighting=weighting, sum_sq=ss, n_obs=n_obs, k=k,
                 rms_yield=float(np.sqrt(ss / n_obs)),
                 bic=float(n_obs * np.log(ss / n_obs) + k * np.log(n_obs)),
                 aic=float(n_obs * np.log(ss / n_obs) + 2 * k),
-                arrhenius_chi2=chi2_arr, arrhenius_chi2_nu=chi2_arr / (d['lnD'].size - k),
+                arrhenius_chi2=chi2_arr, arrhenius_chi2_nu=chi2_arr / (int(kk.sum()) - k), n_arrhenius=int(kk.sum()),
                 frac_degassed_in_lab=released,
                 model_F=F_mod, model_lnD=lnD_mod)
 

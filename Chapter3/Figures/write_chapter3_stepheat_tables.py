@@ -210,13 +210,13 @@ def build_table(macro, sample, tab_key, label, fig_note, caption_extra=''):
         body.append(' & '.join([
             str(r['step']),
             fmt(r['temp'], 1),
-            fmt(r['time_min'], 1),
+            fmt(r['time_min'], 0),
             fmt(r['he3_meas'], 4),
             fmt(r['cum_he3'], 4),
             fmt(r['nt_ub'], 4),
-            fmt(r['ln_lb'], 3),
-            fmt(r['ln_m'], 3),
-            fmt(r['ln_ub'], 3),
+            fmt(r['ln_lb'], 2),
+            fmt(r['ln_m'], 2),
+            fmt(r['ln_ub'], 2),
         ]) + r' \\')
     body.append(TABLE_END)
     return '\n'.join(body)

@@ -72,11 +72,11 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-from ngibbs.engine.models import MELTS102EmulatorCPU
+from ngibbs.engine.models import MELTS120EmulatorCPU
 from ngibbs.utils.file_utils import load_ml_bundle
 
-# Emulator and its ground-truth bundle: MELTS 1.0.2, Cr variant, isothermal (102Closed_Cr_NPT)
-API = MELTS102EmulatorCPU.cr
+# Emulator and its ground-truth bundle: MELTS 1.2.0, Cr variant, isothermal (120Closed_Cr_NPT)
+API = MELTS120EmulatorCPU.cr
 EMU = API.isothermal_emulator                     # NN_MELTS
 BUNDLE_PATH = Path(API._test_bundles['isothermal'])
 MODEL_NAME = Path(API._iso_path).name
@@ -93,6 +93,7 @@ MAX_PLOT_POINTS = 30000
 FIG_PHASE = 'spinel'            # phase of the publication figure ('' to skip)
 FIG_OXIDES = ('FeO', 'Al2O3', 'MgO')
 PUB_MIN_LIMITS = {'FeO': -10.0, 'Al2O3': -10.0}   # publication figure: axes go no lower than this (wt%)
+PLOT_ABS_MAX = 100.0            # rows with any |oxide wt%| above this (true or predicted) are not plotted
 SEED = 1337
 
 PASSES = ('uncorrected', 'corrected')
@@ -414,16 +415,33 @@ def main():
             results[pname][ph] = (pred_pos, wt)
         print(f'[{pname}] forward + mass balance: {time.time() - t:.1f} s')
 
+    # rows with a wildly out-of-range oxide (|wt%| > PLOT_ABS_MAX, true or predicted in either
+    # pass) are left out of the plots and the axis limits; metrics/logs still include them
+    plot_drop = {}
+    for ph in phases:
+        gt_pos, wt_true = gt[ph]
+        cols = ox_cols[ph]
+        drop = np.zeros(n, dtype=bool)
+        for pname in PASSES:
+            pred_pos, wt = results[pname][ph]
+            drop |= (gt_pos & pred_pos) & ((np.abs(wt_true[:, cols]) > PLOT_ABS_MAX).any(axis=1)
+                                           | (np.abs(wt[:, cols]) > PLOT_ABS_MAX).any(axis=1))
+        plot_drop[ph] = drop
+        if drop.any():
+            print(f'[plot] {ph}: {int(drop.sum())} row(s) with |oxide| > {PLOT_ABS_MAX:g} wt% '
+                  f'not plotted (row indices {np.flatnonzero(drop)[:10].tolist()})')
+
     # shared plot rows and axis limits, so both passes are drawn on identical axes
     plot_rows = rng.permutation(n)
     limits = {}
     for ph in phases:
         gt_pos, wt_true = gt[ph]
+        keep = gt_pos & ~plot_drop[ph]
         for c in ox_cols[ph]:
-            vals = [wt_true[gt_pos, c]]
+            vals = [wt_true[keep, c]]
             for pname in PASSES:
                 pred_pos, wt = results[pname][ph]
-                vals.append(wt[gt_pos & pred_pos, c])
+                vals.append(wt[keep & pred_pos, c])
             v = np.concatenate(vals)
             v = v[np.isfinite(v)]
             lo = min(0.0, float(v.min())) if v.size else 0.0
@@ -445,7 +463,7 @@ def main():
             per_phase[ph] = m
             any_neg = pred_pos & (wt[:, ox_cols[ph]] < -NEG_TOL).any(axis=1)
             any_neg_overall |= any_neg
-            both = gt_pos & pred_pos
+            both = gt_pos & pred_pos & ~plot_drop[ph]
             maes = {c: m[f'mae_wt_{oxides[c]}'] for c in ox_cols[ph]}
             sel = plot_rows[both[plot_rows]][:MAX_PLOT_POINTS]
             sel_mask = np.zeros(n, dtype=bool)
@@ -479,7 +497,7 @@ def main():
                 raise SystemExit(f'unknown oxides {missing_ox}; choose from {oxides}')
             ox_sel = [oxides.index(o) for o in FIG_OXIDES]
             gt_pos, wt_true = gt[ph]
-            both_all = gt_pos.copy()
+            both_all = gt_pos & ~plot_drop[ph]
             wt_pred_by_pass, neg_by_pass, maes_by_pass, negc_by_pass = {}, {}, {}, {}
             for pname in PASSES:
                 pred_pos, wt = results[pname][ph]

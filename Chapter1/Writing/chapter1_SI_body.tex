@@ -154,7 +154,7 @@ Eq.~\eqref{eq:s1-6} and all equations derived from it will be invalid. In other 
 timescale of diffusion must be much smaller than the timescale of
 permeation (\(\tau_{D} \ll \tau_{P}\)) for Eq.~\eqref{eq:s1-6} and all derived
 equations to apply. A more thorough analysis of this assumption is
-presented in \emph{Diffusive Steady State Assumption for Permeation.}
+presented in \S\ref{diffusive-steady-state-concentration-profiles-in-cylindrical-membranes}.
 
 Eq.~\eqref{eq:s1-6} can be simplified by defining a geometric factor (\emph{G}) in
 units of cm\textsuperscript{-2} that incorporates the spatial parameters
@@ -232,7 +232,7 @@ G = \frac{2}{a^{2}\ln\left( \frac{b}{a} \right)}
 
 Interestingly, \emph{h} cancels so that the permeation rate has no
 dependence on the ampoule length when permeation through the top and
-bottom are negligible. Eq.~\eqref{eq:3} displays the intuitive behavior that
+bottom is negligible. Eq.~\eqref{eq:3} displays the intuitive behavior that
 thinner walls and narrower tubes lead to more efficient permeation.
 Where \emph{G} is used elsewhere in this work, it refers to the
 cylindrical geometric factor given in Eq.~\eqref{eq:3}. Most silica ampoules
@@ -251,7 +251,7 @@ To establish a steady state concentration profile, the diffusive timescale must 
 \begin{figure}[t]
 \centering
 \includegraphics[width=8.3cm]{SteadyStateProfileDeviation.pdf}
-\caption{A visualization of ideal diffusive steady state concentration profiles (demarcated by the `+' symbols) are contrasted with the numerically calculated ``effective'' steady state concentration profile, represented by the solid lines. These effective concentration profiles are not strictly in steady state, but they are effectively in equilibrium with a rapidly decreasing internal helium reservoir. These profiles are retrieved by numerically simulating a model ampoule permeating helium for at least one diffusive timescale. At low glass/gas volume ratios, the idealized and true concentration profiles are indistinguishable. Ideal steady state concentration profiles for cylindrical membranes are strongly curved at high glass/gas volume ratios and become linear as the glass/gas volume ratio approaches 0. For closed ampoules where internal pressure is not constant, but instead decreases due to permeation, the internal pressure decreases faster than the glass concentration profile can respond to the new internal helium pressure, so the concentrations are higher (and less curved) than the ideal profile, because of memory of higher internal helium pressures. 4He diffusivities and solubilities are taken from \citet{swets1961}.}
+\caption{Ideal diffusive steady state concentration profiles (demarcated by the `+' symbols) are contrasted with the numerically calculated ``effective'' steady state concentration profile, represented by the solid lines. These effective concentration profiles are not strictly in steady state, but they are effectively in equilibrium with a rapidly decreasing internal helium reservoir. These profiles are retrieved by numerically simulating a model ampoule permeating helium for at least one diffusive timescale. At low glass/gas volume ratios, the idealized and true concentration profiles are indistinguishable. Ideal steady state concentration profiles for cylindrical membranes are strongly curved at high glass/gas volume ratios and become linear as the glass/gas volume ratio approaches 0. For closed ampoules where internal pressure is not constant, but instead decreases due to permeation, the internal pressure decreases faster than the glass concentration profile can respond to the new internal helium pressure, so the concentrations are higher (and less curved) than the ideal profile, because of memory of higher internal helium pressures. 4He diffusivities and solubilities are taken from \citet{swets1961}.}
 \label{fig:steady-state-profile-deviation}
 \end{figure}
 
@@ -280,7 +280,7 @@ abundance of something decaying by a first order process following the
 form \(\frac{dn}{dt} = - \lambda n\) would have decreased by a factor of
 Euler's number (1/\emph{e}). After one permeation timescale has passed,
 more than half of the original helium has permeated through the ampoule
-walls, leading to the intuition that the dimensionless timescale ratio
+walls, leading to the intuition that the dimensionless timescale ratio must satisfy
 \(\frac{\tau_{D}}{\tau_{P}} \ll 1\) in order for Eq.~\eqref{eq:s1-7} and Eq.~\eqref{eq:eqn2} to
 apply, because only vanishingly small changes in the total helium are
 allowed within one diffusive timescale in order for an equilibrium
@@ -302,9 +302,9 @@ V_{\frac{glass}{gas}} = \frac{h\pi\left( b^{2} - a^{2} \right)}{h\pi a^{2}} = \f
 \end{equation}
 
 \(\frac{\tau_{D}}{\tau_{P}}\) can be expanded and recast to be a
-function of only temperature and \(V_{\frac{glass}{gas}}\). Recalling
+function of only temperature and \(V_{\frac{glass}{gas}}\). Recall
 that L = b-a and K = SD, and the identity of \emph{G} for cylinders from
-Eq.~\eqref{eq:3}.
+Eq.~\eqref{eq:3}:
 
 \[\frac{\tau_{D}}{\tau_{P}} = \frac{L^{2}}{D}GRTK = \frac{(b - a)^{2}}{D}\frac{2}{a^{2}\ln\left( \frac{b}{a} \right)}RTSD\]
 
@@ -339,7 +339,7 @@ glass/gas volume ratio of ampoules, whereas temperature plays only a
 minor role. Ampoules with high glass/gas volume ratios and
 \(\frac{\tau_{D}}{\tau_{P}}\ \)ratios can be considered ``glass
 dominated''. For these glass-dominated ampoules, the relative difference
-in surface area between the inner and outer surfaces is large; resulting
+in surface area between the inner and outer surfaces is large, resulting
 in a more profoundly curved ideal concentration profile (Fig.~\ref{fig:steady-state-profile-deviation} above, Eq.~\eqref{eq:s4-4}). For glass dominated ampoules, this ideal curved concentration
 profile is only realized if the internal pressure is held constant,
 otherwise, this internal helium partial pressure decays rapidly due to
@@ -348,10 +348,10 @@ stabilizing a helium concentration profile in the glass that will be
 less curved and higher than the idealized steady state of Eq.~\eqref{eq:s4-4} (Fig.~\ref{fig:steady-state-profile-deviation} above). When normalized to the concentration, quantity, or pressure of
 helium within the gas phase of the ampoule, this quasi-steady state
 concentration profile is reached within one diffusive timescale and
-remains constant as diffusion and permeation proceeds, regardless of the
+remains constant as diffusion and permeation proceed, regardless of the
 ratio of glass and gas volumes (this property was tested by varying the
 permeation time between one and ten diffusive timescales, which had no
-effect of the concentration profile normalized to the concentration,
+effect on the concentration profile normalized to the concentration,
 abundance, or partial pressure of helium in the gas phase). Indeed, all
 model ampoule calculations from Figs.~\ref{fig:numerical-error-vs-step-duration}--\ref{fig:numerical-error-volume-ratio-control} were initialized to
 have this effective steady state concentration profile, which is done by
@@ -381,7 +381,7 @@ parameter that directly affects the accuracy of the analytical
 solutions, e.g. Eq.~\eqref{eq:s1-7}, is the glass/gas volume ratio of the
 ampoules (Figs.~\ref{fig:numerical-error-vs-step-duration}--\ref{fig:numerical-error-volume-ratio-control}). This geometric dependence is much more
 important than subtle effects of temperature (Figs.~\ref{fig:diffusive-permeation-timescale-ratio}; \ref{fig:numerical-error-volume-ratio-control}). Ampoules
-from this work have glass/gas volume ratios between 1.2 and 1.6; for
+from this work have glass/gas volume ratios between 1.2 and 1.6, for
 which Eq.~\eqref{eq:s1-7} is accurate to within 1\% for temperatures
 less than 500°C (Fig.~\ref{fig:numerical-error-accuracy-bounds}). For more precise handling, odd thermal
 schedules, or for ampoules with higher glass/gas volume ratios,
@@ -693,7 +693,7 @@ confirmed in Fig.~\ref{fig:thermal-perturbation-error}.
 
 In order to simulate permeation, the atomic abundances of helium within
 the gas phases both outside the ampoule (at high vacuum) and inside the
-ampoule must be tracked, as do the fluxes between the glass and these
+ampoule must be tracked, as must the fluxes between the glass and these
 two gas phases. These fluxes were calculated simply as the diffusive
 flux in \(\frac{atoms}{s \bullet cm^{2}}\) as is given by Fick's law
 (Eq.~\eqref{eq:s1-1}). For spatially discrete cells throughout the ampoule at any
@@ -780,14 +780,14 @@ so that the concentration profile of the model ampoule was tracked
 throughout the entire heating history. For steps above room temperature,
 the ampoule was simulated to immediately transition to the target
 temperature, then the helium concentration profile, influx, and outflux
-of the glass was tracked for the nominal (programmed) heating times for
+of the glass were tracked for the nominal (programmed) heating times for
 times smaller than the diffusive timescale at that temperature. After a
 heated step, an equilibrium concentration profile was reinitialized at
 that temperature only if the equilibrium equation (Eq.~\eqref{eq:s1-7}) was used
 for permeation timescales longer than the diffusive timescale, then the
 temperature of the ampoule was cooled continuously according to the
 quadratic rate law determined from the experimental ampoule's thermal
-history while helium diffusion and permeation was continuously
+history while helium diffusion and permeation were continuously
 simulated.
 
 \subsection{Errors related to violation of the steady state concentration
@@ -849,9 +849,9 @@ Relative\ Disequilibrium\ Error\  = \frac{n_{He}^{glass\ }\left( T_{1} \right) -
 \end{equation}
 
 To evaluate Eq.~\eqref{eq:s7-1a} and \eqref{eq:s7-1b}, \(n_{He}^{glass\ }\) must be
-calculated. An upper bound can be done by assuming a steady state
+calculated. An upper bound can be obtained by assuming a steady state
 diffusion profile and an ideal open tube geometry (with small tops and
-bottoms neglected for simplicity). Assuming that the helium partial
+bottoms neglected for simplicity), assuming that the helium partial
 pressure outside of the ampoule is 0 and defining the abundance of
 helium within the gas phase as \(n_{He}^{gas\ }.\) The radial
 concentration profile at diffusive steady state as a function of radius
@@ -965,7 +965,7 @@ possible to experimentally ensure compliance with the diffusive steady
 state concentration assumption. For example, the ampoule could be
 programmed to be held at the target permeation temperature (for example,
 80°C) immediately after a high temperature experimental step instead of
-completely cooling (to \textasciitilde25°C) while evolved gasses are
+completely cooling (to \textasciitilde25°C) while evolved gases are
 processed and helium is purified from the high temperature experimental
 step. To do this, one must be aware of the timescale necessary to reach
 diffusive equilibrium at a given temperature. At Caltech, helium
@@ -1005,7 +1005,7 @@ numerical diffusive permeation model described above for a
 characteristic ampoule where a = 300 µm and b = 500 µm. Dirichlet
 boundary conditions are imposed at the ampoule's inner and outer
 boundaries, where r = a and r = b, holding \(C_{r = b}^{Glass} = 0\) and
-\(C_{r = a}^{Glass} = {\ C_{He}^{Gas} \bullet \ \frac{C_{He}^{Glass}}{C_{He}^{Gas}}}_{EQM}\)as
+\(C_{r = a}^{Glass} = {\ C_{He}^{Gas} \bullet \ \frac{C_{He}^{Glass}}{C_{He}^{Gas}}}_{EQM}\) as
 calculated in Eq.~\eqref{eq:s5-2} and plotted in Fig.~\ref{fig:helium-glass-gas-partitioning}. For the analysis of the
 Fourier number during the approach to the diffusive equilibrium
 concentration profile in Figs.~\ref{fig:fdm-profile-evolution-300-to-100c} and \ref{fig:fdm-profile-evolution-zero-initial-condition}, \(C_{He}^{Gas}\ \)is
@@ -1055,9 +1055,9 @@ The uncertainty of the helium evolution of the encapsulated natural
 material during a heating step (\(\omega\)) due to permeation lag
 correction can be estimated by calculating the maximum possible helium
 residing in the tube between steps, i.e. for the values for
-\emph{n\textsubscript{0, }}and \emph{n\textsubscript{t}}: \(n_{0}^{UB}\)
+\emph{n\textsubscript{0}} and \emph{n\textsubscript{t}}: \(n_{0}^{UB}\)
 and \(n_{t}^{UB}.\ \)From the permeation lag equation (main text Eq.~\eqref{eq:permlag}), upper bound estimates for
-\emph{n\textsubscript{0, }}and \emph{n\textsubscript{t}} bound the
+\emph{n\textsubscript{0}} and \emph{n\textsubscript{t}} bound the
 encapsulated material contribution \(\omega\) within:
 
 \begin{equation}
@@ -1134,7 +1134,7 @@ n_{t}e^{\lambda t} = \frac{\Omega}{\lambda}e^{\lambda t} + C
 
 Where \emph{C} is an unknown constant introduced by indefinite
 integration. This expression becomes more intuitive when both sides are
-divided by the integration factor and by substituting the steady state
+divided by the integrating factor and by substituting the steady state
 concentration from Eq.~\eqref{eq:s6-3}.
 
 \begin{equation}
@@ -1236,7 +1236,7 @@ Permeation ratios for 3He and 4He measured in the empty tube experiment on the H
 \begin{figure}[t]
 \centering
 \includegraphics[width=8.3cm]{Relative_Permeabilities.pdf}
-\caption{Ratios of calculated permeabilities from step heat experiments on silica glass ampoules on the Helix-MC-Plus\textsuperscript{10K} mass spectrometer at Caltech. The last measurement on the empty tube experiment is an outlier and was excluded from the plot. Experiments on encapsulated water and encapsulated sulfur were allowed to cool before isotopic measurements. Because of slow cooling rates, simple corrections could not be applied to these two experiments, which effectively queried permeabilities at a range of temperatures within a single step. Therefore, the ratios of their apparent permeabilities are plotted as a field with 2$\sigma$ standard deviation across the experimental temperature range. These three experiments show general, albeit imprecise, agreement to the results of \citet{jones1953}, except for the measurements at room temperature. \citet{jones1953} was likely able to measure the relative permeabilities of 4He and 3He with much higher precision because his experimental vessel was charged with 3He at a partial pressure of around 0.5 atmospheres, over one billion times higher than the 3He partial pressure within the fused silica ampoule used in this work. Interestingly, three room-temperature measurements of helium permeation of an empty tube at Caltech yielded essentially identical permeability of 3He and 4He.}
+\caption{Ratios of calculated permeabilities from step heat experiments on silica glass ampoules on the Helix-MC-Plus\textsuperscript{10K} mass spectrometer at Caltech. The last measurement on the empty tube experiment is an outlier and was excluded from the plot. Experiments on encapsulated water and encapsulated sulfur were allowed to cool before isotopic measurements. Because of slow cooling rates, simple corrections could not be applied to these two experiments, which effectively queried permeabilities at a range of temperatures within a single step. Therefore, the ratios of their apparent permeabilities are plotted as a field with 2$\sigma$ standard deviation across the experimental temperature range. These three experiments show general, albeit imprecise, agreement with the results of \citet{jones1953}, except for the measurements at room temperature. \citet{jones1953} was likely able to measure the relative permeabilities of 4He and 3He with much higher precision because his experimental vessel was charged with 3He at a partial pressure of around 0.5 atmospheres, over one billion times higher than the 3He partial pressure within the fused silica ampoule used in this work. Interestingly, three room-temperature measurements of helium permeation of an empty tube at Caltech yielded essentially identical permeability of 3He and 4He.}
 \label{fig:relative-permeability-3he-4he}
 \end{figure}
 
@@ -1246,7 +1246,7 @@ Permeation ratios for 3He and 4He measured in the empty tube experiment on the H
 
 Using the helium permeability values of \citet{swets1961} for silica glass, an ampoule with a geometric factor (\emph{G}) of 6000 cm\textsuperscript{-2} would permeate 0.2‰ of its helium in 1 minute at 26°C (Eq.~\eqref{eq:permsol}), which is negligible for the scope of this work. The atmosphere-equilibrated empty ampoule with a geometric factor (\emph{G}) of \textasciitilde4785 cm\textsuperscript{-2} would permeate 2.8‰ of its helium in its 15-minute pumping time between steps. For that experiment only, helium loss during pumping is accounted for by applying the permeation relationship of Eq.~\eqref{eq:permsol} (\(n_{0} = n_{t}/(1 - \,^{He}F)\)) to solve for \emph{n\textsubscript{0}}, the amount of helium in the ampoule before pump-out, from \emph{n\textsubscript{t}}, the amount remaining after pumping with T = 25°C and t = 15 minutes. A permeability coefficient (\emph{K}) for helium in silica glass had to be assumed in order to apply this correction, so the value of \(1.54 \times 10^{10}\) \(\frac{atoms}{s \times cm \times atm}\) at 25°C given by the Arrhenius law reported by \citet{swets1961} was used. The validity of this choice is supported by the data; the average calculated permeability at room temperature for this experiment after correcting for helium lost during the 15-minute pump out is also \(1.54 \times 10^{10}\) \(\frac{atoms}{s \times cm \times atm}\).
 
-For that experiment only, a correction was also applied to the high temperature steps because they were heated for short durations (45 minutes for all but one heated step), so that the permeation of the ampoule at room temperature during gas cryofocusing represented a significant portion of the step's yield. This was similarly corrected by calculating the expected fractional yield at room temperature during the gas preparation time, which is the step's total time minus the pump out time and the heated time, (29-31 minutes for all heated steps). For that correction, the permeation relationship of Eq.~\eqref{eq:permsol} (\(n_{0} = n_{t}/(1 - \,^{He}F)\)) is applied again to solve for the unknown \emph{n\textsubscript{0}}, the amount of helium within the ampoule immediately after the completion of the heated step, from \emph{n\textsubscript{t}}, the amount of helium within the ampoule when the gas is inlet into the mass spectrometer about 30 minutes later after spiking and helium purification. This cooling and gas preparation correction is not applied to the room temperature measurements for which the temperature remained constant during gas preparation.
+For that experiment only, a correction was also applied to the high temperature steps because they were heated for short durations (45 minutes for all but one heated step), so that the permeation of the ampoule at room temperature during gas cryofocusing represented a significant portion of the step's yield. This was similarly corrected by calculating the expected fractional yield at room temperature during the gas preparation time, which is the step's total time minus the pump out time and the heated time (29--31 minutes for all heated steps). For that correction, the permeation relationship of Eq.~\eqref{eq:permsol} (\(n_{0} = n_{t}/(1 - \,^{He}F)\)) is applied again to solve for the unknown \emph{n\textsubscript{0}}, the amount of helium within the ampoule immediately after the completion of the heated step, from \emph{n\textsubscript{t}}, the amount of helium within the ampoule when the gas is inlet into the mass spectrometer about 30 minutes later after spiking and helium purification. This cooling and gas preparation correction is not applied to the room temperature measurements for which the temperature remained constant during gas preparation.
 
 \subsection{Anomalous Signal Recalculation for the Tank Helium-Soaked Empty Ampoule}\label{anomalous-signal-recalculation}
 
@@ -1258,11 +1258,11 @@ The total yield for the encapsulated Durango apatite experiment (main text, \S\r
 
 \section{Sample Preparation and SEM Imaging of Buffered and Decomposed Sulfides}\label{sem-imaging-of-buffered-and-decomposed-sulfides}
 
-Samples of pyrite, arsenopyrite, and marcasite were crushed under ethanol, and grains larger than ~100 µm were dried for each mineral and subdivided into four populations: one control, and three for heat treatment in atmosphere, ultra-high vacuum, or encapsulated within a glass ampoule along with an excess of fused sulfur (or realgar: As3S3 for arsenopyrite). The encapsulated populations were loaded into 3 mm inner diameter, 4 mm outer diameter silica glass tubes with fused bottoms and open tops, along with sufficient fused sulfur or crystalline realgar to guarantee vapor saturation at 400°C. These tubes were interfaced with a vacuum line and were pumped to 60 millitorr before the tops of the tubes were sealed. 
+Samples of pyrite, arsenopyrite, and marcasite were crushed under ethanol, and grains larger than \textasciitilde100 µm were dried for each mineral and subdivided into four populations: one control, and three for heat treatment in atmosphere, ultra-high vacuum, or encapsulated within a glass ampoule along with an excess of fused sulfur (or realgar, As\textsubscript{4}S\textsubscript{4}, for arsenopyrite). The encapsulated populations were loaded into 3 mm inner diameter, 4 mm outer diameter silica glass tubes with fused bottoms and open tops, along with sufficient fused sulfur or crystalline realgar to guarantee vapor saturation at 400°C. These tubes were interfaced with a vacuum line and were pumped to 60 millitorr before the tops of the tubes were sealed. 
 
 The open-air populations for each mineral were carefully placed on glass microscope slides within borosilicate petri dishes and the encapsulated populations were submerged in pure quartz sand within capped, deep petri dishes. These petri dishes containing the encapsulated and open-air populations of sulfides were placed on a temperature controlling hot plate under a fume hood and were held at 400°C for 8-11 hours, at which point the hot plate was turned off and the samples were left to cool. 
 
-The ultra-high vacuum population for pyrite and marcasite were loaded into copper packets and mounted to a type K thermocouple within a high vacuum line. A silver wool based sulfur trap was installed between the samples and the turbo pump. The high-vacuum line was closed and pumped to <10-5 torr. A Watlow temperature controller held the samples at 400°C for 4.5 hours with a projector lamp illuminating the sample through a sapphire window. This procedure was repeated for each mineral sample of pyrite and marcasite. The arsenopyrite sample was not heated in vacuum to avoid contaminating the line with arsenic. To simulate thermal decomposition in an anoxic environment, a population of arsenopyrites was thermally treated in a large glass capsule similarly to the encapsulated populations, but without a realgar “buffer”.
+The ultra-high vacuum populations for pyrite and marcasite were loaded into copper packets and mounted to a type K thermocouple within a high vacuum line. A silver wool based sulfur trap was installed between the samples and the turbo pump. The high-vacuum line was closed and pumped to $<10^{-5}$ torr. A Watlow temperature controller held the samples at 400°C for 4.5 hours with a projector lamp illuminating the sample through a sapphire window. This procedure was repeated for each mineral sample of pyrite and marcasite. The arsenopyrite sample was not heated in vacuum to avoid contaminating the line with arsenic. To simulate thermal decomposition in an anoxic environment, a population of arsenopyrites was thermally treated in a large glass capsule similarly to the encapsulated populations, but without a realgar “buffer”.
 
 The control and thermally treated samples were mounted to carbon tape and carbon coated, then were loaded in the Zeiss 1550 Scanning Electron Microscope (SEM) at Caltech. Images of the surface topography of each population were taken using the secondary electron detector and an Electron High Tension (EHT) of 10 kV at a working distance of 10-15 mm. 
 
@@ -1330,26 +1330,26 @@ Temp & Time & \emph{m} 4He & $n_{0}$ 4He & $n_{t}$ 4He\newline (before cooling) 
 25 & 77 & 0.1793 & 12.64 &  & 12.47 & 0.9858 & 33.56 & 23.49 \\
 50 & 45 & 0.2902 & 12.43 & 12.21 & 12.14 & 0.9819 & 30.96 & 24.19 \\
 24.8 & 74 & 0.1593 & 12.11 &  & 11.95 & 0.9868 & 33.58 & 23.46 \\
-100 & 45 & 0.7129 & 11.92 & 11.26 & 11.2 & 0.9452 & 26.81 & 25.18 \\
-24.7 & 74 & 0.145 & 11.17 &  & 11.03 & 0.9870 & 33.59 & 23.44 \\
-60 & 45 & 0.3094 & 11 & 10.75 & 10.69 & 0.9771 & 30.03 & 24.40 \\
-70 & 45 & 0.3619 & 10.66 & 10.35 & 10.3 & 0.9712 & 29.15 & 24.60 \\
+100 & 45 & 0.7129 & 11.92 & 11.26 & 11.20 & 0.9452 & 26.81 & 25.18 \\
+24.7 & 74 & 0.1450 & 11.17 &  & 11.03 & 0.9870 & 33.59 & 23.44 \\
+60 & 45 & 0.3094 & 11.00 & 10.75 & 10.69 & 0.9771 & 30.03 & 24.40 \\
+70 & 45 & 0.3619 & 10.66 & 10.35 & 10.30 & 0.9712 & 29.15 & 24.60 \\
 80 & 45 & 0.4225 & 10.27 & 9.902 & 9.849 & 0.9640 & 28.33 & 24.80 \\
 24.7 & 74 & 0.1272 & 9.823 &  & 9.696 & 0.9870 & 33.59 & 23.44 \\
-24.8 & 74 & 0.1252 & 9.67 &  & 9.545 & 0.9871 & 33.58 & 23.44 \\
+24.8 & 74 & 0.1252 & 9.670 &  & 9.545 & 0.9871 & 33.58 & 23.44 \\
 24.8 & 75 & 0.1238 & 9.519 &  & 9.395 & 0.9870 & 33.58 & 23.43 \\
-70 & 45 & 0.3209 & 9.37 & 9.098 & 9.049 & 0.9709 & 29.15 & 24.61 \\
-60 & 45 & 0.2534 & 9.025 & 8.82 & 8.771 & 0.9773 & 30.03 & 24.39 \\
-24.8 & 74 & 0.113 & 8.748 &  & 8.635 & 0.9871 & 33.58 & 23.44 \\
+70 & 45 & 0.3209 & 9.370 & 9.098 & 9.049 & 0.9709 & 29.15 & 24.61 \\
+60 & 45 & 0.2534 & 9.025 & 8.820 & 8.771 & 0.9773 & 30.03 & 24.39 \\
+24.8 & 74 & 0.1130 & 8.748 &  & 8.635 & 0.9871 & 33.58 & 23.44 \\
 90 & 45 & 0.4231 & 8.611 & 8.231 & 8.188 & 0.9558 & 27.55 & 24.98 \\
 119.8 & 45 & 0.6625 & 8.166 & 7.543 & 7.504 & 0.9236 & 25.46 & 25.47 \\
 24.8 & 74 & 0.09578 & 7.484 &  & 7.388 & 0.9872 & 33.58 & 23.43 \\
 150 & 45 & 0.9371 & 7.368 & 6.465 & 6.431 & 0.8775 & 23.64 & 25.89 \\
 25 & 581 & 0.6179 & 6.414 &  & 5.796 & 0.9037 & 33.56 & 23.43 \\
-300 & 90 & 4.549 & 5.78 & 1.238 & 1.231 & 0.2141 & 17.45 & 27.36 \\
+300 & 90 & 4.549 & 5.780 & 1.238 & 1.231 & 0.2141 & 17.45 & 27.36 \\
 24.7 & 74 & 0.01673 & 1.228 &  & 1.211 & 0.9864 & 33.59 & 23.49 \\
-400 & 90 & 1.178 & 1.208 &  & 0.03073 &  &  & \\
-24.7 & 74 & 0.00117 & 0.03065 &  &  &  &  & \\
+400 & 90 & 1.178 & 1.208 &  & 0.03073 &  &  &  \\
+24.7 & 74 & 0.001170 & 0.03065 &  &  &  &  &  \\
 \end{supertabular}
 \end{small}
 
@@ -1370,36 +1370,36 @@ Temp & Time & \emph{m} 3He & $\pm2\sigma$ & $n_{0}$ 3He & $n_{t}$ 3He & $n_t/n_0
 \tabletail{\bottomhline}
 \tablelasttail{\bottomhline}
 \begin{supertabular}{p{1.1cm}p{1.1cm}p{1.2cm}p{1.5cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.5cm}}
-26 & 73.6 & 0.0516 & \(6.16\!\times\!10^{-4}\) & 5.787 & 5.736 & 0.9902 & 0.9911 & \(1.53\!\times\!10^{10}\) \\
--- & 113.3 & 0.269 & \(3.89\!\times\!10^{-3}\) & 5.736 & 5.467 &  &  &  \\
-26 & 73.7 & 0.048 & \(8.51\!\times\!10^{-4}\) & 5.467 & 5.419 & 0.9902 & 0.9912 & \(1.50\!\times\!10^{10}\) \\
-26 & 75.3 & 0.0485 & \(9.92\!\times\!10^{-4}\) & 5.419 & 5.37 & 0.9900 & 0.9910 & \(1.50\!\times\!10^{10}\) \\
--- & 112.9 & 0.271 & \(5.67\!\times\!10^{-3}\) & 5.37 & 5.099 &  &  &  \\
--- & 126.6 & 0.418 & \(8.80\!\times\!10^{-3}\) & 5.099 & 4.682 &  &  &  \\
-125 & 52.9 & 0.299 & \(6.31\!\times\!10^{-3}\) & 4.682 & 4.382 & 0.9275 & 0.9361 & \(1.18\!\times\!10^{11}\) \\
-125 & 53.1 & 0.311 & \(6.57\!\times\!10^{-3}\) & 4.382 & 4.071 & 0.9273 & 0.9290 & \(1.31\!\times\!10^{11}\) \\
-125 & 53.1 & 0.291 & \(6.15\!\times\!10^{-3}\) & 4.071 & 3.78 & 0.9273 & 0.9285 & \(1.32\!\times\!10^{11}\) \\
--- & 73.6 & 0.422 & \(8.67\!\times\!10^{-3}\) & 3.78 & 3.358 &  &  &  \\
-150 & 73.6 & 0.502 & \(8.56\!\times\!10^{-3}\) & 3.358 & 2.856 & 0.8512 & 0.8506 & \(1.95\!\times\!10^{11}\) \\
-150 & 52.9 & 0.299 & \(4.47\!\times\!10^{-3}\) & 2.856 & 2.557 & 0.8907 & 0.8952 & \(1.86\!\times\!10^{11}\) \\
-150 & 88.4 & 0.45 & \(6.28\!\times\!10^{-3}\) & 2.557 & 2.107 & 0.8240 & 0.8240 & \(1.94\!\times\!10^{11}\) \\
-175 & 53.1 & 0.318 & \(4.55\!\times\!10^{-3}\) & 2.107 & 1.788 & 0.8427 & 0.8489 & \(2.59\!\times\!10^{11}\) \\
-175 & 53.1 & 0.272 & \(4.00\!\times\!10^{-3}\) & 1.788 & 1.516 & 0.8427 & 0.8478 & \(2.61\!\times\!10^{11}\) \\
-175 & 53.1 & 0.228 & \(3.54\!\times\!10^{-3}\) & 1.516 & 1.288 & 0.8427 & 0.8498 & \(2.57\!\times\!10^{11}\) \\
-175 & 53.1 & 0.193 & \(3.15\!\times\!10^{-3}\) & 1.288 & 1.095 & 0.8427 & 0.8504 & \(2.56\!\times\!10^{11}\) \\
--- & 53.1 & 0.164 & \(2.82\!\times\!10^{-3}\) & 1.095 & 0.9317 &  &  &  \\
-200 & 53.2 & 0.174 & \(3.23\!\times\!10^{-3}\) & 0.9317 & 0.7582 & 0.7843 & 0.8139 & \(3.07\!\times\!10^{11}\) \\
-200 & 53.1 & 0.16 & \(3.16\!\times\!10^{-3}\) & 0.7582 & 0.5978 & 0.7847 & 0.7887 & \(3.55\!\times\!10^{11}\) \\
-200 & 73.6 & 0.175 & \(3.80\!\times\!10^{-3}\) & 0.5978 & 0.4224 & 0.7146 & 0.7070 & \(3.75\!\times\!10^{11}\) \\
-250 & 53.2 & 0.152 & \(3.93\!\times\!10^{-3}\) & 0.4224 & 0.2704 & 0.6410 & 0.6406 & \(6.02\!\times\!10^{11}\) \\
-250 & 53.1 & 0.0977 & \(2.95\!\times\!10^{-3}\) & 0.2704 & 0.1727 & 0.6413 & 0.6396 & \(6.06\!\times\!10^{11}\) \\
-250 & 53.1 & 0.0607 & \(2.12\!\times\!10^{-3}\) & 0.1727 & 0.1119 & 0.6413 & 0.6499 & \(5.85\!\times\!10^{11}\) \\
-250 & 53.1 & 0.0379 & \(1.56\!\times\!10^{-3}\) & 0.1119 & 0.07407 & 0.6414 & 0.6639 & \(5.58\!\times\!10^{11}\) \\
-250 & 52.9 & 0.0249 & \(1.13\!\times\!10^{-3}\) & 0.07407 & 0.04914 & 0.6427 & 0.6634 & \(5.57\!\times\!10^{11}\) \\
-250 & 53.1 & 0.016 & \(7.70\!\times\!10^{-4}\) & 0.04914 & 0.03315 & 0.6415 & 0.6746 & \(5.32\!\times\!10^{11}\) \\
-250 & 159.9 & 0.026 & \(1.31\!\times\!10^{-3}\) & 0.03315 & 0.007191 & 0.2625 & 0.2169 & \(6.86\!\times\!10^{11}\) \\
-250 & 52.9 & 0.00494 & \(2.52\!\times\!10^{-4}\) & 0.007191 & 0.00225 & 0.6424 & 0.3129 & \(1.58\!\times\!10^{12}\) \\
-High T & 52.2 & 0.00225 &  & 0.00225 & 0 &  &  &  \\
+26 & 73.6 & 0.05159 & 0.00062 & 5.787 & 5.736 & 0.9902 & 0.9911 & \(1.53\!\times\!10^{10}\) \\
+-- & 113.3 & 0.2689 & 0.0039 & 5.736 & 5.467 &  &  &  \\
+26 & 73.7 & 0.04801 & 0.00085 & 5.467 & 5.419 & 0.9902 & 0.9912 & \(1.50\!\times\!10^{10}\) \\
+26 & 75.3 & 0.04855 & 0.00099 & 5.419 & 5.370 & 0.9900 & 0.9910 & \(1.50\!\times\!10^{10}\) \\
+-- & 112.9 & 0.2709 & 0.0057 & 5.370 & 5.099 &  &  &  \\
+-- & 126.6 & 0.4175 & 0.0088 & 5.099 & 4.682 &  &  &  \\
+125 & 52.9 & 0.2993 & 0.0063 & 4.682 & 4.382 & 0.9275 & 0.9361 & \(1.18\!\times\!10^{11}\) \\
+125 & 53.1 & 0.3111 & 0.0066 & 4.382 & 4.071 & 0.9273 & 0.9290 & \(1.31\!\times\!10^{11}\) \\
+125 & 53.1 & 0.2912 & 0.0062 & 4.071 & 3.780 & 0.9273 & 0.9285 & \(1.32\!\times\!10^{11}\) \\
+-- & 73.6 & 0.4224 & 0.0087 & 3.780 & 3.358 &  &  &  \\
+150 & 73.6 & 0.5017 & 0.0086 & 3.358 & 2.856 & 0.8512 & 0.8506 & \(1.95\!\times\!10^{11}\) \\
+150 & 52.9 & 0.2993 & 0.0045 & 2.856 & 2.557 & 0.8907 & 0.8952 & \(1.86\!\times\!10^{11}\) \\
+150 & 88.4 & 0.4502 & 0.0063 & 2.557 & 2.107 & 0.8240 & 0.8240 & \(1.94\!\times\!10^{11}\) \\
+175 & 53.1 & 0.3184 & 0.0046 & 2.107 & 1.788 & 0.8427 & 0.8489 & \(2.59\!\times\!10^{11}\) \\
+175 & 53.1 & 0.2722 & 0.0040 & 1.788 & 1.516 & 0.8427 & 0.8478 & \(2.61\!\times\!10^{11}\) \\
+175 & 53.1 & 0.2278 & 0.0035 & 1.516 & 1.288 & 0.8427 & 0.8498 & \(2.57\!\times\!10^{11}\) \\
+175 & 53.1 & 0.1929 & 0.0032 & 1.288 & 1.095 & 0.8427 & 0.8504 & \(2.56\!\times\!10^{11}\) \\
+-- & 53.1 & 0.1635 & 0.0028 & 1.095 & 0.9317 &  &  &  \\
+200 & 53.2 & 0.1735 & 0.0032 & 0.9317 & 0.7582 & 0.7843 & 0.8139 & \(3.07\!\times\!10^{11}\) \\
+200 & 53.1 & 0.1604 & 0.0032 & 0.7582 & 0.5978 & 0.7847 & 0.7887 & \(3.55\!\times\!10^{11}\) \\
+200 & 73.6 & 0.1754 & 0.0038 & 0.5978 & 0.4224 & 0.7146 & 0.7070 & \(3.75\!\times\!10^{11}\) \\
+250 & 53.2 & 0.1521 & 0.0039 & 0.4224 & 0.2704 & 0.6410 & 0.6406 & \(6.02\!\times\!10^{11}\) \\
+250 & 53.1 & 0.0977 & 0.0030 & 0.2704 & 0.1727 & 0.6413 & 0.6396 & \(6.06\!\times\!10^{11}\) \\
+250 & 53.1 & 0.0607 & 0.0021 & 0.1727 & 0.1119 & 0.6413 & 0.6499 & \(5.85\!\times\!10^{11}\) \\
+250 & 53.1 & 0.0379 & 0.0016 & 0.1119 & 0.07407 & 0.6414 & 0.6639 & \(5.58\!\times\!10^{11}\) \\
+250 & 52.9 & 0.0249 & 0.0011 & 0.07407 & 0.04914 & 0.6427 & 0.6634 & \(5.57\!\times\!10^{11}\) \\
+250 & 53.1 & 0.01599 & 0.00077 & 0.04914 & 0.03315 & 0.6415 & 0.6746 & \(5.32\!\times\!10^{11}\) \\
+250 & 159.9 & 0.0260 & 0.0013 & 0.03315 & 0.007191 & 0.2625 & 0.2169 & \(6.86\!\times\!10^{11}\) \\
+250 & 52.9 & 0.00494 & 0.00025 & 0.007191 & 0.002250 & 0.6424 & 0.3129 & \(1.58\!\times\!10^{12}\) \\
+High T & 52.2 & 0.00225 &  & 0.002250 & 0 &  &  &  \\
 \end{supertabular}
 \end{small}
 
@@ -1428,7 +1428,7 @@ High T & 52.2 & 0.00225 &  & 0.00225 & 0 &  &  &  \\
 \begin{small}
 \setlength{\tabcolsep}{2pt}
 \begin{longtable}{p{1.1cm}p{1.1cm}p{1.3cm}p{1.5cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.3cm}p{1.5cm}p{1.0cm}p{1.3cm}}
-\caption{Distilled 4He permeation data for the same empty silica glass ampoule experiment as Table~\ref{tab:s-mc-emptytube-3he}. \emph{K}(3/4) is the ratio of the measured 4He to 3He permeability coefficients for each step; 3/4 He measured (Ra) is the measured 3He/4He ratio of the step, normalized to the atmospheric ratio.}
+\caption{Distilled 4He permeation data for the same empty silica glass ampoule experiment as Table~\ref{tab:s-mc-emptytube-3he}. \emph{K}$_{3}$/\emph{K}$_{4}$ is the ratio of the measured 3He to 4He permeability coefficients for each step; 3He/4He measured (Ra) is the measured 3He/4He ratio of the step, normalized to the atmospheric ratio.}
 \label{tab:s-mc-emptytube-4he}\\
 \tophline
 Temp & Time & \emph{m} 4He & $\pm2\sigma$ & $n_{0}$ 4He & $n_{t}$ 4He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured & 4He \emph{K} \newline measured & \emph{K}$_{3}/$\emph{K}$_{4}$ & 3He/4He \newline measured (Ra) \\
@@ -1446,35 +1446,35 @@ Temp & Time & \emph{m} 4He & $\pm2\sigma$ & $n_{0}$ 4He & $n_{t}$ 4He & $n_t/n_0
 \endfoot
 \bottomhline
 \endlastfoot
-26 & 73.6 & 263.7 & 1.33 & 29670 & 29410 & 0.9908 & 0.9911 & \(1.52\!\times\!10^{10}\) & 1.0031 & 0.1408 \\
--- & 113.3 & 1282 & 7.99 & 29410 & 28130 &  &  &  &  & 0.1509 \\
-26 & 73.7 & 247.4 & 1.95 & 28130 & 27880 & 0.9908 & 0.9912 & \(1.51\!\times\!10^{10}\) & 0.9984 & 0.1396 \\
-26 & 75.3 & 250 & 2.34 & 27880 & 27630 & 0.9905 & 0.9910 & \(1.50\!\times\!10^{10}\) & 0.9990 & 0.1397 \\
--- & 112.9 & 1322 & 13.1 & 27630 & 26310 &  &  &  &  & 0.1475 \\
+26 & 73.6 & 263.7 & 1.3 & 29670 & 29410 & 0.9908 & 0.9911 & \(1.52\!\times\!10^{10}\) & 1.0031 & 0.1408 \\
+-- & 113.3 & 1282.4 & 8.0 & 29410 & 28130 &  &  &  &  & 0.1509 \\
+26 & 73.7 & 247.4 & 2.0 & 28130 & 27880 & 0.9908 & 0.9912 & \(1.51\!\times\!10^{10}\) & 0.9984 & 0.1396 \\
+26 & 75.3 & 250.0 & 2.3 & 27880 & 27630 & 0.9905 & 0.9910 & \(1.50\!\times\!10^{10}\) & 0.9990 & 0.1397 \\
+-- & 112.9 & 1322 & 13 & 27630 & 26310 &  &  &  &  & 0.1475 \\
 -- & 126.6 & 1971 & 20 & 26310 & 24340 &  &  &  &  & 0.1524 \\
-125 & 52.9 & 1446 & 14.9 & 24340 & 22890 & 0.9332 & 0.9406 & \(1.09\!\times\!10^{11}\) & 1.0786 & 0.1489 \\
-125 & 53.1 & 1509 & 15.6 & 22890 & 21380 & 0.9330 & 0.9341 & \(1.21\!\times\!10^{11}\) & 1.0795 & 0.1483 \\
-125 & 53.1 & 1413 & 14.6 & 21380 & 19970 & 0.9330 & 0.9339 & \(1.21\!\times\!10^{11}\) & 1.0856 & 0.1483 \\
--- & 73.6 & 2032 & 20.8 & 19970 & 17940 &  &  &  &  & 0.1495 \\
-150 & 73.6 & 2399 & 22.2 & 17940 & 15540 & 0.8630 & 0.8663 & \(1.73\!\times\!10^{11}\) & 1.1271 & 0.1505 \\
-150 & 52.9 & 1498 & 12.7 & 15540 & 14040 & 0.8996 & 0.9036 & \(1.70\!\times\!10^{11}\) & 1.0922 & 0.1438 \\
-150 & 88.4 & 2238 & 16.7 & 14040 & 11800 & 0.8377 & 0.8406 & \(1.74\!\times\!10^{11}\) & 1.1155 & 0.1447 \\
-175 & 53.1 & 1626 & 10.8 & 11800 & 10170 & 0.8556 & 0.8622 & \(2.34\!\times\!10^{11}\) & 1.1053 & 0.1409 \\
-175 & 53.1 & 1404 & 8.46 & 10170 & 8771 & 0.8556 & 0.8620 & \(2.34\!\times\!10^{11}\) & 1.1121 & 0.1395 \\
-175 & 53.1 & 1211 & 6.28 & 8771 & 7560 & 0.8556 & 0.8619 & \(2.34\!\times\!10^{11}\) & 1.0959 & 0.1353 \\
-175 & 53.1 & 1042 & 4.8 & 7560 & 6518 & 0.8556 & 0.8622 & \(2.34\!\times\!10^{11}\) & 1.0939 & 0.1332 \\
--- & 53.1 & 895.4 & 3.67 & 6518 & 5623 &  &  &  &  & 0.1314 \\
-200 & 53.2 & 952.2 & 3.41 & 5623 & 4670 & 0.8020 & 0.8306 & \(2.77\!\times\!10^{11}\) & 1.1107 & 0.1311 \\
-200 & 53.1 & 887.5 & 2.99 & 4670 & 3783 & 0.8023 & 0.8100 & \(3.15\!\times\!10^{11}\) & 1.1275 & 0.1300 \\
-200 & 73.6 & 987.1 & 3.27 & 3783 & 2796 & 0.7370 & 0.7391 & \(3.26\!\times\!10^{11}\) & 1.1485 & 0.1278 \\
-250 & 53.2 & 898 & 3.01 & 2796 & 1898 & 0.6693 & 0.6788 & \(5.23\!\times\!10^{11}\) & 1.1520 & 0.1218 \\
-250 & 53.1 & 609.8 & 2.07 & 1898 & 1288 & 0.6696 & 0.6787 & \(5.24\!\times\!10^{11}\) & 1.1569 & 0.1153 \\
-250 & 53.1 & 412.2 & 1.42 & 1288 & 875.7 & 0.6696 & 0.6799 & \(5.21\!\times\!10^{11}\) & 1.1231 & 0.1059 \\
-250 & 53.1 & 278.8 & 0.995 & 875.7 & 596.9 & 0.6697 & 0.6817 & \(5.18\!\times\!10^{11}\) & 1.0778 & 0.0978 \\
-250 & 52.9 & 187.7 & 0.689 & 596.9 & 409.2 & 0.6709 & 0.6855 & \(5.13\!\times\!10^{11}\) & 1.0868 & 0.0955 \\
-250 & 53.1 & 128.8 & 0.486 & 409.2 & 280.4 & 0.6697 & 0.6852 & \(5.11\!\times\!10^{11}\) & 1.0411 & 0.0893 \\
-250 & 159.9 & 215.4 & 0.953 & 280.4 & 64.98 & 0.2990 & 0.2318 & \(6.56\!\times\!10^{11}\) & 1.0452 & 0.0867 \\
-250 & 52.9 & 41.86 & 0.205 & 64.98 & 23.12 & 0.6706 & 0.3558 & \(1.40\!\times\!10^{12}\) & 1.1246 & 0.0849 \\
+125 & 52.9 & 1446 & 15 & 24340 & 22890 & 0.9332 & 0.9406 & \(1.09\!\times\!10^{11}\) & 1.0786 & 0.1489 \\
+125 & 53.1 & 1509 & 16 & 22890 & 21380 & 0.9330 & 0.9341 & \(1.21\!\times\!10^{11}\) & 1.0795 & 0.1483 \\
+125 & 53.1 & 1413 & 15 & 21380 & 19970 & 0.9330 & 0.9339 & \(1.21\!\times\!10^{11}\) & 1.0856 & 0.1483 \\
+-- & 73.6 & 2032 & 21 & 19970 & 17940 &  &  &  &  & 0.1495 \\
+150 & 73.6 & 2399 & 22 & 17940 & 15540 & 0.8630 & 0.8663 & \(1.73\!\times\!10^{11}\) & 1.1271 & 0.1505 \\
+150 & 52.9 & 1498 & 13 & 15540 & 14040 & 0.8996 & 0.9036 & \(1.70\!\times\!10^{11}\) & 1.0922 & 0.1438 \\
+150 & 88.4 & 2238 & 17 & 14040 & 11800 & 0.8377 & 0.8406 & \(1.74\!\times\!10^{11}\) & 1.1155 & 0.1447 \\
+175 & 53.1 & 1626 & 11 & 11800 & 10170 & 0.8556 & 0.8622 & \(2.34\!\times\!10^{11}\) & 1.1053 & 0.1409 \\
+175 & 53.1 & 1404.1 & 8.5 & 10170 & 8771 & 0.8556 & 0.8620 & \(2.34\!\times\!10^{11}\) & 1.1121 & 0.1395 \\
+175 & 53.1 & 1210.8 & 6.3 & 8771 & 7560 & 0.8556 & 0.8619 & \(2.34\!\times\!10^{11}\) & 1.0959 & 0.1353 \\
+175 & 53.1 & 1041.8 & 4.8 & 7560 & 6518 & 0.8556 & 0.8622 & \(2.34\!\times\!10^{11}\) & 1.0939 & 0.1332 \\
+-- & 53.1 & 895.4 & 3.7 & 6518 & 5623 &  &  &  &  & 0.1314 \\
+200 & 53.2 & 952.2 & 3.4 & 5623 & 4670 & 0.8020 & 0.8306 & \(2.77\!\times\!10^{11}\) & 1.1107 & 0.1311 \\
+200 & 53.1 & 887.5 & 3.0 & 4670 & 3783 & 0.8023 & 0.8100 & \(3.15\!\times\!10^{11}\) & 1.1275 & 0.1300 \\
+200 & 73.6 & 987.1 & 3.3 & 3783 & 2796 & 0.7370 & 0.7391 & \(3.26\!\times\!10^{11}\) & 1.1485 & 0.1278 \\
+250 & 53.2 & 898.0 & 3.0 & 2796 & 1898 & 0.6693 & 0.6788 & \(5.23\!\times\!10^{11}\) & 1.1520 & 0.1218 \\
+250 & 53.1 & 609.8 & 2.1 & 1898 & 1288 & 0.6696 & 0.6787 & \(5.24\!\times\!10^{11}\) & 1.1569 & 0.1153 \\
+250 & 53.1 & 412.2 & 1.4 & 1288 & 875.7 & 0.6696 & 0.6799 & \(5.21\!\times\!10^{11}\) & 1.1231 & 0.1059 \\
+250 & 53.1 & 278.75 & 1.00 & 875.7 & 596.9 & 0.6697 & 0.6817 & \(5.18\!\times\!10^{11}\) & 1.0778 & 0.0978 \\
+250 & 52.9 & 187.74 & 0.69 & 596.9 & 409.2 & 0.6709 & 0.6855 & \(5.13\!\times\!10^{11}\) & 1.0868 & 0.0955 \\
+250 & 53.1 & 128.81 & 0.49 & 409.2 & 280.4 & 0.6697 & 0.6852 & \(5.11\!\times\!10^{11}\) & 1.0411 & 0.0893 \\
+250 & 159.9 & 215.41 & 0.95 & 280.4 & 64.98 & 0.2990 & 0.2318 & \(6.56\!\times\!10^{11}\) & 1.0452 & 0.0867 \\
+250 & 52.9 & 41.86 & 0.20 & 64.98 & 23.12 & 0.6706 & 0.3558 & \(1.40\!\times\!10^{12}\) & 1.1246 & 0.0849 \\
 High T & 52.2 & 23.12 &  & 23.12 & 0 &  &  &  &  & 0.0700 \\
 \end{longtable}
 \end{small}
@@ -1497,25 +1497,25 @@ Temp & Hot\newline Time & Cold\newline Time & \emph{m} 3He & $\pm2\sigma$ & $n_{
 \tabletail{\bottomhline}
 \tablelasttail{\bottomhline}
 \begin{supertabular}{p{1.5cm}p{1.1cm}p{1.1cm}p{1.3cm}p{1.5cm}p{1.3cm}p{1.3cm}p{1.5cm}p{1.5cm}}
-100 & 60 & 26 & 0.116 & \(1.22\!\times\!10^{-3}\) & 0.6447 & 0.5289 & -- & 0.8204 \\
-100 & 60 & 25.1 & 0.0942 & \(1.00\!\times\!10^{-3}\) & 0.5289 & 0.4347 & 0.8677 & 0.8219 \\
-100 & 60 & 25 & 0.0757 & \(8.06\!\times\!10^{-4}\) & 0.4347 & 0.359 & 0.8678 & 0.8259 \\
-100 & 60 & 25.1 & 0.0578 & \(6.18\!\times\!10^{-4}\) & 0.359 & 0.3012 & 0.8678 & 0.8389 \\
-100 & 60 & 53.5 & 0.053 & \(5.72\!\times\!10^{-4}\) & 0.3012 & 0.2482 & 0.8589 & 0.8241 \\
-100 & 60 & 25.2 & 0.0382 & \(4.34\!\times\!10^{-4}\) & 0.2482 & 0.21 & 0.8678 & 0.8459 \\
-100 & 60 & 25.1 & 0.0337 & \(4.06\!\times\!10^{-4}\) & 0.21 & 0.1763 & 0.8678 & 0.8396 \\
-100 & 60 & 795.6 & 0.0493 & \(2.52\!\times\!10^{-4}\) & 0.1763 & 0.127 & 0.7741 & 0.7201 \\
-100 & 60 & 28.1 & 0.0197 & \(9.42\!\times\!10^{-5}\) & 0.127 & 0.1072 & 0.8666 & 0.8446 \\
-100 & 60 & 43.7 & 0.0173 & \(8.39\!\times\!10^{-5}\) & 0.1072 & 0.08988 & 0.8622 & 0.8382 \\
-100 & 60 & 24.9 & 0.0138 & \(6.99\!\times\!10^{-5}\) & 0.08988 & 0.0761 & 0.8673 & 0.8467 \\
-100 & 60 & 24.9 & 0.0132 & \(7.60\!\times\!10^{-5}\) & 0.0761 & 0.06295 & 0.8678 & 0.8272 \\
-100 & 60 & 25 & 0.00977 & \(6.32\!\times\!10^{-5}\) & 0.06295 & 0.05318 & 0.8678 & 0.8448 \\
-100 & 60 & 25.1 & 0.00952 & \(6.36\!\times\!10^{-5}\) & 0.05318 & 0.04366 & 0.8679 & 0.8210 \\
-100 & 60 & 25.1 & 0.00764 & \(5.16\!\times\!10^{-5}\) & 0.04366 & 0.03602 & 0.8678 & 0.8250 \\
-100 & 60 & 25 & 0.00572 & \(3.86\!\times\!10^{-5}\) & 0.03602 & 0.0303 & 0.8678 & 0.8413 \\
-100 & 60 & 25 & 0.00578 & \(3.90\!\times\!10^{-5}\) & 0.0303 & 0.02451 & 0.8678 & 0.8091 \\
-100 & 60 & 25.1 & 0.00363 & \(2.45\!\times\!10^{-5}\) & 0.02451 & 0.02089 & 0.8679 & 0.8520 \\
-REST &  &  & 0.0209 & \(1.39\!\times\!10^{-4}\) & 0.02089 & 0 &  &  \\
+100 & 60 & 26 & 0.1158 & 0.0012 & 0.6447 & 0.5289 & -- & 0.8204 \\
+100 & 60 & 25.1 & 0.0942 & 0.0010 & 0.5289 & 0.4347 & 0.8677 & 0.8219 \\
+100 & 60 & 25 & 0.07568 & 0.00081 & 0.4347 & 0.3590 & 0.8678 & 0.8259 \\
+100 & 60 & 25.1 & 0.05784 & 0.00062 & 0.3590 & 0.3012 & 0.8678 & 0.8389 \\
+100 & 60 & 53.5 & 0.05298 & 0.00057 & 0.3012 & 0.2482 & 0.8589 & 0.8241 \\
+100 & 60 & 25.2 & 0.03824 & 0.00043 & 0.2482 & 0.2100 & 0.8678 & 0.8459 \\
+100 & 60 & 25.1 & 0.03368 & 0.00041 & 0.2100 & 0.1763 & 0.8678 & 0.8396 \\
+100 & 60 & 795.6 & 0.04934 & 0.00025 & 0.1763 & 0.1270 & 0.7741 & 0.7201 \\
+100 & 60 & 28.1 & 0.019725 & 0.000094 & 0.1270 & 0.1072 & 0.8666 & 0.8446 \\
+100 & 60 & 43.7 & 0.017349 & 0.000084 & 0.1072 & 0.08988 & 0.8622 & 0.8382 \\
+100 & 60 & 24.9 & 0.013779 & 0.000070 & 0.08988 & 0.07610 & 0.8673 & 0.8467 \\
+100 & 60 & 24.9 & 0.013153 & 0.000076 & 0.07610 & 0.06295 & 0.8678 & 0.8272 \\
+100 & 60 & 25 & 0.009771 & 0.000063 & 0.06295 & 0.05318 & 0.8678 & 0.8448 \\
+100 & 60 & 25.1 & 0.009520 & 0.000064 & 0.05318 & 0.04366 & 0.8679 & 0.8210 \\
+100 & 60 & 25.1 & 0.007641 & 0.000052 & 0.04366 & 0.03602 & 0.8678 & 0.8250 \\
+100 & 60 & 25 & 0.005717 & 0.000039 & 0.03602 & 0.03030 & 0.8678 & 0.8413 \\
+100 & 60 & 25 & 0.005784 & 0.000039 & 0.03030 & 0.02451 & 0.8678 & 0.8091 \\
+100 & 60 & 25.1 & 0.003629 & 0.000024 & 0.02451 & 0.02089 & 0.8679 & 0.8520 \\
+REST &  &  & 0.02089 & 0.00014 & 0.02089 & 0 &  &  \\
 \end{supertabular}
 \end{small}
 
@@ -1549,25 +1549,25 @@ Temp & Hot\newline Time & Cold\newline Time & \emph{m} 4He & $\pm2\sigma$ & $n_{
 \endfoot
 \bottomhline
 \endlastfoot
-100 & 60 & 26 & 604 & 1.77 & 3871 & 3267 & -- & 0.8440 & 0.1379 \\
-100 & 60 & 25.1 & 515.5 & 1.52 & 3267 & 2751 & 0.8772 & 0.8422 & 0.1315 \\
-100 & 60 & 25 & 434.8 & 1.29 & 2751 & 2317 & 0.8772 & 0.8420 & 0.1252 \\
-100 & 60 & 25.1 & 361.9 & 1.07 & 2317 & 1955 & 0.8772 & 0.8438 & 0.1150 \\
-100 & 60 & 53.5 & 325.4 & 0.965 & 1955 & 1629 & 0.8688 & 0.8335 & 0.1171 \\
-100 & 60 & 25.2 & 251.3 & 0.745 & 1629 & 1378 & 0.8772 & 0.8458 & 0.1095 \\
-100 & 60 & 25.1 & 212.6 & 0.63 & 1378 & 1165 & 0.8772 & 0.8457 & 0.1140 \\
-100 & 60 & 795.6 & 344.8 & 0.802 & 1165 & 820.7 & 0.7858 & 0.7042 & 0.1029 \\
-100 & 60 & 28.1 & 127.2 & 0.276 & 820.7 & 693.5 & 0.8761 & 0.8450 & 0.1116 \\
-100 & 60 & 43.7 & 111.3 & 0.222 & 693.5 & 582.2 & 0.8719 & 0.8395 & 0.1122 \\
-100 & 60 & 24.9 & 88.54 & 0.166 & 582.2 & 493.7 & 0.8768 & 0.8479 & 0.1120 \\
-100 & 60 & 24.9 & 74.96 & 0.121 & 493.7 & 418.7 & 0.8773 & 0.8481 & 0.1262 \\
-100 & 60 & 25 & 62.69 & \(8.84\!\times\!10^{-2}\) & 418.7 & 356 & 0.8772 & 0.8503 & 0.1121 \\
-100 & 60 & 25.1 & 53.28 & \(7.18\!\times\!10^{-2}\) & 356 & 302.7 & 0.8773 & 0.8503 & 0.1285 \\
-100 & 60 & 25.1 & 45.45 & \(6.11\!\times\!10^{-2}\) & 302.7 & 257.3 & 0.8772 & 0.8499 & 0.1209 \\
-100 & 60 & 25 & 38.41 & \(5.30\!\times\!10^{-2}\) & 257.3 & 218.9 & 0.8773 & 0.8507 & 0.1071 \\
-100 & 60 & 25 & 32.42 & \(4.81\!\times\!10^{-2}\) & 218.9 & 186.4 & 0.8772 & 0.8519 & 0.1284 \\
-100 & 60 & 25.1 & 27.46 & \(4.35\!\times\!10^{-2}\) & 186.4 & 159 & 0.8773 & 0.8527 & 0.0950 \\
-REST &  &  & 159 & 0.258 & 159 & 0 &  &  & 0.0945 \\
+100 & 60 & 26 & 604.0 & 1.8 & 3871 & 3267 & -- & 0.8440 & 0.1379 \\
+100 & 60 & 25.1 & 515.5 & 1.5 & 3267 & 2751 & 0.8772 & 0.8422 & 0.1315 \\
+100 & 60 & 25 & 434.8 & 1.3 & 2751 & 2317 & 0.8772 & 0.8420 & 0.1252 \\
+100 & 60 & 25.1 & 361.9 & 1.1 & 2317 & 1955 & 0.8772 & 0.8438 & 0.1150 \\
+100 & 60 & 53.5 & 325.43 & 0.96 & 1955 & 1629 & 0.8688 & 0.8335 & 0.1171 \\
+100 & 60 & 25.2 & 251.31 & 0.74 & 1629 & 1378 & 0.8772 & 0.8458 & 0.1095 \\
+100 & 60 & 25.1 & 212.62 & 0.63 & 1378 & 1165 & 0.8772 & 0.8457 & 0.1140 \\
+100 & 60 & 795.6 & 344.78 & 0.80 & 1165 & 820.7 & 0.7858 & 0.7042 & 0.1029 \\
+100 & 60 & 28.1 & 127.20 & 0.28 & 820.7 & 693.5 & 0.8761 & 0.8450 & 0.1116 \\
+100 & 60 & 43.7 & 111.27 & 0.22 & 693.5 & 582.2 & 0.8719 & 0.8395 & 0.1122 \\
+100 & 60 & 24.9 & 88.54 & 0.17 & 582.2 & 493.7 & 0.8768 & 0.8479 & 0.1120 \\
+100 & 60 & 24.9 & 74.96 & 0.12 & 493.7 & 418.7 & 0.8773 & 0.8481 & 0.1262 \\
+100 & 60 & 25 & 62.687 & 0.088 & 418.7 & 356.0 & 0.8772 & 0.8503 & 0.1121 \\
+100 & 60 & 25.1 & 53.284 & 0.072 & 356.0 & 302.7 & 0.8773 & 0.8503 & 0.1285 \\
+100 & 60 & 25.1 & 45.452 & 0.061 & 302.7 & 257.3 & 0.8772 & 0.8499 & 0.1209 \\
+100 & 60 & 25 & 38.407 & 0.053 & 257.3 & 218.9 & 0.8773 & 0.8507 & 0.1071 \\
+100 & 60 & 25 & 32.416 & 0.048 & 218.9 & 186.4 & 0.8772 & 0.8519 & 0.1284 \\
+100 & 60 & 25.1 & 27.465 & 0.044 & 186.4 & 159.0 & 0.8773 & 0.8527 & 0.0950 \\
+REST &  &  & 158.98 & 0.26 & 159.0 & 0 &  &  & 0.0945 \\
 \end{longtable}
 \end{small}
 \end{chplandscape}
@@ -1576,7 +1576,7 @@ REST &  &  & 159 & 0.258 & 159 & 0 &  &  & 0.0945 \\
 
 \begin{small}
 \setlength{\tabcolsep}{2pt}
-\tablecaption{Distilled 3He isothermal permeation data for the silica glass ampoule containing fused sulfur, equilibrated with high-purity tank helium, measured on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer (``Encapsulated Sulfur, Pfeiffer Quad'' in the ampoule dimensions table of the main text, Table~\ref{tab:ampoule-dimensions}; note this isothermal calibration series was run on the Helix-MC-Plus\textsuperscript{10K}).}
+\tablecaption{Distilled 3He isothermal permeation data for the silica glass ampoule containing fused sulfur, equilibrated with high-purity tank helium, measured on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer (``Encapsulated Sulfur, Helix MC'' in the ampoule dimensions table of the main text, Table~\ref{tab:ampoule-dimensions}).}
 \label{tab:s-sulfur-3he}
 \tablefirsthead{\tophline
 Temp & Hot\newline Time & Cold\newline Time & \emph{m} 3He & $\pm2\sigma$ & $n_{0}$ 3He & $n_{t}$ 3He & $n_t/n_0$\newline predicted & $n_t/n_0$\newline measured \\
@@ -1589,28 +1589,28 @@ Temp & Hot\newline Time & Cold\newline Time & \emph{m} 3He & $\pm2\sigma$ & $n_{
 \tabletail{\bottomhline}
 \tablelasttail{\bottomhline}
 \begin{supertabular}{p{1.5cm}p{1.1cm}p{1.1cm}p{1.3cm}p{1.5cm}p{1.3cm}p{1.3cm}p{1.5cm}p{1.5cm}}
-80 & 60 & 25.6 & 0.699 & \(2.78\!\times\!10^{-2}\) & 9.569 & 8.87 & 0.9299 & 0.9270 \\
-80 & 60 & 61.3 & 0.736 & \(2.89\!\times\!10^{-2}\) & 8.87 & 8.134 & 0.9222 & 0.9170 \\
-80 & 60 & 25.1 & 0.591 & \(2.17\!\times\!10^{-2}\) & 8.134 & 7.543 & 0.9300 & 0.9274 \\
-80 & 60 & 25 & 0.544 & \(1.83\!\times\!10^{-2}\) & 7.543 & 6.999 & 0.9301 & 0.9279 \\
-80 & 60 & 25 & 0.494 & \(1.60\!\times\!10^{-2}\) & 6.999 & 6.505 & 0.9301 & 0.9294 \\
-100 & 60 & 91.8 & 0.759 & \(2.42\!\times\!10^{-2}\) & 6.505 & 5.746 & 0.8831 & 0.8834 \\
-100 & 60 & 25.9 & 0.601 & \(2.01\!\times\!10^{-2}\) & 5.746 & 5.145 & 0.8966 & 0.8955 \\
-100 & 60 & 52.0 & 0.575 & \(2.06\!\times\!10^{-2}\) & 5.145 & 4.57 & 0.8912 & 0.8882 \\
-100 & 60 & 26 & 0.463 & \(1.72\!\times\!10^{-2}\) & 4.57 & 4.108 & 0.8966 & 0.8988 \\
-100 & 60 & 89.9 & 0.498 & \(2.04\!\times\!10^{-2}\) & 4.108 & 3.609 & 0.8834 & 0.8787 \\
-120 & 60 & 24.8 & 0.51 & \(2.27\!\times\!10^{-2}\) & 3.609 & 3.099 & 0.8537 & 0.8586 \\
-120 & 60 & 52.8 & 0.457 & \(2.18\!\times\!10^{-2}\) & 3.099 & 2.641 & 0.8481 & 0.8524 \\
-120 & 60 & 24.9 & 0.356 & \(1.76\!\times\!10^{-2}\) & 2.641 & 2.286 & 0.8537 & 0.8653 \\
-120 & 60 & 61.3 & 0.318 & \(1.56\!\times\!10^{-2}\) & 2.286 & 1.967 & 0.8460 & 0.8607 \\
-120 & 60 & 25.1 & 0.243 & \(1.17\!\times\!10^{-2}\) & 1.967 & 1.724 & 0.8537 & 0.8766 \\
-150 & 60 & 25.0 & 0.42 & \(2.00\!\times\!10^{-2}\) & 1.724 & 1.304 & 0.7695 & 0.7562 \\
-150 & 60 & 25.0 & 0.283 & \(1.32\!\times\!10^{-2}\) & 1.304 & 1.021 & 0.7696 & 0.7828 \\
-150 & 60 & 690.8 & 0.351 & \(1.03\!\times\!10^{-2}\) & 1.021 & 0.6699 & 0.6598 & 0.6563 \\
-150 & 60 & 25 & 0.147 & \(3.98\!\times\!10^{-3}\) & 0.6699 & 0.5226 & 0.7696 & 0.7802 \\
-150 & 60 & 53.3 & 0.125 & \(3.33\!\times\!10^{-3}\) & 0.5226 & 0.3972 & 0.7643 & 0.7601 \\
-150 & 60 & 25.0 & 0.0893 & \(2.40\!\times\!10^{-3}\) & 0.3972 & 0.308 & 0.7695 & 0.7752 \\
-remainder &  &  & 0.308 & \(8.48\!\times\!10^{-3}\) &  &  &  &  \\
+80 & 60 & 25.6 & 0.699 & 0.028 & 9.569 & 8.870 & 0.9299 & 0.9270 \\
+80 & 60 & 61.3 & 0.736 & 0.029 & 8.870 & 8.134 & 0.9222 & 0.9170 \\
+80 & 60 & 25.1 & 0.591 & 0.022 & 8.134 & 7.543 & 0.9300 & 0.9274 \\
+80 & 60 & 25 & 0.544 & 0.018 & 7.543 & 6.999 & 0.9301 & 0.9279 \\
+80 & 60 & 25 & 0.494 & 0.016 & 6.999 & 6.505 & 0.9301 & 0.9294 \\
+100 & 60 & 91.8 & 0.759 & 0.024 & 6.505 & 5.746 & 0.8831 & 0.8834 \\
+100 & 60 & 25.9 & 0.601 & 0.020 & 5.746 & 5.145 & 0.8966 & 0.8955 \\
+100 & 60 & 52.0 & 0.575 & 0.021 & 5.145 & 4.570 & 0.8912 & 0.8882 \\
+100 & 60 & 26 & 0.463 & 0.017 & 4.570 & 4.108 & 0.8966 & 0.8988 \\
+100 & 60 & 89.9 & 0.498 & 0.020 & 4.108 & 3.609 & 0.8834 & 0.8787 \\
+120 & 60 & 24.8 & 0.510 & 0.023 & 3.609 & 3.099 & 0.8537 & 0.8586 \\
+120 & 60 & 52.8 & 0.457 & 0.022 & 3.099 & 2.641 & 0.8481 & 0.8524 \\
+120 & 60 & 24.9 & 0.356 & 0.018 & 2.641 & 2.286 & 0.8537 & 0.8653 \\
+120 & 60 & 61.3 & 0.318 & 0.016 & 2.286 & 1.967 & 0.8460 & 0.8607 \\
+120 & 60 & 25.1 & 0.243 & 0.012 & 1.967 & 1.724 & 0.8537 & 0.8766 \\
+150 & 60 & 25.0 & 0.420 & 0.020 & 1.724 & 1.304 & 0.7695 & 0.7562 \\
+150 & 60 & 25.0 & 0.283 & 0.013 & 1.304 & 1.021 & 0.7696 & 0.7828 \\
+150 & 60 & 690.8 & 0.351 & 0.010 & 1.021 & 0.6699 & 0.6598 & 0.6563 \\
+150 & 60 & 25 & 0.1472 & 0.0040 & 0.6699 & 0.5226 & 0.7696 & 0.7802 \\
+150 & 60 & 53.3 & 0.125 & 0.003 & 0.5226 & 0.3972 & 0.7643 & 0.7601 \\
+150 & 60 & 25.0 & 0.0893 & 0.0024 & 0.3972 & 0.3080 & 0.7695 & 0.7752 \\
+remainder &  &  & 0.3080 & 0.0085 &  &  &  &  \\
 \end{supertabular}
 \end{small}
 
@@ -1644,28 +1644,28 @@ Temp & Hot\newline Time & Cold\newline Time & \emph{m} 4He & $\pm2\sigma$ & $n_{
 \endfoot
 \bottomhline
 \endlastfoot
-80 & 60 & 25.6 & 3354 & 10.8 & 52330 & 48980 & 0.9348 & 0.9359 & 0.1499 \\
+80 & 60 & 25.6 & 3354 & 11 & 52330 & 48980 & 0.9348 & 0.9359 & 0.1499 \\
 80 & 60 & 61.3 & 3617 & 12 & 48980 & 45360 & 0.9276 & 0.9262 & 0.1464 \\
 80 & 60 & 25.1 & 2949 & 10 & 45360 & 42410 & 0.9349 & 0.9350 & 0.1441 \\
-80 & 60 & 25 & 2760 & 9.6 & 42410 & 39650 & 0.9350 & 0.9349 & 0.1419 \\
-80 & 60 & 25 & 2587 & 9.13 & 39650 & 37060 & 0.9350 & 0.9348 & 0.1373 \\
-100 & 60 & 91.8 & 3980 & 15.3 & 37060 & 33080 & 0.8913 & 0.8926 & 0.1371 \\
-100 & 60 & 25.9 & 3088 & 13.5 & 33080 & 30000 & 0.9041 & 0.9066 & 0.1399 \\
-100 & 60 & 52.0 & 2978 & 14.7 & 30000 & 27020 & 0.8990 & 0.9007 & 0.1389 \\
-100 & 60 & 26 & 2517 & 13.1 & 27020 & 24500 & 0.9041 & 0.9068 & 0.1322 \\
-100 & 60 & 89.9 & 2687 & 14.4 & 24500 & 21810 & 0.8916 & 0.8903 & 0.1334 \\
-120 & 60 & 24.8 & 2769 & 14.6 & 21810 & 19040 & 0.8646 & 0.8731 & 0.1327 \\
+80 & 60 & 25 & 2759.6 & 9.6 & 42410 & 39650 & 0.9350 & 0.9349 & 0.1419 \\
+80 & 60 & 25 & 2587.1 & 9.1 & 39650 & 37060 & 0.9350 & 0.9348 & 0.1373 \\
+100 & 60 & 91.8 & 3980 & 15 & 37060 & 33080 & 0.8913 & 0.8926 & 0.1371 \\
+100 & 60 & 25.9 & 3088 & 14 & 33080 & 30000 & 0.9041 & 0.9066 & 0.1399 \\
+100 & 60 & 52.0 & 2978 & 15 & 30000 & 27020 & 0.8990 & 0.9007 & 0.1389 \\
+100 & 60 & 26 & 2517 & 13 & 27020 & 24500 & 0.9041 & 0.9068 & 0.1322 \\
+100 & 60 & 89.9 & 2687 & 14 & 24500 & 21810 & 0.8916 & 0.8903 & 0.1334 \\
+120 & 60 & 24.8 & 2769 & 15 & 21810 & 19040 & 0.8646 & 0.8731 & 0.1327 \\
 120 & 60 & 52.8 & 2551 & 13 & 19040 & 16490 & 0.8592 & 0.8661 & 0.1290 \\
-120 & 60 & 24.9 & 2097 & 10.4 & 16490 & 14400 & 0.8646 & 0.8728 & 0.1221 \\
-120 & 60 & 61.3 & 1948 & 9.38 & 14400 & 12450 & 0.8572 & 0.8647 & 0.1176 \\
-120 & 60 & 25.1 & 1573 & 7.36 & 12450 & 10870 & 0.8645 & 0.8736 & 0.1110 \\
-150 & 60 & 25.0 & 2435 & 11.3 & 10870 & 8439 & 0.7868 & 0.7761 & 0.1242 \\
-150 & 60 & 25.0 & 1806 & 8.2 & 8439 & 6633 & 0.7868 & 0.7859 & 0.1128 \\
-150 & 60 & 690.8 & 2151 & 8.5 & 6633 & 4481 & 0.6807 & 0.6756 & 0.1173 \\
-150 & 60 & 25 & 924.6 & 3.42 & 4481 & 3557 & 0.7868 & 0.7937 & 0.1146 \\
-150 & 60 & 53.3 & 753.9 & 2.75 & 3557 & 2803 & 0.7818 & 0.7880 & 0.1197 \\
-150 & 60 & 25.0 & 560.4 & 2.08 & 2803 & 2242 & 0.7868 & 0.8001 & 0.1146 \\
-remainder &  &  & 2242 & 8.72 &  &  &  &  & 0.0988 \\
+120 & 60 & 24.9 & 2097 & 10 & 16490 & 14400 & 0.8646 & 0.8728 & 0.1221 \\
+120 & 60 & 61.3 & 1948.5 & 9.4 & 14400 & 12450 & 0.8572 & 0.8647 & 0.1176 \\
+120 & 60 & 25.1 & 1573.3 & 7.4 & 12450 & 10870 & 0.8645 & 0.8736 & 0.1110 \\
+150 & 60 & 25.0 & 2435 & 11 & 10870 & 8439 & 0.7868 & 0.7761 & 0.1242 \\
+150 & 60 & 25.0 & 1806.5 & 8.2 & 8439 & 6633 & 0.7868 & 0.7859 & 0.1128 \\
+150 & 60 & 690.8 & 2151.5 & 8.5 & 6633 & 4481 & 0.6807 & 0.6756 & 0.1173 \\
+150 & 60 & 25 & 924.6 & 3.4 & 4481 & 3557 & 0.7868 & 0.7937 & 0.1146 \\
+150 & 60 & 53.3 & 753.9 & 2.8 & 3557 & 2803 & 0.7818 & 0.7880 & 0.1197 \\
+150 & 60 & 25.0 & 560.4 & 2.1 & 2803 & 2242 & 0.7868 & 0.8001 & 0.1146 \\
+remainder &  &  & 2242.4 & 8.7 &  &  &  &  & 0.0988 \\
 \end{longtable}
 \end{small}
 \end{chplandscape}

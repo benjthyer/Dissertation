@@ -31,7 +31,7 @@
 %        This file is \input{} into dissertation.tex.
 % =============================================================
 
-\chapter{Field Studies Reveal Synmagmatic Deformation and Extensive Crustal Contamination of the Upper Critical Zone, Recessive Lower Main Zone, and Floor Rocks at the Margin of the Bushveld Complex at Draaikraal, Mpumalanga, South Africa}
+\chapter{Synmagmatic Deformation and Extensive Crustal Contamination of the Platiniferous Upper Critical Zone at the Margin of the Bushveld Complex: a Field Study in Draaikraal, Mpumalanga, South Africa}
 \label{ch:draaikraal}
 
 % --- Chapter abstract / summary -----------------------------------------------
@@ -40,11 +40,19 @@
   \input{Chapter5/Writing/chapter5_abstract}
 \end{quote}
 
+% --- Author contributions (CRediT) ---------------------------------------------
+\input{Chapter5/Writing/chapter5_contributions}
+
+
 % --- Field-photo links ------------------------------------------------------
 % \ChFivePhoto{N} prints N as a link to photo N in the SI photo album
 % (anchors ch5-photo-N, written by Chapter5/Figures/write_chapter5_photo_album.py).
 % Used in the chapter text, the SI table, and the album's own captions.
-\providecommand{\ChFivePhoto}[1]{\ifcsname hyperref\endcsname\hyperref[ch5-photo-#1]{#1}\else#1\fi}
+% 2026-10-27: \ChFivePhoto now comes from a generated index -- it links only the
+% photos reproduced in the thesis (Appendix A album, or a main-text figure such as
+% photo 60) and prints the others, which are in the supplementary photo album, as
+% plain numbers.
+\input{Chapter5/Writing/chapter5_photo_index}
 
 % --- Field-data table macro (auto-generated -- see the file header) ----------
 % \ChFiveFieldStationTable, invoked from the SI (Chapter5/Writing/

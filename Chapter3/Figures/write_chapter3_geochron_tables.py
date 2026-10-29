@@ -11,7 +11,7 @@ Source data: Chapter3/Tables/geochronology_compilation_BJT.xlsx, 'Data'
 sheet (the master compilation -- the same numbers as the per-locality
 *Distilled sheets used by fig_geochronology_ages.py, but 'Data' also
 carries the localities that never got their own *Distilled sheet:
-Franklin, Rustenberg/Pilanesberg, Magnet Cove, French Creek, Salzburg,
+Franklin, Rustenburg/Pilanesberg, Magnet Cove, French Creek, Salzburg,
 and the Gogebic hematite standard).
 
 Age convention: 'Age (Ma Atm=1Ra Corr.)', matching fig_geochronology_ages.py
@@ -39,7 +39,7 @@ Output: Chapter3/Writing/chapter3_geochron_tables.tex
         table's caption).
     \\ChThreeGeochronSITable : everything else in the compilation (Kidd
         Creek replicate/mass-only aliquots, Franklin NJ pyrite and
-        fluorite, Rustenberg/Pilanesberg pyrite, Magnet Cove carbonatite
+        fluorite, Rustenburg/Pilanesberg pyrite, Magnet Cove carbonatite
         pyrite, French Creek magnetite/pyrite, Salzburg arsenopyrite) --
         not discussed in the main text, reported in the SI for
         completeness with the full trace element suite (Cu, As, Zr, Ag,
@@ -80,34 +80,86 @@ def g(row, key):
     return v if isinstance(v, (int, float)) else None
 
 
+# ---------------------------------------------------------------------------
+# Rounding conventions (2026-10-29, per K. Farley's sig-fig review):
+#   U, Th, Sm, eU : 2 decimal places (ppm)
+#   Zr            : 1 decimal place  (ppm)
+#   4He           : 1 decimal place  (ncc)
+#   Age           : 1 decimal place, or 0 decimal places when the 2-sigma
+#                   uncertainty exceeds AGE_INTEGER_ABOVE (10 Ma)
+#   Durango apatite overrides: U, Th, Sm, eU to 1 decimal place
+#   Gogebic hematite overrides: U, eU to 1 decimal place
+#   Cu, As, Ag, Sb (SI only): uncertainty rounded to 2 significant figures
+#                   and the value rounded to the same decimal place.
+# Every uncertainty is printed to the same decimal place as its value.
+# ---------------------------------------------------------------------------
+import math
+
+DEFAULT_PREC = dict(U=2, Th=2, Sm=2, Zr=1, eU=2, he4=1, mass=2)
+DURANGO_PREC = dict(DEFAULT_PREC, U=1, Th=1, Sm=1, eU=1)
+GOGEBIC_PREC = dict(DEFAULT_PREC, U=1, eU=1)
+AGE_INTEGER_ABOVE = 10.0   # Ma; ages with larger 2-sigma get no decimals
+
+# Footnote symbols attached to sample names (replace the old "Note" column).
+SYM_OLD = r'$^{*}$'          # excluded: old method / early protocol
+SYM_OUTLIER = r'$^{\dagger}$'  # excluded: outlier
+SYM_MEASAGE = r'$^{\ddagger}$' # uncorrected (measured) age reported
+
+
 def fmt(v, nd=2):
     return f'{v:.{nd}f}' if v is not None else '--'
 
 
-def fmt_pm(v, err, nd=2):
+def pm(v, err, nd):
+    """Two table cells, 'value & $\\pm$err', for an r@{}l column pair, so
+    the +/- signs line up down the column. Missing value -> '--' & ''."""
     if v is None:
-        return '--'
+        return '--', ''
     if err is None:
-        return fmt(v, nd)
-    # No literal spaces around \pm: it's a binary math operator, so TeX
-    # already inserts its own (narrower) operator spacing inside the $...$;
-    # adding text-mode spaces outside the $ as well just wastes width that
-    # matters for the tight 14-column SI table (table_preamble tiny=True).
-    return f'{v:.{nd}f}$\\pm${err:.{nd}f}'
+        return fmt(v, nd), ''
+    return fmt(v, nd), r'$\pm$' + fmt(err, nd)
 
 
-def age_cell(row):
-    """Age (Ma) +/- 2 sigma, preferring the 1Ra-atmosphere-corrected age
-    (the convention used throughout this chapter's figures/text); falls
-    back to the raw measured age with a dagger note for aliquots analyzed
-    before a tube blank was available."""
-    a, ae = g(row, 'age1ra'), g(row, 'age1raerr')
-    if a is not None:
-        return fmt_pm(a, ae, 1), ''
-    a, ae = g(row, 'agemeas'), g(row, 'agemeaserr')
-    if a is not None:
-        return fmt_pm(a, ae, 1), '\\textdagger'
-    return '--', ''
+def _unc_decimals(err, sig=2):
+    return sig - 1 - int(math.floor(math.log10(abs(err))))
+
+
+def _fmt_dec(x, d):
+    if d > 0:
+        return f'{x:.{d}f}'
+    return f'{int(round(x, d)):d}'
+
+
+def pm_round_to_unc(v, err, sig=2):
+    """Value +/- err with err rounded to `sig` significant figures and the
+    value rounded to the same decimal place (e.g. 410116.35 +/- 23437.59
+    -> 410000 +/- 23000)."""
+    if v is None:
+        return '--', ''
+    if err is None or err == 0:
+        return f'{v:.{sig + 1}g}', ''
+    d = _unc_decimals(err, sig)
+    d = _unc_decimals(round(err, d), sig)  # e.g. 9.96 rounds up to 10
+    return _fmt_dec(v, d), r'$\pm$' + _fmt_dec(err, d)
+
+
+def age_cells(row):
+    """Age (Ma) +/- 2 sigma as two cells, preferring the 1Ra-atmosphere-
+    corrected age (the convention used throughout this chapter's figures and
+    text); falls back to the raw measured age (marked with SYM_MEASAGE) for
+    any aliquot analyzed before a tube blank was available. Returns
+    (value_cell, err_cell, used_measured_age)."""
+    for key, ekey, measured in (('age1ra', 'age1raerr', False),
+                                ('agemeas', 'agemeaserr', True)):
+        a, ae = g(row, key), g(row, ekey)
+        if a is not None:
+            nd = 0 if (ae is not None and ae > AGE_INTEGER_ABOVE) else 1
+            val, err = pm(a, ae, nd)
+            if measured:
+                err = err + SYM_MEASAGE if err else err
+                val = val if err else val + SYM_MEASAGE
+            return val, err, measured
+    return '--', '', False
 
 
 TRACE_COLS_ZERO_MEANS_NOT_MEASURED = ('Cu', 'As', 'Zr', 'Ag', 'Sb')
@@ -128,129 +180,141 @@ def g_trace(row, key):
     return None if v == 0 else v
 
 
-def row_name(row):
-    name = row[COLS['name']]
-    return _tex_escape(name) if isinstance(name, str) else None
-
-
-def full_note(row, note):
-    age, dagger = age_cell(row)
-    return (dagger + (' ' if dagger and note else '') + note).strip()
-
-
-def data_row_main(rows, i, note=''):
-    """10-column row for the main-text table: Sample, Mass, U, Th, Sm, Zr,
-    eU, 4He, Age, Note. (Cu/As/Ag/Sb dropped -- see module docstring.)"""
-    row = rows[i]
-    name = row_name(row)
-    if name is None:
-        return None
-    age, _ = age_cell(row)
-    return ' & '.join([
-        name,
-        fmt(g(row, 'mass'), 2),
-        fmt_pm(g(row, 'U'), g(row, 'Uerr'), 3),
-        fmt_pm(g(row, 'Th'), g(row, 'Therr'), 3),
-        fmt_pm(g(row, 'Sm'), g(row, 'Smerr'), 3),
-        fmt_pm(g_trace(row, 'Zr'), g(row, 'Zrerr'), 2),
-        fmt(g(row, 'eU'), 3),
-        fmt(g(row, 'he4'), 2),
-        age,
-        full_note(row, note),
-    ]) + r' \\'
-
-
-def data_row_full(rows, i, note=''):
-    """14-column row (original layout) for the SI 'everything else' table:
-    Sample, Mass, U, Th, Sm, Cu, As, Zr, Ag, Sb, eU, 4He, Age, Note.
-    U/Th/Sm/eU are rounded to 2 decimal places here (vs 3 in the
-    main-text table) -- one more small width saving on top of \tiny and
-    the tightened \tabcolsep, needed to fit this wider 14-column table's
-    extra Cu/As/Ag/Sb columns within the landscape text width; matches
-    the precision already used for Cu/As/Zr/Ag/Sb."""
-    row = rows[i]
-    name = row_name(row)
-    if name is None:
-        return None
-    age, _ = age_cell(row)
-    return ' & '.join([
-        name,
-        fmt(g(row, 'mass'), 2),
-        fmt_pm(g(row, 'U'), g(row, 'Uerr'), 2),
-        fmt_pm(g(row, 'Th'), g(row, 'Therr'), 2),
-        fmt_pm(g(row, 'Sm'), g(row, 'Smerr'), 2),
-        fmt_pm(g_trace(row, 'Cu'), g(row, 'Cuerr'), 2),
-        fmt_pm(g_trace(row, 'As'), g(row, 'Aserr'), 2),
-        fmt_pm(g_trace(row, 'Zr'), g(row, 'Zrerr'), 2),
-        fmt_pm(g_trace(row, 'Ag'), g(row, 'Agerr'), 2),
-        fmt_pm(g_trace(row, 'Sb'), g(row, 'Sberr'), 2),
-        fmt(g(row, 'eU'), 2),
-        fmt(g(row, 'he4'), 2),
-        age,
-        full_note(row, note),
-    ]) + r' \\'
-
-
-def data_row_trace(rows, i, note=''):
-    """6-column row for the new main-text-samples trace-element SI table:
-    Sample, Cu, As, Ag, Sb, Note."""
-    row = rows[i]
-    name = row_name(row)
-    if name is None:
-        return None
-    return ' & '.join([
-        name,
-        fmt_pm(g_trace(row, 'Cu'), g(row, 'Cuerr'), 2),
-        fmt_pm(g_trace(row, 'As'), g(row, 'Aserr'), 2),
-        fmt_pm(g_trace(row, 'Ag'), g(row, 'Agerr'), 2),
-        fmt_pm(g_trace(row, 'Sb'), g(row, 'Sberr'), 2),
-        full_note(row, note),
-    ]) + r' \\'
-
-
 def _tex_escape(s):
     return s.replace('_', r'\_').replace('%', r'\%').replace('#', r'\#')
+
+
+def row_name(row, flag=None):
+    name = row[COLS['name']]
+    if not isinstance(name, str):
+        return None
+    sym = {'old': SYM_OLD, 'outlier': SYM_OUTLIER}.get(flag, '')
+    return _tex_escape(name) + sym
+
+
+# Track whether any printed row fell back to the measured age, so the
+# caption only explains SYM_MEASAGE if it is actually used.
+_USED_MEASURED_AGE = {'any': False}
+
+
+def data_row_main(rows, i, prec, flag=None):
+    """Main-text row: Sample, Mass, U, Th, Sm, Zr, eU, 4He, Age (U, Th, Sm,
+    Zr and Age are value/uncertainty column pairs)."""
+    row = rows[i]
+    name = row_name(row, flag)
+    if name is None:
+        return None
+    a_val, a_err, measured = age_cells(row)
+    _USED_MEASURED_AGE['any'] |= measured
+    cells = [name, fmt(g(row, 'mass'), prec['mass'])]
+    cells += pm(g(row, 'U'), g(row, 'Uerr'), prec['U'])
+    cells += pm(g(row, 'Th'), g(row, 'Therr'), prec['Th'])
+    cells += pm(g(row, 'Sm'), g(row, 'Smerr'), prec['Sm'])
+    cells += pm(g_trace(row, 'Zr'), g(row, 'Zrerr'), prec['Zr'])
+    cells += [fmt(g(row, 'eU'), prec['eU']), fmt(g(row, 'he4'), prec['he4'])]
+    cells += [a_val, a_err]
+    return ' & '.join(cells) + r' \\'
+
+
+def data_row_full(rows, i, prec=DEFAULT_PREC, flag=None):
+    """SI 'everything else' row: Sample, Mass, U, Th, Sm, Cu, As, Zr, Ag, Sb,
+    eU, 4He, Age."""
+    row = rows[i]
+    name = row_name(row, flag)
+    if name is None:
+        return None
+    a_val, a_err, measured = age_cells(row)
+    _USED_MEASURED_AGE['any'] |= measured
+    cells = [name, fmt(g(row, 'mass'), prec['mass'])]
+    cells += pm(g(row, 'U'), g(row, 'Uerr'), prec['U'])
+    cells += pm(g(row, 'Th'), g(row, 'Therr'), prec['Th'])
+    cells += pm(g(row, 'Sm'), g(row, 'Smerr'), prec['Sm'])
+    cells += pm_round_to_unc(g_trace(row, 'Cu'), g(row, 'Cuerr'))
+    cells += pm_round_to_unc(g_trace(row, 'As'), g(row, 'Aserr'))
+    cells += pm(g_trace(row, 'Zr'), g(row, 'Zrerr'), prec['Zr'])
+    cells += pm_round_to_unc(g_trace(row, 'Ag'), g(row, 'Agerr'))
+    cells += pm_round_to_unc(g_trace(row, 'Sb'), g(row, 'Sberr'))
+    cells += [fmt(g(row, 'eU'), prec['eU']), fmt(g(row, 'he4'), prec['he4'])]
+    cells += [a_val, a_err]
+    return ' & '.join(cells) + r' \\'
+
+
+def data_row_trace(rows, i, prec=None, flag=None):
+    """Main-text-samples trace-element SI row: Sample, Cu, As, Ag, Sb."""
+    row = rows[i]
+    name = row_name(row, flag)
+    if name is None:
+        return None
+    cells = [name]
+    for el in ('Cu', 'As', 'Ag', 'Sb'):
+        cells += pm_round_to_unc(g_trace(row, el), g(row, el + 'err'))
+    return ' & '.join(cells) + r' \\'
 
 
 def group_header(label, ncols):
     return r'\multicolumn{%d}{l}{\textbf{%s}} \\' % (ncols, label)
 
 
-MAIN_HEADER_ROW = (r'Sample & Mass & U & Th & Sm & Zr & eU & $^4$He & Age & Note \\'
-                    '\n' + r'& (mg) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ncc) & (Ma) & \\')
+def _hdr(cols):
+    """cols: list of (label, unit, is_pair). Returns the two header rows."""
+    top, bot = [], []
+    for label, unit, pair in cols:
+        if pair:
+            top.append(r'\multicolumn{2}{c}{%s}' % label)
+            bot.append(r'\multicolumn{2}{c}{%s}' % unit)
+        else:
+            top.append(label)
+            bot.append(unit)
+    return ' & '.join(top) + r' \\' + '\n' + ' & '.join(bot) + r' \\'
 
-FULL_HEADER_ROW = (r'Sample & Mass & U & Th & Sm & Cu & As & Zr & Ag & Sb & eU & $^4$He & Age & Note \\'
-                    '\n' + r'& (mg) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ppm) & (ncc) & (Ma) & \\')
 
-TRACE_HEADER_ROW = (r'Sample & Cu & As & Ag & Sb & Note \\'
-                     '\n' + r'& (ppm) & (ppm) & (ppm) & (ppm) & \\')
+def _spec(cols):
+    out = []
+    for i, (_, _, pair) in enumerate(cols):
+        if i == 0:
+            out.append('l')
+        else:
+            out.append('r@{}l' if pair else 'r')
+    return ' '.join(out)
 
 
-def table_preamble(colspec, ncols, tiny=False):
-    """tiny=False uses the document-wide longtable default (\scriptsize,
-    set by \AtBeginEnvironment in dissertation_preamble.tex). Pass
-    tiny=True for the one table (the 14-column SI 'everything else'
-    compilation) still too wide at \scriptsize even in landscape -- its
-    long hand-typed sample IDs (e.g. `12122022KCPyST05A`) are the actual
-    width driver, not column count, so shrinking the whole table by one
-    more LaTeX size step is the fix rather than dropping columns already
-    ruled out for this table (see build_si_table).
+def _ncols(cols):
+    return sum(2 if p else 1 for _, _, p in cols)
 
-    Implementation note: the extra size step can *not* be a bare \tiny
-    placed after \begin{longtable}{...} and before \caption{} -- that
-    breaks longtable's internal \LT@makecaption bookkeeping ("Misplaced
-    \noalign"/"Misplaced \omit" errors), because \caption inside
-    longtable must be the very first thing in the environment. Instead,
-    when tiny=True the whole landscape+longtable block is wrapped in a
-    group that locally redefines \scriptsize to mean \tiny, so
-    \AtBeginEnvironment's own internal call to \scriptsize (fired at
-    \begin{longtable}, invisibly, before \caption) picks up \tiny without
-    anything extra appearing before \caption in the actual table source.
-    Pair with table_end(tiny=True) to close the extra group.
-    """
-    open_size = r'{\let\scriptsize\tiny\setlength{\tabcolsep}{0.75pt}' + '\n' if tiny else ''
-    return r"""%s\begin{landscape}
-\begin{footnotesize}
+
+MAIN_COLS = [('Sample', '', False), ('Mass', '(mg)', False),
+             ('U', '(ppm)', True), ('Th', '(ppm)', True), ('Sm', '(ppm)', True),
+             ('Zr', '(ppm)', True), ('eU', '(ppm)', False),
+             ('$^4$He', '(ncc)', False), ('Age', '(Ma)', True)]
+FULL_COLS = [('Sample', '', False), ('Mass', '(mg)', False),
+             ('U', '(ppm)', True), ('Th', '(ppm)', True), ('Sm', '(ppm)', True),
+             ('Cu', '(ppm)', True), ('As', '(ppm)', True), ('Zr', '(ppm)', True),
+             ('Ag', '(ppm)', True), ('Sb', '(ppm)', True), ('eU', '(ppm)', False),
+             ('$^4$He', '(ncc)', False), ('Age', '(Ma)', True)]
+TRACE_COLS = [('Sample', '', False), ('Cu', '(ppm)', True), ('As', '(ppm)', True),
+              ('Ag', '(ppm)', True), ('Sb', '(ppm)', True)]
+
+MAIN_N, FULL_N, TRACE_N = _ncols(MAIN_COLS), _ncols(FULL_COLS), _ncols(TRACE_COLS)
+
+FOOTNOTE_OLD = (SYM_OLD + r'Excluded: analyzed under the early (old) protocol '
+                r'(\S\ref{ch3-geochron-helium-methods}, \S\ref{ch3-results-gympie-ages}).')
+FOOTNOTE_OUTLIER = (SYM_OUTLIER + r'Excluded: outlier '
+                    r'(\S\ref{ch3-results-gympie-ages}, Fig.~\ref{fig:ch3-gogebic-he-vs-eu}).')
+
+
+def table_preamble(cols, footnotes=(), tabcolsep='4pt', size_cmd=None):
+    """Landscape longtable preamble with %s slots for caption, label and the
+    two header blocks. `size_cmd` (e.g. r'\tiny') locally redefines
+    \scriptsize -- the document-wide longtable default set by
+    \AtBeginEnvironment in dissertation_preamble.tex -- because a bare size
+    command can't go between \begin{longtable} and \caption (see the git
+    history of this file for the "Misplaced \noalign" story). `footnotes`
+    are printed under the closing rule on the table's last page."""
+    ncols = _ncols(cols)
+    open_size = (r'{\let\scriptsize%s' % size_cmd + '\n') if size_cmd else ''
+    foot = ''.join(r'\multicolumn{%d}{@{}l}{%s} \\' % (ncols, f) + '\n' for f in footnotes)
+    return (open_size + r"""\begin{landscape}
+\setlength{\tabcolsep}{%s}
 \begin{longtable}{%s}
 \caption{%%s}\label{%%s}\\
 \toprule
@@ -266,55 +330,77 @@ def table_preamble(colspec, ncols, tiny=False):
 \multicolumn{%d}{r}{\textit{continued on next page}} \\
 \endfoot
 \bottomrule
-\endlastfoot
-""" % (open_size, colspec, ncols, ncols)
+%s\endlastfoot
+""" % (tabcolsep, _spec(cols), ncols, ncols, foot))
 
 
-def table_end(tiny=False):
-    close_size = '\n}' if tiny else ''
+def table_end(size_cmd=None):
     return r"""\end{longtable}
-\end{footnotesize}
-\end{landscape}""" + close_size
+\end{landscape}""" + ('\n}' if size_cmd else '')
 
 
-TABLE_END = table_end()
-FULL_TABLE_END = table_end(tiny=True)
-
-MAIN_PREAMBLE = table_preamble('l r r r r r r r r l', 10)
-FULL_PREAMBLE = table_preamble('l r r r r r r r r r r r r l', 14, tiny=True)
-TRACE_PREAMBLE = table_preamble('l r r r r l', 6)
-
-
-# Row-index groupings shared by all three tables (same underlying aliquots
-# as before the column split).
+# Row-index groupings shared by all three tables.
 KIDD_CREEK_MAIN = list(range(3, 15))
 GYMPIE = list(range(49, 65))
-GYMPIE_NOTES = {
-    49: 'excl.: early protocol', 50: 'excl.: early protocol',
-    51: 'excl.: early protocol', 52: 'excl.: early protocol',
-    56: 'excl.: outlier',
-}
+GYMPIE_FLAGS = {49: 'old', 50: 'old', 51: 'old', 52: 'old', 56: 'outlier'}
 DURANGO = list(range(33, 47))
-DURANGO_NOTES = {
-    33: 'old method: pre-degassing', 34: 'old method: pre-degassing',
-    35: 'old method: pre-degassing', 36: 'old method: pre-degassing',
-}
+DURANGO_FLAGS = {33: 'old', 34: 'old', 35: 'old', 36: 'old'}
 DURANGO_AVG = 47
 GOGEBIC = list(range(89, 98))
+GOGEBIC_FLAGS = {92: 'outlier'}   # 041323MG16b, >1.5 Ga, interpreted U loss
+
+EXPECTED_NAMES = {33: '2211DApA', 36: '2022StDApA', 49: '013023PVGyPy-1',
+                  52: '013023PVGyPy-4', 56: '0413PyGy-4', 92: '041323MG16b'}
+
+MAIN_GROUPS = [
+    ('Kidd Creek Pyrite (Archean VMS, $\\sim$2716 Ma host)', KIDD_CREEK_MAIN, {}, DEFAULT_PREC),
+    ('Gympie Pyrite (Permo-Triassic orogenic Au)', GYMPIE, GYMPIE_FLAGS, DEFAULT_PREC),
+    ('Durango Apatite Standard (accepted age 32.1 Ma; Farley 2000)',
+     DURANGO + [DURANGO_AVG], DURANGO_FLAGS, DURANGO_PREC),
+    ('Gogebic Iron Range BIF Hematite Standard (MI-43; 571 Ma)', GOGEBIC, GOGEBIC_FLAGS, GOGEBIC_PREC),
+]
 
 SI_GROUPS = [
     ('Kidd Creek Pyrite (replicate / mass-only aliquots)', list(range(16, 23))),
     ('Franklin, NJ Pyrite (marble/volcanics, $\\sim$1.3--1.0 Ga)', list(range(24, 29))),
     ("Franklin, NJ Fluorite", list(range(30, 32))),
-    ('Rustenberg/Pilanesberg(?) Pyrite', list(range(68, 76))),
+    ('Rustenburg/Pilanesberg(?) Pyrite', list(range(68, 76))),
     ('Magnet Cove Carbonatite Pyrite, Arkansas ($\\sim$100 Ma)', list(range(77, 79))),
     ('French Creek, PA Magnetite and Pyrite ($\\sim$130 Ma)', list(range(81, 85))),
     ('Salzburg, Austria Arsenopyrite', [87]),
 ]
 
+ROUNDING_CAPTION = (
+    r" Uncertainties are 2$\sigma$ and are given to the same decimal place as the value: "
+    r"U, Th, Sm, and eU to 0.01~ppm (0.1~ppm for Durango apatite, and for U and eU in "
+    r"Gogebic hematite), Zr to 0.1~ppm, $^4$He to 0.1~ncc, and ages to 0.1~Ma, or to "
+    r"1~Ma where the uncertainty exceeds 10~Ma.")
+
+
+def _measured_age_caption():
+    if not _USED_MEASURED_AGE['any']:
+        return ''
+    return (r" %s marks early aliquots analyzed before a tube blank was available, for "
+            r"which the uncorrected measured age is reported instead." % SYM_MEASAGE)
+
+
+def _body_rows(rows, groups, ncols, row_fn):
+    body = []
+    for k, (label, idxs, flags, prec) in enumerate(groups):
+        if k:
+            body.append(r'\midrule')
+        body.append(group_header(label, ncols))
+        for i in idxs:
+            r = row_fn(rows, i, prec=prec, flag=flags.get(i))
+            if r:
+                body.append(r)
+    return body
+
 
 def build_main_table(rows):
-    body = [MAIN_PREAMBLE % (
+    hdr = _hdr(MAIN_COLS)
+    rows_tex = _body_rows(rows, MAIN_GROUPS, MAIN_N, data_row_main)
+    caption = (
         r"U-Th/He geochronology results for the four sample suites discussed in the main "
         r"text: Kidd Creek pyrite, Gympie pyrite, and the Durango apatite and Gogebic (MI-43) "
         r"hematite standards run alongside them, including U, Th, and Sm (the radiogenic-budget "
@@ -323,129 +409,76 @@ def build_main_table(rows):
         r"not measured for that aliquot. The remaining ICPMS trace elements measured the same "
         r"way (Cu, As, Ag, Sb) are reported separately in the Supplementary Information "
         r"(Table~\ref{tab:ch3-main-geochron-trace}) rather than here, to keep this table within "
-        r"the page width. Ages are the atmospheric-He-corrected `Age (Ma Atm=1Ra Corr.)' value; "
-        r"\textdagger\ marks the handful of early aliquots analyzed before a tube blank was "
-        r"available, for which the uncorrected measured age is reported instead. Excluded "
-        r"aliquots (\S\ref{ch3-results-gympie-ages}) are noted in the last column, as are the "
-        r"first four Durango apatite aliquots (2211DApA, 2211DApC, 2211DApD, 2022StDApA), "
-        r"analyzed under the early ``old method'' protocol that predated the warm "
-        r"atmosphere-degassing step (\S\ref{ch3-geochron-helium-methods}, "
-        r"Fig.~\ref{fig:ch3-durango-age-vs-ra}). The complete compilation, including "
-        r"localities not discussed in the main text, is given in the Supplementary "
-        r"Information (Table~\ref{tab:ch3-si-geochron}).",
-        'tab:ch3-main-geochron', MAIN_HEADER_ROW, MAIN_HEADER_ROW)]
-
-    body.append(group_header('Kidd Creek Pyrite (Archean VMS, $\\sim$2716 Ma host)', 10))
-    for i in KIDD_CREEK_MAIN:
-        r = data_row_main(rows, i)
-        if r:
-            body.append(r)
-
-    body.append(r'\midrule')
-    body.append(group_header('Gympie Pyrite (Permo-Triassic orogenic Au)', 10))
-    for i in GYMPIE:
-        r = data_row_main(rows, i, note=GYMPIE_NOTES.get(i, ''))
-        if r:
-            body.append(r)
-
-    body.append(r'\midrule')
-    body.append(group_header('Durango Apatite Standard (accepted age 32.1 Ma; Farley 2000)', 10))
-    for i in DURANGO:
-        r = data_row_main(rows, i, note=DURANGO_NOTES.get(i, ''))
-        if r:
-            body.append(r)
-    avg_row = data_row_main(rows, DURANGO_AVG, note='')
-    if avg_row:
-        body.append(avg_row)
-
-    body.append(r'\midrule')
-    body.append(group_header('Gogebic Iron Range BIF Hematite Standard (MI-43; 571 Ma)', 10))
-    for i in GOGEBIC:
-        r = data_row_main(rows, i)
-        if r:
-            body.append(r)
-
-    body.append(TABLE_END)
-    return '\n'.join(body)
+        r"the page width. Ages are the atmospheric-He-corrected `Age (Ma Atm=1Ra Corr.)' value."
+        + _measured_age_caption() +
+        r" %s marks aliquots analyzed under the early (``old method'') protocol that predated "
+        r"the warm atmosphere-degassing step (\S\ref{ch3-geochron-helium-methods}, "
+        r"Fig.~\ref{fig:ch3-durango-age-vs-ra}), and, for the first four Gympie aliquots, also "
+        r"the Parr-vessel HCl digestion (\S\ref{ch3-results-gympie-ages}); %s marks outliers "
+        r"excluded from interpretation (\S\ref{ch3-results-gympie-ages}; "
+        r"\S\ref{sec:ch3-experimental-methods-geochronology} for Gogebic 041323MG16b)."
+        % (SYM_OLD, SYM_OUTLIER)
+        + ROUNDING_CAPTION +
+        r" The complete compilation, including localities not discussed in the main text, is "
+        r"given in the Supplementary Information (Table~\ref{tab:ch3-si-geochron}).")
+    pre = table_preamble(MAIN_COLS, footnotes=(FOOTNOTE_OLD, FOOTNOTE_OUTLIER), tabcolsep='4pt',
+                         size_cmd=MAIN_SIZE)
+    return '\n'.join([pre % (caption, 'tab:ch3-main-geochron', hdr, hdr)] + rows_tex
+                     + [table_end(size_cmd=MAIN_SIZE)])
 
 
 def build_main_trace_si_table(rows):
-    """New SI table: Cu/As/Ag/Sb for the same four main-text suites, kept
-    out of the main table above to fit the page width."""
-    body = [TRACE_PREAMBLE % (
+    """SI table: Cu/As/Ag/Sb for the same four main-text suites, kept out of
+    the main table to fit the page width."""
+    hdr = _hdr(TRACE_COLS)
+    rows_tex = _body_rows(rows, MAIN_GROUPS, TRACE_N, data_row_trace)
+    caption = (
         r"Cu, As, Ag, and Sb (measured as ratios to spike vanadium by the same ICPMS run as "
         r"U, Th, Sm, and Zr, \S\ref{sec:ch3-experimental-methods-geochronology}) for the same "
         r"Kidd Creek, Gympie, Durango, and Gogebic aliquots reported in "
         r"Table~\ref{tab:ch3-main-geochron}, in the same row order; `--' denotes below "
-        r"detection or not measured for that aliquot. Sample notes are repeated from "
-        r"Table~\ref{tab:ch3-main-geochron} for reference.",
-        'tab:ch3-main-geochron-trace', TRACE_HEADER_ROW, TRACE_HEADER_ROW)]
+        r"detection or not measured for that aliquot. Uncertainties are 2$\sigma$, rounded to "
+        r"two significant figures, with each value rounded to the same decimal place. "
+        r"Footnote symbols (%s, %s) as in Table~\ref{tab:ch3-main-geochron}."
+        % (SYM_OLD, SYM_OUTLIER))
+    pre = table_preamble(TRACE_COLS, footnotes=(FOOTNOTE_OLD, FOOTNOTE_OUTLIER), tabcolsep='8pt',
+                         size_cmd=MAIN_SIZE)
+    return '\n'.join([pre % (caption, 'tab:ch3-main-geochron-trace', hdr, hdr)] + rows_tex
+                     + [table_end(size_cmd=MAIN_SIZE)])
 
-    body.append(group_header('Kidd Creek Pyrite (Archean VMS, $\\sim$2716 Ma host)', 6))
-    for i in KIDD_CREEK_MAIN:
-        r = data_row_trace(rows, i)
-        if r:
-            body.append(r)
 
-    body.append(r'\midrule')
-    body.append(group_header('Gympie Pyrite (Permo-Triassic orogenic Au)', 6))
-    for i in GYMPIE:
-        r = data_row_trace(rows, i, note=GYMPIE_NOTES.get(i, ''))
-        if r:
-            body.append(r)
-
-    body.append(r'\midrule')
-    body.append(group_header('Durango Apatite Standard (accepted age 32.1 Ma; Farley 2000)', 6))
-    for i in DURANGO:
-        r = data_row_trace(rows, i, note=DURANGO_NOTES.get(i, ''))
-        if r:
-            body.append(r)
-    avg_row = data_row_trace(rows, DURANGO_AVG, note='')
-    if avg_row:
-        body.append(avg_row)
-
-    body.append(r'\midrule')
-    body.append(group_header('Gogebic Iron Range BIF Hematite Standard (MI-43; 571 Ma)', 6))
-    for i in GOGEBIC:
-        r = data_row_trace(rows, i)
-        if r:
-            body.append(r)
-
-    body.append(TABLE_END)
-    return '\n'.join(body)
+# Font sizes (each locally replaces the document-wide \scriptsize longtable
+# default). The 13-quantity SI table still needs \tiny to fit the landscape
+# text width; the main-text and trace tables fit at \small.
+MAIN_SIZE = r'\small'
+SI_SIZE = r'\tiny'
 
 
 def build_si_table(rows):
-    body = [FULL_PREAMBLE % (
+    hdr = _hdr(FULL_COLS)
+    groups = [(label, idxs, {}, DEFAULT_PREC) for label, idxs in SI_GROUPS]
+    rows_tex = _body_rows(rows, groups, FULL_N, data_row_full)
+    caption = (
         r"U-Th/He geochronology results for all remaining sample suites in the compilation, "
         r"not discussed in the main text: Kidd Creek replicate/mass-only aliquots, Franklin "
-        r"(NJ) pyrite and fluorite, Rustenberg/Pilanesberg pyrite, Magnet Cove carbonatite "
+        r"(NJ) pyrite and fluorite, Rustenburg/Pilanesberg pyrite, Magnet Cove carbonatite "
         r"pyrite, French Creek magnetite/pyrite, and Salzburg arsenopyrite. Reported here for "
         r"completeness, with the full trace-element suite (Cu, As, Zr, Ag, Sb) retained since "
-        r"these aliquots are not duplicated in the main text; columns and conventions as in "
-        r"Table~\ref{tab:ch3-main-geochron}.",
-        'tab:ch3-si-geochron', FULL_HEADER_ROW, FULL_HEADER_ROW)]
-
-    first = True
-    for label, idxs in SI_GROUPS:
-        if not first:
-            body.append(r'\midrule')
-        first = False
-        body.append(group_header(label, 14))
-        for i in idxs:
-            r = data_row_full(rows, i)
-            if r:
-                body.append(r)
-
-    body.append(FULL_TABLE_END)
-    return '\n'.join(body)
+        r"these aliquots are not duplicated in the main text; columns, rounding, and conventions "
+        r"as in Table~\ref{tab:ch3-main-geochron} (Cu, As, Ag, and Sb rounded as in "
+        r"Table~\ref{tab:ch3-main-geochron-trace})." + _measured_age_caption())
+    pre = table_preamble(FULL_COLS, tabcolsep='3.5pt', size_cmd=SI_SIZE)
+    return '\n'.join([pre % (caption, 'tab:ch3-si-geochron', hdr, hdr)] + rows_tex
+                     + [table_end(size_cmd=SI_SIZE)])
 
 
 def main():
     rows = load_rows()
-    main_table = build_main_table(rows)
-    main_trace_si_table = build_main_trace_si_table(rows)
+    for i, nm in EXPECTED_NAMES.items():
+        assert rows[i][COLS['name']] == nm, (i, rows[i][COLS['name']], nm)
     si_table = build_si_table(rows)
+    main_trace_si_table = build_main_trace_si_table(rows)
+    main_table = build_main_table(rows)
 
     out = []
     out.append('% =============================================================')
@@ -462,11 +495,8 @@ def main():
     out.append('%  \\ChThreeGeochronMainTraceSITable / \\ChThreeGeochronSITable (invoked from')
     out.append('%  HeInSulfides_SI_body.tex) are available wherever needed.')
     out.append('%')
-    out.append('%  NOTE on the split (see module docstring for the full rationale): the')
-    out.append('%  original single 14-column main-text table overflowed the landscape text')
-    out.append('%  width by ~4in. Cu/As/Ag/Sb now live only in the new')
-    out.append('%  \\ChThreeGeochronMainTraceSITable; the main table keeps Zr (fits within')
-    out.append('%  width) plus U/Th/Sm/eU/4He/Age.')
+    out.append('%  Rounding and footnote-symbol conventions: see the comment block above')
+    out.append('%  DEFAULT_PREC in the generator script.')
     out.append('% =============================================================')
     out.append(r'\newcommand{\ChThreeGeochronMainTable}{%')
     out.append(main_table)

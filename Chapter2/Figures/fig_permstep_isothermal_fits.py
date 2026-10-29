@@ -401,6 +401,33 @@ def fmt_sci(x, sig=2):
     return rf"\({mant:.{sig - 1}f}\!\times\!10^{{{exp}}}\)"
 
 
+def _unc_place(err, sig=2):
+    """Decimal exponent of the last significant digit of `err` rounded to
+    `sig` significant figures (e.g. 1.13e-4 -> -5)."""
+    p = int(np.floor(np.log10(abs(err)))) - (sig - 1)
+    # rounding can carry into a new digit (9.96e-5 -> 1.0e-4)
+    r = round(err, -p)
+    return int(np.floor(np.log10(abs(r)))) - (sig - 1)
+
+
+def fmt_dec_unc(x, err, sig=2):
+    """Value and 2-sigma as plain decimals, the uncertainty rounded to `sig`
+    significant figures and the value to the same decimal place
+    (2026-10-29 sig-fig pass), e.g. (0.019003, 1.13e-4) -> ('0.01900', '0.00011')."""
+    d = max(0, -_unc_place(err, sig))
+    return f"{x:.{d}f}", f"{err:.{d}f}"
+
+
+def fmt_sci_unc(x, err, sig=2):
+    """Value and 2-sigma in scientific notation, the uncertainty to `sig`
+    significant figures and the value's mantissa to the same decimal place,
+    e.g. (3.1e-5, 2.6e-6) -> ('3.10x10^-5', '2.6x10^-6')."""
+    exp = int(np.floor(np.log10(abs(x))))
+    nd = max(0, exp - _unc_place(err, sig))
+    mant = x / 10 ** exp
+    return rf"\({mant:.{nd}f}\!\times\!10^{{{exp}}}\)", fmt_sci(err, sig)
+
+
 # --- Cross-check: every measurement in 'Fit Lambdas' should carry the same
 # Temperature/step time/3He yield as the corresponding row of 'Raw Data and
 # Corrections' (the master per-measurement sheet), matched by their shared
@@ -440,9 +467,10 @@ print(f"'Raw Data and Corrections' cross-check OK: {len(sequences)} series match
 raw_rows = []
 for seq in sequences:
     for T_i, He_i, He2s_i in zip(seq['T_C_each'], seq['He'], seq['He_2sigma']):
+        He_s, He2s_s = fmt_dec_unc(He_i, He2s_i)
         raw_rows.append(
             f"{seq['id']} & {T_i:.2f} & {seq['nominal_min']:.0f} & "
-            f"{seq['cooling_min']:.0f} & {He_i:.4f} & {fmt_sci(He2s_i)} \\\\")
+            f"{seq['cooling_min']:.0f} & {He_s} & {He2s_s} \\\\")
     raw_rows.append(r"\midrule")
 raw_rows = raw_rows[:-1]  # drop the trailing \midrule after the last series
 
@@ -470,10 +498,11 @@ Series & Temp & Nominal Time & Cooling Time & $^3$He measured & $\pm2\sigma$ \\
 # --- Fit-results table (\ChTwoPermStepFitTable) ------------------------------
 fit_rows = []
 for seq in sequences:
+    lam_s, lam2s_s = fmt_sci_unc(seq['lam'], 2 * seq['lam_sigma'])
+    n0_s, n02s_s = fmt_dec_unc(seq['n0'], 2 * seq['n0_sigma'])
     fit_rows.append(
         f"{seq['id']} & {seq['T_C']:.2f} & {seq['nominal_min']:.0f} & {len(seq['t'])} & "
-        f"{fmt_sci(seq['lam'])} & {fmt_sci(2 * seq['lam_sigma'])} & "
-        f"{seq['n0']:.4f} & {fmt_sci(2 * seq['n0_sigma'])} \\\\")
+        f"{lam_s} & {lam2s_s} & {n0_s} & {n02s_s} \\\\")
 
 fit_table = r"""\begin{table}[htbp]
 \centering

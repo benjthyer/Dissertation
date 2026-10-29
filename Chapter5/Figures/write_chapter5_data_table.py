@@ -35,8 +35,14 @@ Regenerate after any change to the spreadsheet:
     python3 Chapter5/Figures/write_chapter5_data_table.py
 """
 import os
+import sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ch5_spelling import fix as fix_spelling  # noqa: E402
+import sys
 import re
 import openpyxl
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from ch5_photo_refs import EXCLUDED_PHOTOS  # noqa: E402  (photos left out of the album)
 
 FIG_DIR = os.path.dirname(os.path.abspath(__file__))
 XLSX_PATH = os.path.join(FIG_DIR, '..', 'Tables', 'Draaikraal 2023 BJT.xlsx')
@@ -64,7 +70,7 @@ def g(row, key):
 def tex(s):
     if s is None:
         return ''
-    s = str(s)
+    s = fix_spelling(str(s))
     for a, b in (('\\', r'\textbackslash{}'), ('_', r'\_'), ('%', r'\%'),
                  ('#', r'\#'), ('&', r'\&'), ('$', r'\$'),
                  ('~', r'$\sim$'), ('^', r'\textasciicircum{}'),
@@ -109,7 +115,7 @@ def photos_cell(v):
             nums = [int(tok)] if int(tok) <= MAX_PHOTO else (_split_run(tok) or [])
             if not nums:
                 out.append(tex(tok))
-            out += [rf'\ChFivePhoto{{{n}}}' for n in nums]
+            out += [rf'\ChFivePhoto{{{n}}}' for n in nums if n not in EXCLUDED_PHOTOS]
         elif tok:
             out.append(tex(tok))
     return ', '.join(out) or '--'
@@ -156,8 +162,9 @@ CAPTION = (
     r"elevation (m). Unit: final interpreted map "
     r"unit and Lith.: lithology code (\S\ref{sec:ch5-lithologic-descriptions}). Structure: "
     r"bedding (Bed.), cleavage (Clv.), contact (Cont.) or modal layering (M.L.), as strike/dip with "
-    r"strike an azimuth from north. Photos: numbers in the photo album "
-    r"(\S\ref{sec:ch5-SI-photo-album}), each a link. Field descriptions and notes are footnotes to "
+    r"strike an azimuth from north. Photos: field photograph numbers; those reproduced in "
+    r"\S\ref{sec:ch5-SI-photo-album} or as figures are links, the others are in the "
+    r"supplementary photo album. Field descriptions and notes are footnotes to "
     r"the station name, at the foot of the page. `--': not recorded.")
 
 

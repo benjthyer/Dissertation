@@ -64,9 +64,9 @@ FIGURE_CHAPTERS := 1 2 3
 # practice without the declaration: nothing ever creates a file actually
 # named figures-ch1/2/3, so make always finds them "missing" and reruns
 # their recipe regardless.
-.PHONY: all thesis figures listings clean clean-figures distclean \
+.PHONY: all thesis figures listings clean clean-figures distclean photo-supplement \
         chapter1 chapter2 dissertation.pdf \
-        Chapter1/Writing/TubeMethodPaper.pdf Chapter2/Writing/chapter2goethite.pdf
+        Chapter1/Writing/TubeMethodPaper.pdf Chapter2/Writing/chapter2goethite.pdf chapter5_photo_supplement.pdf
 
 all: figures listings thesis
 
@@ -125,10 +125,19 @@ chapter2: Chapter2/Writing/chapter2goethite.pdf
 Chapter2/Writing/chapter2goethite.pdf:
 	cd Chapter2/Writing && $(LATEXMK) $(LATEXMK_FLAGS) chapter2goethite.tex
 
+photo-supplement: chapter5_photo_supplement.pdf
+
+# Chapter 5 supplementary photo album (field photos not reproduced in the
+# thesis). Built from the repository root, like dissertation.tex, because it
+# \input{}s the shared preamble and Chapter5/Writing/ files by root-relative path.
+chapter5_photo_supplement.pdf:
+	$(LATEXMK) $(LATEXMK_FLAGS) -jobname=chapter5_photo_supplement Chapter5/chapter5_photo_supplement.tex
+
 # --- Cleanup ----------------------------------------------------------------------
 
 clean:
 	$(LATEXMK) -c dissertation.tex
+	-$(LATEXMK) -c -jobname=chapter5_photo_supplement Chapter5/chapter5_photo_supplement.tex
 	-cd Chapter1/Writing && $(LATEXMK) -c TubeMethodPaper.tex SI.tex
 	-cd Chapter2/Writing && $(LATEXMK) -c chapter2goethite.tex chapter2goethite_SI.tex
 

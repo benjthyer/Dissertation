@@ -43,9 +43,9 @@ calculated using Eq.~\eqref{eq:steadystate} (Chapter~\ref{ch:apparatus}). 3He wa
 Both routes require the ampoule's permeation rate constant $\lambda$, which was measured during the experiment itself rather than assumed from the literature (Chapter~\ref{ch:apparatus}, \S\ref{in-situ-rate-constant}). This in-experiment measurement is not an alternative method of handling permeation lag but a prerequisite of the permeation step method and, here, the empirical basis for choosing a conservative $\lambda$ for the bounding method. It is indispensable in this experiment: the permeability of ampoules used in hydrothermal step heats
 cannot reasonably be assumed to match literature values for anhydrous silica glass.
 
-10 series of 3-4 consecutive permeation steps held at a single
-temperature between 90-110°C for 120-180 minutes each with 26 minutes of
-cooling time before being inlet into the Helix-MC-Plus10k were
+Ten series of 3--4 consecutive permeation steps held at a single
+temperature between 90--110°C for 120-180 minutes each with 26 minutes of
+cooling time before being inlet into the Helix-MC-Plus\textsuperscript{10K} were
 identified as suitable for this exercise. The 3He measurements in these
 series were fit to Eq.~\eqref{eq:incyield} using a non-linear least
 squares optimization (Fig.~\ref{fig:ch2-permeation-fits}). This is accomplished with
@@ -57,7 +57,7 @@ model and was not used further for clarity, though its fit value of
 $\lambda$ was within uncertainty of the other series' fit values for
 $\lambda$.
 
-An initial guess of $\lambda$ $\approx$ 6x10\textsuperscript{-6}
+An initial guess of $\lambda$ $\approx$ 6$\times$10\textsuperscript{-6}
 sec\textsuperscript{-1} and \(n_{0} \approx \frac{m_{i}}{1 - e^{- \lambda t_{i}}}\)
 (evaluated at the first measurement of a series) pccSTP was passed to
 the optimizer for each series. Uncertainties from the model fits were
@@ -109,7 +109,7 @@ is not an artifact of the cooling history of the hydrothermal experiments, reaff
 that the hydrothermal experiments are indeed more permeable than the vacuum experiments.
 
 The difference in log permeability between the actual and apparent
-permeabilities of the anhydrous simulation were significantly smaller
+permeabilities of the anhydrous simulation was significantly smaller
 than nearly all the 2$\sigma$ uncertainties of the apparent permeabilities
 determined above for the hydrothermal Win-06-01b experiment, which
 ranged from 0.08 to 0.46 log units. Thus, no trends with step duration could be identified in the
@@ -165,9 +165,9 @@ All Win-06-01b step heat data presented in this chapter are reduced using the bo
 
 Beyond the ampoule's residual helium content itself, the two methods' derived apparent diffusivities agree just as closely (Fig.~\ref{fig:ch2-diffusivity-comparison}, \S\ref{sec:ch2-si-detailed-methods}): $\ln(D/a^2)$ from the permeation step method tracks the bounding method's central value along the 1:1 line within uncertainty across the full range of the experiment. Fitting the permeation step method's own diffusivities with the same Stage 1 procedure used for the bounding method in the main text (Fig.~\ref{fig:ch2-permstep-arrhenius-zoom}, \S\ref{sec:ch2-si-detailed-methods}) yields an activation energy of \ChTwoPermStepEa$\pm$\ChTwoPermStepEaErr\ kJ/mol (R\textsuperscript{2}=\ChTwoPermStepRtwo, n=\ChTwoPermStepN) and a closure temperature of \ChTwoPermStepTc$\pm$\ChTwoPermStepTcErr\textdegree C, indistinguishable from the bounding method's own \ChTwoEa$\pm$\ChTwoEaErr\ kJ/mol and \ChTwoTc$\pm$\ChTwoTcErr\textdegree C (Fig.~\ref{fig:ch2-arrhenius-zoom}).
 
-The two ``complete degas'' permeation steps depart from this pattern. For the longer of the two (7200 minutes; predicted $n_t/n_0 \approx 1\times10^{-8}$ under simple first-order decay), the directly measured 3He inventory exceeds $n_{t,SS}$ by a factor of 1.5. For the shorter (1580 minutes; predicted $n_t/n_0 \approx 0.02$), the excess is smaller, 25\% over $n_{t,SS}$. A measured inventory in excess of $n_{t,SS}$ requires that the source term ($\Omega$: \S\ref{bounding-method}) increased during the high temperature experimental step, or the goethite sample was not effectively closed to helium loss during the low temperature permeation step (\S\ref{permeation-step-method}), or both. The measured diffusivitiy is constant at a given temperature for these high temperature measurements at the end of the experiment (Figs.~\ref{fig:ch2-arrhenius-zoom},~\ref{fig:ch2-delta-zoom}), so there is no evidence the source term ($\Omega$) is increasing during the high temperature measurements.
+The two ``complete degas'' permeation steps depart from this pattern. For the longer of the two (7200 minutes; predicted $n_t/n_0 \approx 1\times10^{-8}$ under simple first-order decay), the directly measured 3He inventory exceeds $n_{t,SS}$ by a factor of 1.5. For the shorter (1580 minutes; predicted $n_t/n_0 \approx 0.02$), the excess is smaller, 25\% over $n_{t,SS}$. A measured inventory in excess of $n_{t,SS}$ requires that the source term ($\Omega$: \S\ref{bounding-method}) increased during the high temperature experimental step, or the goethite sample was not effectively closed to helium loss during the low temperature permeation step (\S\ref{permeation-step-method}), or both. The measured diffusivity is constant at a given temperature for these high temperature measurements at the end of the experiment (Figs.~\ref{fig:ch2-arrhenius-zoom},~\ref{fig:ch2-delta-zoom}), so there is no evidence the source term ($\Omega$) is increasing during the high temperature measurements.
 
-The size of the two excesses scale with duration of their respective permeation step. The 7200-minute step is associated with the larger (1.5$\times$) excess whereas the 1580-minute step is associated with the smaller (25\%) excess. An artifact intrinsic to the the first order process of helium permeation through the ampoule itself, such as an underestimated rate constant, has no reason to strongly scale with the step duration, since both of these long steps would be expected empty the vast majority of the helium inventory of the ampoule. That the excess does scale this way points to open system behavior in the sample. The preferred explanation is short-circuit or fast pathway diffusion \citep{lee1992} of residual helium held within the interstitial space of the goethite crystallite aggregate (\S\ref{consistency-with-mdd-systematics}), recharged during the preceding high-temperature step, released slowly and with weak temperature dependence during the following extended low-temperature hold. This requires communication between a lattice or grain-boundary source and an interstitial reservoir, a departure from the independent, non-communicating domains of a strict MDD interpretation, but it is consistent with the interstitial framework already invoked to explain the early, low-retention fraction of 3He release (\S\ref{consistency-with-mdd-systematics}). Unlike dehydration, it requires no change in the intrinsic retentivity of the crystalline lattice recorded by the bulk of the experiment.
+The size of the two excesses scales with the duration of their respective permeation step. The 7200-minute step is associated with the larger (1.5$\times$) excess whereas the 1580-minute step is associated with the smaller (25\%) excess. An artifact intrinsic to the first-order process of helium permeation through the ampoule itself, such as an underestimated rate constant, has no reason to strongly scale with the step duration, since both of these long steps would be expected to empty the vast majority of the helium inventory of the ampoule. That the excess does scale this way points to open system behavior in the sample. The preferred explanation is short-circuit or fast pathway diffusion \citep{lee1992} of residual helium held within the interstitial space of the goethite crystallite aggregate (\S\ref{consistency-with-mdd-systematics}), recharged during the preceding high-temperature step, released slowly and with weak temperature dependence during the following extended low-temperature hold. This requires communication between a lattice or grain-boundary source and an interstitial reservoir, a departure from the independent, non-communicating domains of a strict MDD interpretation, but it is consistent with the interstitial framework already invoked to explain the early, low-retention fraction of 3He release (\S\ref{consistency-with-mdd-systematics}). Unlike dehydration, it requires no change in the intrinsic retentivity of the crystalline lattice recorded by the bulk of the experiment.
 
 \clearpage
 
@@ -185,7 +185,7 @@ Win-06-01b hydrothermal experiment, and was subjected to the same
 heating and cooling schedule as the hydrothermal experiment's permeation
 steps. The tube was charged with 100 arbitrary units of helium atoms at
 the end of each experimental step and a steady state concentration
-profile was assumed for the new arbitrary charge at T = 24°. Permeability
+profile was assumed for the new arbitrary charge at T = 24°C. Permeability
 values for 3He were assumed as the product of the 4He permeability
 values given by \citet{swets1961} and the 3He/4He relative
 permeabilities given by \citet{jones1953}.
@@ -214,7 +214,7 @@ Apparent values of D/a\textsuperscript{2} for 3He and 4He were
 calculated from times and cumulative measured yields using the equations of \citet{fechtigkalbitzer1966}. 
 Lower and upper bounds for diffusivity were calculated 
 using the upper bound for the helium contents of the 
-ampoules before and after each step, evaluated using \eqref{eq:steadystate}. 
+ampoules before and after each step, evaluated using Eq.~\eqref{eq:steadystate}. 
 Diffusivity for step $i$ is a function of the cumulative fractional yield for step i 
 $\Sigma ^{i}F$ and the cumulative fractional yield of the previous step $\Sigma ^{i-1}F$. The diffusivity
 is maximized when the difference between the fractional yields is largest, and minimized when the difference is smallest. 
@@ -258,7 +258,7 @@ isotope ratio calculated out of the 4 hypothetical end-member permeation scenari
 Intuitively, higher differential permeability between the two helium isotopes ($\delta = \frac{K_{3He}}{K_{4He}}$ here) will result in greater isotope fractionation between the measured $\left(\frac{m_{4}}{m_{3}}\right)$ and true $\left(\frac{\omega_{4}}{\omega_{3}}\right)$.
 Furthermore, lower absolute permeabilities will result in stronger permeation lag, additionally producing higher isotope fractionation in the measured value. The 4He permeability is thus conservatively taken to be identical to \citet{swets1961}, an anhydrous
 literature value which this experiment's own isothermal 3He permeation measurements show to underestimate the ampoule's true permeability (Fig.~\ref{fig:ch2-ampoule-permeability}); 4He permeability itself could not be independently measured in this experiment. For the purposes of evaluating the measured isotope ratios, the relative 3He/4He permeability ($\delta$) is taken to be 1.29, the 2$\sigma$ upper bound of the value measured independently for a water-filled ampoule in Chapter~\ref{ch:apparatus} (\S\ref{results}):
-1.10 $\pm$ 0.19 (2$\sigma$). 1.29 is in great excess of realistic values of the relative 3He/4He permeability, which is expected to be between 1.06-1.11 for the temperature range relevant to this experiment \citep{jones1953}. These
+1.10 $\pm$ 0.19 (2$\sigma$). This value of 1.29 far exceeds realistic values of the relative 3He/4He permeability, which is expected to be between 1.06 and 1.11 for the temperature range relevant to this experiment \citep{jones1953}. These
 conservative assumptions taken together guarantee that the calculated upper and lower bounds for the isotope ratios accurately constrain the true value. The upper bounds of the
 ampoule contents are calculated using the steady-state approximation of Eq.~\eqref{eq:steadystate} (Chapter~\ref{ch:apparatus}): $n_{ss} = \frac{m}{\lambda t - 1}$. For the four extreme cases listed above, the following equations apply:
 
@@ -276,7 +276,7 @@ Where $m_{x}^{i-1}$ and $\left(\lambda t \right)^{i-1}$ refer to the measured he
 \section{Goethite Permeation Rate Constant Dataset}\label{sec:ch2-si-detailed-methods}
 \markright{\MakeUppercase{In-Experiment Permeation Rate Constant Dataset}}
 
-The in-experiment permeation rate constants used to correct for permeation lag is reported below. Table~\ref{tab:ch2-permeation-isothermal-raw} gives the raw per-step data for all 10 isothermal sequences, and Table~\ref{tab:ch2-permeation-isothermal-fits} gives the lambda/$n_0$ fit to each sequence (Fig.~\ref{fig:ch2-permeation-fits}) that together define the Arrhenius regression of Fig.~\ref{fig:ch2-ampoule-permeability}.
+The in-experiment permeation rate constants used to correct for permeation lag are reported below. Table~\ref{tab:ch2-permeation-isothermal-raw} gives the raw per-step data for all 10 isothermal sequences, and Table~\ref{tab:ch2-permeation-isothermal-fits} gives the lambda/$n_0$ fit to each sequence (Fig.~\ref{fig:ch2-permeation-fits}) that together define the Arrhenius regression of Fig.~\ref{fig:ch2-ampoule-permeability}.
 
 \ChTwoPermStepRawTable
 
@@ -321,40 +321,40 @@ Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{0}$ & $\pm2\sigma$ & $n_{t}$ & $\
 \endfoot
 \bottomrule
 \endlastfoot
-170 & 300 & 0.9630 & 0.0000 & \(0.00\!\times\!10^{0}\) & \(0.00\!\times\!10^{0}\) & 0.1968 & \(2.22\!\times\!10^{-2}\) & 1.1597 & \(2.63\!\times\!10^{-2}\) & -21.910 & 0.045 \\
-180 & 463 & 0.5442 & 0.9630 & \(7.26\!\times\!10^{-2}\) & \(1.29\!\times\!10^{-2}\) & 0.0782 & \(4.93\!\times\!10^{-3}\) & 0.5497 & \(1.60\!\times\!10^{-2}\) & -22.184 & 0.089 \\
-190 & 550 & 0.5292 & 1.6241 & \(1.95\!\times\!10^{-2}\) & \(2.54\!\times\!10^{-3}\) & 0.0679 & \(8.20\!\times\!10^{-3}\) & 0.5777 & \(1.30\!\times\!10^{-2}\) & -21.976 & 0.085 \\
-200 & 500 & 0.5190 & 2.2112 & \(3.28\!\times\!10^{-2}\) & \(5.42\!\times\!10^{-3}\) & 0.0532 & \(5.77\!\times\!10^{-3}\) & 0.5394 & \(1.15\!\times\!10^{-2}\) & -21.702 & 0.088 \\
-210 & 475 & 0.5770 & 2.7646 & \(1.41\!\times\!10^{-2}\) & \(2.11\!\times\!10^{-3}\) & 0.0552 & \(5.71\!\times\!10^{-3}\) & 0.6182 & \(1.17\!\times\!10^{-2}\) & -21.311 & 0.082 \\
-220 & 450 & 0.6333 & 3.3799 & \(1.10\!\times\!10^{-2}\) & \(1.80\!\times\!10^{-3}\) & 0.0469 & \(4.58\!\times\!10^{-3}\) & 0.6692 & \(1.24\!\times\!10^{-2}\) & -20.991 & 0.080 \\
-230 & 425 & 0.7899 & 4.0551 & \(5.87\!\times\!10^{-3}\) & \(1.86\!\times\!10^{-3}\) & 0.0639 & \(3.48\!\times\!10^{-3}\) & 0.8479 & \(1.25\!\times\!10^{-2}\) & -20.514 & 0.066 \\
-225 & 908 & 0.7513 & 4.8885 & \(1.95\!\times\!10^{-2}\) & \(2.45\!\times\!10^{-3}\) & 0.0420 & \(4.94\!\times\!10^{-3}\) & 0.7738 & \(1.42\!\times\!10^{-2}\) & -21.200 & 0.121 \\
-215 & 450 & 0.1415 & 5.6842 & \(1.31\!\times\!10^{-2}\) & \(1.85\!\times\!10^{-3}\) & 0.0278 & \(3.54\!\times\!10^{-3}\) & 0.1563 & \(6.48\!\times\!10^{-3}\) & -22.015 & 0.316 \\
-205 & 520 & 0.0763 & 5.8529 & \(7.18\!\times\!10^{-3}\)$^*$ & \(1.23\!\times\!10^{-3}\)$^*$ & 0.0125$^*$ & \(1.63\!\times\!10^{-3}\)$^*$ & 0.0816$^*$ & \(8.10\!\times\!10^{-3}\)$^*$ & -22.788$^*$ & 0.829$^*$ \\
-195 & 1106 & 0.0670 & 5.9491 & \(2.12\!\times\!10^{-3}\)$^*$ & \(4.02\!\times\!10^{-4}\)$^*$ & 0.0307$^*$ & \(2.86\!\times\!10^{-3}\)$^*$ & 0.0956$^*$ & \(3.23\!\times\!10^{-3}\)$^*$ & -23.370$^*$ & 1.094$^*$ \\
-185 & 740 & 0.0227 & 6.0246 & \(1.25\!\times\!10^{-2}\)$^*$ & \(1.64\!\times\!10^{-3}\)$^*$ & 0.0090$^*$ & \(1.06\!\times\!10^{-3}\)$^*$ & 0.0192$^*$ & \(2.00\!\times\!10^{-3}\)$^*$ & -24.567$^*$ & 2.822$^*$ \\
-175 & 920 & 0.0180 & 6.0610 & \(3.68\!\times\!10^{-3}\)$^*$ & \(5.02\!\times\!10^{-4}\)$^*$ & 0.0045$^*$ & \(4.42\!\times\!10^{-4}\)$^*$ & 0.0189$^*$ & \(7.42\!\times\!10^{-4}\)$^*$ & -24.796$^*$ & 3.797$^*$ \\
-200 & 260 & 0.0224 & 6.0814 & \(6.53\!\times\!10^{-4}\)$^*$ & \(1.17\!\times\!10^{-4}\)$^*$ & 0.0095$^*$ & \(1.23\!\times\!10^{-3}\)$^*$ & 0.0313$^*$ & \(1.65\!\times\!10^{-3}\)$^*$ & -23.022$^*$ & 1.495$^*$ \\
-210 & 520 & 0.0812 & 6.1081 & \(7.48\!\times\!10^{-3}\)$^*$ & \(9.98\!\times\!10^{-4}\)$^*$ & 0.0145$^*$ & \(1.32\!\times\!10^{-3}\)$^*$ & 0.0882$^*$ & \(3.85\!\times\!10^{-3}\)$^*$ & -22.669$^*$ & 1.135$^*$ \\
-220 & 1167 & 0.5766 & 6.1914 & \(2.82\!\times\!10^{-3}\) & \(1.44\!\times\!10^{-3}\) & 0.0276 & \(3.24\!\times\!10^{-3}\) & 0.6014 & \(2.45\!\times\!10^{-2}\) & -21.504 & 0.184 \\
-230 & 370 & 0.3577 & 6.7796 & \(8.68\!\times\!10^{-3}\) & \(3.96\!\times\!10^{-3}\) & 0.0422 & \(5.13\!\times\!10^{-3}\) & 0.3912 & \(1.48\!\times\!10^{-2}\) & -20.712 & 0.146 \\
-240 & 320 & 0.6767 & 7.1563 & \(1.72\!\times\!10^{-2}\) & \(2.42\!\times\!10^{-3}\) & 0.0826 & \(9.94\!\times\!10^{-3}\) & 0.7420 & \(1.57\!\times\!10^{-2}\) & -19.807 & 0.099 \\
-245 & 250 & 0.5549 & 7.8582 & \(2.13\!\times\!10^{-2}\) & \(8.87\!\times\!10^{-3}\) & 0.0516 & \(5.65\!\times\!10^{-3}\) & 0.5852 & \(1.46\!\times\!10^{-2}\) & -19.710 & 0.125 \\
-250 & 210 & 0.6934 & 8.4743 & \(1.08\!\times\!10^{-2}\) & \(4.52\!\times\!10^{-3}\) & 0.0718 & \(8.15\!\times\!10^{-3}\) & 0.7545 & \(1.41\!\times\!10^{-2}\) & -19.200 & 0.102 \\
-245 & 270 & 0.4659 & 9.2086 & \(2.48\!\times\!10^{-2}\) & \(3.48\!\times\!10^{-3}\) & 0.0498 & \(5.84\!\times\!10^{-3}\) & 0.4909 & \(1.01\!\times\!10^{-2}\) & -19.810 & 0.197 \\
-240 & 320 & 0.2857 & 9.7206 & \(2.07\!\times\!10^{-2}\) & \(2.81\!\times\!10^{-3}\) & 0.0339 & \(4.08\!\times\!10^{-3}\) & 0.2989 & \(6.58\!\times\!10^{-3}\) & -20.433 & 0.312 \\
-235 & 370 & 0.2199 & 10.0357 & \(1.66\!\times\!10^{-2}\) & \(2.20\!\times\!10^{-3}\) & 0.0273 & \(3.29\!\times\!10^{-3}\) & 0.2307 & \(5.23\!\times\!10^{-3}\) & -20.810 & 0.401 \\
-230 & 420 & 0.1400 & 10.2736 & \(1.32\!\times\!10^{-2}\) & \(1.76\!\times\!10^{-3}\) & 0.0255 & \(2.53\!\times\!10^{-3}\) & 0.1523 & \(4.00\!\times\!10^{-3}\) & -21.332 & 0.603 \\
-225 & 652 & 0.1494 & 10.4279 & \(1.26\!\times\!10^{-2}\) & \(1.62\!\times\!10^{-3}\) & 0.0131 & \(1.47\!\times\!10^{-3}\) & 0.1499 & \(3.42\!\times\!10^{-3}\) & -21.772 & 0.747 \\
-230 & 500 & 0.1550 & 10.5908 & \(7.34\!\times\!10^{-4}\) & \(1.67\!\times\!10^{-3}\) & 0.0128 & \(1.32\!\times\!10^{-3}\) & 0.1671 & \(3.37\!\times\!10^{-3}\) & -21.383 & 0.461 \\
-235 & 450 & 0.1951 & 10.7582 & \(2.57\!\times\!10^{-3}\) & \(4.18\!\times\!10^{-4}\) & 0.0334 & \(1.85\!\times\!10^{-3}\) & 0.2259 & \(3.29\!\times\!10^{-3}\) & -20.956 & 0.364 \\
-240 & 400 & 0.2425 & 10.9638 & \(6.90\!\times\!10^{-3}\) & \(1.45\!\times\!10^{-3}\) & 0.0251 & \(3.16\!\times\!10^{-3}\) & 0.2607 & \(1.23\!\times\!10^{-2}\) & -20.672 & 0.318 \\
-245 & 350 & 0.3150 & 11.2328 & \(5.79\!\times\!10^{-3}\) & \(1.05\!\times\!10^{-3}\) & 0.0395 & \(4.64\!\times\!10^{-3}\) & 0.3487 & \(9.39\!\times\!10^{-3}\) & -20.219 & 0.240 \\
-250 & 300 & 0.3716 & 11.5689 & \(1.65\!\times\!10^{-2}\) & \(2.24\!\times\!10^{-3}\) & 0.0467 & \(5.24\!\times\!10^{-3}\) & 0.4018 & \(9.62\!\times\!10^{-3}\) & -19.888 & 0.209 \\
-250 & 300 & 0.3640 & 11.9627 & \(2.43\!\times\!10^{-2}\) & \(4.37\!\times\!10^{-3}\) & 0.0339 & \(3.82\!\times\!10^{-3}\) & 0.3735 & \(7.99\!\times\!10^{-3}\) & -19.927 & 0.242 \\
-250 & 300 & 0.3452 & 12.3490 & \(1.13\!\times\!10^{-2}\) & \(1.60\!\times\!10^{-3}\) & 0.0395 & \(4.48\!\times\!10^{-3}\) & 0.3733 & \(7.91\!\times\!10^{-3}\) & -19.895 & 0.244 \\
-250 & 10250 & 8.4829 & 12.7167 & \(1.91\!\times\!10^{-2}\) & \(2.53\!\times\!10^{-3}\) & 0.1165 & \(7.38\!\times\!10^{-3}\) & 8.5804 & \(1.28\!\times\!10^{-1}\) & -19.958 & 0.189 \\
-240 & 785 & 0.2261 & 21.2187 & \(2.90\!\times\!10^{-9}\) & \(6.85\!\times\!10^{-9}\) & 0.0263 & \(2.92\!\times\!10^{-3}\) & 0.2525 & \(2.21\!\times\!10^{-2}\) & -20.660 & 0.580 \\
+170 & 300 & 0.9630 & 0.0000 & 0 & 0 & 0.197 & 0.022 & 1.160 & 0.026 & -21.910 & 0.045 \\
+180 & 463 & 0.5442 & 0.9630 & 0.073 & 0.013 & 0.0782 & 0.0049 & 0.550 & 0.016 & -22.184 & 0.089 \\
+190 & 550 & 0.5292 & 1.6241 & 0.0195 & 0.0025 & 0.0679 & 0.0082 & 0.578 & 0.013 & -21.976 & 0.085 \\
+200 & 500 & 0.5190 & 2.2112 & 0.0328 & 0.0054 & 0.0532 & 0.0058 & 0.539 & 0.012 & -21.702 & 0.088 \\
+210 & 475 & 0.5770 & 2.7646 & 0.0141 & 0.0021 & 0.0552 & 0.0057 & 0.618 & 0.012 & -21.311 & 0.082 \\
+220 & 450 & 0.6333 & 3.3799 & 0.0110 & 0.0018 & 0.0469 & 0.0046 & 0.669 & 0.012 & -20.991 & 0.080 \\
+230 & 425 & 0.7899 & 4.0551 & 0.0059 & 0.0019 & 0.0639 & 0.0035 & 0.848 & 0.012 & -20.514 & 0.066 \\
+225 & 908 & 0.7513 & 4.8885 & 0.0195 & 0.0024 & 0.0420 & 0.0049 & 0.774 & 0.014 & -21.20 & 0.12 \\
+215 & 450 & 0.1415 & 5.6842 & 0.0131 & 0.0018 & 0.0278 & 0.0035 & 0.1563 & 0.0065 & -22.02 & 0.32 \\
+205 & 520 & 0.0763 & 5.8529 & 0.0072$^*$ & 0.0012$^*$ & 0.0125$^*$ & 0.0016$^*$ & 0.0816$^*$ & 0.0081$^*$ & -22.79$^*$ & 0.83$^*$ \\
+195 & 1106 & 0.0670 & 5.9491 & 0.00212$^*$ & 0.00040$^*$ & 0.0307$^*$ & 0.0029$^*$ & 0.0956$^*$ & 0.0032$^*$ & -23.4$^*$ & 1.1$^*$ \\
+185 & 740 & 0.0227 & 6.0246 & 0.0125$^*$ & 0.0016$^*$ & 0.0090$^*$ & 0.0011$^*$ & 0.0192$^*$ & 0.0020$^*$ & -24.6$^*$ & 2.8$^*$ \\
+175 & 920 & 0.0180 & 6.0610 & 0.00368$^*$ & 0.00050$^*$ & 0.0045$^*$ & 0.0004$^*$ & 0.0189$^*$ & 0.0007$^*$ & -24.8$^*$ & 3.8$^*$ \\
+200 & 260 & 0.0224 & 6.0814 & 0.00065$^*$ & 0.00012$^*$ & 0.0095$^*$ & 0.0012$^*$ & 0.0313$^*$ & 0.0016$^*$ & -23.0$^*$ & 1.5$^*$ \\
+210 & 520 & 0.0812 & 6.1081 & 0.0075$^*$ & 0.0010$^*$ & 0.0145$^*$ & 0.0013$^*$ & 0.0882$^*$ & 0.0038$^*$ & -22.7$^*$ & 1.1$^*$ \\
+220 & 1167 & 0.5766 & 6.1914 & 0.0028 & 0.0014 & 0.0276 & 0.0032 & 0.601 & 0.024 & -21.50 & 0.18 \\
+230 & 370 & 0.3577 & 6.7796 & 0.0087 & 0.0040 & 0.0422 & 0.0051 & 0.391 & 0.015 & -20.71 & 0.15 \\
+240 & 320 & 0.6767 & 7.1563 & 0.0172 & 0.0024 & 0.0826 & 0.0099 & 0.742 & 0.016 & -19.807 & 0.099 \\
+245 & 250 & 0.5549 & 7.8582 & 0.0213 & 0.0089 & 0.0516 & 0.0056 & 0.585 & 0.015 & -19.71 & 0.12 \\
+250 & 210 & 0.6934 & 8.4743 & 0.0108 & 0.0045 & 0.0718 & 0.0082 & 0.754 & 0.014 & -19.20 & 0.10 \\
+245 & 270 & 0.4659 & 9.2086 & 0.0248 & 0.0035 & 0.0498 & 0.0058 & 0.491 & 0.010 & -19.81 & 0.20 \\
+240 & 320 & 0.2857 & 9.7206 & 0.0207 & 0.0028 & 0.0339 & 0.0041 & 0.2989 & 0.0066 & -20.43 & 0.31 \\
+235 & 370 & 0.2199 & 10.0357 & 0.0166 & 0.0022 & 0.0273 & 0.0033 & 0.2307 & 0.0052 & -20.81 & 0.40 \\
+230 & 420 & 0.1400 & 10.2736 & 0.0132 & 0.0018 & 0.0255 & 0.0025 & 0.1523 & 0.0040 & -21.33 & 0.60 \\
+225 & 652 & 0.1494 & 10.4279 & 0.0126 & 0.0016 & 0.0131 & 0.0015 & 0.1499 & 0.0034 & -21.77 & 0.75 \\
+230 & 500 & 0.1550 & 10.5908 & 0.0007 & 0.0017 & 0.0128 & 0.0013 & 0.1671 & 0.0034 & -21.38 & 0.46 \\
+235 & 450 & 0.1951 & 10.7582 & 0.00257 & 0.00042 & 0.0334 & 0.0018 & 0.2259 & 0.0033 & -20.96 & 0.36 \\
+240 & 400 & 0.2425 & 10.9638 & 0.0069 & 0.0014 & 0.0251 & 0.0032 & 0.261 & 0.012 & -20.67 & 0.32 \\
+245 & 350 & 0.3150 & 11.2328 & 0.0058 & 0.0010 & 0.0395 & 0.0046 & 0.3487 & 0.0094 & -20.22 & 0.24 \\
+250 & 300 & 0.3716 & 11.5689 & 0.0165 & 0.0022 & 0.0467 & 0.0052 & 0.4018 & 0.0096 & -19.89 & 0.21 \\
+250 & 300 & 0.3640 & 11.9627 & 0.0243 & 0.0044 & 0.0339 & 0.0038 & 0.3735 & 0.0080 & -19.93 & 0.24 \\
+250 & 300 & 0.3452 & 12.3490 & 0.0113 & 0.0016 & 0.0395 & 0.0045 & 0.3733 & 0.0079 & -19.90 & 0.24 \\
+250 & 10250 & 8.4829 & 12.7167 & 0.0191 & 0.0025 & 0.1165 & 0.0074 & 8.58 & 0.13 & -19.96 & 0.19 \\
+240 & 785 & 0.2261 & 21.2187 & \(2.9\!\times\!10^{-9}\) & \(6.8\!\times\!10^{-9}\) & 0.0263 & 0.0029 & 0.252 & 0.022 & -20.66 & 0.58 \\
 \midrule
 \textbf{Total} &  &  & 146.1483 &  &  &  &  &  &  &  &  \\
 \end{longtable}
@@ -637,7 +637,7 @@ The driving forces are evaluated as follows.
   \item Surface terms are omitted in both. The barrier of an internal nucleus depends on the free
   energy per volume of material transformed, not on the external surface of the host grain. The external surface
   energy of the grain enters the overall thermodynamic stability (\S\ref{sec:gt_thermo}), but is not
-  a part of the nucleation barrier, which is evaluated for internal neclei.
+  a part of the nucleation barrier, which is evaluated for internal nuclei.
 \end{enumerate}
 We bound the water pressure with the trap isolated by assuming that all evolved water was in the
 vapor, distributed uniformly through an apparatus of volume $V_{\mathrm{app}}$ at 298~K:
@@ -671,30 +671,76 @@ we adopt $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$, with a range of
   \end{tabular}
 \end{table}
 
-Figure~\ref{fig:gt_translation}a shows $\gamma_{\mathrm{eff}}$ from Eq.~\eqref{eq:gt_gamma_cal} as
-a function of the assumed water pressure during the trap-isolated steps. It spans
-0.08--0.20~J\,m$^{-2}$ over $10^{-5}$--$10^{-1}$~bar and 0.14--0.19~J\,m$^{-2}$ over the
-volume-constrained range (Table~\ref{tab:gt_gamma}). Figure~\ref{fig:gt_translation}b shows the
-predicted slowdown at saturation (Eq.~\eqref{eq:gt_translate}) for the calibrated values and for
-the most permissive value.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=\linewidth]{hydrothermal_translation}
-  \caption{(a) $\gamma_{\mathrm{eff}}$ calibrated from the two trap-isolated KAF steps as a
-  function of the assumed $P_{\mathrm{H_2O}}$; grey band: range allowed by the apparatus volume
-  (190--600~mL) and the water released in each step. (b) Ratio of conversion rate constants at
-  water saturation and under vacuum (Eq.~\eqref{eq:gt_translate}); grey band: temperatures of the
-  hydrothermal experiments.}
-  \label{fig:gt_translation}
-\end{figure}
-
 \subsection{Uncertainty propagation} The Monte Carlo range quoted in \S\ref{sec:gt_nucleation}
 (\ChTwoKinNMC{} draws) samples the trap-isolated step (230 or 240~$^\circ$C); $s$, log-uniformly between
 \ChTwoKinSLowRange{} at 230~$^\circ$C and \ChTwoKinSHighRange{} at 240~$^\circ$C; the apparatus volume,
 log-uniformly between 190 and 600~mL; a time-averaging coefficient for the pressure between 0.5 and 1 to account for 
-how quickly the evolved water assumulates in the diffusion cell, and a common offset of $\Delta G_r$, uniformly within $\pm2.8$~kJ per reaction
+how quickly the evolved water accumulates in the diffusion cell, and a common offset of $\Delta G_r$, uniformly within $\pm2.8$~kJ per reaction
 (the $\pm1.4$~kJ per mole FeOOH of \citealt{majzlan2003}), which shifts every driving force
 together. The offset barely changes $\gamma_{\mathrm{eff}}$ (95\% range
 \ChTwoKinMCGammaLo--\ChTwoKinMCGammaHi~J\,m$^{-2}$) but contributes most of the spread in the predicted
 conversion, because it enters the small $\Delta\mu_{\mathrm{sat}}$ (6--11~kJ) squared.
+
+
+\section{Multiple Diffusion Domain and Thermal History Modeling}\label{sec:ch2-si-mdd}
+
+\subsection{Forward modeling radiogenic $^4$He in nature and in the laboratory}\label{sec:4he-forward}
+Each diffusion domain produces $^4$He uniformly at rate $P$ and loses it by diffusion through a zero-concentration
+boundary from the time of crystallization, $t_\mathrm{form}$. The concentration is
+expanded in the eigenfunctions of the sphere, $C=\sum_kA_k(t)\sin(k\pi x)/x$, where $x$ is
+radial position normalized to the domain radius and $A_k$ is the amplitude of the $k$-th mode \citep{carslawjaeger1959}.
+Each mode amplitude $A_k$ evolves as
+\begin{equation}
+  \frac{\mathrm{d}A_k}{\mathrm{d}t}=-k^2\pi^2\frac{D}{a^2}A_k+c_kP,\qquad c_k=\frac{2(-1)^{k+1}}{k\pi},
+  \label{eq:ch2-si-mdd-modes}
+\end{equation}
+where the amplitude $A_k$ of each mode $k$ decays by diffusion and grows by production $P$. For the initial condition, 
+at $t=0$, all amplitudes are zero. Then, for a discrete timestep $\Delta t$ at constant temperature, each mode is updated as
+\begin{equation}
+  A_k \leftarrow A_k e^{-\lambda_k}+c_kP\,\Delta t\,\frac{1-e^{-\lambda_k}}{\lambda_k},
+  \qquad \lambda_k=k^2\pi^2\frac{D}{a^2}\Delta t .
+\end{equation}
+Because the  eigenfunctions do not depend on $D$, the present-day amplitudes $A_{k,j}$ carry each
+domain's non-uniform natural $^4$He profile into the laboratory, where each mode decays as
+$\exp(-k^2\pi^2\tau)$. The $^4$He remaining in domain $j$ when the reference domain has
+reached laboratory time $\tau$ is therefore
+\begin{equation}
+  N_j(\tau)=3\sum_k A_{k,j}\,\frac{(-1)^{k+1}}{k\pi}\exp\!\left[-k^2\pi^2\tau\left(\frac{r_j}{r_0}\right)^{-2}\right],
+  \label{eq:gt_mdd_N4}
+\end{equation}
+and the predicted step ratio is
+\begin{equation}
+  \frac{R_{\mathrm{step},i}}{R_\mathrm{bulk}}=\frac{\Delta N_{4,i}/N_{4,\mathrm{tot}}}{\Delta F_i^{\mathrm{obs}}},
+  \qquad
+  \Delta N_{4,i}=\sum_jf_j\left[N_j(\tau_{0,i-1})-N_j(\tau_{0,i})\right],
+  \label{eq:gt_mdd_ratio}
+\end{equation}
+where $N_{4,\mathrm{tot}}=\sum_jf_jN_j(0)$ includes the gas released at fusion. The
+reference times $\tau_{0,i}$ are solved from the \emph{measured} cumulative $^3$He by
+inverting Eq.~\eqref{eq:gt_mdd_mix}, so the prediction does not depend on the heating
+schedule or on step-to-step scatter in the kinetics, and no uniform $^4$He distribution is
+assumed at the start of the experiment. Taking U and Th to be distributed like the $^3$He,
+the bulk He age is $t_\mathrm{He}=\sum_jf_jN_j(0)/P$.
+
+\subsection{Multiple diffusion domain fits for $N=1$--5}
+Figure~\ref{fig:ch2-si-mdd-3he-fits} shows the fitted fractional and cumulative $^3$He yields,
+and the Arrhenius and delta plots they imply, for one to five domains. The fits for all $N$
+are summarized in Table~\ref{tab:ch2-mdd-domains} of the main text.
+
+\begin{figure}[p]
+\centering
+\includegraphics[width=\textwidth,height=0.85\textheight,keepaspectratio]{mdd_free/absolute/chapter/ch2_mdd_3he_fits_N1-5.pdf}
+\caption{Multiple diffusion domain fits to the $^3$He release of HT-Win-06-01b for $N=1$--5
+domains (rows). Columns: fitted fractional and cumulative yields, and the Arrhenius and
+delta plots implied by each fit. Hollow grey symbols are the six low-signal steps, which
+are not fitted and are omitted from the Arrhenius and delta plots.}
+\label{fig:ch2-si-mdd-3he-fits}
+\end{figure}
+
+\subsection{Two-domain alternative}
+The two-domain structure (2.2\% of the $^3$He at $r/r_0=5.4\times10^{-3}$, 97.8\% at 1.05) fits
+the $^4$He/$^3$He spectrum better than the adopted four-domain structure: a burial path with
+crystallization at 195~Ma and a peak of $\sim$66\,\textdegree C at $\sim$100~Ma gives
+$\chi^2_\nu\approx1.3$. However, this structure reproduces the $^3$He Arrhenius array poorly
+($\chi^2_\nu=3.3$; Fig.~\ref{fig:ch2-si-mdd-3he-fits}), so we do not adopt it.
+

@@ -1,0 +1,46 @@
+% =============================================================
+%  abstract.tex -- text of the dissertation Abstract (<= 300 words)
+%
+%  Draft 2026-10-29. The environment is NOT in this file: dissertation.tex
+%  already has \begin{abstract} ... \end{abstract}, so replace the
+%  \todo{Write abstract.} line inside it with
+%      \input{Introduction/abstract}
+%
+%  Numbers are written out (not macros) because the abstract is typeset
+%  before the chapter value files are \input. Values come from
+%  Chapter2/Writing/chapter2_derived_values.tex (Ea = 157.1 +/- 5.3 kJ/mol)
+%  and Chapter3's conclusions (cumulative yields <= 5% up to 600 C).
+%
+%  NOTE: Do NOT include \documentclass or \begin{document} here.
+% =============================================================
+
+Rising demand for critical metals, driven by computing infrastructure and the
+transition to renewable energy, foreground the need to understand how ore deposits form,
+change, and survive. This thesis develops geochemical tools for three families of
+processes that concentrate and rework rare metals: magmatic, metasomatic, and
+meteoric. The first three chapters extend U-Th/He geochronology to minerals that
+decompose under the vacuum of conventional helium step-heating experiments.
+Chapter~\ref{ch:apparatus} presents a method that seals samples in helium-permeable
+silica ampoules holding water- or sulfur-saturated conditions, with a framework for
+disentangling the proceeses of helium permeation through the glass from release by the sample.
+Chapter~\ref{ch:goethite} applies this method to goethite, a direct chronometer of weathering
+and laterite formation. Under water-saturated conditions helium release is diffusive,
+with an activation energy of $157 \pm 5$~kJ/mol and near-quantitative retention at
+surface temperatures over billion-year timescales for the sample studied, whereas
+earlier vacuum experiments recorded conversion to hematite.
+Chapter~\ref{ch:sulfide} shows that pyrite and arsenopyrite are highly helium retentive, with pyrite in particular being among the most
+helium-retentive minerals studied, comparable to or exceeding monazite. 
+U-Th/He ages from the Gympie gold field and the Kidd Creek
+massive sulfide deposit depend on uranium- and thorium-bearing inclusions and must be
+interpreted locality by locality.
+Chapter~\ref{ch:ngibbs} presents \emph{nGibbs}, a software package of compositionally general deep-learning emulators of the
+\textsc{MELTS} and \textsc{HeFESTo} thermodynamic models that conserve mass and run
+two to four orders of magnitude faster, making composition a practical free variable
+in models of magmatic and mantle systems.
+Chapter~\ref{ch:draaikraal} turns to the Bushveld Complex, the world's dominant source
+of platinum-group metals. Field mapping at Draaikraal, Mpumalanga shows that local deformation at the 
+intrusion's floor is consistent with a synmagmatic origin, and that the area's recessive,
+laterite-capped topography is the result of contamination by fluids from devolatilizing floor
+sediments. The Bushveld, with its sulfide-hosted platinum-group metals, goethite
+laterites, and unresolved petrological puzzles, is a natural place to apply these tools
+together.

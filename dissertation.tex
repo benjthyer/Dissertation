@@ -40,7 +40,7 @@ via Sulfide/Goethite (U-Th)/He Geochronology and ML-Accelerated Thermodynamic Mo
 % The `abstract` environment is redefined by caltech_thesis.cls to render as
 % an unnumbered, TOC-listed chapter (\extrachapter{Abstract}).
 \begin{abstract}
-\todo{Write abstract.}
+\input{Introduction/abstract}
 \end{abstract}
 
 % --- Acknowledgements --------------------------------------------------------
@@ -48,14 +48,14 @@ via Sulfide/Goethite (U-Th)/He Geochronology and ML-Accelerated Thermodynamic Mo
 % (plural preferred) as unnumbered, TOC-listed chapters, same mechanism as
 % `abstract` above.
 \begin{acknowledgements}
-\todo{Write acknowledgements.}
 
-I am deeply grateful... 
+I am deeply grateful to many people and will properly acknowledge them in the final version of this dissertation. 
 
-The fieldwork at Draaikraal would not have been possible... 
-
-Finally, I thank family/friends for their unwavering support...
 \end{acknowledgements}
+
+% --- Published content and contributions + AI statement -----------------------
+\input{Introduction/published_content}
+
 
 % --- Table of contents -------------------------------------------------------
 \tableofcontents
@@ -69,7 +69,7 @@ Finally, I thank family/friends for their unwavering support...
 \extrachapter{Introduction}
 \markboth{Introduction}{Introduction}
 
-\todo{Write short dissertation introduction, longer than abstract, detail each chapter.}
+\input{introduction/introduction}
 
 % --- Chapters ----------------------------------------------------------------
 \input{Chapter1/chapter1}
@@ -79,18 +79,20 @@ Finally, I thank family/friends for their unwavering support...
 \input{Chapter3/chapter3}
 \input{Chapter3/chapter3_SI}
 \input{Chapter4/chapter4}
-% \input{Chapter5/chapter5}
-% \input{Chapter5/chapter5_SI}   % field-station table + photo album (added 2026-10-24)
+\input{Chapter5/chapter5}
+% \input{Chapter5/chapter5_SI}   % retired 2026-10-27: field-station table + photo album are now Appendix A
 
 % --- Conclusion (unnumbered) -------------------------------------------------
-\extrachapter{Conclusion}
-\markboth{Conclusion}{Conclusion}
+%\extrachapter{Conclusion}
+%\markboth{Conclusion}{Conclusion}
 
-\todo{Write short dissertation conclusion. No data, few or no figures.
-Synthesize contributions. Allude to the Bushveld Complex fieldwork
-(Appendix~\ref{app:bushveld}) as motivating nGibbs work and sulfide/goethite geochronology. Mention the laterite geomorphology
-at Draaikraal as an unexpected and compelling target for goethite
-geochronology.}
+% --- Appendices --------------------------------------------------------------
+% Placed before \backmatter so memoir still numbers them (A, B); field data
+% and photos first (cited from Chapter 5), literature review last.
+\begin{appendices}
+  \input{ChapterA/chapterA}   % Draaikraal field-station table + photo album
+  \input{ChapterB/chapterB}   % Bushveld Complex literature review
+\end{appendices}
 
 % ---- Back matter ------------------------------------------------------------
 \backmatter
@@ -98,10 +100,7 @@ geochronology.}
 % --- References --------------------------------------------------------------
 \printbibliography[heading=bibintoc, title={References}]
 
-% --- Appendices --------------------------------------------------------------
-% \begin{appendices}
-%   \input{ChapterA/chapterA}
-% \end{appendices}
+% (Appendices moved above \backmatter, 2026-10-27.)
 
 % =============================================================
 \end{document}

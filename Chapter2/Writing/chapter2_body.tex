@@ -30,8 +30,7 @@ Laboratory experiments of helium migration under controlled conditions
 have proven extremely useful in understanding the mechanisms and rates
 of helium migration in geological materials and have produced sensible
 results that are predominantly explainable by thermally activated volume
-diffusion (Reiners and Farley, 1997; Farley, 2000; Farley, 2007;
-Cherniak and Watson, 2011; Farley, 2018), albeit variably complicated by
+diffusion \citep{reinersfarley1999,farley2000,farley2007,cherniakwatson2011,farley2018}, albeit variably complicated by
 the effects of radiation damage and annealing \citep{shuster2006,guenthner2013}. This approach has also been leveraged for
 goethite; however, some complications arise when applying this approach
 to goethite. Above surface temperatures, goethite decomposes to hematite
@@ -48,7 +47,7 @@ likely remain informative to an extent, as goethite dehydration kinetics
 are highly influenced by some of the same factors that could be
 responsible for variable helium retention in natural goethite, like
 variable grain size \citep{navrotsky2008,guobarnard2011,goss1987}, crystallinity \citep{schwertmann1985} or substitution of
-aluminum or other cations within the goethite structure \citep{majzlan2003,bassal2022}. For example, Shuster et al. (2005) initially
+aluminum or other cations within the goethite structure \citep{majzlan2003,bassal2022}. For example, \citet{shustervasconcelos2005} initially
 conducted vacuum step-heating experiments on two vitreous,
 polycrystalline goethite samples, in which uniformly distributed 3He was
 introduced by proton irradiation for comparison with radiogenic 4He that
@@ -80,11 +79,10 @@ crystalline goethite should be highly anisotropic, essentially reducing
 to 1-dimensional diffusion along the b-axis (typically the long axis of
 the polycrystalline aggregate) that would amount to near-instantaneous
 helium escape from goethite \citep{bassal2022}, which is clearly
-disputed by observed (U--Th)/He dates as old as \textasciitilde275 Ma
+contradicted by observed (U--Th)/He dates as old as \textasciitilde275 Ma
 \citep{waltenberg2012} and dates that are concordant with
 \textsuperscript{40}Ar/\textsuperscript{39}Ar ages of other phases
-\citep{vasconcelos2013}. However, the models presented by Bassal et
-al. (2022) suggest that crystallographic defects caused by radiation
+\citep{vasconcelos2013}. However, the models presented by \citet{bassal2022} suggest that crystallographic defects caused by radiation
 damage could block these channels, thereby reducing He loss. While these
 simulations are informative, they alone are insufficient for drawing
 conclusions about the mineralogical and environmental conditions needed
@@ -164,7 +162,10 @@ This study builds upon previous helium step heat studies of the dense
 colloform goethite sample Win-06-01b (occasionally referred to as
 Win0601b) collected within float at the Flinders Ranges in South
 Australia \citep{waltenberg2012,monteiro2017}. It yields one of the
-oldest known goethite U-Th/He ages: 180-135 Ma \citep{waltenberg2012}. To
+oldest known goethite U-Th/He ages: 180-135 Ma \citep{waltenberg2012}.
+% TODO(BJT): the thermal-history modeling uses a He age range of 130--180 Ma
+% (\S\ref{sec:gt_mdd_methods}); reconcile with the 180-135 Ma quoted here.
+To
 produce a homogeneous distribution of 3He, Win-06-01b was irradiated
 with 220 MeV protons for 24 hours at the Francis H. Burr Proton Therapy
 Center, Massachusetts General Hospital, following standard procedures
@@ -200,9 +201,9 @@ nitrogen and transferred to a saltwater-ice bath at a temperature of
 saltwater-ice bath, the top was interfaced with a vacuum line and the
 tube was pumped to a pressure of \textless0.1 torr. The advantage of
 this approach was that water would remain solid within the tube, only
-slowly sublimating to vacuum while atmospheric gasses would be readily
-pumped away. While it was desirable to remove atmospheric gasses to
-reduce experimental complexity by removing potentially reactive gasses
+slowly sublimating to vacuum while atmospheric gases would be readily
+pumped away. While it was desirable to remove atmospheric gases to
+reduce experimental complexity by removing potentially reactive gases
 like oxygen, the primary motivation for pumping the tube to rough vacuum
 was to aid the sealing process. When the tube contents were under
 vacuum, fused glass would deform inwards and self-seal, greatly
@@ -219,7 +220,7 @@ sieve. Fig.~\ref{fig:ch2-ampoule-post} shows the sealed ampoule after the comple
 step heats with all of the original water remaining, a testament to the
 quality of the ampoule's seal, which had sustained a massive pressure
 gradient of over 11 orders of magnitude across the ampoule walls, with
-an inner vapor pressure of about 3x10\textsuperscript{4} torr
+an inner vapor pressure of about 3$\times$10\textsuperscript{4} torr
 (\textasciitilde40 bars: \citet{haar1984}) against the
 \textasciitilde10\textsuperscript{-7} torr ultra-high vacuum of the lamp
 cell while the ampoule was held at 250°C for over a week.
@@ -269,17 +270,17 @@ discrepancy, the sample would have been hotter than the recorded
 temperature, which would not affect the conclusions of this work.
 Additionally, during early trials of this method for helium step heats,
 silica-glass encapsulated Durango apatite had been subjected to step
-heats at Caltech and gave indistinguishable corrected 4He yields to
+heats at Caltech and gave corrected 4He yields indistinguishable from those of
 unencapsulated Durango apatite, suggesting that the temperature recorded
 by the thermocouple for our experimental setup is sufficiently accurate.
 
-Helium isotope measurements of evolved gasses from hydrothermal steps
+Helium isotope measurements of evolved gases from hydrothermal step
 heats of glass-encapsulated irradiated HT-Win-06-01b goethite were
 acquired at Caltech on a Thermo Fisher
 Helix-MC-Plus\textsuperscript{10K} mass spectrometer in peak hopping
 mode from January 31\textsuperscript{st}, 2024 to March
 13\textsuperscript{th}, 2024. Helium was purified by exposing evolved
-gasses to a charcoal trap held in liquid nitrogen, a titanium sponge
+gases to a charcoal trap held in liquid nitrogen, a titanium sponge
 getter, then a SAES NP10 getter before freely expanding into the
 Helix-MC-Plus\textsuperscript{10K}. 3He was measured with a
 pulse-counting electron multiplier, while 4He was detected on a Faraday
@@ -332,8 +333,8 @@ isotope-ratio uncertainties and the kinetic analysis of the published vacuum ste
 \subsection{Kinetic and Diffusive Reductions of Step-Heat Data}\label{sec:gt_kin_methods}
 
 We reanalyzed the published vacuum step heats of irradiated Win-06-01b by \citet{farley2024} (hereafter \emph{KAF}) and
-\citet{monteiro2017} (hereafter \emph{HDM}), together with the water-saturated step heat of this study, by reducing every
-as both a first-order conversion rate constant and as an apparent diffusivity.
+\citet{monteiro2017} (hereafter \emph{HDM}), together with the water-saturated step heat of this study, by reducing every step
+both as a first-order conversion rate constant and as an apparent diffusivity.
 For the kinetic reduction,
 \textsuperscript{3}He is assumed to be immediately released from the goethite lattice upon conversion to hematite, except for a fraction $\phi$ 
 that is inherited by the hematite product. The fraction of helium released in each step is then $F_i = (1-\phi)\,\alpha_i$, where $\alpha_i$ 
@@ -375,12 +376,86 @@ heating schedule (and tracked by a distinct shift in \textsuperscript{4}He/\text
 The kinetic inversions (Eq.~\eqref{eq:gt_stepk}) for these latest steps are highly sensitive to the choice of $\phi$ and are excluded from the fits of the kinetic parameters.
 The KAF steps run with the trap isolated are also excluded from the Arrhenius regression.
 
-Both vacuum experiments show a maximum bulk normalized
-\textsuperscript{4}He/\textsuperscript{3}He ratio of \textasciitilde{} 1.1 at or before $\Sigma F_{3\mathrm{He}} \approx 0.9$ , after
-which the bulk normalized \textsuperscript{4}He/\textsuperscript{3}He decreases to \textasciitilde0.9. This behavior is tightly correlated with a 
-decrease in apparent diffusivity interpreted to result from hematite inheritance of helium from dehydroxylated goethite (\S\ref{sec:gt_vacuum}). 
-The two experiments' agreement for this feature in the \textsuperscript{4}He/\textsuperscript{3}He spectra suggests that these values are 
-independent of heating schedule and may reflect a material property of Win-06-01b.
+\subsection{Multiple Diffusion Domain and Thermal History Modeling}\label{sec:gt_mdd_methods}
+
+Together, the $^3$He release and the bulk-normalized $^4$He/$^3$He spectrum constrain the thermal history, if the activation energy 
+for diffusion is known \citep{farleyflowers2012}.
+These data from HT-Win-06-01b are interpreted in two stages. First, the diffusion domain structure of the sample is inverted
+from the $^3$He release alone. Second, natural thermal histories are fitted to the
+$^4$He/$^3$He spectrum with that domain structure held fixed, so that every thermal history
+must work within the bounds set by the $^3$He data. 
+Derivations and numerical details are given in the SI (\S\ref{sec:ch2-si-mdd}).
+
+\paragraph{Diffusion domain structure.} The sample is represented by $N$ non-interacting
+spherical domains that share the activation energy and frequency factor of the Stage~1
+regression (\S\ref{sec:gt_ht_results}). Domain $j$ holds a fraction $f_j$ of the uniformly
+distributed, proton-induced $^3$He ($\sum_j f_j=1$) and has radius $r_j$ relative to the
+reference radius $r_0$ implied by the Stage~1 regression, so that
+\begin{equation}
+  \left(\frac{D}{a^2}\right)_j = \left(\frac{r_j}{r_0}\right)^{-2}\frac{D_0}{a_0^2}\exp\!\left(-\frac{E_a}{RT}\right).
+  \label{eq:gt_mdd_domain}
+\end{equation}
+A model with $N$ domains has $2N-1$ free parameters. During the heating schedule, the
+reference domain accumulates the non-dimensional time
+$\tau_{0,i}=\sum_{m\le i}(D_0/a_0^2)\exp(-E_a/RT_m)\,\Delta t_m$ by the end of step $i$, and
+domain $j$ reaches $\tau_{0,i}(r_j/r_0)^{-2}$. With $F(\tau)$ the cumulative fraction released
+by an initially uniform sphere \citep{crank1979}, the model cumulative and fractional
+$^3$He yields are
+\begin{equation}
+  \Sigma F_i=\sum_{j=1}^{N}f_j\,F\!\left(\tau_{0,i}\,(r_j/r_0)^{-2}\right),\qquad
+  \Delta F_i=\Sigma F_i-\Sigma F_{i-1}.
+  \label{eq:gt_mdd_mix}
+\end{equation}
+Following \citet{farleyflowers2012}, the fractional and cumulative yields are weighted
+equally, and $\{f_j,r_j\}$ minimize
+\begin{equation}
+  S=\sum_i\left(\Delta F_i^{\mathrm{mod}}-\Delta F_i^{\mathrm{obs}}\right)^2
+   +\sum_i\left(\Sigma F_i^{\mathrm{mod}}-\Sigma F_i^{\mathrm{obs}}\right)^2,
+  \label{eq:gt_mdd_S}
+\end{equation}
+summed over the 28 steps with more than 0.1~pccSTP of $^3$He. The gas released in the six
+low-signal steps still counts toward the cumulative yields of later steps, and their
+durations toward the heating schedule. Domains are added one at a time, each search
+starting from the $(N-1)$-domain solution, until an added domain no longer changes the fit
+or the domain structure. The Arrhenius and delta plots are not fitted: they follow from
+applying the \citet{fechtigkalbitzer1966} inversion to the model cumulative release, and
+their misfit is reported as a reduced $\chi^2$ over the same 28 steps.
+
+
+\paragraph{Thermal histories.}
+Any thermal history predicts a $^4$He/$^3$He spectrum that is obtained following the procedure
+of \citet{shuster2004}. A summary of this procedure is given in the SI (\S\ref{sec:4he-forward}). Thus, we evaluate 
+how well each thermal history reproduces the measured $^4$He/$^3$He spectrum.
+We compare three types of thermal histories, each with two free parameters. 
+\begin{itemize}
+  \item \textbf{Steady cooling:} the temperature falls linearly from $T_0$ at
+  $t_\mathrm{form}$ to 25\,\textdegree C today. The goethite forms at an elevated
+  temperature, for example from warm fluids at depth, and cools monotonically. Free
+  parameters: $t_\mathrm{form}$ and $T_0$.
+  \item \textbf{Burial and exhumation:} the path passes through $(t_\mathrm{form},T_s)$,
+  $(t_\mathrm{peak},T_\mathrm{max})$, $(50~\mathrm{Ma},T_s)$ and $(0,T_s)$ with
+  $T_s=20$\,\textdegree C. For this model, we assume that the goethite forms at the surface, 
+  is buried and heated to a peak temperature, and is exhumed by the Paleogene, roughly following 
+  the thermal history \citep{gibsonstuwe2000,mitchell1998} interpreted for the region from apatite fission track thermochronometry. We test
+  the two free parameters, $t_\mathrm{peak}$ and $T_\mathrm{max}$, for fixed crystallization ages of 180, 195 and
+  210~Ma.
+  \item \textbf{Isothermal hold:} $T=T_\mathrm{iso}$ from $t_\mathrm{form}$ to the
+  present. Free parameters: $t_\mathrm{form}$ and $T_\mathrm{iso}$.
+\end{itemize}
+Each path is scored against
+\begin{equation}
+  \chi^2=\sum_i\left(\frac{R_i^{\mathrm{mod}}-R_i^{\mathrm{M}}}{\sigma_i}\right)^2,
+  \qquad\sigma_i=\max\!\left[\tfrac12\left(R_i^{\mathrm{UB}}-R_i^{\mathrm{LB}}\right),\,0.02\right],
+  \label{eq:gt_mdd_chi2}
+\end{equation}
+over the \MDDNfit{} steps that have lag-correction bounds and more than 0.1~pccSTP of
+$^3$He. Where M, LB and UB are the central, lower-bound and upper-bound
+bulk-normalized ratios of the bounding method (Table~\ref{tab:ch2-distilled-4he}).
+This analysis fits 24 independent data points; subtracting the two fit parameters gives $\nu=22$ degrees of freedom, which are used to evaluate the reduced $\chi^2$.
+$\chi^2$ is evaluated for these free parameters along regularly spaced grids to produce a likelihood heatmap (Fig.~\ref{fig:ch2-mdd-heatmaps}). 
+The measured He age (130--180~Ma; \citealt{waltenberg2012}) is treated as a hard constraint. The best fit of each family is
+the lowest-$\chi^2$ path with a predicted age in that range, and parameter ranges are those
+of the age-consistent paths within the same $\Delta\chi^2$ of that best fit.
 
 \subsection{SEM Study of Thermally Treated Goethite}\label{sem-study-of-thermally-treated-polycrystalline-goethite}\label{sec:gt_pigment_methods}
 
@@ -394,7 +469,7 @@ provide moisture to slow/prevent dehydration of goethite. All samples
 were held at 300°C for 4-11 hours, and the glass ampoules were broken
 and the goethites were allowed to air dry before all samples were placed
 on carbon tape and carbon coated. These samples were imaged at Caltech
-on Secondary Electron mode by the ZEISS 1550VP Field Emission SEM.
+in secondary electron mode by the ZEISS 1550VP Field Emission SEM.
 Synthetic goethite pigment, a commercial yellow iron-oxide pigment of acicular crystals
 $\sim$1~\textmu m long, was treated in the same way but only with water, without vacuum or
 open-air runs: at least five larger silica glass ampoules, each loaded with pigment and an excess
@@ -411,19 +486,26 @@ reaction was assessed by color (yellow goethite, red hematite) before imaging.
 
 The complete corrected step-heat dataset underlying the diffusivities, delta plots, and Arrhenius regressions discussed below is reported in Tables~\ref{tab:ch2-distilled-3he} and~\ref{tab:ch2-distilled-4he}, including the lower-bound, central, and upper-bound values from the bounding method's permeation-lag correction for $^3$He and $^4$He respectively.
 
+% Larger than the document-wide \scriptsize longtable default (set by
+% \AtBeginEnvironment in dissertation_preamble.tex): \scriptsize is
+% locally redefined, since a bare size command cannot sit between
+% \begin{longtable} and \caption.
+{\let\scriptsize\normalsize
 \begin{landscape}
-\begin{footnotesize}
+\setlength{\tabcolsep}{5pt}
 \begin{longtable}{r r r r r r r r r r}
 \caption{$^3$He step-heat dataset for HT-Win-06-01b under the bounding method: measured and cumulative $^3$He, the upper-bound residual ampoule content ($n_{t,\mathrm{UB}}$), the lower- and upper-bound true step production ($\omega_{\mathrm{LB}}$, $\omega_{\mathrm{UB}}$), and the corresponding lower-bound, central, and upper-bound apparent diffusivities. ``--'' denotes early steps with $\lambda t < 4$, for which bounds could not be determined (see \S\ref{permeation-lag-correction}). Six rows have derived values marked with ``*'': these steps have measured $^3$He $<0.1$ pccSTP and are excluded as low-signal from all plots (Fig.~\ref{fig:ch2-ratio-spectra} and others derived from this dataset).}\label{tab:ch2-distilled-3he}\\
 \toprule
-Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{t,\mathrm{UB}}$ & $\omega_{\mathrm{LB}}$ & $\omega_{\mathrm{UB}}$ & $\ln(D/a^2)_{\mathrm{LB}}$ & $\ln(D/a^2)_{m}$ & $\ln(D/a^2)_{\mathrm{UB}}$ \\
-(°C) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) &  &  &  \\
+Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{t,\mathrm{UB}}$ & \multicolumn{2}{c}{$\omega$ (pccSTP)} & \multicolumn{3}{c}{$\ln(D/a^2)$} \\
+\cmidrule(lr){6-7}\cmidrule(lr){8-10}
+(°C) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & LB & UB & LB & $m$ & UB \\
 \midrule
 \endfirsthead
 \multicolumn{10}{l}{\textit{(continued)}} \\
 \toprule
-Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{t,\mathrm{UB}}$ & $\omega_{\mathrm{LB}}$ & $\omega_{\mathrm{UB}}$ & $\ln(D/a^2)_{\mathrm{LB}}$ & $\ln(D/a^2)_{m}$ & $\ln(D/a^2)_{\mathrm{UB}}$ \\
-(°C) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) & (pccSTP) &  &  &  \\
+Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{t,\mathrm{UB}}$ & \multicolumn{2}{c}{$\omega$ (pccSTP)} & \multicolumn{3}{c}{$\ln(D/a^2)$} \\
+\cmidrule(lr){6-7}\cmidrule(lr){8-10}
+(°C) & (min) & (pccSTP) & (pccSTP) & (pccSTP) & LB & UB & LB & $m$ & UB \\
 \midrule
 \endhead
 \midrule
@@ -434,56 +516,63 @@ Temp & Time & $^3$He meas. & Cum. $^3$He & $n_{t,\mathrm{UB}}$ & $\omega_{\mathr
 170 & 300 & 0.9630 & 0.0000 & 1.1660 & -- & -- & -- & -- & -- \\
 180 & 463 & 0.5442 & 0.9630 & 0.2413 & -- & -- & -- & -- & -- \\
 190 & 550 & 0.5292 & 1.6241 & 0.1538 & -- & -- & -- & -- & -- \\
-200 & 500 & 0.5190 & 2.2112 & 0.1430 & 0.3651 & 0.6619 & -22.158 & -21.775 & -21.503 \\
-210 & 475 & 0.5770 & 2.7646 & 0.1440 & 0.4341 & 0.7210 & -21.715 & -21.406 & -21.160 \\
-220 & 450 & 0.6333 & 3.3799 & 0.1447 & 0.4894 & 0.7781 & -21.345 & -21.068 & -20.843 \\
-230 & 425 & 0.7899 & 4.0551 & 0.1685 & 0.6452 & 0.9584 & -20.823 & -20.604 & -20.392 \\
-225 & 908 & 0.7513 & 4.8885 & 0.0716 & 0.5827 & 0.8229 & -21.516 & -21.246 & -21.148 \\
-215 & 450 & 0.1415 & 5.6842 & 0.0349 & 0.0699 & 0.1764 & -22.836 & -22.124 & -21.900 \\
-205 & 520 & 0.0763 & 5.8529 & 0.0184$^*$ & 0.0413$^*$ & 0.0947$^*$ & -23.479$^*$ & -22.863$^*$ & -22.646$^*$ \\
-195 & 1106 & 0.0670 & 5.9491 & 0.0080$^*$ & 0.0487$^*$ & 0.0750$^*$ & -24.053$^*$ & -23.731$^*$ & -23.618$^*$ \\
-185 & 740 & 0.0227 & 6.0246 & 0.0049$^*$ & 0.0147$^*$ & 0.0276$^*$ & -24.839$^*$ & -24.404$^*$ & -24.207$^*$ \\
-175 & 920 & 0.0180 & 6.0610 & 0.0036$^*$ & 0.0131$^*$ & 0.0216$^*$ & -25.168$^*$ & -24.847$^*$ & -24.665$^*$ \\
-200 & 260 & 0.0224 & 6.0814 & 0.0163$^*$ & 0.0189$^*$ & 0.0388$^*$ & -23.534$^*$ & -23.360$^*$ & -22.812$^*$ \\
-210 & 520 & 0.0812 & 6.1081 & 0.0181$^*$ & 0.0649$^*$ & 0.0993$^*$ & -22.984$^*$ & -22.758$^*$ & -22.554$^*$ \\
-220 & 1167 & 0.5766 & 6.1914 & 0.0447 & 0.5585 & 0.6213 & -21.587 & -21.553 & -21.475 \\
-230 & 370 & 0.3577 & 6.7796 & 0.0903 & 0.3130 & 0.4480 & -20.948 & -20.811 & -20.579 \\
-240 & 320 & 0.6767 & 7.1563 & 0.1776 & 0.5864 & 0.8543 & -20.062 & -19.913 & -19.667 \\
-245 & 250 & 0.5549 & 7.8582 & 0.1888 & 0.3773 & 0.7437 & -20.176 & -19.778 & -19.474 \\
-250 & 210 & 0.6934 & 8.4743 & 0.2786 & 0.5047 & 0.9721 & -19.626 & -19.296 & -18.942 \\
-245 & 270 & 0.4659 & 9.2086 & 0.1413 & 0.1872 & 0.6071 & -20.801 & -19.874 & -19.601 \\
-240 & 320 & 0.2857 & 9.7206 & 0.0749 & 0.1445 & 0.3606 & -21.176 & -20.487 & -20.250 \\
-235 & 370 & 0.2199 & 10.0357 & 0.0517 & 0.1450 & 0.2716 & -21.284 & -20.864 & -20.650 \\
-230 & 420 & 0.1400 & 10.2736 & 0.0303 & 0.0883 & 0.1703 & -21.885 & -21.421 & -21.224 \\
-225 & 652 & 0.1494 & 10.4279 & 0.0206 & 0.1191 & 0.1700 & -22.009 & -21.781 & -21.650 \\
-230 & 500 & 0.1550 & 10.5908 & 0.0271 & 0.1344 & 0.1820 & -21.605 & -21.462 & -21.299 \\
-235 & 450 & 0.1951 & 10.7582 & 0.0361 & 0.1681 & 0.2313 & -21.258 & -21.107 & -20.936 \\
-240 & 400 & 0.2425 & 10.9638 & 0.0483 & 0.2063 & 0.2908 & -20.913 & -20.750 & -20.566 \\
-245 & 350 & 0.3150 & 11.2328 & 0.0690 & 0.2667 & 0.3840 & -20.495 & -20.326 & -20.125 \\
-250 & 300 & 0.3716 & 11.5689 & 0.0939 & 0.3026 & 0.4656 & -20.181 & -19.973 & -19.743 \\
-250 & 300 & 0.3640 & 11.9627 & 0.0899 & 0.2700 & 0.4539 & -20.261 & -19.959 & -19.734 \\
-250 & 300 & 0.3452 & 12.3490 & 0.0852 & 0.2553 & 0.4304 & -20.285 & -19.979 & -19.755 \\
-250 & 10250 & 8.4829 & 12.7167 & 0.0494 & 8.3977 & 8.5324 & -19.989 & -19.976 & -19.969 \\
-240 & 785 & 0.2261 & 21.2187 & 0.0209 & 0.1767 & 0.2470 & -21.026 & -20.778 & -20.689 \\
+200 & 500 & 0.5190 & 2.2112 & 0.1430 & 0.3651 & 0.6619 & -22.16 & -21.77 & -21.50 \\
+210 & 475 & 0.5770 & 2.7646 & 0.1440 & 0.4341 & 0.7210 & -21.71 & -21.41 & -21.16 \\
+220 & 450 & 0.6333 & 3.3799 & 0.1447 & 0.4894 & 0.7781 & -21.34 & -21.07 & -20.84 \\
+230 & 425 & 0.7899 & 4.0551 & 0.1685 & 0.6452 & 0.9584 & -20.82 & -20.60 & -20.39 \\
+225 & 908 & 0.7513 & 4.8885 & 0.0716 & 0.5827 & 0.8229 & -21.52 & -21.25 & -21.15 \\
+215 & 450 & 0.1415 & 5.6842 & 0.0349 & 0.0699 & 0.1764 & -22.84 & -22.12 & -21.90 \\
+205 & 520 & 0.0763 & 5.8529 & 0.0184$^*$ & 0.0413$^*$ & 0.0947$^*$ & -23.48$^*$ & -22.86$^*$ & -22.65$^*$ \\
+195 & 1106 & 0.0670 & 5.9491 & 0.0080$^*$ & 0.0487$^*$ & 0.0750$^*$ & -24.05$^*$ & -23.73$^*$ & -23.62$^*$ \\
+185 & 740 & 0.0227 & 6.0246 & 0.0049$^*$ & 0.0147$^*$ & 0.0276$^*$ & -24.84$^*$ & -24.40$^*$ & -24.21$^*$ \\
+175 & 920 & 0.0180 & 6.0610 & 0.0036$^*$ & 0.0131$^*$ & 0.0216$^*$ & -25.17$^*$ & -24.85$^*$ & -24.66$^*$ \\
+200 & 260 & 0.0224 & 6.0814 & 0.0163$^*$ & 0.0189$^*$ & 0.0388$^*$ & -23.53$^*$ & -23.36$^*$ & -22.81$^*$ \\
+210 & 520 & 0.0812 & 6.1081 & 0.0181$^*$ & 0.0649$^*$ & 0.0993$^*$ & -22.98$^*$ & -22.76$^*$ & -22.55$^*$ \\
+220 & 1167 & 0.5766 & 6.1914 & 0.0447 & 0.5585 & 0.6213 & -21.59 & -21.55 & -21.48 \\
+230 & 370 & 0.3577 & 6.7796 & 0.0903 & 0.3130 & 0.4480 & -20.95 & -20.81 & -20.58 \\
+240 & 320 & 0.6767 & 7.1563 & 0.1776 & 0.5864 & 0.8543 & -20.06 & -19.91 & -19.67 \\
+245 & 250 & 0.5549 & 7.8582 & 0.1888 & 0.3773 & 0.7437 & -20.18 & -19.78 & -19.47 \\
+250 & 210 & 0.6934 & 8.4743 & 0.2786 & 0.5047 & 0.9721 & -19.63 & -19.30 & -18.94 \\
+245 & 270 & 0.4659 & 9.2086 & 0.1413 & 0.1872 & 0.6071 & -20.80 & -19.87 & -19.60 \\
+240 & 320 & 0.2857 & 9.7206 & 0.0749 & 0.1445 & 0.3606 & -21.18 & -20.49 & -20.25 \\
+235 & 370 & 0.2199 & 10.0357 & 0.0517 & 0.1450 & 0.2716 & -21.28 & -20.86 & -20.65 \\
+230 & 420 & 0.1400 & 10.2736 & 0.0303 & 0.0883 & 0.1703 & -21.89 & -21.42 & -21.22 \\
+225 & 652 & 0.1494 & 10.4279 & 0.0206 & 0.1191 & 0.1700 & -22.01 & -21.78 & -21.65 \\
+230 & 500 & 0.1550 & 10.5908 & 0.0271 & 0.1344 & 0.1820 & -21.61 & -21.46 & -21.30 \\
+235 & 450 & 0.1951 & 10.7582 & 0.0361 & 0.1681 & 0.2313 & -21.26 & -21.11 & -20.94 \\
+240 & 400 & 0.2425 & 10.9638 & 0.0483 & 0.2063 & 0.2908 & -20.91 & -20.75 & -20.57 \\
+245 & 350 & 0.3150 & 11.2328 & 0.0690 & 0.2667 & 0.3840 & -20.50 & -20.33 & -20.12 \\
+250 & 300 & 0.3716 & 11.5689 & 0.0939 & 0.3026 & 0.4656 & -20.18 & -19.97 & -19.74 \\
+250 & 300 & 0.3640 & 11.9627 & 0.0899 & 0.2700 & 0.4539 & -20.26 & -19.96 & -19.73 \\
+250 & 300 & 0.3452 & 12.3490 & 0.0852 & 0.2553 & 0.4304 & -20.29 & -19.98 & -19.75 \\
+250 & 10250 & 8.4829 & 12.7167 & 0.0494 & 8.3977 & 8.5324 & -19.99 & -19.98 & -19.97 \\
+240 & 785 & 0.2261 & 21.2187 & 0.0209 & 0.1767 & 0.2470 & -21.03 & -20.78 & -20.69 \\
 \midrule
 \textbf{Total} &  &  & 146.1483 &  &  &  &  &  &  \\
 \end{longtable}
-\end{footnotesize}
 \end{landscape}
+}
 
+% Larger than the document-wide \scriptsize longtable default (set by
+% \AtBeginEnvironment in dissertation_preamble.tex): \scriptsize is
+% locally redefined, since a bare size command cannot sit between
+% \begin{longtable} and \caption.
+{\let\scriptsize\normalsize
 \begin{landscape}
-\begin{footnotesize}
+\setlength{\tabcolsep}{5pt}
 \begin{longtable}{r r r r r r r r r r r r r}
 \caption{$^4$He step-heat dataset and absolute $^4$He/$^3$He ratios for HT-Win-06-01b under the bounding method, structured as in Table~\ref{tab:ch2-distilled-3he}. ``--'' denotes steps for which bounds could not be determined. The Total row reports the bulk (total-yield) $^4$He/$^3$He ratio, i.e. the normalizing value used to bulk-normalize these ratios for the plot in Fig.~\ref{fig:ch2-ratio-spectra}. Six rows have derived values marked with ``*'': these steps have measured $^3$He $<0.1$ pccSTP and are excluded as low-signal from all plots, as in Table~\ref{tab:ch2-distilled-3he}.}\label{tab:ch2-distilled-4he}\\
 \toprule
-Temp & Time & $^4$He meas. & Cum. $^4$He & $n_{t,\mathrm{UB}}$ & $\omega_{\mathrm{LB}}$ & $\omega_{\mathrm{UB}}$ & $\ln(D/a^2)_{\mathrm{LB}}$ & $\ln(D/a^2)_{m}$ & $\ln(D/a^2)_{\mathrm{UB}}$ & $(^4\mathrm{He}/^3\mathrm{He})_{\mathrm{LB}}$ & $(^4\mathrm{He}/^3\mathrm{He})_{m}$ & $(^4\mathrm{He}/^3\mathrm{He})_{\mathrm{UB}}$ \\
-(°C) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) &  &  &  &  &  &  \\
+Temp & Time & $^4$He meas. & Cum. $^4$He & $n_{t,\mathrm{UB}}$ & \multicolumn{2}{c}{$\omega$ (nccSTP)} & \multicolumn{3}{c}{$\ln(D/a^2)$} & \multicolumn{3}{c}{$^4\mathrm{He}/^3\mathrm{He}$} \\
+\cmidrule(lr){6-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
+(°C) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & LB & UB & LB & $m$ & UB & LB & $m$ & UB \\
 \midrule
 \endfirsthead
 \multicolumn{13}{l}{\textit{(continued)}} \\
 \toprule
-Temp & Time & $^4$He meas. & Cum. $^4$He & $n_{t,\mathrm{UB}}$ & $\omega_{\mathrm{LB}}$ & $\omega_{\mathrm{UB}}$ & $\ln(D/a^2)_{\mathrm{LB}}$ & $\ln(D/a^2)_{m}$ & $\ln(D/a^2)_{\mathrm{UB}}$ & $(^4\mathrm{He}/^3\mathrm{He})_{\mathrm{LB}}$ & $(^4\mathrm{He}/^3\mathrm{He})_{m}$ & $(^4\mathrm{He}/^3\mathrm{He})_{\mathrm{UB}}$ \\
-(°C) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) & (nccSTP) &  &  &  &  &  &  \\
+Temp & Time & $^4$He meas. & Cum. $^4$He & $n_{t,\mathrm{UB}}$ & \multicolumn{2}{c}{$\omega$ (nccSTP)} & \multicolumn{3}{c}{$\ln(D/a^2)$} & \multicolumn{3}{c}{$^4\mathrm{He}/^3\mathrm{He}$} \\
+\cmidrule(lr){6-7}\cmidrule(lr){8-10}\cmidrule(lr){11-13}
+(°C) & (min) & (nccSTP) & (nccSTP) & (nccSTP) & LB & UB & LB & $m$ & UB & LB & $m$ & UB \\
 \midrule
 \endhead
 \midrule
@@ -494,50 +583,50 @@ Temp & Time & $^4$He meas. & Cum. $^4$He & $n_{t,\mathrm{UB}}$ & $\omega_{\mathr
 170 & 300 & 0.0192 & 0.0000 & 0.0280 & -- & -- & -- & -- & -- & -- & -- & -- \\
 180 & 463 & 0.0305 & 0.0192 & 0.0152 & -- & -- & -- & -- & -- & -- & -- & -- \\
 190 & 550 & 0.0558 & 0.0660 & 0.0179 & -- & -- & -- & -- & -- & -- & -- & -- \\
-200 & 500 & 0.1024 & 0.1375 & 0.0313 & 0.0845 & 0.1337 & -26.207 & -25.965 & -25.619 & -- & 197.3 & -- \\
-210 & 475 & 0.1460 & 0.2500 & 0.0404 & 0.1147 & 0.1864 & -25.314 & -25.022 & -24.717 & 248.2 & 253.0 & 268.8 \\
-220 & 450 & 0.2091 & 0.4055 & 0.0530 & 0.1686 & 0.2620 & -24.407 & -24.152 & -23.876 & 326.3 & 330.1 & 349.3 \\
-230 & 425 & 0.3243 & 0.6319 & 0.0760 & 0.2714 & 0.4004 & -23.425 & -23.213 & -22.956 & 403.7 & 410.6 & 432.3 \\
-225 & 908 & 0.3483 & 0.9799 & 0.0363 & 0.2722 & 0.3845 & -23.807 & -23.527 & -23.413 & 442.6 & 463.6 & 474.4 \\
-215 & 450 & 0.0716 & 1.3487 & 0.0196 & 0.0353 & 0.0912 & -24.945 & -24.225 & -23.976 & 429.1 & 505.9 & 537.1 \\
-205 & 520 & 0.0385 & 1.4359 & 0.0103$^*$ & 0.0189$^*$ & 0.0487$^*$ & -25.661$^*$ & -24.942$^*$ & -24.701$^*$ & 392.4$^*$ & 504.2$^*$ & 534.6$^*$ \\
-195 & 1106 & 0.0336 & 1.4912 & 0.0043$^*$ & 0.0233$^*$ & 0.0379$^*$ & -26.165$^*$ & -25.796$^*$ & -25.675$^*$ & 446.7$^*$ & 500.9$^*$ & 515.3$^*$ \\
-185 & 740 & 0.0079 & 1.5467 & 0.0019$^*$ & 0.0037$^*$ & 0.0098$^*$ & -27.586$^*$ & -26.808$^*$ & -26.592$^*$ & 224.7$^*$ & 350.1$^*$ & 369.1$^*$ \\
-175 & 920 & 0.0152 & 1.6020 & 0.0033$^*$ & 0.0133$^*$ & 0.0185$^*$ & -26.475$^*$ & -26.340$^*$ & -26.141$^*$ & 843.2$^*$ & 843.2$^*$ & 982.0$^*$ \\
-200 & 260 & 0.0107 & 1.6351 & 0.0091$^*$ & 0.0073$^*$ & 0.0198$^*$ & -25.787$^*$ & -25.411$^*$ & -24.791$^*$ & 375.6$^*$ & 475.5$^*$ & 554.7$^*$ \\
-210 & 520 & 0.2166 & 1.6547 & 0.0535$^*$ & 0.2075$^*$ & 0.2701$^*$ & -23.067$^*$ & -23.021$^*$ & -22.786$^*$ & 2667.1$^*$ & 2667.1$^*$ & 3103.8$^*$ \\
-220 & 1167 & 0.3187 & 1.8714 & 0.0269 & 0.2652 & 0.3456 & -23.499 & -23.302 & -23.214 & 471.7 & 552.7 & 563.2 \\
-230 & 370 & 0.2113 & 2.6766 & 0.0590 & 0.1844 & 0.2703 & -22.391 & -22.249 & -21.993 & 575.1 & 590.8 & 628.0 \\
-240 & 320 & 0.4286 & 3.1616 & 0.1243 & 0.3697 & 0.5529 & -21.360 & -21.203 & -20.931 & 612.1 & 633.4 & 674.8 \\
-245 & 250 & 0.3988 & 3.6430 & 0.1521 & 0.2746 & 0.5510 & -21.289 & -20.899 & -20.556 & 665.9 & 718.7 & 778.4 \\
-250 & 210 & 0.4440 & 4.2359 & 0.2020 & 0.2918 & 0.6460 & -20.906 & -20.469 & -20.072 & 541.7 & 640.2 & 702.8 \\
-245 & 270 & 0.3123 & 4.7263 & 0.1053 & 0.1103 & 0.4176 & -22.043 & -20.981 & -20.680 & 469.1 & 670.4 & 721.4 \\
-240 & 320 & 0.1927 & 5.0846 & 0.0559 & 0.0874 & 0.2485 & -22.376 & -21.575 & -21.315 & 505.5 & 674.3 & 718.4 \\
-235 & 370 & 0.1517 & 5.3031 & 0.0393 & 0.0958 & 0.1910 & -22.386 & -21.922 & -21.688 & 599.8 & 689.6 & 729.9 \\
-230 & 420 & 0.0991 & 5.4714 & 0.0236 & 0.0598 & 0.1227 & -22.956 & -22.448 & -22.232 & 608.3 & 707.9 & 745.9 \\
-225 & 652 & 0.0995 & 5.5835 & 0.0151 & 0.0760 & 0.1146 & -23.136 & -22.863 & -22.721 & 608.2 & 666.5 & 689.2 \\
-230 & 500 & 0.1051 & 5.6969 & 0.0202 & 0.0900 & 0.1253 & -22.679 & -22.523 & -22.345 & 652.1 & 678.1 & 707.5 \\
-235 & 450 & 0.1369 & 5.8251 & 0.0279 & 0.1167 & 0.1648 & -22.290 & -22.128 & -21.940 & 674.6 & 701.7 & 734.0 \\
-240 & 400 & 0.1781 & 5.9762 & 0.0390 & 0.1502 & 0.2171 & -21.892 & -21.719 & -21.518 & 705.1 & 734.6 & 770.9 \\
-245 & 350 & 0.2305 & 6.1807 & 0.0556 & 0.1915 & 0.2861 & -21.479 & -21.290 & -21.070 & 694.4 & 731.9 & 771.7 \\
-250 & 300 & 0.2777 & 6.4385 & 0.0758 & 0.2221 & 0.3535 & -21.134 & -20.906 & -20.659 & 703.3 & 747.3 & 793.3 \\
-250 & 300 & 0.2654 & 6.7374 & 0.0725 & 0.1896 & 0.3379 & -21.250 & -20.908 & -20.661 & 653.7 & 729.2 & 774.1 \\
-250 & 300 & 0.2489 & 7.0231 & 0.0680 & 0.1764 & 0.3169 & -21.282 & -20.932 & -20.647 & 646.8 & 721.0 & 765.4 \\
-250 & 10250 & 6.8042 & 7.2901 & 0.0430 & 6.7362 & 6.8472 & -20.704 & -20.691 & -20.682 & 800.6 & 802.1 & 803.3 \\
-240 & 785 & 0.1853 & 14.1156 & 0.0187 & 0.1423 & 0.2040 & -21.688 & -21.422 & -21.325 & 770.5 & 819.4 & 838.0 \\
+200 & 500 & 0.1024 & 0.1375 & 0.0313 & 0.0845 & 0.1337 & -26.21 & -25.96 & -25.62 & -- & 197 & -- \\
+210 & 475 & 0.1460 & 0.2500 & 0.0404 & 0.1147 & 0.1864 & -25.31 & -25.02 & -24.72 & 248 & 253 & 269 \\
+220 & 450 & 0.2091 & 0.4055 & 0.0530 & 0.1686 & 0.2620 & -24.41 & -24.15 & -23.88 & 326 & 330 & 349 \\
+230 & 425 & 0.3243 & 0.6319 & 0.0760 & 0.2714 & 0.4004 & -23.43 & -23.21 & -22.96 & 404 & 411 & 432 \\
+225 & 908 & 0.3483 & 0.9799 & 0.0363 & 0.2722 & 0.3845 & -23.81 & -23.53 & -23.41 & 443 & 464 & 474 \\
+215 & 450 & 0.0716 & 1.3487 & 0.0196 & 0.0353 & 0.0912 & -24.95 & -24.23 & -23.98 & 429 & 506 & 537 \\
+205 & 520 & 0.0385 & 1.4359 & 0.0103$^*$ & 0.0189$^*$ & 0.0487$^*$ & -25.66$^*$ & -24.94$^*$ & -24.70$^*$ & 392$^*$ & 504$^*$ & 535$^*$ \\
+195 & 1106 & 0.0336 & 1.4912 & 0.0043$^*$ & 0.0233$^*$ & 0.0379$^*$ & -26.16$^*$ & -25.80$^*$ & -25.68$^*$ & 447$^*$ & 501$^*$ & 515$^*$ \\
+185 & 740 & 0.0079 & 1.5467 & 0.0019$^*$ & 0.0037$^*$ & 0.0098$^*$ & -27.59$^*$ & -26.81$^*$ & -26.59$^*$ & 225$^*$ & 350$^*$ & 369$^*$ \\
+175 & 920 & 0.0152 & 1.6020 & 0.0033$^*$ & 0.0133$^*$ & 0.0185$^*$ & -26.48$^*$ & -26.34$^*$ & -26.14$^*$ & 843$^*$ & 843$^*$ & 982$^*$ \\
+200 & 260 & 0.0107 & 1.6351 & 0.0091$^*$ & 0.0073$^*$ & 0.0198$^*$ & -25.79$^*$ & -25.41$^*$ & -24.79$^*$ & 376$^*$ & 476$^*$ & 555$^*$ \\
+210 & 520 & 0.2166 & 1.6547 & 0.0535$^*$ & 0.2075$^*$ & 0.2701$^*$ & -23.07$^*$ & -23.02$^*$ & -22.79$^*$ & 2667$^*$ & 2667$^*$ & 3104$^*$ \\
+220 & 1167 & 0.3187 & 1.8714 & 0.0269 & 0.2652 & 0.3456 & -23.50 & -23.30 & -23.21 & 472 & 553 & 563 \\
+230 & 370 & 0.2113 & 2.6766 & 0.0590 & 0.1844 & 0.2703 & -22.39 & -22.25 & -21.99 & 575 & 591 & 628 \\
+240 & 320 & 0.4286 & 3.1616 & 0.1243 & 0.3697 & 0.5529 & -21.36 & -21.20 & -20.93 & 612 & 633 & 675 \\
+245 & 250 & 0.3988 & 3.6430 & 0.1521 & 0.2746 & 0.5510 & -21.29 & -20.90 & -20.56 & 666 & 719 & 778 \\
+250 & 210 & 0.4440 & 4.2359 & 0.2020 & 0.2918 & 0.6460 & -20.91 & -20.47 & -20.07 & 542 & 640 & 703 \\
+245 & 270 & 0.3123 & 4.7263 & 0.1053 & 0.1103 & 0.4176 & -22.04 & -20.98 & -20.68 & 469 & 670 & 721 \\
+240 & 320 & 0.1927 & 5.0846 & 0.0559 & 0.0874 & 0.2485 & -22.38 & -21.57 & -21.32 & 506 & 674 & 718 \\
+235 & 370 & 0.1517 & 5.3031 & 0.0393 & 0.0958 & 0.1910 & -22.39 & -21.92 & -21.69 & 600 & 690 & 730 \\
+230 & 420 & 0.0991 & 5.4714 & 0.0236 & 0.0598 & 0.1227 & -22.96 & -22.45 & -22.23 & 608 & 708 & 746 \\
+225 & 652 & 0.0995 & 5.5835 & 0.0151 & 0.0760 & 0.1146 & -23.14 & -22.86 & -22.72 & 608 & 666 & 689 \\
+230 & 500 & 0.1051 & 5.6969 & 0.0202 & 0.0900 & 0.1253 & -22.68 & -22.52 & -22.34 & 652 & 678 & 708 \\
+235 & 450 & 0.1369 & 5.8251 & 0.0279 & 0.1167 & 0.1648 & -22.29 & -22.13 & -21.94 & 675 & 702 & 734 \\
+240 & 400 & 0.1781 & 5.9762 & 0.0390 & 0.1502 & 0.2171 & -21.89 & -21.72 & -21.52 & 705 & 735 & 771 \\
+245 & 350 & 0.2305 & 6.1807 & 0.0556 & 0.1915 & 0.2861 & -21.48 & -21.29 & -21.07 & 694 & 732 & 772 \\
+250 & 300 & 0.2777 & 6.4385 & 0.0758 & 0.2221 & 0.3535 & -21.13 & -20.91 & -20.66 & 703 & 747 & 793 \\
+250 & 300 & 0.2654 & 6.7374 & 0.0725 & 0.1896 & 0.3379 & -21.25 & -20.91 & -20.66 & 654 & 729 & 774 \\
+250 & 300 & 0.2489 & 7.0231 & 0.0680 & 0.1764 & 0.3169 & -21.28 & -20.93 & -20.65 & 647 & 721 & 765 \\
+250 & 10250 & 6.8042 & 7.2901 & 0.0430 & 6.7362 & 6.8472 & -20.70 & -20.69 & -20.68 & 801 & 802 & 803 \\
+240 & 785 & 0.1853 & 14.1156 & 0.0187 & 0.1423 & 0.2040 & -21.69 & -21.42 & -21.32 & 770 & 819 & 838 \\
 \midrule
-\textbf{Total} &  &  & 145.8145 &  &  &  &  &  &  &  & 997.7 &  \\
+\textbf{Total} &  &  & 145.8145 &  &  &  &  &  &  &  & 998 &  \\
 \end{longtable}
-\end{footnotesize}
 \end{landscape}
+}
 
 The diffusivities determined from the step heat 3He and 4He
 yields for HT-Win-06-01b are always significantly lower than the
 diffusivities determined from step heat experiments on the same sample
-in vacuum, and evolutions that are distinct from those determined from
+in vacuum, and follow evolutions that are distinct from those determined from
 the vacuum experiments. The Arrhenius plot of the 3He diffusivities
-initially follow a declining concave-up trend until \textasciitilde3.5\%
-cumulative 3He yield, then slowly decreasing in sub-parallel arrays
+initially follows a declining concave-up trend until \textasciitilde3.5\%
+cumulative 3He yield, then slowly decreases in sub-parallel arrays
 during prograde and retrograde heating cycles from 3.5-7\% cumulative
 3He yields (Fig.~\ref{fig:ch2-arrhenius-zoom}, Fig.~\ref{fig:ch2-delta-zoom}). The Arrhenius plot of the 4He diffusivities
 differs in shape: it is concave-down to about 5\% cumulative 3He yield,
@@ -556,7 +645,7 @@ intercept (D\textsubscript{0}/a\textsuperscript{2}).
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{winsor_goethite_Diffusivities_Arrhenius_Zoomin.pdf}
-\caption{Linear regression of the last \ChTwoN\ measurements of 3He diffusivities in HT-Win-06-01b defining the ``Stage 1'' reference line. Apparent diffusivities under hydrothermal conditions are approximately seven natural log units lower than in vacuum. A diffusion domain corresponding to the Stage 1 reference line has a closure temperature of \ChTwoTc$\pm$\ChTwoTcErr\textdegree C assuming a cooling rate of 10\textdegree C/Ma. Apparent diffusivities calculated from 4He step heats are sometimes within error of those calculated for 3He, however they are occasionally resolved at the 2$\sigma$ level and are about a single log unit lower than apparent diffusivities calculated for 3He after a cumulative fractional yield of 14\% 3He.}
+\caption{Linear regression of the last \ChTwoN\ measurements of 3He diffusivities in HT-Win-06-01b defining the ``Stage 1'' reference line. Apparent diffusivities under hydrothermal conditions are approximately seven natural log units lower than in vacuum. A diffusion domain corresponding to the Stage 1 reference line has a closure temperature of \ChTwoTc$\pm$\ChTwoTcErr\textdegree C assuming a cooling rate of 10\textdegree C/Ma. Apparent diffusivities calculated from 4He step heats are sometimes within error of those calculated for 3He; however, they are occasionally resolved at the 2$\sigma$ level and are about a single log unit lower than apparent diffusivities calculated for 3He after a cumulative fractional yield of 14\% 3He.}
 \label{fig:ch2-arrhenius-zoom}
 \end{figure}
 
@@ -570,7 +659,7 @@ high-error, scattered diffusivities which are omitted for clarity.
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{DeltasWinsorGTzoomin_VacuumHydrothermal.pdf}
-\caption{Delta plot similar to those presented in \citep{farley2018}, or r/r0 plots in \citet{lovera1991} and \citet{farleyflowers2012}. Delta plots are the difference between apparent log diffusivities and a reference line; they are designed to remove the temperature dependence of the dominant process of helium migration to reveal how apparent diffusivities evolve as an experiment proceeds. Six measurements from the water-saturated experiment are omitted for clarity due to low signals and high errors. For visual continuity, the gap left behind is bridged and no uncertainty is shown. 3He monotonically decreases until settling on the reference line from 7--15\% 3He fractional yield. 4He diffusivities and delta values are generally highly uncertain but initially show an increase in delta values that settles to a slow increase or plateau about one log unit below the 3He reference line by a 3He fractional yield of 5\%, which is consistent with diffusive loss of radiogenic 4He in variably retentive domains. Apparent diffusivities for helium in Win-06-01b in hydrothermal conditions are up to 7 log units lower than the same sample in vacuum.}
+\caption{Delta plot similar to those presented in \citet{farley2018}, or r/r0 plots in \citet{lovera1991} and \citet{farleyflowers2012}. Delta plots are the difference between apparent log diffusivities and a reference line; they are designed to remove the temperature dependence of the dominant process of helium migration to reveal how apparent diffusivities evolve as an experiment proceeds. Six measurements from the water-saturated experiment are omitted for clarity due to low signals and high errors. For visual continuity, the gap left behind is bridged and no uncertainty is shown. 3He monotonically decreases until settling on the reference line from 7--15\% 3He fractional yield. 4He diffusivities and delta values are generally highly uncertain but initially show an increase in delta values that settles to a slow increase or plateau about one log unit below the 3He reference line by a 3He fractional yield of 5\%, which is consistent with diffusive loss of radiogenic 4He in variably retentive domains. Apparent diffusivities for helium in Win-06-01b in hydrothermal conditions are up to 7 log units lower than the same sample in vacuum.}
 \label{fig:ch2-delta-zoom}
 \end{figure}
 
@@ -627,7 +716,7 @@ Sequences of isothermal steps can be particularly powerful in discriminating fir
 Diffusion slows quickly as the diffusion front moves inward, depleting the grain
 rims of helium, whereas the rate of first-order conversion slows less for similar yields. We harnessed the principle to conduct a sensitive test
 by performing a series of 4 consecutive, long isothermal steps at 250~$^\circ$C at the end of the water-saturated experiment: three consecutive 5-hour steps and one 170.8-hour step. Using the first three
-5~h steps at 250~$^\circ$C, we invert for both kinetic rate constants and apparent diffusivities, then use each model to project the yield for 170.8~h step.
+5~h steps at 250~$^\circ$C, we invert for both kinetic rate constants and apparent diffusivities, then use each model to project the yield for the 170.8~h step.
 
 Both the first-order and diffusion models yield reproducible results for the three 5-hour calibration steps (Fig.~\ref{fig:gt_hold}), but their 
 projections sharply diverge for the long step. Diffusion projects a final fractional cumulative yield of $F = 0.149$ against 
@@ -662,10 +751,10 @@ retentive domains; it corresponds to ``Stage 1'' helium release of \citet{farley
 The kinetic reduction yields simpler, more interpretable Arrhenius plots for the vacuum experiments than the diffusion inversion does. The kinetic inversion collapses the
 prograde steps at the beginning of the vacuum experiments onto a single line that the diffusion reduction instead shows as an irreversible 
 increase in diffusivity (Fig.~\ref{fig:gt_arrhenius}). This initial helium release is most easily read as 
-a diffusive-related loss from a broad distribution of small, poorly retentive domains in the goethite. 
+a diffusion-related loss from a broad distribution of small, poorly retentive domains in the goethite. 
 The Arrhenius plot of the kinetic reduction makes it clear that helium release from the initial steps is in 
 excess of the rate of dehydroxylation, which is not obvious from the Arrhenius plot produced with the diffusion reduction. 
-This shift in the dominance from diffusive loss to dehydroxylation-related loss offers a clear explanation for the change in behavior between "Stage 1" and "Stage 2"
+This shift in the dominance from diffusive loss to dehydroxylation-related loss offers a clear explanation for the change in behavior between ``Stage 1'' and ``Stage 2''
 in vacuum step heat experiments described by \citet{farley2024}.
 
 Thermogravimetric studies of goethite dehydroxylation report somewhat higher apparent activation
@@ -685,7 +774,7 @@ we argue below that the helium loss in the water-saturated experiment is control
 
 Fig.~\ref{fig:gt_arrhenius} compares the kinetic and diffusion inversions of the step heat data.
 These plots show the opposite trend for the vacuum and hydrothermal experiments: the hydrothermal experiment collapses into a simpler, coherent
-linear array with the diffusivity reduction, whereas the kinetic inversion of the same data record a continuously declining $k$ for any given temperature as 
+linear array with the diffusivity reduction, whereas the kinetic inversion of the same data records a continuously declining $k$ for any given temperature as 
 the experiment proceeds, forming a zig-zag pattern. This is the expected behavior for a second-order (diffusion-controlled) process for which helium loss 
 slows more strongly than a first-order process as the experiment proceeds. Fig.~\ref{fig:gt_arrhenius} shows that helium loss 
 is first-order for vacuum experiments and second order for the water-saturated experiment. Section~\ref{sec:gt_nucleation} shows 
@@ -710,15 +799,77 @@ in relation to a temperature-dependent reference line, as in delta or r/r0 plots
 retrieved by regression in this work, the homogeneously distributed 3He
 step heat data follow the expected MDD systematics and monotonically
 decrease within a delta plot (Fig.~\ref{fig:ch2-delta-zoom}), which is consistent with
-volume diffusion in a MDD system. 
+volume diffusion in an MDD system. 
 
 The strong plateau in the delta plot of the water-saturated goethite experiment and the statistically robust regression
 over a wide range of fractional cumulative 3He yield (from 7-15\% $\Sigma F_{3\mathrm{He}}$
-with an R\textsuperscript{2} of \ChTwoRtwo) suggests that the frequency
+with an R\textsuperscript{2} of \ChTwoRtwo) suggest that the frequency
 factor obtained by the regression may be dominated by a single
 diffusion domain for $F_c \ge 7\%$ rather than a mix of diffusion domains as is most
 often observed in the apparent diffusivities for polycrystalline
 hematite \citep{farley2018}.
+
+A multiple diffusion domain inversion of the $^3$He release (\S\ref{sec:gt_mdd_methods})
+tests this claim (Table~\ref{tab:ch2-mdd-domains}; Fig.~\ref{fig:ch2-mdd-domains}).
+A single domain cannot fit the release (Arrhenius $\chi^2_\nu=27$), and two domains capture
+the high early diffusivities but leave a poor Arrhenius fit ($\chi^2_\nu=3.3$). Three
+domains reduce the yield misfit by more than half ($\chi^2_\nu=1.08$). With four, the
+smallest domain splits in two and the fit improves slightly further ($\chi^2_\nu=1.00$).
+Every domain added beyond four coincides in size with the dominant domain and leaves the
+fit unchanged. We therefore adopt four domains as a complete description of the $^3$He data:
+\begin{itemize}
+  \item 0.57\% of the $^3$He at $r/r_0=6.8\times10^{-4}$;
+  \item 0.66\% at $r/r_0=2.9\times10^{-3}$;
+  \item 1.5\% at $r/r_0=0.031$;
+  \item 97.2\% at $r/r_0=1.12$.
+\end{itemize}
+The three small domains, holding 2.8\% of the $^3$He in total, are fully degassed during the
+experiment and account for the high early diffusivities and the gradual approach of the
+delta plot to the Stage~1 line (Fig.~\ref{fig:ch2-mdd-arrh-delta}). The dominant domain releases
+12\% of its $^3$He during the experiment and diffuses at 0.80 times the Stage~1 rate. The
+Stage~1 line is therefore a slightly fast description of the dominant domain, because the
+bulk-inverted diffusivities on which it was regressed still carry a small contribution from
+the fast domains. The four-domain model reproduces the Arrhenius array, including its
+retrograde segments, and the delta plot, although neither is fitted directly. Fits for
+$N=1$--5 are shown in the SI (Fig.~\ref{fig:ch2-si-mdd-3he-fits}).
+
+\begin{table}[htbp]
+\centering
+\caption{Multiple diffusion domain fits to the $^3$He release of HT-Win-06-01b ($N$ domains,
+$k=2N-1$ parameters). RMS is the yield misfit ($\times10^{-4}$, fraction of total $^3$He)
+over the 28 steps above the signal threshold. ``Fast'' is the $^3$He fraction in domains
+with $r/r_0<0.1$; $f_\mathrm{main}$ and $r_\mathrm{main}/r_0$ are the fraction and size of
+the largest-fraction domain. For $N\ge5$, the dominant domain is split among several
+domains of identical size.}
+\label{tab:ch2-mdd-domains}
+\begin{tabular}{rrrrrrr}
+\toprule
+$N$ & $k$ & RMS & Arrh.\ $\chi^2_\nu$ & fast (\%) & $f_\mathrm{main}$ (\%) & $r_\mathrm{main}/r_0$\\
+\midrule
+\MDDDomainTableRows
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.7\textwidth]{mdd_free/absolute/chapter/ch2_mdd_domains.pdf}
+\caption{Domain spectra of the best-fitting multiple diffusion domain models for $N=1$--10.
+Symbol area scales with the square root of the $^3$He fraction; the dashed line marks the
+Stage~1 reference domain. The three small domains are unchanged from $N=4$ onward; domains
+added beyond $N=4$ coincide in size with the dominant domain.}
+\label{fig:ch2-mdd-domains}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{mdd_free/absolute/chapter/ch2_mdd_arrh_delta_N4.pdf}
+\caption{(a) Arrhenius plot and (b) delta plot (departure from the Stage~1 line) of the
+measured $^3$He diffusivities of HT-Win-06-01b, with the values implied by the four-domain
+fit to the $^3$He yields. Neither plot is fitted directly. The six low-signal steps are
+omitted.}
+\label{fig:ch2-mdd-arrh-delta}
+\end{figure}
 
 \subsection{Thermodynamic Model of Goethite Dehydroxylation}\label{sec:gt_thermo_methods}\label{sec:gt_thermo}
 
@@ -799,7 +950,7 @@ completely. If water lowers the conversion rate by a factor $R = k_{\mathrm{sat}
 then even if all of the observed $^3$He release came from conversion
 ($\alpha = F/(1-\phi) = \ChTwoKinHTFEnd/\ChTwoKinOneMinusPhi = \ChTwoKinHTAlphaObs$), $R$ can be at most
 $10^{\ChTwoKinLogRObs}$. The release is second order volume diffusion (\S\ref{sec:gt_hydro}). Limiting 
-dehydroxylation fraction to below 1\%, requires $R \le 10^{\ChTwoKinLogRDetect}$. Here we show that classical nucleation
+the dehydroxylation fraction to below 1\% requires $R \le 10^{\ChTwoKinLogRDetect}$. Here we show that classical nucleation
 theory, calibrated on the vacuum data alone, predicts an even stronger rate suppression under water-saturated conditions.
 
 \textit{Nucleation barrier.} In classical nucleation theory \citep{gibbs1878,volmer1926,becker1935},
@@ -885,7 +1036,7 @@ sample's microstructure and cannot be transferred to other goethites.
 \subsection{Goethite Dehydration and/or Recrystallization During Helium Step Heat Experiments}\label{goethite-dehydration-andor-recrystallization-during-hydrothermal-experiments}
 
 The aim of helium step heat experiments is to characterize the
-mechanisms and rates helium loss in nature to aid in the interpretation
+mechanisms and rates of helium loss in nature to aid in the interpretation
 of geochronologic and helium geochemical data. The results of this
 experiment are encouraging in that they differ remarkably from
 experiments on the same samples in vacuum that are primarily
@@ -898,11 +1049,11 @@ of these processes affected the helium release, then the apparent diffusivities 
 diffusive helium loss in goethite in nature.
 
 The helium step heat data at water-saturated conditions reported here are better fit with a diffusion model than with a
-conversion model (\S\ref{sec:gt_hydro}).The kinetic analysis of \S\ref{sec:gt_vacuum}, and the nucleation analysis of
+conversion model (\S\ref{sec:gt_hydro}). The kinetic analysis of \S\ref{sec:gt_vacuum} and the nucleation analysis of
 \S\ref{sec:gt_nucleation} indicate that topotactic dehydroxylation has a nucleation barrier that is insurmountable for
 experimental conditions and timescales; however, this model has no bearing on fluid-mediated dehydroxylation. 
 Equilibrium thermodynamics predict that goethite is unstable with respect to hematite and water at
-these conditions \citep{majzlan2003} (\S\ref{sec:gt_thermo}) and therefore dehydroxlation of 
+these conditions \citep{majzlan2003} (\S\ref{sec:gt_thermo}) and therefore dehydroxylation of goethite
 in the experiment cannot be outright excluded. 
 
 The process of recrystallization is another potential complication in
@@ -941,7 +1092,7 @@ reacted and unreacted material in isolated patches. In the mixed ampoules, the r
 isolated from one another, separated by gas bubbles. Unreacted pigment retains its original acicular habit
 (Fig.~\ref{fig:gt_pigment}b). The reacted hematite product is instead composed of equant to platy crystals
 $\sim$0.5--1~\textmu m across (Fig.~\ref{fig:gt_pigment}a). The change of shape rules out pseudomorphic dehydroxylation
-like that observed to occur in goethite heated in vacuum (Figs.~\ref{fig:ch2-sem-buffered},~\ref{fig:ch2-sem-control-vacuum}, and~\ref{fig:ch2-sem-vacuum-interior}) indicating dissolution of
+like that observed to occur in goethite heated in vacuum (Figs.~\ref{fig:ch2-sem-buffered},~\ref{fig:ch2-sem-control-vacuum}, and~\ref{fig:ch2-sem-vacuum-interior}), indicating dissolution of
 goethite and nucleation and growth of hematite from the fluid, a pathway outside the solid-state
 nucleation model developed in \S\ref{sec:gt_nucleation}.
 
@@ -978,7 +1129,7 @@ it is not self-limiting and proceeds quickly to completion once that threshold i
 We conclude that water-saturated conditions do not by themselves exclude fluid-mediated
 conversion of goethite, even where topotactic conversion is suppressed (\S\ref{sec:gt_nucleation}). 
 Whether that pathway operates likely depends on the solution chemistry. Still, the helium step heat data for Win-06-01b-HT
-show no evidence for the abrupt abrupt and extreme helium loss that would be expected to accompany a fluid-mediated reaction. 
+show no evidence for the abrupt and extreme helium loss that would be expected to accompany a fluid-mediated reaction. 
 The step heat data are instead consistent with a smooth, history-dependent release of helium, as expected for diffusive loss (\S\ref{sec:gt_hydro}).
 
 Grain size and bulk thermodynamics cannot explain why the pigment blades reacted when the natural 
@@ -992,7 +1143,7 @@ change the pH and ionic strength of the water they are heated in, and with them 
 of Fe(III). The dissolution--precipitation pathway is limited by how much iron the fluid
 carries, so a modest increase in Fe(III) solubility could make a nucleation-limited reaction
 viable. The natural Win-06-01b goethite, by contrast, was heated in
-distilled water, where near-neutral Fe(III) solubility is very low, potentially offering an explanation for \
+distilled water, where near-neutral Fe(III) solubility is very low, potentially offering an explanation for
 the divergent outcomes.
 
 % TODO: check the pigment product data sheet (grade, surface treatment, soluble-salt content, aqueous pH).
@@ -1013,6 +1164,10 @@ diffusion domain for goethite, then a closure temperature can be
 calculated for this domain. Considering uncertainty only in the
 intercept (D\textsubscript{0}/a\textsuperscript{2}) term and a cooling rate of 10°C/Ma, the closure
 temperature for that domain would be \ChTwoTc ± \ChTwoTcErr °C.
+The multiple diffusion domain inversion (\S\ref{consistency-with-mdd-systematics}) indicates
+that the dominant domain, which holds 97\% of the $^3$He, diffuses at 0.80 times the rate of
+the Stage~1 line. Its closure temperature is correspondingly about 1.6\,\textdegree C higher,
+well within the quoted uncertainty; the Stage~1 parameters are used throughout this section.
 
 Goethite is formed near Earth's surface and thus U-Th/He geochronology
 is most typically applied to date surface processes \citep{heim2006,yappshuster2011,vasconcelos2013,danisik2013,monteiro2014,hofmann2017,allard2018}. 
@@ -1036,68 +1191,6 @@ timescales.
 \includegraphics[width=0.8\textwidth]{PRP_goethite_winsor.pdf}
 \caption{Isothermal retention plot \citep{wolf1998} for helium in goethite corresponding to the ``Stage 1'' reference line regression on the hydrothermal experiment. Helium hosted in a diffusion domain with these diffusion parameters would be nearly perfectly retentive at billion-year timescales at 25\textdegree C. At 40\textdegree C, the equilibrium age for this domain (the helium age at which radiogenic helium production and diffusive loss are equal) is 33.2 billion years, attained after 50.4 billion years.}
 \label{fig:ch2-isothermal-retention}
-\end{figure}
-
-It is difficult to use Arrhenius plots to compare many samples' helium
-retentivities. \citet{farley2024} report that linear regressions on
-apparent diffusivities calculated from helium step heat data on goethite
-in vacuum can be fit to yield widely variable diffusive parameters even
-for a single sample (e.g. activation energies ranging from 107 to 176
-kJ/mol within a single experiment on YAN-0201 AC). Similarly,
-regressions on helium step heat data of polycrystalline materials can
-yield erroneous activation energies when not applied carefully \citep{farley2018}. Because of the complexity of comparing Arrhenius plots of
-calculated apparent diffusivities for polycrystalline samples with
-differing heating schedules, it is advantageous to convert heating
-schedules to some parameter that can be compared easily between
-experiments. One effective way to reduce the complexity of step heat
-experiments to visualize helium retentivity is to ``flatten'' a thermal
-history to a dimensionless diffusive timescale: the Fourier number (Fo =
-Dt/a\textsuperscript{2}). This approach offers similar benefits to Delta plots
-\citep{farley2018} or r/r0 plots \citep{lovera1991}, but is optimized to
-qualitatively compare the helium retentivities of polycrystalline
-samples for a given thermal history (expressed as diffusive time).
-
-For a given diffusive domain, a Fourier number of Fo $\approx$ 1 corresponds to
-the complete degassing of that domain. Complex heating schedules can be
-converted to Fourier numbers by assuming a reference line similarly to a
-Delta or r/r0 plot \citep{lovera1991,farley2018}. This procedure
-is especially useful for MDD (Multiple Diffusion Domain) systems, where
-the apparent diffusivities decrease over the course of a step heat
-experiment as the least retentive domains are degassed. For a single
-spherical diffusion domain, the fraction of helium released is a
-function of the Fourier number alone \citep{crank1979,fechtigkalbitzer1966}. If the activation energy of the reference
-Fourier number is the same as the activation energy of diffusion, then
-the amount of helium released in that domain then is an exact function
-of the reference Fourier number multiplied by a constant. Thus, a plot
-with reference Fourier numbers against cumulative fractional helium
-yields for different samples will yield the same geometries and
-interrelationships regardless of the intercept used to calculate the
-reference Fourier numbers; the values of the reference Fourier numbers
-will be arbitrary and only meaningful as relative diffusive time.
-Another implication is that different aliquots of the same sample should
-appear identical in this space regardless of heating schedule (see the vacuum step heats of
-Win-06-01b and the overlapping hematite samples in Fig.~\ref{fig:ch2-fourier-hematite-ref}).
-Many such plots were generated with a variety of activation energies between
-149 kJ/mol to 171 kJ/mol, but the relative positions of the degassing curves for all samples are preserved, 
-illustrating the utility of this approach even for comparing helium retentivity between different minerals. 
-
-Fig.~\ref{fig:ch2-fourier-hematite-ref} compares the step heat results of Win-06-01b-HT with 11
-step heat experiments of 3 samples of polycrystalline hematite and 9
-step heat experiments of 2 samples of goethite in vacuum, including
-Win-06-01b. In a thermal-history normalized space, it is obvious that
-goethite in vacuum and hematite define well-separated populations and
-goethite in vacuum is far less retentive of helium than hematite. Most
-interestingly, the most retentive sample on these plots is clearly the
-Win-06-01b-HT goethite under water-saturated conditions, at least for the
-14.7\% of the total 3He hosted in the least retentive domains. This plot shows
-that step heat results for different, unrelated goethite samples in vacuum are more similar to one
-another than step heat results of the same sample at different water
-activities.
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.75\textwidth]{Fo_Plot_hematite_ref_HematiteGoethite.pdf}
-\caption{Heating schedules for polycrystalline goethite and hematite samples are flattened to reference Fourier numbers, dimensionless numbers that can be thought of as an integrated thermal history, allowing for easy intercomparison of helium step heat experiments with distinct thermal schedules. Curves on the left of the plot degas earlier within a given thermal history than the curves on the right. Hematite and goethite step heats in vacuum each cluster closely together, forming distinct populations. Most strikingly, the hydrothermal Win-06-01b-HT experiment is the most helium-retentive polycrystalline sample on the plot, at least until the experiment's end at a cumulative fractional yield $\sim$15\% F3He. The differences in the curves here primarily reflect differences in grain size distributions. Vacuum step heats of 11 aliquots of 4 samples of polycrystalline hematite from the Grand Canyon, Arizona \citep{farleyflowers2012} and the Gogebic Range, Michigan \citep{farleymckeon2015}, and 9 aliquots of Win-06-01b and Capao goethite from Minas Gerais, Brazil \citep{monteiro2017,farley2024} are plotted here. The reference $D/a^2$ values are calculated for 1\textmu m domains of hematite (ln($D_0$) = 0.66; $E_a$ = 171 kJ/mol: \citep{farley2018}).}
-\label{fig:ch2-fourier-hematite-ref}
 \end{figure}
 
 This study of a single sample has no bearing on potential complexities
@@ -1162,13 +1255,10 @@ the sample.
 
 If the geometry of helium loss due to dehydration and due to diffusion
 differ, then the \textsuperscript{4}He/\textsuperscript{3}He spectra of goethite measured in vacuum may not
-straightforwardly encode the geometry or history of helium loss in the way that such
+straightforwardly encode the thermal history of the sample in the way that such
 data faithfully encode this history in phases such as hematite or apatite
-\citep{farleymckeon2015,shuster2004}. This claim rests entirely upon the correctness
-of the \textsuperscript{4}He data reported here, for which each step yield is somewhat small, most often
-between 0.15 and 0.5 nccSTP. More \textsuperscript{4}He/\textsuperscript{3}He spectra of goethite under hydrothermal
-conditions, with stronger \textsuperscript{4}He signals, are needed to investigate this hypothesis
-further. 
+\citep{farleymckeon2015,shuster2004}. More \textsuperscript{4}He/\textsuperscript{3}He spectra of goethite under hydrothermal
+conditions are needed to investigate this hypothesis further. 
 
 These ratios also bear on the natural thermal history of Win-06-01b. Throughout the range of
 $\Sigma F_{3\mathrm{He}}$ that defines the Stage~1 reference line (7--15\%), step \textsuperscript{4}He/\textsuperscript{3}He
@@ -1177,9 +1267,114 @@ Radiogenic \textsuperscript{4}He is depleted relative to the uniformly distribut
 so even this retentive domain lost helium in nature. A domain with the
 Stage~1 parameters is nearly quantitatively retentive at Earth-surface temperatures
 (\S\ref{high-helium-retentivity-of-win-06-01b-ht}), so this loss is difficult to attribute to thermally activated
-diffusion at surface conditions. Either Win-06-01b experienced temperatures well above surface conditions after it
-formed, for example if it grew in a hydrothermal setting, or non-thermal processes such as fluid-mediated
-recrystallization caused partial helium loss in nature. 
+diffusion at surface conditions. Either Win-06-01b experienced temperatures well above surface conditions 
+(perhaps it grew in a hydrothermal setting or experienced burial heating), or non-thermal processes such as fluid-mediated
+recrystallization caused partial helium loss in nature. Section~\ref{sec:gt_thermal_history}
+tests whether thermally activated diffusion alone, within the domain structure inferred from
+the $^3$He release, can reproduce the measured spectrum. 
+
+\subsection{Thermal History of Win-06-01b}\label{sec:gt_thermal_history}
+
+We begin the exercise by limiting our exploration of potential thermal histories to 
+geologically reasonable and simple paths. With the four-domain structure of
+\S\ref{consistency-with-mdd-systematics} held fixed, we fitted steady-cooling,
+burial-and-exhumation, and isothermal thermal histories to the $^4$He/$^3$He spectrum of HT-Win-06-01b
+(\S\ref{sec:gt_mdd_methods}). Previous studies constrain our exploration of the burial-and-exhumation paths. 
+\citet{gibsonstuwe2000,mitchell1998} interpret regional cooling 
+from roughly 50--70\,\textdegree C after the mid-Cretaceous from their apatite
+fission-track studies. \citet{mitchell1998} additionally interpret, from limited 1.5~km thick sediment accumulation 
+in Triassic intramontane basins, that parts of the ranges were near the surface in the early
+Mesozoic.  Table~\ref{tab:ch2-mdd-thermal} gives the best fit of each
+family, Fig.~\ref{fig:ch2-mdd-spectrum-compare} compares the best steady-cooling and burial
+predictions with the spectrum, and Fig.~\ref{fig:ch2-mdd-heatmaps} shows their $\chi^2$ maps on a
+common color scale.
+
+\begin{table}[htbp]
+\centering
+\caption{Thermal histories fitted to the $^4$He/$^3$He spectrum of HT-Win-06-01b with the
+four-domain structure fixed. Each row gives the best path with a predicted He age of
+130--180~Ma along with the reduced $\chi^2$ value where $\nu=22$ degrees of freedom. 
+For steady cooling, $T_\mathrm{max}=T_0$ is reached at crystallization, so $t_\mathrm{peak}=t_\mathrm{form}$. For the isothermal hold,
+$T_\mathrm{max}=T_\mathrm{iso}$ throughout. Burial crystallization ages are fixed. The last
+three columns give the ranges of the age-consistent paths within the joint 1$\sigma$ region
+about the best fit (see Eq.~\eqref{eq:gt_mdd_chi2}).}
+\label{tab:ch2-mdd-thermal}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lrrrrrlll}
+\toprule
+Path & $t_\mathrm{form}$ (Ma) & $t_\mathrm{peak}$ (Ma) & $T_\mathrm{max}$ (\textdegree C) &
+$\chi^2_\nu$ & $t_\mathrm{He}$ (Ma) & $t_\mathrm{form}$ (1$\sigma$) & $t_\mathrm{peak}$ (1$\sigma$) &
+$T_\mathrm{max}$ (1$\sigma$)\\
+\midrule
+\MDDThermalTableRows
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\paragraph{Steady cooling.} Linear cooling to 25\,\textdegree C fits the spectrum best. The best
+age-consistent path starts at 78\,\textdegree C at 150~Ma ($\chi^2_\nu=2.00$), and the
+age-consistent 1$\sigma$ range is crystallization at 150--175~Ma at 76--80\,\textdegree C,
+followed by cooling at $\sim$0.3\,\textdegree C\,Myr$^{-1}$. Such paths pass through
+$\sim$55\,\textdegree C at 90~Ma, inside the apatite fission-track window. The spectrum alone
+prefers somewhat younger, hotter paths: the unconstrained minimum
+($\chi^2_\nu=\MDDLinGlobalChi$; \MDDLinGlobalT\,\textdegree C at \MDDLinGlobalTform~Ma) predicts
+a He age of \MDDLinGlobalAge~Ma, and the unconstrained 1$\sigma$ region lies entirely at ages
+younger than 130~Ma (Fig.~\ref{fig:ch2-mdd-heatmaps}b). 
+
+\paragraph{Burial and exhumation.} Burial paths fit the spectrum less well
+($\chi^2_\nu=4.8$--6.2), but they agree with the independent regional constraints of \citet{gibsonstuwe2000} and \citet{mitchell1998}. For
+crystallization at 180 and 195~Ma, the best age-consistent paths peak at 61\,\textdegree C at
+70 and 80~Ma, with 1$\sigma$ ranges of 58--65\,\textdegree C between 98 and 60~Ma
+(Fig.~\ref{fig:ch2-mdd-heatmaps}a). These peaks fall in or just after the apatite
+fission-track window, within the 50--70\,\textdegree C range of \citet{gibsonstuwe2000} and at
+the $<$60\,\textdegree C limit reported by \citet{mitchell1998}. For crystallization at
+210~Ma, only hotter and earlier peaks (70--74\,\textdegree C at 105--130~Ma) give an age within
+the measured range, and they fit worse ($\chi^2_\nu=6.2$).
+
+\paragraph{Isothermal hold.} The spectrum constrains only the product of diffusivity and
+time, so the $\chi^2$ minimum is a ridge from $\sim$47\,\textdegree C at 50~Ma to
+$\sim$35\,\textdegree C at 500~Ma, along which $\chi^2_\nu\approx\MDDIsoChi$ throughout. No
+isothermal path reproduces the shape of the spectrum: they underpredict the ratios of the
+early steps and overpredict those of the late steps. We do not consider this family further.
+
+\paragraph{Where the families differ.} The steady-cooling and burial predictions differ
+mainly in the earliest steps ($\Sigma F_{3\mathrm{He}}\lesssim0.035$;
+Fig.~\ref{fig:ch2-mdd-spectrum-compare}), which sample the outer rim of the dominant domain. On
+the burial path the sample sits at 20\,\textdegree C for the last 50~Myr, long enough for
+radiogenic $^4$He to re-accumulate in the rim, so the early ratios are overpredicted. Steady
+cooling keeps the rim depleted until geologically recent times, with diffusive loss
+declining monotonically toward the present. Elsewhere both leave the same residual pattern:
+ratios underpredicted between $\Sigma F_{3\mathrm{He}}=0.04$ and 0.06, and overpredicted in
+the two longest high-temperature steps.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{mdd_free/absolute/chapter/ch2_mdd_spectrum_compare_N4.pdf}
+\caption{Bulk-normalized $^4$He/$^3$He spectrum of HT-Win-06-01b (black, bounding-method LB--UB
+boxes) with the best age-consistent burial path for crystallization at 195~Ma (blue) and the
+best age-consistent steady-cooling path (green), for the four-domain structure.}
+\label{fig:ch2-mdd-spectrum-compare}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{mdd_free/absolute/chapter/ch2_mdd_heatmaps_N4.pdf}
+\caption{Reduced $\chi^2$ of the $^4$He/$^3$He spectrum for (a) burial paths with crystallization
+at 195~Ma, as a function of the time and magnitude of peak temperature, and (b) steady cooling
+to 25\,\textdegree C, as a function of crystallization age and initial temperature. Both panels
+share one color scale, anchored to the overall minimum. Dashed lines show the predicted
+bulk He age at 130 and 180~Ma, diamonds the best fit, and the star the best fit with a He age
+of 130--180~Ma.}
+\label{fig:ch2-mdd-heatmaps}
+\end{figure}
+
+\paragraph{Consistency with diffusive loss.} These two families of thermal paths encode very different geologic origins. We 
+note that any number of arbitrarily complex thermal paths can be evaluated against the data with 
+this workflow, but a thorough search for viable thermal paths is beyond the scope 
+of this study, and is an ill-posed problem for a single sample. The main purpose of this exercise 
+is to demonstrate that the data we present here are consistent with diffusive loss of 
+radiogenic helium in nature. We do not claim to have found the unique thermal history of the sample, but 
+have demonstrated that plausible thermal histories reproduce our results reasonably well.
 
 \section{Conclusions}\label{conclusions}
 
@@ -1208,8 +1403,13 @@ from the same sample in vacuum. The corrected \textsuperscript{3}He array is lin
 \ChTwoEaErr kJ/mol. Extrapolated to surface conditions, a domain with these
 parameters is essentially quantitatively retentive of helium at
 billion-year timescales at 25°C. The \textsuperscript{4}He data require that this domain
-experienced helium loss in nature, suggesting either that Win-06-01b was hydrothermal in origin,
-or that non-thermal processes such as fluid-mediated recrystallization contributed to helium loss in nature.
+experienced helium loss in nature. A four-domain diffusion model fitted to the $^3$He release
+shows that 97\% of the $^3$He resides in a single domain and can account for this loss by
+thermally activated diffusion alone. Within that model, steady cooling from crystallization at
+76--80\,\textdegree C at 150--175~Ma to the present surface temperature fits the
+$^4$He/$^3$He spectrum best, favoring crystallization from warm, possibly hydrothermal, fluids.
+Burial of surface-formed goethite to a Late Cretaceous peak of 58--65\,\textdegree C, consistent
+with regional apatite fission-track constraints, remains a viable alternative.
 
 The \textsuperscript{4}He/\textsuperscript{3}He spectrum observed for this sample is distinct from that of the
 same sample in vacuum, suggesting that the geometry of helium loss induced
@@ -1224,7 +1424,7 @@ driving force raises the barrier to hematite nucleation enough to suppress solid
 far below this limit. Fluid-mediated
 conversion, which transformed synthetic goethite pigment in similar conditions, is rapid and would be accompanied by abrupt and extreme helium loss, which is not observed in the hydrothermal step heat data.
 This divergent outcome may be explained by different solution chemistry between the two experiments, which would affect the 
-availbility of aqueous Fe(III) that supplies the reaction.
+availability of aqueous Fe(III) that supplies the reaction.
 Recrystallization, however, cannot be excluded.
 If it contributed, the diffusivities reported here would be upper
 bounds and the retentivity a lower bound. Distinguishing these

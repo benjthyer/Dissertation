@@ -165,7 +165,7 @@ def main():
     with plt.rc_context(MACHINES_RC):
         # Laptop | desktop, shared axes
         # The doubled legend gets its own row below the panels.
-        legend_h = 3.8
+        legend_h = 2.0
         fig = plt.figure(figsize=(2 * FIGSIZE[0], FIGSIZE[1] + legend_h), layout='constrained')
         gs = fig.add_gridspec(2, 2, height_ratios=[FIGSIZE[1], legend_h])
         ax0 = fig.add_subplot(gs[0, 0])
@@ -179,14 +179,19 @@ def main():
         axs[0].set_ylabel('Wall time (s)')
         axs[0].set_xlim(n_min, n_max)
         axs[1].tick_params(labelleft=True)
-        # Both legends below the panels, so neither hides data: series (HeFESTo | MELTS
-        # columns) above worker counts
+        # One legend below the panels, so it hides no data: HeFESTo | MELTS | worker-count
+        # columns. Matplotlib fills columns top-down in equal heights, so the series
+        # columns are padded with blank entries to the length of the worker column.
         lax = fig.add_subplot(gs[1, :])
         lax.axis('off')
-        lax.add_artist(lax.legend(handles=_series_handles(two_columns=True), loc='upper center', ncol=2, fontsize=1.6 * RC['legend.fontsize'],
-                                  frameon=False, handlelength=2.0, columnspacing=1.0))
-        lax.legend(handles=_worker_handles(workers), loc='lower center', ncol=3,
-                   frameon=False, handletextpad=0.3, columnspacing=1.2)
+        series = _series_handles(two_columns=True)
+        n_rows = max(len(series) // 2, len(workers))
+        pad = [Line2D([], [], ls='none', label='')]
+        hef_col, melts_col = series[:len(series) // 2], series[len(series) // 2:]
+        handles = (hef_col + pad * (n_rows - len(hef_col)) + melts_col + pad * (n_rows - len(melts_col))
+                   + _worker_handles(workers))
+        lax.legend(handles=handles, loc='center', ncol=3, fontsize=1.3 * RC['legend.fontsize'],
+                   frameon=False, handlelength=2.0, columnspacing=1.2)
         for ax, letter in zip(axs, 'ab'):
             ax.text(0.03, 0.97, f'({letter})', transform=ax.transAxes, ha='left', va='top',
                     fontsize=2 * RC['font.size'])

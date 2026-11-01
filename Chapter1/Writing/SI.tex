@@ -33,6 +33,9 @@
 % supplement too (dissertation_preamble.tex already loads it for the
 % thesis side).
 \usepackage{longtable}
+\usepackage{xr}
+\externaldocument{TubeMethodPaper}
+\input{paper_derived_values}
 
 \graphicspath{{../Figures/source/}{../Figures/generated/}}
 
@@ -66,7 +69,11 @@
 % portrait at their original compact size -- defined here as a no-op.
 \newenvironment{chplandscape}{}{}
 
-\input{chapter1_SI_body}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\input{TubeMethodPaper_SI_body}
 
 
 \begin{thebibliography}{}
@@ -89,6 +96,12 @@ Farley, K. A., Reiners, P. W. \& Nenow, V. An Apparatus for High-Precision Heliu
 \bibitem[Farley et al.(2024)]{farley2024}
 Farley, K. A., Monteiro, H. B., Vasconcelos, P. M. \& Waltenberg, K. Dehydration of goethite during vacuum step-heating and implications for he retentivity characterization. \emph{Chemical Geology} \textbf{663}, 122254 (2024).
 
+\bibitem[Farley(2000)]{farley2000}
+Farley, K. A. Helium diffusion from apatite: General behavior as illustrated by Durango fluorapatite. \emph{Journal of Geophysical Research: Solid Earth} \textbf{105}, 2903--2914 (2000).
+
+\bibitem[Fechtig and Kalbitzer(1966)]{fechtigkalbitzer1966}
+Fechtig, H. \& Kalbitzer, S. The Diffusion of Argon in Potassium-Bearing Solids. In: \emph{Potassium Argon Dating} (eds Schaeffer, O. A. \& Z\"ahringer, J.) 68--107 (Springer, Berlin, Heidelberg, 1966).
+
 \bibitem[Goldsmith et al.(2020)]{goldsmith2020}
 Goldsmith, A. S., Ketcham, R. A. \& Stockli, D. F. Simulating effects of heterogeneous 4He concentration profiles and radiation damage annealing on whole-grain zircon diffusivity analyses. \emph{Geochimica et Cosmochimica Acta} \textbf{284}, 239--253 (2020).
 
@@ -100,6 +113,9 @@ Ketcham, R. A., Gautheron, C. \& Tassan-Got, L. Accounting for long alpha-partic
 
 \bibitem[Masaryk(1968)]{masaryk1968}
 Masaryk, J. S. Permeation in Fused Silica (1968).
+
+\bibitem[McMurtry et al.(2019)]{mcmurtry2019}
+McMurtry, G. M., DeLuze, J. R., Hilton, D. R. \& Blessing, J. E. Differential Diffusion of Helium Isotopes in Glass, Quantum-tunneling 3He Enrichment, and Portable 3He/4He Monitoring of Mantle Processes. \emph{Sci Rep} \textbf{9}, 5213 (2019).
 
 \bibitem[Norton(1953)]{norton1953}
 Norton, F. J. Helium Diffusion Through Glass. \emph{Journal of the American Ceramic Society} \textbf{36}, 90--96 (1953).

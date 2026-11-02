@@ -404,3 +404,117 @@ in \S\ref{experimental-methods}"
     - Fig. insitu-examples caption (sentence on the excluded first step removed; no step is excluded at 175 or 250 C): "At 200\textdegree C the first step (hollow) is excluded because the glass had not yet reached a diffusive steady state; the grey dashed curve is the fit that includes it." -> ""
     - Data Reduction, first-step exclusion sentence (examples no longer show an excluded step): "(assumption 2 of \S\ref{theoretical-framework-of-permeation-lag}; Fig.~\ref{fig:insitu-examples})" -> "(assumption 2 of \S\ref{theoretical-framework-of-permeation-lag}; supplementary Fig.~\ref{fig:s-insitu-fits})"
     - Results 4.1: Arrhenius figure now precedes the examples figure (citation order) (MOVE)
+
+### 2026-11-01: supplement cut to essentials (derivations of G and of the bounding method; numerical model condensed; data tables -> Zenodo; sensitivity analyses -> thesis)
+
+- **SI S2 lead (replaces the Fick's-law derivation, eqs. s1-1 to s1-3)** -- NEW
+    > Following \citet{rogers1954} and \citet{altemose1961}, steady-state permeation of helium through a glass membrane of area \emph{A} and thickness \emph{l} follows from Fick's law with a Henrian solubility \emph{S} \citep{shelby1976}; with the permeability \(K = DS\), the atom flux \emph{F} through the membrane is (full derivation in \citealp{thyer2026thesis}):
+- **SI S2: remainder of the Delta P = P paragraph (equilibrium with the lamp cell after infinite time) and the n_eqm estimate** -- CUT
+- **SI S2: shortened from "Before integrating Eq. (s1-5), it is useful to experimentalists ... yielding Eq. (s1-6):"** -- NEW
+    > Helium is well-approximated as an ideal gas at experimental conditions, so the ideal gas law (PV = nRT) relates the pressure, \emph{P}, to the atomic abundance, \emph{n}, yielding Eq.~\eqref{eq:s1-6}:
+- **SI S2: joins "Where R is the gas constant ..." (trimmed) and "Eq. (s1-6) can be simplified by defining a geometric factor (G) ..." with G = A/(lV) written out** -- NEW
+    > where \emph{R} is the gas constant \(\left( 1.36 \times 10^{- 22}\frac{cm^{3}atm}{K\ atoms} \right)\), \emph{T} is the temperature in Kelvin, and \emph{V} is the internal volume of the ampoule. Defining a geometric factor \(G = A/(lV)\) in units of cm\textsuperscript{-2} gives
+- **SI S2: discussion of the tau_D << tau_P assumption after Eq. (s1-6) (cited to the thesis in the main text)** -- CUT
+- **SI S2, cylinder paragraph (Eq. eqn1 removed)** -- EDIT
+    - was: "factor \emph{G} (Eq.~\eqref{eq:eqn1}) for a cylinder"
+    - now: "factor \emph{G} for a cylinder"
+- **SI S2: duplicate statement of G from the moved main-text paragraph, and "Where G is used elsewhere ... G = 4350.26 cm-2" (typical values)** -- CUT
+- **SI: Fick's-law section for planar membranes (eqs. s1-1 to s1-3, fracyield, eqn2, s1-7, and the permeability-measurement discussion) -> thesis** -- CUT
+- **SI: section "Diffusive Steady State Concentration Profiles in Cylindrical Membranes" (6 figures) -> thesis** -- CUT
+- **SI numerical model: promoted from subsection to section (its parent section was cut)** -- EDIT
+    - was: "\subsection{A Numerical Model"
+    - now: "\section{A Numerical Model"
+- **SI numerical model: paragraph "A numerical model to estimate diffusive permeation is invaluable ..."** -- CUT
+- **SI numerical model (Eq. s4-2 removed with its section)** -- EDIT
+    - was: "for cylinders (Eq.~\eqref{eq:s4-2}) using"
+    - now: "for cylinders using"
+- **SI numerical model (Eq. s4-2 removed with its section)** -- EDIT
+    - was: "for
+a cylinder (Eq.~\eqref{eq:s4-2}):"
+    - now: "for
+a cylinder:"
+- **SI numerical model, boundary conditions: "according to Eq. (s5-1) or (s5-1a)" -> "according to Eq. (s5-1)"** -- EDIT
+- **SI numerical model: derivation of Eq. (s5-1a) and the paragraph on the cancellation of ampoule length h** -- CUT
+- **SI numerical model: lead-in for the steady-state profile (derivation cut)** -- NEW
+    > In diffusive steady state, these boundary conditions give the concentration profile across the ampoule wall \citep{thyer2026thesis}:
+- **SI numerical model: shortened from "Eq. (s5-2) is plotted in Fig. ... It shows that this partitioning ratio strongly favors the gas ... confirmed in Fig. (thermal perturbation)."** -- NEW
+    > Eq.~\eqref{eq:s5-2} strongly favors the gas and is only a weak function of temperature, varying between 2.5 and 2.8\% between 0 and 300°C.
+- **SI numerical model: replaces the flux paragraphs and Eqs. (s5-3, s5-3a, s5-3b)** -- NEW
+    > Fluxes between the glass and the gas inside and outside the ampoule are evaluated with finite differences at the inner and outer walls and used to update the helium contents of the ampoule and of the vacuum at each time step \citep{thyer2026thesis}.
+- **SI numerical model, complex thermal histories: kept the first paragraph and the first two sentences of the second; added "Further details are given by Thyer (2026)."** -- EDIT
+- **SI: subsection "Errors related to violation of the steady state concentration profile assumption due to temperature change" (5 figures) -> thesis** -- CUT
+- **SI bounding section heading** -- EDIT
+    - was: "\section{Estimating permeation lag uncertainty for uncorrected, long
+heating
+steps}"
+    - now: "\section{Derivation of the Bounding Method}"
+- **SI bounding: G and K -> lambda** -- EDIT
+    - was: "assume steady state permeation, assuming G and K are known or can be
+conservatively estimated."
+    - now: "assume steady state permeation, assuming \(\lambda\) is known or can be
+conservatively estimated."
+- **SI bounding: sentence listing why Omega decreases (repeated from main text)** -- CUT
+    - was: "In reality, \(\Omega\) will decrease over time for helium
+loss governed by first order processes \citep{yakubovich2010,wilson1973} or diffusion (except for the case of initially
+inhomogeneous distributions, the memory of which is often erased early
+in any diffusion experiment: \citealp{shuster2004})"
+    - now: ""
+- **SI bounding: sentences on exceptions to decreasing Omega (repeated from main text)** -- CUT (58 words)
+- **SI bounding (Eq. eqn1 removed)** -- EDIT
+    - was: "like Eq.~\eqref{eq:eqn1}"
+    - now: "like Eq.~\eqref{eq:permodeK}"
+- **SI bounding: onset-time sentence and figure (EQM_Timescales_Permeation) -> thesis** -- CUT (89 words)
+- **SI bounding: closing paragraph on the long-step uncertainty figure -> thesis** -- CUT (120 words)
+- **SI literature comparison (permeability figure cut)** -- EDIT
+    - was: "(24-300°C; Fig.~\ref{fig:permeability-literature-comparison})"
+    - now: "(24-300°C)"
+- **SI Fig. he4-error-histogram caption (Eq. s1-7 removed)** -- EDIT
+    - was: "from either Eq.~\eqref{eq:s1-7} or a numerical diffusion model"
+    - now: "from either main-text Eq.~\eqref{eq:permsol} with \(\lambda = KGRT\) or the numerical diffusion model"
+- **SI: Fig. he4-error-histogram moved from "Additional Figures" to the literature-comparison section, ahead of the 3He histogram** -- MOVE
+- **SI: Fig. permeability-literature-comparison, the 3He/4He permeability-ratio paragraph and Fig. relative-permeability-3he-4he** -- CUT
+- **SI Fig. durango-stepwise-yields caption (step-heat table now on Zenodo)** -- EDIT
+    - was: "and tabulated in full in Table~\ref{tab:apatite-stepheat}"
+    - now: ""
+- **SI Fig. durango-stepwise-yields caption** -- EDIT
+    - was: "experiment described above (\S\ref{experimental-methods})"
+    - now: "experiment (main text, \S\ref{experimental-methods})"
+- **SI: Figs. diffusive-profile-reequilibration-time and long-step-relative-uncertainty -> thesis; Table apatite-stepheat -> Zenodo** -- CUT
+- **SI: section "Supplementary Data Tables" (Fig. predicted-vs-measured-permeation and the MC empty, water and sulfur 3He/4He tables) -> Zenodo** -- CUT
+- **Permeation Lag, assumption 2 (volume-ratio criterion)** -- EDIT
+    - was: "(Figs.~\ref{fig:steady-state-profile-deviation},~\ref{fig:numerical-error-volume-ratio-control})"
+    - now: "\citep{thyer2026thesis}"
+- **Permeation Lag, assumption 2 (re-equilibration time)** -- EDIT
+    - was: "(Fig.~\ref{fig:diffusive-profile-reequilibration-time}; supplementary Figs.~\ref{fig:fdm-profile-evolution-300-to-100c} and~\ref{fig:fdm-profile-evolution-zero-initial-condition})"
+    - now: "\citep{thyer2026thesis}"
+- **Permeation Lag, assumption 2 (thermal perturbation)** -- EDIT
+    - was: "(supplementary Fig.~\ref{fig:thermal-perturbation-error})"
+    - now: "\citep{thyer2026thesis}"
+- **Permeation Lag, after Eq. (permode) (Fick's-law section cut; the same sentence already cites Supplement Sect. S2)** -- EDIT
+    - was: "(see supplement, \S\ref{a-ficks-law-formulation}, for details)"
+    - now: ""
+- **Bounding method, para 1** -- EDIT
+    - was: "(Fig.~\ref{fig:long-step-relative-uncertainty})"
+    - now: "\citep{thyer2026thesis}"
+- **Bounding method, para 2** -- EDIT
+    - was: ", Fig.~\ref{fig:permeative-steady-state-onset-time})"
+    - now: "; \citealp{thyer2026thesis})"
+- **Results 4.2** -- EDIT
+    - was: "Fig.~\ref{fig:he4-error-histogram}, supplementary Figs.~\ref{fig:permeability-literature-comparison}--\ref{fig:he3-error-histogram}"
+    - now: "supplementary Figs.~\ref{fig:he4-error-histogram} and~\ref{fig:he3-error-histogram}"
+- **Data Reduction, Durango paragraph (step-heat table now on Zenodo)** -- EDIT
+    - was: "(shown in \textbf{bold} in Table~\ref{tab:apatite-stepheat})"
+    - now: ""
+- **Data Reduction, Durango paragraph** -- EDIT
+    - was: "(shown in \emph{italics}; Fig.~\ref{fig:schematic-permstep})"
+    - now: "(Fig.~\ref{fig:schematic-permstep})"
+- **Results 4.3, self-calibration paragraph** -- EDIT
+    - was: "and Table~\ref{tab:apatite-stepheat}"
+    - now: ""
+- **Bounding method, last sentence** -- EDIT: "(supplementary Fig. long-step-relative-uncertainty)" -> "\citep{thyer2026thesis}"
+- **Bibliography (main and SI)** -- thesis reference updated to the new thesis title, citing Chapter 1 ("A simple method for helium step heat experiments at high water or sulfur fugacity")
+- **SI analytical details, accumulation paragraph (thermal-perturbation equation and figure cut)** -- EDIT: "(supplementary Eq.~\eqref{eq:s7-2}; Fig.~\ref{fig:thermal-perturbation-error})" -> "\citep{thyer2026thesis}"
+- **SI S2, moved paragraph (Fick's-law section cut; derivation now precedes it)** -- EDIT: "(see Sect.~\ref{a-ficks-law-formulation} for details)" -> ""
+- **SI S2, cylinder paragraph (duplicate Eq. 3 removed; result is Eq. geomfactor)** -- EDIT: "Reducing yields Eq.~\eqref{eq:3}:" -> "Reducing yields:"
+- **SI S2** -- EDIT: 1 remaining reference(s) to Eq. (3) -> Eq. (geomfactor)
+- **SI.tex** -- formatting: float placement parameters relaxed and SI figures set to [htbp] so several floats share a page; SI now compiled in the two-column journal layout (documentclass option "manuscript" removed): 7 pages instead of 12. Supplements are not typeset by Copernicus, so either layout is acceptable; add "manuscript" back to revert.

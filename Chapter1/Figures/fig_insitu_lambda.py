@@ -54,21 +54,21 @@ fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(6.4, 9.6), sharex=True)
 Tline = np.linspace(100, 300, 200) + 273.15
 x = 1e4 / Tline
 ISO = {'4He': r'$^4$He', '3He': r'$^3$He'}
-for iso, f, mk, col, ls in (('4He', f4, 'o', 'tab:blue', '-'),
-                            ('3He', f3, 's', 'tab:orange', '--')):
-    ax1.plot(x, np.log(L.lambda_predicted(Tline, L.G_MC_EMPTY, iso) / Tline),
-             color=col, ls=ls, lw=1.5,
-             label=f'{ISO[iso]}, predicted from geometry + literature')
+leg_line, leg_solid, leg_hollow = [], [], []   # legend rows: curves, then >=3-step | 2-step points
+for iso, f, mk, col, ls, litlabel in (('4He', f4, 'o', 'tab:blue', '-', ''),
+                            ('3He', f3, 's', 'tab:orange', '--', ' and Jones (1953)')):
+    leg_line.append(ax1.plot(x, np.log(L.lambda_predicted(Tline, L.G_MC_EMPTY, iso) / Tline),
+                             color=col, ls=ls, lw=1.5)[0])
     y = np.log(f['lam'] / f['T_K'])
     yerr = 2 * f['lam_1s'] / f['lam']
     over = (f['N'] >= 3).to_numpy()
     xx = (1e4 / f['T_K']).to_numpy(); y = y.to_numpy(); yerr = yerr.to_numpy()
-    ax1.errorbar(xx[over], y[over], yerr=yerr[over], fmt=mk,
-                 color=col, mec='k', capsize=4, label=f'{ISO[iso]}, fit in situ ($\\geq$3 steps)')
-    ax1.errorbar(xx[~over], y[~over], yerr=yerr[~over], fmt=mk, mfc='white',
-                 color=col, capsize=4, label=f'{ISO[iso]}, fit in situ (2 steps)')
+    leg_solid.append(ax1.errorbar(xx[over], y[over], yerr=yerr[over], fmt=mk,
+                                  color=col, mec='k', capsize=4))
+    leg_hollow.append(ax1.errorbar(xx[~over], y[~over], yerr=yerr[~over], fmt=mk, mfc='white',
+                                   color=col, capsize=4))
 ax1.set_ylabel(r'$\ln(\lambda/T)$  ($\lambda$ in s$^{-1}$, $T$ in K)')
-ax1.legend(fontsize=9, loc='lower left')
+ax1.set_ylim(-17.95, ax1.get_ylim()[1])    # headroom so the legend sits below the data
 ax1.grid(True)
 ax1.text(0.97, 0.95, '(a)', transform=ax1.transAxes, ha='right', va='top', fontsize=14)
 
@@ -85,7 +85,7 @@ ax2.set_ylabel(r'$\lambda(^3$He$)\,/\,\lambda(^4$He$)$')
 ax2.set_xlabel(r'$10^4/T$ (K$^{-1}$)')
 #ax2.text(0.03, 0.06, 'McMurtry et al. (2019): up to ~1000 (off scale)',
 #         transform=ax2.transAxes, fontsize=10, style='italic')
-ax2.legend(fontsize=9, loc='upper right')
+ax2.legend(fontsize=10, loc='upper right')
 ax2.grid(True)
 ax2.text(0.03, 0.95, '(b)', transform=ax2.transAxes, ha='left', va='top', fontsize=14)
 ax2.set_xlim(1e4 / (300 + 273.15), 1e4 / (100 + 273.15))
@@ -93,7 +93,37 @@ top = ax1.twiny()
 Ct = np.array([100, 150, 200, 250, 300])
 top.set_xlim(ax1.get_xlim()); top.set_xticks(1e4 / (Ct + 273.15)); top.set_xticklabels(Ct)
 top.set_xlabel('Temperature (°C)')
+fig.suptitle('Experimental Determination of Helium Permeation Rates',
+             fontsize=plt.rcParams['axes.titlesize'])   # figure-level: the top axis label occupies the axes-title slot
 fig.tight_layout()
+
+# Panel (a) legend: single-column curve entries stacked above a two-column block for the data
+# (hollow 2-step point to the right of its solid >=3-step point), inside one shared frame.
+# Placed after tight_layout so the extents measured here are final.
+pad = 0.015
+leg_data = ax1.legend(handles=leg_solid + leg_hollow,
+                      labels=[f'{ISO["4He"]}, fit in situ ($\\geq$3 steps)',
+                              f'{ISO["3He"]}, fit in situ ($\\geq$3 steps)',
+                              '(2 steps)', '(2 steps)'],
+                      ncol=2, fontsize=10, loc='lower left', bbox_to_anchor=(pad, pad),
+                      borderaxespad=0, borderpad=0.2, columnspacing=1.0, frameon=False,
+                      handleheight=1.6)   # row height >= the tallest (mathtext) label, so the
+                                          # independently stacked columns stay row-aligned
+ax1.add_artist(leg_data)
+fig.canvas.draw()
+to_ax = ax1.transAxes.inverted()
+b_data = to_ax.transform_bbox(leg_data.get_window_extent())
+leg_curves = ax1.legend(handles=leg_line,
+                        labels=[f'{ISO["4He"]} from geometry \n    + Swets et al. (1961)',
+                                f'{ISO["3He"]} from geometry \n    + Swets et al. (1961) and Jones (1953)'],
+                        fontsize=10, loc='lower left', bbox_to_anchor=(pad, b_data.y1),
+                        borderaxespad=0, borderpad=0.2, frameon=False)
+fig.canvas.draw()
+b_curves = to_ax.transform_bbox(leg_curves.get_window_extent())
+x1 = max(b_data.x1, b_curves.x1) + 0.005
+y1 = b_curves.y1 + 0.005
+ax1.add_patch(plt.Rectangle((pad - 0.005, pad - 0.005), x1 - pad + 0.005, y1 - pad + 0.005,
+                            transform=ax1.transAxes, fc='white', ec='0.8', alpha=0.8, zorder=4))
 fig.savefig(os.path.join(OUT, 'InSituLambdaArrhenius.pdf'), dpi=300)
 plt.close(fig)
 
@@ -125,8 +155,8 @@ jk_1s = np.sqrt((n - 1) / n * np.sum((peaks - peaks.mean()) ** 2))
 
 fig, ax = plt.subplots()
 ax.plot(scan['lam24'] * 1e6, scan['R2'], color='k', lw=2)
-#ax.axvspan((best.lam24 - 2 * jk_1s) * 1e6, (best.lam24 + 2 * jk_1s) * 1e6,
-#           color='tab:blue', alpha=0.2, label=r'Data: maximum $R^2$ $\pm 2\sigma$ (jackknife)')
+ax.axvspan((best.lam24 - 2 * jk_1s) * 1e6, (best.lam24 + 2 * jk_1s) * 1e6,
+           color='tab:blue', alpha=0.2, label=r'Maximum $R^2$ $\pm 2\sigma$ by jackknife resampling')
 ax.axvline(best.lam24 * 1e6, color='tab:blue', lw=1.5)
 ax.axvline(lam_pred24 * 1e6, color='tab:red', ls='--', lw=1.5,
            label=r'Predicted $\lambda_{24}$ from geometry + Swets et al. (1961)')
@@ -135,7 +165,7 @@ ax.set_ylabel(r'$R^2$ of $\ln(D/a^2)$ vs. $1/T$ ($\leq$300 °C)')
 ax.set_ylim(max(0.95, scan['R2'].min()), 1.0)
 ax.legend(loc='lower right')
 ax.grid(True)
-plt.title('Linearity of Durango Apatite Step Heats for Varying $\lambda$_{24}')
+plt.title(r'Durango Apatite: Indirect Measurement of $\lambda_{24}$')
 fig.tight_layout()
 fig.savefig(os.path.join(OUT, 'DurangoLambdaSelfCalibration.pdf'), dpi=300)
 plt.close(fig)
@@ -194,11 +224,10 @@ lines = [
     '% AUTO-GENERATED by Chapter1/Figures/fig_insitu_lambda.py -- do not edit.',
     '\\begin{table*}[t]',
     '\\caption{In-situ permeation rate constants of the empty ampoule, fit to consecutive '
-    'isothermal permeation steps with Eq.~(\\ref{eq:incyield}) (written in mass-balance form). '
-    'The first steps of the 125 and 200\\,\\textdegree C runs are excluded (see main text and '
-    'Fig.~\\ref{fig:s-insitu-fits}), leaving exactly determined two-step fits. The last two 250\\,\\textdegree C accumulations (steps 28--29), which '
-    'permeate anomalously fast in both isotopes just before the anomalous final measurement, are '
-    'also excluded. $n_0$ (true) is known independently from the experiment\'s total yield and is '
+    'isothermal permeation steps with Eq.~(\\ref{eq:incyield}). '
+    'The first steps of the 125 and 200\\,\\textdegree C runs are excluded (see main text), '
+    'leaving exactly determined two-step fits. The last two 250\\,\\textdegree C accumulations (steps 28--29) are '
+    'also excluded. $n_0$ (true) is known independently from the experiment\'s total yield but is '
     'not used in the fits. $\\lambda_{\\mathrm{pred}}$ is predicted from the measured ampoule '
     'geometry and literature permeabilities \\citep{swets1961,jones1953} and is shown only as a '
     'check. Uncertainties are 1$\\sigma$ from the fit covariance.}',

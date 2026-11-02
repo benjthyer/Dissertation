@@ -47,7 +47,7 @@ D0, EA_CAL = 60.0, 44.6e3              # cm^2/s, cal/mol (Reiners and Farley, 19
 A_CM = 150e-4                          # 150 um radius
 OD_UM, ID_UM = 1000.0, 800.0
 LT_MIN_UB = 4.0                        # n_UB drawn only for lambda t > 4
-N0_FACTORS = (0.5, 10.0)               # n0 = factor * n_ss(t_ref); one panel each
+N0_FACTORS = (0.0, 10.0)               # n0 = factor * n_ss(t_ref); one panel each
 T_END = 30 * 86400.0                   # s
 
 D_a2 = D0 * np.exp(-EA_CAL / (1.987 * TK)) / A_CM ** 2          # s^-1
@@ -137,7 +137,7 @@ for ax, factor, tag in zip(axes, N0_FACTORS, ('(a)', '(b)')):
             ha='right', va='bottom', fontsize=12)
     ax.grid(True, which='major', alpha=0.4)
 axes[0].legend(fontsize=8.5, loc='upper left')
-axes[0].set_title(r'Encapsulated titanite ($a$ = 150 µm) held at 350 °C', fontsize=12)
+axes[0].set_title('Simulated Helium Release of Encapsulated Titanite\n(a = 150 µm) Held at 350 °C', fontsize=15)
 axes[1].set_xlabel('Time at 350 °C (h)')
 fig.tight_layout()
 for ext in ('pdf', 'png'):

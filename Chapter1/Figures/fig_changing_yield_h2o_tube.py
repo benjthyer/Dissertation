@@ -42,10 +42,10 @@ ax.plot(
     1 - np.array([0.877168987133026, 0.877168987133026]),
     color='red',
     linewidth=2,
-    label='Predicted by Cooling Model\nw/ 4He Permeabilities of Swets et al., 1961',
+    label='Predicted by numerical permeation model\n+ geometry and Swets et al., 1961',
 )
 ax.grid(True)
-ax.legend(loc='center left')
+ax.legend(loc='center left', fontsize=11)
 ax.set_xlabel('Cumulative Hours at 100°C')
 ax.set_ylabel(r'Fractional Yield $\left(\frac{m}{n_0}\right)$')
 ax.set_title(

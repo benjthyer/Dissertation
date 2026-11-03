@@ -46,7 +46,7 @@ bulk-normalized $^4$He/$^3$He spectrum and checked against the (U--Th)/He age
 of 130--180~Ma. Steady linear cooling to 25\,\textdegree C fits best
 ($\chi^2_\nu=2.0$ for paths consistent with the He age): crystallization at
 150--175~Ma at 76--80\,\textdegree C. A burial-and-exhumation path with a Late
-Cretaceous peak of 58--65\,\textdegree C fits less well ($\chi^2_\nu\approx4.8$--5.1)
+Cretaceous peak of 58--65\,\textdegree C fits less well ($\chi^2_\nu\approx5.0$--5.4)
 but agrees with regional apatite fission-track constraints. An isothermal hold
 fits poorly ($\chi^2_\nu\approx18$). The cooling solution favours crystallization
 from warm (hydrothermal) fluids over formation at the surface.
@@ -184,7 +184,7 @@ $8\times10^{-4}$ in $R/R_\mathrm{bulk}$ (Fig.~\ref{fig:check}).
 \subsection{Thermal histories}
 The thermal history is inverted with the domain structure fixed, so it must work
 within the bounds set by the $^3$He inversion. We compare three families of
-piecewise-linear thermal history, each with two free parameters.
+piecewise-linear thermal history, with two free parameters for steady cooling and the isothermal hold and three for burial and exhumation.
 \begin{itemize}
   \item \textbf{Steady cooling:} $T$ falls linearly from $T_0$ at
   $t_\mathrm{form}$ to 25\,\textdegree C today. The goethite forms at an
@@ -196,7 +196,7 @@ piecewise-linear thermal history, each with two free parameters.
   heated to a peak temperature, and is exhumed by the Paleogene, when Paleogene
   sediments in Flinders Ranges valleys show that basement was exposed
   \citep{mitchell1998}. Free parameters: $t_\mathrm{peak}$ and $T_\mathrm{max}$,
-  for fixed crystallization ages of 180, 195 and 210~Ma.
+  fitted at each of three fixed crystallization ages of 180, 195 and 210~Ma; because the crystallization age is also varied across the three fits, burial has three free parameters.
   \item \textbf{Isothermal hold:} $T=T_\mathrm{iso}$ from $t_\mathrm{form}$ to
   the present. Free parameters: $t_\mathrm{form}$ and $T_\mathrm{iso}$.
 \end{itemize}
@@ -207,7 +207,7 @@ Each path is scored against
   \label{eq:chi2}
 \end{equation}
 over the \MDDNfit{} steps that have lag-correction bounds and more than
-0.1~pccSTP of $^3$He, so $\nu=22$. M, LB and UB are the central, lower-bound and
+0.1~pccSTP of $^3$He, so $\nu=22$ for steady cooling and the isothermal hold and $\nu=21$ for burial. M, LB and UB are the central, lower-bound and
 upper-bound bulk-normalized ratios of the bounding method. $\chi^2$ is mapped on
 regular grids:
 \begin{itemize}
@@ -300,7 +300,7 @@ $\chi^2$ maps on a common colour scale.
 \centering
 \caption{Thermal histories fitted to the $^4$He/$^3$He spectrum with the
 four-domain structure fixed. Each row gives the best path with a predicted He
-age of 130--180~Ma ($\nu=22$). For steady cooling, $T_\mathrm{max}=T_0$ is reached
+age of 130--180~Ma ($\nu=22$ for steady cooling and the isothermal hold, $\nu=21$ for burial). For steady cooling, $T_\mathrm{max}=T_0$ is reached
 at crystallization, so $t_\mathrm{peak}=t_\mathrm{form}$. For the isothermal
 hold, $T_\mathrm{max}=T_\mathrm{iso}$ throughout. Burial crystallization ages
 are fixed. The last three columns give the ranges of the age-consistent paths
@@ -332,7 +332,7 @@ unconstrained 1$\sigma$ region lies entirely at ages younger than 130~Ma
 $\Delta\chi^2\approx7$.
 
 \paragraph{Burial and exhumation.} Burial paths fit the spectrum less well
-($\chi^2_\nu=4.8$--6.2), but they agree with independent regional constraints. For
+($\chi^2_\nu=5.0$--6.5), but they agree with independent regional constraints. For
 crystallization at 180 and 195~Ma, the best age-consistent paths peak at
 61\,\textdegree C at 70 and 80~Ma, with 1$\sigma$ ranges of 58--65\,\textdegree C
 between 98 and 60~Ma (Fig.~\ref{fig:heatmaps}a). These peaks fall in or just after
@@ -340,7 +340,7 @@ the apatite fission-track window and within the 50--70\,\textdegree C range of
 \citet{gibsonstuwe2000}, at the $<$60\,\textdegree C limit reported near Copley
 \citep{mitchell1998}. For crystallization at 210~Ma, only hotter and earlier
 peaks (70--74\,\textdegree C at 105--130~Ma) give an age within the measured range,
-and they fit worse ($\chi^2_\nu=6.2$).
+and they fit worse ($\chi^2_\nu=6.5$).
 
 \paragraph{Isothermal hold.} The spectrum constrains only the product of
 diffusivity and time, so the $\chi^2$ minimum is a ridge from

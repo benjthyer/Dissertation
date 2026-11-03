@@ -117,7 +117,7 @@ def plot_full(outname, use_asymmetric):
         ax1.plot(DiffdatBJT[n]['10000/TK'], DiffdatBJT[n]['ln(d/a^2)'], linestyle='--', color='blue', alpha=0.5)
         ax1.plot(DiffdatBJT[n]['10000/TK'], DiffdatBJT[n]['ln(d/a^2)'],
                  marker=['s', 'x'][j], color='blue', alpha=0.5, linestyle='', markersize=3,
-                 label=f'Hydrothermal He{n}: This Study')
+                 label=f'Water vapor saturated He{n}: This Study')
 
     handles, labels = ax1.get_legend_handles_labels()
     order = [0, 6, 5, 2, 1, 4, 3]  # Reference line first, then vacuum/hydrothermal pairs
@@ -163,7 +163,7 @@ def plot_zoom(outname, use_asymmetric, fit):
         ax1.plot(DiffdatBJT[n]['10000/TK'], DiffdatBJT[n]['ln(d/a^2)'], linestyle='--', color='blue', alpha=0.5)
         ax1.errorbar(DiffdatBJT[n]['10000/TK'], DiffdatBJT[n]['ln(d/a^2)'],
                     yerr=yerr, markeredgecolor=['pink', 'green'][j], ecolor=['pink', 'green'][j], capsize=5,
-                    marker=['s', 'o'][j], color='blue', alpha=0.5, label=f'Hydrothermal He{n}: This Study', linestyle='')
+                    marker=['s', 'o'][j], color='blue', alpha=0.5, label=f'Water vapor saturated He{n}: This Study', linestyle='')
 
     handles, labels = ax1.get_legend_handles_labels()
     order = [0, 6, 5, 2, 1, 4, 3]  # Reference line first, then vacuum/hydrothermal pairs

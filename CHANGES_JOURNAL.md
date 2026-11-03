@@ -3048,3 +3048,60 @@ Backups: `*.pre_zenodo_20261029`.
 - `references.bib`: added `thyer2026ngibbs` (nGibbs v0.1.0b4, 10.5281/zenodo.21345830) and `thyer2026dustmap` (DustMAP 0.0.1, 10.5281/zenodo.18895490).
 - `Chapter4_main_body_text.tex`: the two "Zenodo DOI for the release" \todo{}s (Availability and installation; Code and Data Availability) replaced with the v0.1.0b4 Zenodo citation. The training-data "\todo{on zenodo}" is left as is.
 - `Introduction/published_content.tex`: added "Software and data" (nGibbs; Ch. 2 goethite datasets, 10.5281/zenodo.22113166) and "Related software" (DustMAP, not part of the thesis).
+
+## Chapter 2: Vacuum water pressure P_H2O -> 0 in the nucleation calibration (2026-11-02, BJT request)
+
+The trapped vacuum line was previously assigned an arbitrary P_H2O = 1e-8 atm. It is now the zero-pressure limit: the water chemical potential -> -inf, Delta mu_on -> inf, 1/Delta mu_on^2 -> 0. Script: `Chapter2/Figures/fig_goethite_vacuum_kinetics.py` (backup `.pre_P0_20261102`): `_dmu_bulk` returns +inf for P <= 0; `P_ON_PA = 0.0`; defaults of `gamma_from_suppression`, `saturated_rate_factor`, `log10_alpha_hydrothermal` use it; `cnt_scales` returns r* = 0 and barrier = 0 in vacuum; `GAMMA_CAL` (0.14, 0.16, 0.19) -> (0.12, 0.14, 0.15); the hard-coded permissive gamma 0.084 replaced by `gamma_permissive()` (0.081 at 0.1 bar). Macros regenerated (`chapter2_kinetics_values.tex`, backup `.pre_P0_20261102`): gamma 0.14-0.19 -> 0.12-0.15 (MC 0.12-0.15, median 0.14); barrier at saturation 51-129 -> 32-63 k_BT; vacuum barrier 0.5-1.3 -> 0; predicted conversion for gamma = low/mid/high 10^-20.5/-31.4/-53.7 -> 10^-12.4/-20.7/-25.8; calibration grid 10^-51.9..-19.4 -> 10^-26.7..-12.3; Monte Carlo 95% 10^-67.3..-15.7 -> 10^-38.7..-9.1 (required: < 10^-3.8). The 10 nm-grain value (~10^-23 -> ~10^-13) was re-derived as the median of the calibration grid with a 3.76 kJ driving-force shift, which reproduces the old 10^-23 under the old assumption. The phase diagram (equilibrium only) is unaffected; figures arrhenius_reaction_vs_diffusion and first_order_delta_lnk are unaffected; hydrothermal_translation (not used in either document) was regenerated.
+
+### thesis body (chapter2_body.tex)
+- **EDIT** [Nucleation barrier scaling (Methods / model section)]
+    - was: "Because the barrier scales as $\gamma^3/\Delta\mu^2$, the tenfold drop in $\Delta\mu$ between vacuum and water saturation raises the energetic barrier $\Delta G^{*}$ a hundredfold (Table~\ref{tab:gt_dmu})."
+    - now: "Because the barrier scales as $\gamma^3/\Delta\mu^2$, it vanishes in vacuum, where the water pressure approaches zero and $\Delta\mu$ grows without bound, but is significant at water saturation, where $\Delta\mu$ is only 6--11~kJ (Table~\ref{tab:gt_dmu})."
+- **EDIT** [Driving-force paragraph]
+    - was: "Under the vacuum of a step-heating line ($P_{\mathrm{H_2O}}\approx10^{-8}$~atm) it is 76--106~kJ, about ten times larger. The chemical"
+    - now: "Under the vacuum of a step-heating line the water pressure approaches zero, so the chemical potential of water falls without bound and $\Delta\mu$ is unbounded. The chemical"
+- **EDIT** [Table gt_dmu caption]
+    - was: "at water saturation and at $P_{\mathrm{H_2O}} = 10^{-8}$~atm.}"
+    - now: "at water saturation. In vacuum ($P_{\mathrm{H_2O}}\rightarrow0$) the driving force is unbounded.}"
+- **EDIT** [Calibration equation]
+    - was: "\gamma_{\mathrm{eff}} = \left[\frac{T\ln(1/s)}{C\left(\Delta\mu_{\mathrm{off}}^{-2} - \Delta\mu_{\mathrm{on}}^{-2}\right)}\right]^{1/3},"
+    - now: "\gamma_{\mathrm{eff}} = \left[\frac{T\,\Delta\mu_{\mathrm{off}}^{2}\ln(1/s)}{C}\right]^{1/3},"
+- **EDIT** [Calibration: vacuum term]
+    - was: "with $\Delta\mu_{\mathrm{on}}$ evaluated at $P_{\mathrm{H_2O}} = 10^{-8}$~atm and $\Delta\mu_{\mathrm{off}}$ at an upper bound on the water pressure with the trap isolated."
+    - now: "where $\Delta\mu_{\mathrm{off}}$ is evaluated at an upper bound on the water pressure with the trap isolated. With the trap in place, the water pressure approaches zero, the driving force is unbounded, and its contribution to the barrier vanishes. Any finite water pressure in the trapped line would give a larger $\gamma_{\mathrm{eff}}$, so this limit is conservative."
+- **EDIT** [Calibration: gamma value and length scales]
+    - was: "This gives $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$ (range \ChTwoKinGammaLo--\ChTwoKinGammaHi). Under vacuum the corresponding critical nucleus is smaller than a formula unit ($r^{*} = \ChTwoKinRstarVac$~nm) and the barrier is only \ChTwoKinBarVac~$k_BT$: conversion in vacuum is effectively barrierless, consistent with the simple Arrhenius behavior of both vacuum experiments. At this scale class"
+    - now: "This gives $\gamma_{\mathrm{eff}} = \ChTwoKinMCGammaMid$~J\,m$^{-2}$ (range \ChTwoKinGammaLo--\ChTwoKinGammaHi). In vacuum the barrier vanishes, so conversion is barrierless, consistent with the simple Arrhenius behavior of both vacuum experiments. At saturation and 250~$^\circ$C, the critical nucleus has a radius of \ChTwoKinRstarSat~nm (\ChTwoKinNfuSat{} formula units) and the barrier is \ChTwoK"
+- **EDIT** [Translation equation (vacuum term vanishes)]
+    - was: "\left(\frac{1}{\Delta\mu_{\mathrm{sat}}^{2}} - \frac{1}{\Delta\mu_{\mathrm{vac}}^{2}}\right)"
+    - now: "\frac{1}{\Delta\mu_{\mathrm{sat}}^{2}}"
+- **EDIT** [Translation: gamma values]
+    - was: "$\gamma_{\mathrm{eff}} = 0.14$, 0.16 and 0.19~J\,m$^{-2}$"
+    - now: "$\gamma_{\mathrm{eff}} = 0.12$, 0.14 and 0.15~J\,m$^{-2}$"
+- **EDIT** [Assumptions: 10 nm grains]
+    - was: "raises the predicted conversion only to $\sim10^{-23}$;"
+    - now: "raises the predicted conversion only to $\sim10^{-13}$;"
+- **EDIT** [Table gt_dmu] Vacuum columns ($\Delta\mu_{vac}$ at 10$^{-8}$ atm and the squared ratio) removed: undefined for $P_{H_2O}\rightarrow0$.
+- **EDIT** [Conclusions]
+    - was: "At water saturation, the roughly tenfold smaller driving force raises the barrier"
+    - now: "At water saturation, the driving force is only 6--11~kJ, whereas it is unbounded at the near-zero water pressure of a vacuum line; this raises the barrier"
+
+### thesis SI (chapter2goethite_SI_body.tex)
+- **EDIT** [Calibration relation]
+    - was: "$\ln(1/s) = (C\gamma_{\mathrm{eff}}^{3}/T)(\Delta\mu_{\mathrm{off}}^{-2} - \Delta\mu_{\mathrm{on}}^{-2})$."
+    - now: "$\ln(1/s) = C\gamma_{\mathrm{eff}}^{3}/(T\,\Delta\mu_{\mathrm{off}}^{2})$; the corresponding term for the trapped neighbors vanishes because their driving force is unbounded (item 2)."
+- **EDIT** [Item 1]
+    - was: "\item $\Delta\mu_{\mathrm{on}}$ and $\Delta\mu_{\mathrm{off}}$ are bulk driving forces,"
+    - now: "\item $\Delta\mu_{\mathrm{off}}$ is a bulk driving force,"
+- **EDIT** [Item 2 (vacuum limit)]
+    - was: "\item They differ only through the chemical potential of water: $\Delta\mu_{\mathrm{on}}$ is evaluated at $P_{\mathrm{H_2O}} = 10^{-8}$~atm and $\Delta\mu_{\mathrm{off}}$ at the water pressure reached with the trap isolated (below). At these pressures (at most 20~Pa), IAPWS-95 and the ideal gas agree, and $\Delta\mu_{\mathrm{on}} - \Delta\mu_{\mathrm{off}} = RT\ln(P_{\mathrm{off}}/P_{\mathrm{on}})"
+    - now: "\item With the trap in place, the water pressure in the line approaches zero, so the chemical potential of water falls without bound, $\Delta\mu_{\mathrm{on}}$ is unbounded, and its term $\Delta\mu_{\mathrm{on}}^{-2}$ vanishes. This is the conservative limit: any finite water pressure in the trapped line would give a larger $\gamma_{\mathrm{eff}}$ and a stronger predicted slowdown at saturation. $\Delta\mu_{\mathrm{off}}$ is evaluated at the water pressure reached with the trap isolated (below)."
+- **EDIT** [Item 3]
+    - was: "\item Surface terms are omitted in both."
+    - now: "\item Surface terms are omitted."
+- **EDIT** [Volume sensitivity / adopted gamma]
+    - was: "enters only through $\ln P$ in $\Delta\mu$ and then through a cube root, so a threefold uncertainty in volume changes $\gamma_{\mathrm{eff}}$ by only about 10\%. The two steps agree within 15\%, and we adopt $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$"
+    - now: "enters only through $\ln P$ in $\Delta\mu_{\mathrm{off}}$ and then through $\Delta\mu_{\mathrm{off}}^{2/3}$, so a threefold uncertainty in volume changes $\gamma_{\mathrm{eff}}$ by only about 5\%. The two steps agree within 20\%, and we adopt $\gamma_{\mathrm{eff}} = \ChTwoKinMCGammaMid$~J\,m$^{-2}$"
+- **EDIT** [Table gt_gamma] gamma_eff columns recomputed with P_on -> 0 (0.138/0.145, 0.150/0.158, 0.164/0.173, 0.178/0.188 -> 0.120/0.124, 0.126/0.130, 0.140/0.145, 0.147/0.152).
+
+- **EDIT** [Calibration paragraph, both bodies] Sentence order fixed: the zero-pressure-limit sentences now follow the "pressure estimate ... capacitance manometry" sentence.

@@ -126,7 +126,7 @@ def make_plot(outname, use_asymmetric):
         ax.hlines(hd, hs, he, color=HT_COLORS[n], linewidth=1.5, zorder=4)
         draw_step_connectors(ax, hs, he, hd, color=HT_COLORS[n], zorder=4)
         handles.append(Patch(facecolor=HT_COLORS[n], edgecolor=HT_COLORS[n], alpha=0.45,
-                             label=f'Hydrothermal He{n}: This Study'))
+                             label=f'Water vapor saturated He{n}: This Study'))
 
     # Stage 2 reference domain, for context (not currently plotted)
     Dt_a2refs = np.linspace(0, 1, 1000)

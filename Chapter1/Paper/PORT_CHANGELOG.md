@@ -518,3 +518,8 @@ in any diffusion experiment: \citealp{shuster2004})"
 - **SI S2, cylinder paragraph (duplicate Eq. 3 removed; result is Eq. geomfactor)** -- EDIT: "Reducing yields Eq.~\eqref{eq:3}:" -> "Reducing yields:"
 - **SI S2** -- EDIT: 1 remaining reference(s) to Eq. (3) -> Eq. (geomfactor)
 - **SI.tex** -- formatting: float placement parameters relaxed and SI figures set to [htbp] so several floats share a page; SI now compiled in the two-column journal layout (documentclass option "manuscript" removed): 7 pages instead of 12. Supplements are not typeset by Copernicus, so either layout is acceptable; add "manuscript" back to revert.
+
+### 2026-11-02: typo fixes (mirrored in the thesis, see THESIS_BACKPORT_CHANGELOG.md)
+- Results, in-situ paragraph: stray ")" after "Fig.~\ref{fig:insitu-examples}" removed; "250\textdegree)" -> "250\textdegree C)".
+- Results, lambda_24 paragraph: "uncertaity" -> "uncertainty".
+- Bounding method, para 1: "(Eq.~\ref{fig:titanite-bounding})" -> "(Fig.~\ref{fig:titanite-bounding})".

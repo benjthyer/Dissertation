@@ -133,7 +133,7 @@ for ax, factor, tag in zip(axes, N0_FACTORS, ('(a)', '(b)')):
     ax.set_xlim(1 / 60, T_END / 3600)
     ax.set_ylim(1e-6, 0.1)
     ax.set_ylabel('Helium (fraction of crystal total)')
-    ax.text(0.97, 0.05, f'{tag}  $n_0 = {factor:g}\\,n_{{ss}}(5/\\lambda)$', transform=ax.transAxes,
+    ax.text(0.97, 0.05, f'{tag}  $n_0 = {factor:g}\\,n_{{ss}}(5/\\lambda)$' if factor != 0 else f'{tag}  $n_0 = 0$', transform=ax.transAxes,
             ha='right', va='bottom', fontsize=12)
     ax.grid(True, which='major', alpha=0.4)
 axes[0].legend(fontsize=8.5, loc='upper left')

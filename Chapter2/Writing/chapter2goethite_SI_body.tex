@@ -622,19 +622,20 @@ only for nanometer grains (Eq.~\eqref{eq:gt_equalarea}).
 
 Equation~\eqref{eq:gt_gamma_cal} follows from Eq.~\eqref{eq:gt_knuc} applied to a trap-isolated step
 and its trapped neighbors,
-$\ln(1/s) = (C\gamma_{\mathrm{eff}}^{3}/T)(\Delta\mu_{\mathrm{off}}^{-2} - \Delta\mu_{\mathrm{on}}^{-2})$.
+$\ln(1/s) = C\gamma_{\mathrm{eff}}^{3}/(T\,\Delta\mu_{\mathrm{off}}^{2})$; the corresponding term for the
+trapped neighbors vanishes because their driving force is unbounded (item 2).
 The driving forces are evaluated as follows.
 \begin{enumerate}
-  \item $\Delta\mu_{\mathrm{on}}$ and $\Delta\mu_{\mathrm{off}}$ are bulk driving forces,
+  \item $\Delta\mu_{\mathrm{off}}$ is a bulk driving force,
   $-\Delta G_r$ from Eq.~\eqref{eq:gt_dGr} (\S\ref{sec:eqm-thermo}) with $\Delta G_{\mathrm{surf}} = 0$, at the
   step temperature and with the solids at vacuum.
-  \item They differ only through the chemical potential of water: $\Delta\mu_{\mathrm{on}}$ is
-  evaluated at $P_{\mathrm{H_2O}} = 10^{-8}$~atm and $\Delta\mu_{\mathrm{off}}$ at the water pressure
-  reached with the trap isolated (below). At these pressures (at most 20~Pa), IAPWS-95 and the
-  ideal gas agree, and
-  $\Delta\mu_{\mathrm{on}} - \Delta\mu_{\mathrm{off}} = RT\ln(P_{\mathrm{off}}/P_{\mathrm{on}})$, which is
-  32--41~kJ for the pressures in Table~\ref{tab:gt_gamma}.
-  \item Surface terms are omitted in both. The barrier of an internal nucleus depends on the free
+  \item With the trap in place, the water pressure in the line approaches zero, so the chemical
+  potential of water falls without bound, $\Delta\mu_{\mathrm{on}}$ is unbounded, and its term
+  $\Delta\mu_{\mathrm{on}}^{-2}$ vanishes. This is the conservative limit: any finite water pressure in
+  the trapped line would give a larger $\gamma_{\mathrm{eff}}$ and a stronger predicted slowdown at
+  saturation. $\Delta\mu_{\mathrm{off}}$ is evaluated at the water pressure reached with the trap
+  isolated (below).
+  \item Surface terms are omitted. The barrier of an internal nucleus depends on the free
   energy per volume of material transformed, not on the external surface of the host grain. The external surface
   energy of the grain enters the overall thermodynamic stability (\S\ref{sec:gt_thermo}), but is not
   a part of the nucleation barrier, which is evaluated for internal nuclei.
@@ -650,9 +651,9 @@ and the resulting $\gamma_{\mathrm{eff}}$. The pressures are end-of-step values;
 of each as a time average for steady accumulation. This is an upper bound on the pressure, because
 some water adsorbs on the walls of the line; a lower true pressure gives a larger
 $\gamma_{\mathrm{eff}}$ and more suppression at saturation, so the bound is conservative. Pressure
-enters only through $\ln P$ in $\Delta\mu$ and then through a cube root, so a threefold uncertainty
-in volume changes $\gamma_{\mathrm{eff}}$ by only about 10\%. The two steps agree within 15\%, and
-we adopt $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$, with a range of
+enters only through $\ln P$ in $\Delta\mu_{\mathrm{off}}$ and then through $\Delta\mu_{\mathrm{off}}^{2/3}$, so a
+threefold uncertainty in volume changes $\gamma_{\mathrm{eff}}$ by only about 5\%. The two steps agree within
+20\%, and we adopt $\gamma_{\mathrm{eff}} = \ChTwoKinMCGammaMid$~J\,m$^{-2}$, with a range of
 \ChTwoKinGammaLo--\ChTwoKinGammaHi~J\,m$^{-2}$.
 
 \begin{table}[htbp]
@@ -663,10 +664,10 @@ we adopt $\gamma_{\mathrm{eff}} = 0.16$~J\,m$^{-2}$, with a range of
     \hline
     $T$ ($^\circ$C) & $s$ & $V_{\mathrm{app}}$ (mL) & $P_{\mathrm{H_2O}}$ (Pa) & $\gamma_{\mathrm{eff}}$, end-of-step $P$ & $\gamma_{\mathrm{eff}}$, $P/2$ \\
     \hline
-    230 & 0.333 & 190 & 19.6 & 0.138 & 0.145 \\
-    230 & 0.333 & 600 & 6.2  & 0.150 & 0.158 \\
-    240 & 0.224 & 190 & 11.6 & 0.164 & 0.173 \\
-    240 & 0.224 & 600 & 3.7  & 0.178 & 0.188 \\
+    230 & 0.333 & 190 & 19.6 & 0.120 & 0.124 \\
+    230 & 0.333 & 600 & 6.2  & 0.126 & 0.130 \\
+    240 & 0.224 & 190 & 11.6 & 0.140 & 0.145 \\
+    240 & 0.224 & 600 & 3.7  & 0.147 & 0.152 \\
     \hline
   \end{tabular}
 \end{table}

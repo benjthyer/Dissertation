@@ -36,7 +36,7 @@ W, H, WALL = 6.6, 1.5, 0.24          # ampoule size (axis units)
 EQ_FS = 12
 
 
-def ampoule(ax, x0, y0, temp, n_dots, m_dots, rng, label):
+def ampoule(ax, x0, y0, temp, n_dots, m_dots, rng, label, step):
     """Draw one step with the ampoule's lower-left corner at (x0, y0)."""
     yc = y0 + H / 2
     omega_on = temp == 'warm'
@@ -66,11 +66,11 @@ def ampoule(ax, x0, y0, temp, n_dots, m_dots, rng, label):
     if omega_on:
         ax.add_patch(FancyArrowPatch((cx1 - 0.12, yc), (gx0 + 0.9, yc), arrowstyle='-|>',
                                      mutation_scale=14, lw=2.0, color=C_OMEGA, zorder=6))
-        ax.text(cx1 + 0.55, cy1 + 0.02, r'$\omega$', color=C_OMEGA, fontsize=13,
+        ax.text(cx1 + 0.55, cy1 + 0.02, rf'$\omega_{{{step}}}$', color=C_OMEGA, fontsize=13,
                 ha='center', va='top', zorder=7)
     ax.add_patch(FancyArrowPatch((gx1 - 0.7, yc), (x0 + W + 1.1, yc), arrowstyle='-|>',
                                  mutation_scale=14, lw=1.4 + 0.25 * m_dots ** 0.8, color=C_M, zorder=6))
-    ax.text(x0 + W + 0.55, yc + 0.12, r'$m$', color=C_M, fontsize=13, ha='center', va='bottom')
+    ax.text(x0 + W + 0.55, yc + 0.12, rf'$m_{{{step}}}$', color=C_M, fontsize=13, ha='center', va='bottom')
     placed = 0
     while placed < m_dots:
         px, py = rng.uniform(x0 + W + 1.3, x0 + W + 2.4), rng.uniform(yc - 0.5, yc + 0.5)
@@ -102,7 +102,7 @@ def figure(name, seq, gap_eqs=None, right_eqs=None, left_eqs=None, top_eq=None, 
     for i, (temp, n_dots, m_dots) in enumerate(seq):
         y0 = height - 0.6 - top - (i + 1) * H - i * gap
         kind = 'Permeation' if temp == 'cold' else 'Experimental'
-        ycs.append(ampoule(ax, x0, y0, temp, n_dots, m_dots, rng, f'{kind} Step {i + 1}'))
+        ycs.append(ampoule(ax, x0, y0, temp, n_dots, m_dots, rng, f'{kind} Step {i + 1}', i + 1))
         if right_eqs and right_eqs[i]:
             ax.text(x0 + W + 2.9, ycs[-1], right_eqs[i], ha='left', va='center', fontsize=EQ_FS, color=C_TXT)
         if left_eqs and left_eqs[i]:

@@ -1,0 +1,48 @@
+% GoethitePaper_SI.tex -- Supplementary Information wrapper for GoethitePaper.tex.
+% Built by Chapter2/Paper/build_paper_from_chapter2.py (2026-11-02).
+\documentclass[preprint,12pt,authoryear]{elsarticle}
+\journal{Geochimica et Cosmochimica Acta}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{subcaption}
+\usepackage{lineno}
+\usepackage{xr}
+\usepackage{xurl}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\graphicspath{{../Figures/source/}{../Figures/generated/}}
+\input{chapter2_derived_values}
+\input{chapter2_kinetics_values}
+\input{mdd_free_report_values}
+\providecommand{\hl}[1]{#1}
+\externaldocument{GoethitePaper}
+\externaldocument[ch1-]{../../Chapter1/Writing/TubeMethodPaper}
+\externaldocument[ch1-]{../../Chapter1/Writing/SI}
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\thetable}{S\arabic{table}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\theequation}{S\arabic{equation}}
+
+\begin{document}
+\begin{frontmatter}
+\title{Supplementary Information for:Helium Step Heats on Geothite at Water Saturated Conditions Show Diffusive Helium Loss and High Retentivity at Surface Temperatures}
+\author[caltech]{Ben J. Thyer\corref{cor1}}
+\ead{benjthyer@gmail.com}
+\author[caltech]{Jonathan Treffkorn}
+\author[caltech]{Kenneth A. Farley}
+\cortext[cor1]{Corresponding author.}
+\affiliation[caltech]{organization={Division of Geological and Planetary Sciences, California Institute of Technology},
+            city={Pasadena}, postcode={91125}, state={CA}, country={USA}}
+\end{frontmatter}
+
+\input{GoethitePaper_SI_body}
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{../../references,goethite_paper_extra}
+\end{document}

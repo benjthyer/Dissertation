@@ -27,17 +27,17 @@ Durango \newline Apatite & Quad & 850 & 1350 & 2394 & 1.52 & 3.18 mg & Radiogeni
 }
 \end{table}
 
-Heating steps and isotopic measurements for all samples were automated using custom LabView routines with the exception of the tank helium-soaked empty tube experiment on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer after the 7\textsuperscript{th} measurement. For all other ampoules, a Watlow temperature controller held the ampoule at the temperature set point for a pre-programmed duration, after which the ampoule was allowed to cool while the evolved gas was prepared for measurement for about 25 minutes. After the first 7 measurements, the empty tube experiment on the Helix-MC-Plus\textsuperscript{10K} was instead set to an elevated temperature manually while the evolved gas was allowed to accumulate continuously in an attempt to mitigate uncertainties related to frequently changing temperatures \citep{thyer2026thesis} and continued permeation at room temperature during gas cleanup and measurement. The accumulated gas was measured every 40-120 minutes. For this experiment, the temperature was changed either during the 1 minute pump-out of the lamp cell after inletting gas into the mass spectrometer, or during a period of helium accumulation for measurement. When the temperature was changed during an accumulation period, no permeability was calculated for that step, and the measured abundances of those steps were used only to track the helium contents of the tube.
+Heating steps and isotopic measurements for all samples were automated using custom LabView routines with the exception of the tank helium-soaked empty tube experiment on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer after the 7\textsuperscript{th} measurement. For all other ampoules, a Watlow temperature controller held the ampoule at the temperature set point for a pre-programmed duration, after which the ampoule was allowed to cool while the evolved gas was prepared for measurement for about 25 minutes. After the first 7 measurements, the empty tube experiment on the Helix-MC-Plus\textsuperscript{10K} was instead set to an elevated temperature manually while the evolved gas was allowed to accumulate continuously in an attempt to mitigate uncertainties related to frequently changing temperatures. The accumulated gas was measured every 40-120 minutes. For this experiment, the temperature was changed either during the 1 minute pump-out of the lamp cell after inletting gas into the mass spectrometer, or during a period of helium accumulation for measurement. When the temperature was changed during an accumulation period, no permeability was calculated for that step, and the measured abundances of those steps were used only to track the helium contents of the tube.
 
-Helium isotope measurements of evolved gases from step heats of one empty silica glass ampoule and glass-encapsulated sulfur and water ampoules equilibrated with 2-20 torr of high purity tank helium (R $\approx$ 0.15 R\textsubscript{a}) were acquired at Caltech on a Thermo Fisher Helix-MC-Plus\textsuperscript{10K} mass spectrometer in peak hopping mode. Helium was purified by exposing evolved gases to a charcoal trap held in liquid nitrogen, a titanium sponge getter, then a SAES NP10 getter before freely expanding into the Helix-MC-Plus\textsuperscript{10K}. 
+Helium isotope measurements of evolved gases from step heats of the ampoules equilibrated with 2-20 torr of high purity tank helium (R $\approx$ 0.15 R\textsubscript{a}) were acquired at Caltech on a Thermo Fisher Helix-MC-Plus\textsuperscript{10K} mass spectrometer in peak hopping mode. Helium was purified by exposing evolved gases to a charcoal trap held in liquid nitrogen, a titanium sponge getter, then a SAES NP10 getter before freely expanding into the Helix-MC-Plus\textsuperscript{10K}. 
 
 Helium-4 evolved during the step heat of the silica glass-encapsulated Durango apatite was quantified using isotope dilution with a high purity 3He spike on a Pfeiffer Prisma QMS 200 quadrupole mass spectrometer. Evolved gas from the ampoule in the lamp heating cell was allowed to mix with the 3He spike and the mixture was frozen on charcoal held at 14~K within a cryostat, then helium was selectively released to the mass spectrometer by raising the temperature to 36~K.
 
-Standard gasses were routinely measured to monitor drift in the sensitivities of 3He and 4He. Blanks are approximately 5 pccSTP \textsuperscript{4}He, which is very small compared to all interpreted \textsuperscript{4}He measurements. Further analytical details are given by \citet{thyer2026thesis}.
+Standard gasses were routinely measured to monitor drift in the sensitivities of 3He and 4He. Blanks are approximately 5 pccSTP \textsuperscript{4}He, which is very small compared to all interpreted \textsuperscript{4}He measurements. 
 
 \section{Relating the Rate Constant to Glass Permeability and Ampoule Geometry}\label{sec:s-lambda-K}
 
-Following \citet{rogers1954} and \citet{altemose1961}, steady-state permeation of helium through a glass membrane of area \emph{A} and thickness \emph{l} follows from Fick's law with a Henrian solubility \emph{S} \citep{shelby1976}; with the permeability \(K = DS\), the atom flux \emph{F} through the membrane is (full derivation in \citealp{thyer2026thesis}):
+Following \citet{rogers1954} and \citet{altemose1961}, steady-state permeation of helium through a glass membrane of area \emph{A} and thickness \emph{l} follows from Fick's law with a Henrian solubility \emph{S} \citep{shelby1976}. With the permeability \(K = DS\), the atom flux \emph{F} through the membrane is:
 
 \begin{equation}
 F = \  - \frac{KA\mathrm{\Delta}P}{l}
@@ -106,15 +106,26 @@ thinner walls and narrower tubes lead to more efficient permeation.
 Silica Glass
 Ampoules}\label{a-numerical-model-for-diffusive-permeation-of-helium-through-silica-glass-ampoules}
 
-Most of the permeation measurements performed on the Helix-MC-Plus\textsuperscript{10K} mass spectrometer were complicated by additional permeation occurring at variable temperature during long cooling times following high temperature experimental steps. Such a complication can be effectively avoided by limiting the duration of time for which the diffusion cell is opened to the rest of the vacuum line, or by keeping the sample at-temperature during this equilibration time. To address this, a numerical diffusive permeation model is used to calculate the ampoule's expected permeation fraction (n\textsubscript{t}/n\textsubscript{0}) for each step with a complex thermal history.
+Most of the permeation measurements performed on the Helix-MC-Plus\textsuperscript{10K} mass spectrometer were complicated 
+by additional permeation occurring at variable temperature during long cooling times following high temperature step. 
+Such a complication can be effectively avoided by limiting the duration of time for which the diffusion cell is opened to the 
+rest of the vacuum line, or by keeping the sample at-temperature during this equilibration time; however, it is addressed
+here numerically. We use a numerical diffusive permeation model is used to predict the ampoule's expected permeation fraction 
+(n\textsubscript{t}/n\textsubscript{0}) for each step with a complex thermal history. This method is also used to
+
+To simulate permeation during cooling of an ampoule, the temperature is
+decreased at every step following a parabolic rate law determined using
+the Watlow temperature records of the cooling ampoule. These functions and
+the thermal data to which they are fit are reported in the dataset (\url{https://doi.org/10.5281/zenodo.23872881}). 
+Further details are given by \citet{thyer2026thesis}.
 
 We numerically solve the radial diffusion equation for cylinders using the Forward-Time Central-Space (FTCS) Finite Difference
-Method (FDM) along a radial transect of a model ampoule of arbitrary
-geometry for small, discrete time intervals. The system is spatially
+Method (FDM) along a radial transect of a model ampoule of any
+geometry for small, discrete time intervals, neglecting permeation through the ends. The system is spatially
 discretized into 100 cells along a radial transect, and numerical
 stability was ensured by solving for the time interval of a single step,
-$\Delta t$, such that \(\frac{D\Delta t}{\Delta x^{2}} = 0.5\), satisfying the
-Courant-Friedrichs-Lewy (CFL) condition.
+$\Delta t$, for \(\frac{D\Delta t}{\Delta x^{2}} = 0.5\), to satisfy the
+Courant-Friedrichs-Lewy (CFL) condition for numerical stability.
 
 Helium concentrations along the transect (except for the boundaries,
 where r = a and r = b) are updated according to the following equation,
@@ -165,62 +176,39 @@ C_{He}^{glass/gas} = \frac{C_{He}^{glass}}{C_{He}^{gas}} = S(T)\  \bullet RT
 \label{eq:s5-2}
 \end{equation}
 
-Eq.~\eqref{eq:s5-2} strongly favors the gas and is only a weak function of temperature, varying between 2.5 and 2.8\% between 0 and 300°C.
+Eq.~\eqref{eq:s5-2} strongly favors the gas and is only a weak function of temperature, varying between 2.5\% and 2.8\% between 0 and 300°C.
 
-Fluxes between the glass and the gas inside and outside the ampoule are evaluated with finite differences at the inner and outer walls and used to update the helium contents of the ampoule and of the vacuum at each time step \citep{thyer2026thesis}.
+Fluxes between the glass and the gas inside and outside the ampoule are evaluated with finite differences at the inner and 
+outer walls and used to update the helium contents of the ampoule and of the infinitely diffuse measureable resevoir 
+outside the ampoule at each time step \citep{thyer2026thesis}.
 
-\subsubsection{Modeling permeation for ampoules that experienced complex
-thermal
-histories}\label{modeling-permeation-for-ampoules-that-experienced-complex-thermal-histories}
-
-In order to compare the experimental results for ampoules that
-experienced complex cooling histories with the expectations of the first
-order permeation model developed in this work, the numerical model
-developed above was used. The model predicts the relative helium
-permeation for the three experiments on the
-Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer for
-both 4He and 3He by simulating helium permeation of a model ampoule with
-the same dimensions and thermal history of the real experiment. For
-ampoules with multiple measurements of the geometric dimensions, the
-smaller set of measurements is used for the numerical model.
-
-To simulate permeation during cooling of an ampoule, the temperature is
-decreased at every step following a parabolic rate law determined using
-the Watlow temperature records of the cooling ampoule. These functions and
-the thermal data to which they are fit are reported in the dataset (\url{https://doi.org/10.5281/zenodo.23872881}). 
-Further details are given by \citet{thyer2026thesis}.
+The simulation of encapsulated titanite in main text Fig.~\ref{fig:titanite-bounding} uses a much simpler model, 
+because the temperature does not change with time: therefore the helium concentration profile need not be tracked,  
+and is assumed to be in equilibrium with the helium inventory of the gas phase. For each timestep, 
+the helium content of the ampoule is updated according to the differential equation \(dn/dt = \Omega - \lambda n\).
+where \(\Omega\) is the helium production rate of the encapsulated titanite, which is evaluated following the forward
+equations of \citet{fechtig1966}, and \(\lambda\) is the permeation rate constant for the ampoule at the given temperature, 
+which is evaluated as $\lambda = KGRT$ where \emph{G} is the geometric factor of a model ampoule with inner diameter of 0.8 mm and 
+outer diameter of 1.0 mm and \emph{K} is the permeability of helium in fused silica at 300$^{\circ}$C from \citet{swets1961}.
 
 \section{Derivation of the Bounding Method}\label{estimate-permeation-lag-uncertainty-for-uncorrected-long-heating-steps}
 
-The uncertainty of the helium evolution of the encapsulated natural
-material during a heating step (\(\omega\)) due to permeation lag
-correction can be estimated by calculating the maximum possible helium
-residing in the tube between steps, i.e. for the values for
-\emph{n\textsubscript{0}} and \emph{n\textsubscript{t}}: \(n_{0}^{UB}\)
-and \(n_{t}^{UB}.\ \)From the permeation lag equation (main text Eq.~\eqref{eq:permlag}), upper bound estimates for
-\emph{n\textsubscript{0}} and \emph{n\textsubscript{t}} bound the
+For long heating steps ($\lambda t \gtrsim  5$), the helium evolution of the sample can be approximated as the measured value (\(\omega \approx m\)).
+The uncertainty of this approximation due to permeation lag can be bounded from above by calculating the maximum possible helium
+residing in the tube between steps, i.e. 
+$n_0 \leq n_{0}^{UB}$ and $n_0 \leq n_{0}^{UB}$ and $n_t \leq n_{t}^{UB}$.
+By Eq.~\eqref{eq:permlag} (main text), these bound the
 encapsulated material contribution \(\omega\) within:
 
 \begin{equation}
-m - n_{0}^{UB} \leq \omega \leq m + n_{t}^{UB}
+m - n_{0}^{UB} \leq \omega \leq m + n_{t}^{UB}.
 \label{eq:s6-1}
 \end{equation}
 
-Upper bounds for \emph{n\textsubscript{t}} for a given high temperature
-experimental step can be calculated if step heats are long enough to
-assume steady state permeation, assuming \(\lambda\) is known or can be
-conservatively estimated. To proceed, one must make the generally
-conservative assumption that the production rate of helium within the
-ampoule due to degassing of the encapsulated natural sample
-(\(\Omega = \frac{\omega}{t}\)) is constant over time at a given
-temperature. Eq.~\eqref{eq:s6-3}, given
-below, shows that the amount of helium trapped in the tube (\(n_{t}\))
-is proportional to the rate of helium outgassing from the natural
-encapsulated sample (\(\Omega\)), so the approximation that this rate is
-constant will overestimate the amount of unanalyzed helium remaining in
-the ampoule after a high temperature experimental step. A new first order differential equation like Eq.~\eqref{eq:permodeK} is formulated, now
-incorporating a constant source term (\(\Omega\)) to conservatively
-approximate the helium influx into the ampoule from the degassing
+A new first order differential equation like Eq.~\eqref{eq:permodeK} is formulated to describe
+the evolving helium inventory of the ampoule when the encapsulated phase is evolving helium. We
+assume a constant source term (\(\Omega\)) to conservatively
+approximate (overestimate) the helium influx into the ampoule from the degassing
 natural sample.
 
 \begin{equation}
@@ -297,18 +285,14 @@ long enough such that \(t \geq \frac{5}{\lambda}\), for which
 bounding method for steps of sufficiently long duration such that
 \(t \geq \frac{5}{\lambda}\) so that the estimation for \(n_{t}\) can be
 reduced to simply the steady state value and not be dependent upon the
-estimation for \(n_{0}\) or its uncertainties.
+estimation for \(n_{0}\) and its uncertainties. 
 
 To estimate the upper bound on the permeation lag (\(n_{t}^{UB}\)), one
 must consider the circumstances that would produce the highest possible
-value for \(n_{t}\). In addition, the constraint that
-\(t \geq \frac{5}{\lambda}\) is enforced so that previous heating steps
-are not significant, simplifying the problem significantly. Because
-\(n_{t}\) scales with $\omega$ by Eq.~\eqref{eq:s6-3}, the upper bound estimate
-\(n_{t}^{UB}\) must assume the upper bound estimate for $\omega$, which is
-given in Eq.~\eqref{eq:s6-1} as \({m + n}_{t}^{UB}\). Substituting
+value for \(n_{t}\). Thus, we assume the upper bound estimate for $\omega$, which is
+given in Eq.~\eqref{eq:s6-1} as \({m + n}_{t}^{UB}\).  Substituting
 \(\omega^{UB} = {m + n}_{t}^{UB}\) into Eq.~\eqref{eq:s6-3} to express
-\(n_{t}^{UB}\) in terms of the measured value \emph{m}:
+\(n_{t}^{UB}\) in terms of the measured value \emph{m} for long steps with $\lambda t \geq 5$:
 
 \[
 n_{t}^{UB} = n_{ss}(\omega^{UB} = m + n_{t}^{UB}) = \frac{m + n_{t}^{UB}}{\lambda t}
@@ -328,14 +312,23 @@ Predicted and measured fractional yields for all permeation steps in ampoules be
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=8.3cm]{Histograms4He_MC.pdf}
-\caption{Histograms showing the accuracy of 4He $n_0$ predictions using permeabilities of \citet{swets1961} from either main-text Eq.~\eqref{eq:permsol} with \(\lambda = KGRT\) or the numerical diffusion model from the measured value, with shaded regions behind the histograms corresponding to 1 and 2 sigma ($\sigma$) from the average relative difference between measured and predicted values. The measured $n_0$ values of the empty and sulfur-filled ampoules are within 1$\sigma$ of the predicted values, suggesting that the permeation model and literature values apply well to those systems, and such models can be used to reliably recover helium contents of permeating ampoules for use in permeation lag corrections. On the other hand, measured and predicted 4He $n_0$ for water-filled ampoules are well resolved beyond 2$\sigma$, suggesting that their helium permeability differs strongly from the literature values. Internal reproducibilities (1$\sigma$) of a gas standard repeatedly analyzed during these experiments were better than 1\% for 4He, requiring that most of the scatter in these data be related to factors outside of analytical precision, such as long/inconsistent ramp times during heating or uncertainties or rounding of heating times.}
+\caption{Histograms showing the relative residuals of 4He $n_0$ predictions using measured geometry and the helium permeabilities of fused silica glass from \citet{swets1961}. 
+These predictions were evaluated analytically from main-text Eq.~\eqref{eq:permsol} or numerically with the numerical diffusion 
+model described above. The shaded regions behind the histograms correspond to the 1 and 2 sigma ($\sigma$) standard deviations 
+of the distributions. The measured $n_0$ values of the empty and sulfur-filled ampoules are within 1$\sigma$ of the 
+predicted values for the empty and sulfur-filled tubes. On the other hand, measured and predicted 4He $n_0$ for 
+water-filled ampoules are well resolved from a 0 residual beyond 2$\sigma$: they are not predicted by the same framework 
+that explains the other ampoules. Internal reproducibilities (1$\sigma$) of a gas standard repeatedly analyzed during 
+these experiments were better than 1\% for 4He, requiring that most of the scatter in these data be related 
+to factors outside of analytical precision, such as long/inconsistent ramp times during heating or uncertainties 
+or rounding of heating times.}
 \label{fig:he4-error-histogram}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=8.3cm]{Histograms3He.pdf}
-\caption{Similar to Fig.~\ref{fig:he4-error-histogram}, but with 3He permeabilities taken from \citet{jones1953} and \citet{swets1961}. Shaded regions behind the histograms correspond to 1 and 2 sigma ($\sigma$) from the average relative difference between the predicted and measured values. The 3He permeation model and literature permeability values apply well to empty and sulfur-filled ampoules, and such models can be used to reliably recover 3He contents of permeating ampoules for use in permeation lag corrections. On the other hand, measured and predicted values of 3He $n_0$ for water-filled ampoules are well resolved beyond 2$\sigma$, suggesting that their permeability differs strongly from the literature values. Internal reproducibilities (1$\sigma$) of a gas standard repeatedly analyzed during these experiments were better than 3\% for 3He, requiring that much of the scatter in these data be related to factors outside of analytical precision such as long/inconsistent ramp times during heating or uncertainties or rounding of heating times.}
+\caption{Similar to Fig.~\ref{fig:he4-error-histogram}, but with 3He permeabilities taken from \citet{jones1953} and \citet{swets1961}.}
 \label{fig:he3-error-histogram}
 \end{figure}
 
@@ -343,26 +336,39 @@ Predicted and measured fractional yields for all permeation steps in ampoules be
 
 \subsection{Anomalous Signal Recalculation for the Tank Helium-Soaked Empty Ampoule}\label{anomalous-signal-recalculation}
 
-The last high temperature step of the empty ampoule experiment on the Helix-MC-Plus\textsuperscript{10K} multi-collector mass spectrometer had an unusual and non-linear signal evolution at the beginning of the measurement for both 3He and 4He. For this measurement, 4He was recalculated using a linear regression on the last three of six measurement cycles with an R\textsuperscript{2} of 0.985 to regress to the 4He content at time 0. Typically, the signal evolution for a measurement like this would have a negative slope because the helium in the mass spectrometer is consumed as it is ionized and measured, but the slope for this measurement was positive. 3He from this measurement was calculated based on the recalculated 4He and an assumed isotope ratio for the measurement of 0.07 Ra. Three more measurements were taken over the next few days to ensure complete degassing of the ampoule. Two of these measurements yielded helium above blank, but were small compared to the final high temperature step. The yields of these steps were all considered in the calculation of the experiment's total yield.
+The last high temperature step of the empty ampoule experiment on the Helix-MC-Plus\textsuperscript{10K} 
+multi-collector mass spectrometer had an unusual and non-linear signal evolution at the beginning of the 
+measurement for both 3He and 4He. For this measurement, 4He was recalculated using a linear regression on the 
+last three of six measurement cycles with an R\textsuperscript{2} of 0.985 to regress to the 4He content at time 0. 
+Typically, the signal evolution for a measurement like this would have a negative slope because the helium in the mass 
+spectrometer is consumed as it is ionized and measured, but the slope for this measurement was positive. 3He from this 
+measurement was calculated based on the recalculated 4He and an assumed isotope ratio for the measurement of 0.07 Ra. 
+Three more measurements were taken over the next few days to ensure complete degassing of the ampoule. Two of these 
+measurements yielded helium above blank, but were small compared to the final high temperature step. The yields of 
+these steps were all considered in the calculation of the experiment's total yield. This final step does not affect the in-situ 
+fits of the main text, but it does affect the independently known helium inventory of the ampoule backcalculated from the 
+total yield.
 
 \subsection{Independent Verification of the Encapsulated Durango Apatite Mass}\label{durango-mass-verification}
 
-The total yield for the encapsulated Durango apatite experiment (main text, \S\ref{analytical-methods}) is estimated from the precisely-measured mass of the encapsulated apatite (3.18 mg) and a helium concentration of 194.2 nccSTP/mg \citep{farley2000}. This concentration is independently supported by the measurement of 8 different \textgreater0.5 mg aliquots of the same Durango apatite sample in-lab, which yield a concentration of 194 ± 9 nccSTP/mg.
+The total yield for the encapsulated Durango apatite experiment (main text, \S\ref{analytical-methods}) 
+is estimated from the precisely-measured mass of the encapsulated apatite (3.18 mg) and a helium concentration 
+of 194.2 nccSTP/mg \citep{farley2000}. This concentration was independently verified by the measurement of 
+8 different \textgreater0.5 mg aliquots of the same Durango apatite sample in-lab undertaken by the first author, 
+which yielded concentrations of 194 ± 9 nccSTP/mg.
 
-\section{Additional Figures and Tables Referenced in the Main Text}\label{sec:s-moved}
+\section{In-situ Measurements of the Rate Constant $\lambda$ of Helium Permeation}\label{sec:s-moved}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=8.3cm]{DurangoStepYields_RelativeAnomaly.pdf}
-\caption{Measured-to-true yield ratio, \(m/\omega\), for the first 13 experimental steps (through the isothermal 300\textdegree C triplicate) of the real encapsulated Durango apatite step heat experiment (main text, \S\ref{experimental-methods}), plotted in measurement order and labeled by nominal step temperature. Here \emph{m} is the raw measured helium yield for a step and $\omega$ is its permeation lag-corrected yield; bars are anchored at a ratio of 1 (no anomaly) on a logarithmic axis, so a doubling and a halving of the ratio are given equal visual weight. Steps taken while ramping to higher temperatures are generally undermeasured (blue), as some of the sample's evolved helium has not yet fully permeated out of the tube at the time of measurement, while steps taken while ramping to lower temperatures are generally overmeasured (red), as helium retained in the tube from earlier, hotter steps continues to permeate out. The first two steps (100-150\textdegree C) are strongly overmeasured despite being on the heating ramp because little helium had yet evolved from the apatite, so measured yield there is dominated by pre-existing atmospheric helium draining from the tube rather than fresh sample degassing.}
-\label{fig:durango-stepwise-yields}
+\includegraphics[width=\textwidth,height=0.72\textheight,keepaspectratio]{InSituLambdaFits_Grid.pdf}
+\caption{Cumulative yield against cumulative time for each isothermal run of permeation steps of the empty ampoule 
+(rows: temperature; columns: isotope), with the rate constants fit in situ using Eq.~\eqref{eq:incyield} 
+(red dashed curves). Hollow grey points are the first steps of the 125 and 200\textdegree C runs, which are excluded 
+because the glass had not yet reached a diffusive steady state; the red curves for those runs are fit to the remaining 
+two steps, and the grey dashed curves are the fits that include the first step (annotated with the change in \(\lambda\) 
+and the resulting \(\chi^2\)/dof).}
+\label{fig:s-insitu-fits}
 \end{figure}
 
 \input{paper_insitu_lambda_table}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=\textwidth]{InSituLambdaFits_Grid.pdf}
-\caption{Cumulative yield against cumulative time for each isothermal run of permeation steps of the empty ampoule (rows: temperature; columns: isotope), with the rate constants fit in situ using Eq.~\eqref{eq:incyield} (red dashed curves). Hollow grey points are the first steps of the 125 and 200\textdegree C runs, which are excluded because the glass had not yet reached a diffusive steady state; the red curves for those runs are fit to the remaining two steps, and the grey dashed curves are the fits that include the first step (annotated with the change in \(\lambda\) and the resulting \(\chi^2\)/dof).}
-\label{fig:s-insitu-fits}
-\end{figure}

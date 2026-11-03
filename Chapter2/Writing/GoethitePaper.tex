@@ -1,0 +1,53 @@
+% GoethitePaper.tex -- GCA submission wrapper (elsarticle, review layout).
+% Built by Chapter2/Paper/build_paper_from_chapter2.py (2026-11-02); see Chapter2/Paper/PORT_CHANGELOG.md.
+% Cross-references: \externaldocument{GoethitePaper_SI} for the SI, and prefix ch1- for the
+% Geochronology preprint (Chapter1/Writing/TubeMethodPaper.aux / SI.aux) -- compile those first.
+\documentclass[preprint,12pt,review,authoryear]{elsarticle}
+\journal{Geochimica et Cosmochimica Acta}
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{subcaption}
+\usepackage{lineno}
+\usepackage{xr}
+\usepackage{xurl}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\graphicspath{{../Figures/source/}{../Figures/generated/}}
+\input{chapter2_derived_values}
+\input{chapter2_kinetics_values}
+\input{mdd_free_report_values}
+\providecommand{\hl}[1]{#1}
+\externaldocument{GoethitePaper_SI}
+\externaldocument[ch1-]{../../Chapter1/Writing/TubeMethodPaper}
+\externaldocument[ch1-]{../../Chapter1/Writing/SI}
+
+\begin{document}
+\linenumbers
+\begin{frontmatter}
+\title{Helium Step Heats on Geothite at Water Saturated Conditions Show Diffusive Helium Loss and High Retentivity at Surface Temperatures}
+\author[caltech]{Ben J. Thyer\corref{cor1}}
+\ead{benjthyer@gmail.com}
+\author[caltech]{Jonathan Treffkorn}
+\author[caltech]{Kenneth A. Farley}
+\cortext[cor1]{Corresponding author.}
+\affiliation[caltech]{organization={Division of Geological and Planetary Sciences, California Institute of Technology},
+            city={Pasadena}, postcode={91125}, state={CA}, country={USA}}
+\begin{abstract}
+\input{GoethitePaper_abstract}
+\end{abstract}
+\begin{keyword}
+goethite \sep (U--Th)/He geochronology \sep helium diffusion \sep step heating \sep dehydroxylation \sep multiple diffusion domains
+\end{keyword}
+\end{frontmatter}
+
+\input{GoethitePaper_body}
+
+\bibliographystyle{elsarticle-harv}
+\bibliography{../../references,goethite_paper_extra}
+\end{document}

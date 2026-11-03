@@ -60,7 +60,8 @@ spec = M.load_spectrum()
 d = F.he3_data(spec)
 KEEP = d['keep']
 N_FIT = spec['n_fit']
-DOF = N_FIT - 2                       # every thermal family has two free parameters
+DOF = N_FIT - 2                       # steady cooling and isothermal hold: two free parameters
+DOF_BUR = N_FIT - 3                   # burial: t_form (scanned over 180/195/210 Ma), t_peak, T_max
 x_arr = 10000.0 / (spec['T_C'] + 273.0)
 lnD_ref = d['lnD_stage1']
 
@@ -110,16 +111,16 @@ gi = pd.read_csv(os.path.join(DATA_DIR, f'maps_alt_isothermal_N{N_SEL}.csv'))
 gl = pd.read_csv(os.path.join(DATA_DIR, f'maps_alt_linear_N{N_SEL}.csv'))
 
 
-def summarize(g, tcol, Tcol):
+def summarize(g, tcol, Tcol, dof=DOF):
     """Best age-consistent cell (or best overall, flagged); 1-sigma ranges of the age-consistent cells within
     Delta chi^2 = 2.30 max(1, chi^2_nu) of that best fit. thr is the unconstrained 1-sigma level (map contour)."""
     cmin = g['chi2'].min()
-    thr = cmin + 2.30 * max(1.0, cmin / DOF)
+    thr = cmin + 2.30 * max(1.0, cmin / dof)
     ok = g[age_ok(g['bulk_age_Ma'])]
     flag = ok.empty
     b = (g if flag else ok).loc[(g if flag else ok)['chi2'].idxmin()]
     # ranges: age-consistent cells within 1 sigma of the best age-consistent fit
-    thr_ok = b['chi2'] + 2.30 * max(1.0, b['chi2'] / DOF)
+    thr_ok = b['chi2'] + 2.30 * max(1.0, b['chi2'] / dof)
     sig = ok[ok['chi2'] <= thr_ok]
     rng = lambda c, fmt: '--' if sig.empty else (f"{sig[c].min():{fmt}}--{sig[c].max():{fmt}}")
     return dict(best=b, flag=flag, thr=thr, cmin=cmin,
@@ -134,10 +135,10 @@ th_rows.append(f"Isothermal hold & {b['t_form_Ma']:.0f} & -- & {b['T_C']:.0f} & 
                f"{b['bulk_age_Ma']:.0f} & {s['t_rng']} & -- & {s['T_rng']} \\\\")
 for tf in BURIAL_T_FORMS:
     g = gb[np.isclose(gb['t_form_Ma'], tf)].reset_index(drop=True)
-    s = summarize(g, 't_peak_Ma', 'T_max_C'); b = s['best']
+    s = summarize(g, 't_peak_Ma', 'T_max_C', DOF_BUR); b = s['best']
     th_vals[f'bur{tf:.0f}'] = s
     dag = '$^{\\dagger}$' if s['flag'] else ''
-    th_rows.append(f"Burial & {tf:.0f} & {b['t_peak_Ma']:.0f} & {b['T_max_C']:.0f} & {b['chi2'] / DOF:.2f} & "
+    th_rows.append(f"Burial & {tf:.0f} & {b['t_peak_Ma']:.0f} & {b['T_max_C']:.0f} & {b['chi2'] / DOF_BUR:.2f} & "
                    f"{b['bulk_age_Ma']:.0f}{dag} & fixed & {s['t_rng'].replace('--', '--', 1)} & {s['T_rng']} \\\\")
 s = summarize(gl, 't_form_Ma', 'T_C'); b = s['best']
 th_vals['lin'] = s
@@ -257,12 +258,14 @@ gb195 = gb[np.isclose(gb['t_form_Ma'], MAP_T_FORM)].reset_index(drop=True)
 panels = [
     dict(g=gb195, x='t_peak_Ma', y='T_max_C', s=th_vals[f'bur{MAP_T_FORM:.0f}'],
          title=f'Burial, crystallized at {MAP_T_FORM:.0f} Ma', xlabel=r'Time of peak temperature, $t_\mathrm{peak}$ (Ma)',
-         ylabel=r'Peak temperature, $T_\mathrm{max}$ (°C)', xlim=(MAP_T_FORM, 50), ylim=(30, 90), aft=True),
+         ylabel=r'Peak temperature, $T_\mathrm{max}$ (°C)', xlim=(MAP_T_FORM, 50), ylim=(30, 90), aft=True,
+         dof=DOF_BUR),
     dict(g=gl, x='t_form_Ma', y='T_C', s=th_vals['lin'],
          title='Linear cooling to 25 °C', xlabel=r'Crystallization age, $t_\mathrm{form}$ (Ma)',
-         ylabel=r'Temperature at crystallization, $T_0$ (°C)', xlim=(320, 50), ylim=(40, 120), aft=False),
+         ylabel=r'Temperature at crystallization, $T_0$ (°C)', xlim=(320, 50), ylim=(40, 120), aft=False,
+         dof=DOF),
 ]
-nu_min = min(p['g']['chi2'].min() for p in panels) / DOF
+nu_min = min(p['g']['chi2'].min() / p['dof'] for p in panels)
 edges = np.r_[0.0, np.round(nu_min + np.array([0.3, 0.8, 1.8, 3.8, 6.8]), 1), 1e9]
 labels = [f'<{edges[1]:g}'] + [f'{a:g}–{b:g}' for a, b in zip(edges[1:-2], edges[2:-1])] + [f'>{edges[-2]:g}']
 ticks = 0.5 * (np.r_[nu_min - 0.3, edges[1:-1]] + np.r_[edges[1:-1], edges[-2] + 3])
@@ -274,7 +277,7 @@ for ax, p in zip(axes, panels):
     xs, ys = np.sort(g[p['x']].unique()), np.sort(g[p['y']].unique())
     piv = lambda c: g.pivot(index=p['y'], columns=p['x'], values=c).loc[ys, xs].to_numpy()
     X, Y = np.meshgrid(xs, ys)
-    pc = ax.pcolormesh(X, Y, piv('chi2') / DOF, cmap=cmap, norm=norm, shading='nearest', rasterized=True)
+    pc = ax.pcolormesh(X, Y, piv('chi2') / p['dof'], cmap=cmap, norm=norm, shading='nearest', rasterized=True)
     cs = ax.contour(X, Y, piv('bulk_age_Ma'), levels=list(MEASURED_AGE), colors=INK, linewidths=1.2,
                     linestyles='--', zorder=3)
     ax.clabel(cs, fmt=lambda v: f'{v:.0f} Ma', fontsize=15)
@@ -285,7 +288,7 @@ for ax, p in zip(axes, panels):
         ax.plot(b[p['x']], b[p['y']], '*', color='white', mec=INK, ms=20, zorder=6)
     ax.set_xlim(*p['xlim']); ax.set_ylim(*p['ylim'])
     ax.set_xlabel(p['xlabel']); ax.set_ylabel(p['ylabel'])
-    ax.set_title(rf"{p['title']}" + "\n" + rf"(min $\chi^2_\nu$ = {g['chi2'].min() / DOF:.2f})", fontsize=18)
+    ax.set_title(rf"{p['title']}" + "\n" + rf"(min $\chi^2_\nu$ = {g['chi2'].min() / p['dof']:.2f})", fontsize=18)
 cb = fig.colorbar(pc, ax=axes, pad=0.01, fraction=0.04, ticks=ticks)
 cb.ax.set_yticklabels(labels, fontsize=15)
 cb.set_label(r'Reduced $\chi^2$ ($^4$He/$^3$He)')
@@ -302,9 +305,9 @@ save(fig, f'ch2_mdd_heatmaps_N{N_SEL}', bbox_inches='tight')
 SM = F.SpectrumModelFree(spec, res4['f'], res4['r'])
 bb, bl = th_vals[f'bur{MAP_T_FORM:.0f}']['best'], th_vals['lin']['best']
 cases = [(burial_nodes(MAP_T_FORM, bb['T_max_C'], bb['t_peak_Ma']), C_BUR,
-          rf"Burial: {MAP_T_FORM:.0f} Ma, peak {bb['T_max_C']:.0f} °C at {bb['t_peak_Ma']:.0f} Ma"),
+          rf"Burial: {MAP_T_FORM:.0f} Ma, peak {bb['T_max_C']:.0f} °C at {bb['t_peak_Ma']:.0f} Ma", DOF_BUR),
          (cooling_nodes(bl['t_form_Ma'], bl['T_C']), C_COOL,
-          rf"Linear cooling: {bl['T_C']:.0f} °C at {bl['t_form_Ma']:.0f} Ma → 25 °C")]
+          rf"Linear cooling: {bl['T_C']:.0f} °C at {bl['t_form_Ma']:.0f} Ma → 25 °C", DOF)]
 apply_style(scale=1.4)
 fig, ax = plt.subplots(figsize=(9.0, 7.0), layout='constrained')
 u, Fs, Fe = spec['use'], spec['F_start'], spec['F_end']
@@ -312,11 +315,11 @@ for i in np.where(u)[0]:
     ax.fill_between([Fs[i], Fe[i]], spec['R_LB'][i], spec['R_UB'][i], color=BOX, lw=0, zorder=1)
 ax.hlines(spec['R_M'][u], Fs[u], Fe[u], color=INK, lw=2.2, zorder=3)
 handles = [Line2D([], [], color=INK, lw=2.2, label='Data (M), LB–UB box')]
-for z, (nd, col, lab) in enumerate(cases):
+for z, (nd, col, lab, dof) in enumerate(cases):
     c2, age, pr = SM.evaluate(*nd, dt_myr=DT_MYR)
     ax.hlines(pr, Fs, Fe, color=col, lw=1.9, zorder=4 + z)
     draw_step_connectors(ax, Fs, Fe, pr, color=col, zorder=4 + z)
-    handles.append(Line2D([], [], color=col, lw=1.9, label=rf"{lab}" + "\n" + rf"$\chi^2_\nu$ = {c2 / DOF:.1f}, He age {age:.0f} Ma"))
+    handles.append(Line2D([], [], color=col, lw=1.9, label=rf"{lab}" + "\n" + rf"$\chi^2_\nu$ = {c2 / dof:.1f}, He age {age:.0f} Ma"))
 ax.set_xlim(0, 0.16); ax.set_ylim(0, 1.15)
 ax.set_xlabel(r'Cumulative $^3$He fraction, $\Sigma F_{^3\mathrm{He}}$')
 ax.set_ylabel(r'$R_\mathrm{step}/R_\mathrm{bulk}$')

@@ -424,7 +424,7 @@ def make_arrhenius_comparison(fname="arrhenius_reaction_vs_diffusion",
     sets = [("Vacuum: Farley et al., 2024 (KAF)", k, "o", "red"),
             ("Vacuum: Monteiro, 2017 (HDM)", h, "s", "orange")]
     if include_ht and (HERE / "data/Win0601bHT_distilled.csv").exists():
-        sets.append(("Hydrothermal: this study", load_ht(), "D", "blue"))
+        sets.append(("Water vapor saturated: this study", load_ht(), "D", "blue"))
     xlim = (1e4 / (T_max_C + 273.15), 1e4 / (T_min_C + 273.15))
     Ctemps = np.array([125, 150, 175, 200, 225, 250, 275, 300, 325])
     Ctemps = Ctemps[(Ctemps >= T_min_C) & (Ctemps <= T_max_C)]
@@ -528,7 +528,13 @@ def make_arrhenius_comparison(fname="arrhenius_reaction_vs_diffusion",
 # gamma_eff is calibrated from the LN2-off steps, where raising P_H2O slowed
 # the isothermal rate by factor s:  ln(1/s) = (C g^3/T)(1/dmu_off^2 - 1/dmu_on^2).
 # P_H2O during those steps is not known, so gamma_eff is given as a function
-# of the assumed value.  Assumes the mobility term (A, Ea) is unchanged, i.e.
+# of the assumed value.
+# Trapped vacuum line ("on"): P_H2O -> 0 (2026-11-02; previously an arbitrary
+# 1e-8 atm).  The water chemical potential then goes to -inf, dmu_on to +inf,
+# and 1/dmu_on^2 -> 0, so the vacuum barrier vanishes and gamma_eff follows
+# from the trap-off step alone:  ln(1/s) = C g^3 / (T dmu_off^2).  This is the
+# conservative limit: any finite P_on would give a larger gamma_eff and a
+# stronger predicted slowdown at saturation.  Assumes the mobility term (A, Ea) is unchanged, i.e.
 # the same solid-state mechanism; fluid-mediated dissolution-reprecipitation
 # is NOT captured.
 
@@ -537,6 +543,10 @@ C_NUC = 16 * np.pi * gh.V_HEM**2 / (3 * KB)
 
 
 def _dmu_bulk(T, P):
+    """Bulk driving force (J/mol Fe2O3).  P <= 0 is the zero-water-pressure
+    limit, where the driving force is unbounded (returns +inf, so 1/dmu^2 = 0)."""
+    if P <= 0:
+        return np.inf
     return -gh.dG_bulk(T, P)
 
 
@@ -559,7 +569,7 @@ def trap_off_suppression(k=None, phi=None):
 
 def gamma_from_suppression(T_C, s, P_off_bar, P_on=None):
     T = T_C + 273.15
-    P_on = gh.P_VAC if P_on is None else P_on
+    P_on = P_ON_PA if P_on is None else P_on
     m_on, m_off = _dmu_bulk(T, P_on), _dmu_bulk(T, P_off_bar * 1e5)
     return (np.log(1 / s) * T / (C_NUC * (1 / m_off**2 - 1 / m_on**2)))**(1 / 3)
 
@@ -567,7 +577,7 @@ def gamma_from_suppression(T_C, s, P_off_bar, P_on=None):
 def saturated_rate_factor(T_C, gamma_eff, P_vac=None):
     """k_sat / k_vac at water saturation (P = P_sat), same gamma_eff."""
     T = np.atleast_1d(np.asarray(T_C, float)) + 273.15
-    P_vac = gh.P_VAC if P_vac is None else P_vac
+    P_vac = P_ON_PA if P_vac is None else P_vac
     out = []
     for t in T:
         ps = CP.PropsSI("P", "T", t, "Q", 0, "Water")
@@ -632,7 +642,7 @@ def log10_alpha_hydrothermal(T_C, t_h, gamma_eff, line=None):
     lnfac = []
     for t in T:
         ps = CP.PropsSI("P", "T", t, "Q", 0, "Water")
-        ms, mv = _dmu_bulk(t, ps * (1 + 1e-6)), _dmu_bulk(t, gh.P_VAC)
+        ms, mv = _dmu_bulk(t, ps * (1 + 1e-6)), _dmu_bulk(t, P_ON_PA)
         lnfac.append(-np.inf if ms <= 0 else
                      -(C_NUC * gamma_eff**3 / t) * (1 / ms**2 - 1 / mv**2))
     terms = lnk_vac(T_C, line) + np.log(np.asarray(t_h) * 3600) + np.array(lnfac)
@@ -646,8 +656,16 @@ def predict_vacuum_first_order(T_C, t_h, line=None):
     return 1 - np.exp(-np.cumsum(kv * np.asarray(t_h) * 3600))
 
 
-GAMMA_CAL = (0.14, 0.16, 0.19)   # J/m2: low, central, high (trap-off steps,
-                                 # 190-600 mL volume, end/half-step P_H2O)
+GAMMA_CAL = (0.12, 0.14, 0.15)   # J/m2: low, central, high (trap-off steps,
+                                 # 190-600 mL volume, end/half-step P_H2O),
+                                 # P_on -> 0 (was 0.14, 0.16, 0.19 at 1e-8 atm)
+
+
+def gamma_permissive(sup=None, P_off_bar=0.1):
+    """gamma_eff if the trap-off water pressure were as high as P_off_bar
+    (smallest over the trap-off steps); a deliberately permissive case."""
+    sup = trap_off_suppression() if sup is None else sup
+    return min(gamma_from_suppression(T_C, s_, P_off_bar) for T_C, s_ in sup)
 
 
 def make_delta_plot(fname="first_order_delta_lnk"):
@@ -704,7 +722,7 @@ def make_delta_plot(fname="first_order_delta_lnk"):
         ax.hlines(hd, hs, he, color=HT_COLOR, linewidth=1.5, zorder=4)
         draw_step_connectors(ax, hs, he, hd, color=HT_COLOR, zorder=4)
         handles.append(Patch(facecolor=HT_COLOR, edgecolor=HT_COLOR, alpha=0.45,
-                             label="Hydrothermal He3: This Study"))
+                             label="Water vapor saturated He3: This Study"))
 
         ax.set_title("Delta Plot Winsor Goethite, First-Order Reference")
         ax.set_ylabel(r"$\Delta$ $\left(ln\left(k\right)_{measured} - "
@@ -759,9 +777,10 @@ def make_hydrothermal_translation(fname="hydrothermal_translation"):
         f = saturated_rate_factor(Tg, g)
         ax[1].semilogy(Tg, np.clip(f, 1e-300, None), "k", ls=ls,
                        label=rf"$\gamma_{{eff}}$ = {g} J/m$^2$")
-    ax[1].semilogy(Tg, np.clip(saturated_rate_factor(Tg, 0.084), 1e-300,
+    gp = gamma_permissive(sup)
+    ax[1].semilogy(Tg, np.clip(saturated_rate_factor(Tg, gp), 1e-300,
                                None), color="0.6", lw=1,
-                   label=r"$\gamma_{eff}$ = 0.084 (assumes 0.1 bar)")
+                   label=rf"$\gamma_{{eff}}$ = {gp:.3f} (assumes 0.1 bar)")
     ax[1].set_ylim(1e-60, 2)
     ax[1].axvspan(150, 250, color="0.92", zorder=0)
     ax[1].set_xlabel("Temperature (°C)")
@@ -780,11 +799,11 @@ def make_hydrothermal_translation(fname="hydrothermal_translation"):
 # comparison was removed on 2026-10-01 -- see git history, commit 94aab4c).
 # ----------------------------------------------------------------------------
 # R = k(P_H2O) / k(P_on) at water pressure P relative to the trapped vacuum
-# line (P_on = 1e-8 atm), calibrated on the trap-isolated steps, R(P_off) = s,
+# line (P_on -> 0), calibrated on the trap-isolated steps, R(P_off) = s,
 # and applied at P_sat(T) step by step through the hydrothermal schedule:
 #   ln R = -(C g^3/T)(1/dmu(P)^2 - 1/dmu_on^2)       (g = gamma_eff calibrated)
 #   alpha = 1 - exp(-sum_i k_vac(T_i) R_i dt_i)
-P_ON_PA = gh.P_VAC / 1.0          # gh.P_VAC is in Pa
+P_ON_PA = 0.0                     # trapped line: P_H2O -> 0 (was gh.P_VAC = 1e-8 atm)
 RATE_LAWS = ("CNT",)
 THERMO_UNC_J = 2.8e3              # +-1.4 kJ per FeOOH (Majzlan 2003) per reaction
 N_MC = 4000
@@ -961,9 +980,9 @@ def cnt_scales(gamma, T_C=250.0):
     out = {}
     for tag, P in (("vac", P_ON_PA), ("sat", _psat_pa(T) * (1 + 1e-6))):
         m = _dmu(T, P)
-        r = 2 * gamma * gh.V_HEM / m
+        r = 0.0 if np.isinf(m) else 2 * gamma * gh.V_HEM / m
         out[tag] = dict(r_nm=r * 1e9, n_fu=(4 / 3 * np.pi * r**3) / fu,
-                        barrier_kBT=C_NUC * gamma**3 / (T * m**2))
+                        barrier_kBT=0.0 if np.isinf(m) else C_NUC * gamma**3 / (T * m**2))
     return out
 
 
@@ -1078,10 +1097,11 @@ def write_kinetics_macros(tab, line, sup, resid, synth):
     # detectability: ln(sum_i k_vac(T_i) dt_i / 0.01) over the actual schedule
     detect = np.log(np.sum(np.exp(lnk_vac(ht_["Temp (C)"], line))
                            * ht_["Time (h)"] * 3600) / 0.01)
+    gp = gamma_permissive(sup)
     la = {g: log10_alpha_hydrothermal(ht_["Temp (C)"], ht_["Time (h)"], g, line)
-          for g in (0.084,) + GAMMA_CAL}
+          for g in (gp,) + GAMMA_CAL}
     F_end = float(ht_["F"].iloc[-1])
-    alpha_perm = 10**la[0.084]
+    alpha_perm = 10**la[gp]
     e_ = int(np.floor(np.log10(alpha_perm)))
     alpha_perm_s = f"{round(alpha_perm / 10**e_):.0f}\\times10^{{{e_}}}"
     M_rl, rl_cache = rate_law_macros(line, sup)
@@ -1198,7 +1218,7 @@ if __name__ == "__main__":
     print("Arrhenius (ln k) fit:", arr)
     make_delta_plot()
     ht = load_ht()
-    for g in (0.084,) + GAMMA_CAL:
+    for g in (gamma_permissive(),) + GAMMA_CAL:
         la = log10_alpha_hydrothermal(ht["Temp (C)"], ht["Time (h)"], g)
         print(f"HT schedule, gamma={g}: log10 predicted alpha = {la:.1f}")
     print("HT schedule, vacuum kinetics:",

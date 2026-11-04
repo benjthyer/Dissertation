@@ -64,7 +64,7 @@ Outputs:
                                                below) for readers who want the rest
   PermeationStepFits_150min_byTemp.pdf     - 150-minute-step sequences, superimposed
   PermeationStepFits_120min_byTemp.pdf     - 120-minute-step sequences, superimposed
-  AmpoulePermeability_Arrhenius.pdf                 - ln(K) vs 10^4/T, built from these fits,
+  AmpoulePermeability_Arrhenius.pdf                 - ln(lambda/T) vs 10^4/T, built from these fits,
                                                overlaid with the simulated lambda fits
                                                from goethite_thermal_sims.py (read from
                                                data/goethite_thermal_sim_lambdas.csv, if
@@ -290,20 +290,14 @@ with open(CACHE_PATH, 'w') as f:
     }, f, indent=2)
 print(f"Wrote {CACHE_PATH}")
 
-fig, ax1 = plt.subplots(constrained_layout=True)
-ax2 = ax1.twiny()
-
-xline = np.array([x.min(), x.max()])
-ax1.plot(xline, slope * xline + intercept, color='teal',
-         label=f'Regression: ln(K) = {slope:.3f}x + {intercept:.3f}')
-
-# Reference 3He permeability of fused silica: Swets et al. 1961 give the 4He
-# permeability K; Jones 1954 gives the 3He/4He permeability ratio, so their
-# product is the 3He permeability plotted here for comparison.
-xref = np.linspace(x.min(), x.max(), 50)
-Kref = np.array([swets('K', 1E4 / xt) * Jones(1E4 / xt) for xt in xref])
-ax1.plot(xref, np.log(Kref), color='black', linestyle='--',
-         label='3He Permeability (Swets et al. 1961; Jones 1954')
+# The plot is in terms of the measured quantity, ln(lambda/T): the fitted
+# rate constants go on directly and the literature line is the one that
+# depends on the ampoule geometry (lambda/T = K*G*R). Since
+# ln(lambda/T) = ln(K) + ln(G*R), the slope (and so Ea) is identical to the
+# ln(K) regression above; only the intercept shifts by ln(G*R).
+y_lam = np.log(np.array([s['lam'] / s['T_K'] for s in sequences]))
+reg_lam = scipy.stats.linregress(x, y_lam)
+slope_lam, intercept_lam = reg_lam.slope, reg_lam.intercept
 
 # Load the simulated fits (if the cache exists) up front, so the shared
 # "Isothermal Step Duration" color scale can be widened to cover both the
@@ -315,52 +309,81 @@ if sim is None:
     print(f"Note: {sim_cache} not found -- run goethite_thermal_sims.py first to add "
           "the simulated-lambda overlay to AmpoulePermeability_Arrhenius.pdf.")
 
-ax1.errorbar(x, y, yerr=yerr, fmt='none', ecolor='black', capsize=4, zorder=4)
-cmap2 = mpl.cm.viridis
-dur_min, dur_max = step_min.min(), step_min.max()
-if sim is not None:
-    dur_min = min(dur_min, sim['hold_min'].min())
-    dur_max = max(dur_max, sim['hold_min'].max())
-norm2 = mpl.colors.Normalize(vmin=dur_min, vmax=dur_max)
-sc = ax1.scatter(x, y, color='teal', alpha = 0.7, edgecolor='black', linewidth=0.8, #c=step_min, cmap=cmap2, norm=norm2, edgecolor='black',
-                  zorder=5, label='Experimentally Determined Apparent K')
-#fig.colorbar(sc, ax=[ax1, ax2], label='Isothermal Step Duration (min)')
 
-# Overlay: simulated lambda fits from goethite_thermal_sims.py's
-# temperature/hold-duration finite-difference permeation grid, fit with the
-# same (lambda, n0) model as the actual sequences above, colored by hold
-# duration on the same scale as the actual data, for direct comparison.
-x_ticked = x  # x-range used to place the top (Temperature) axis's ticks below
-if sim is not None:
-    x_sim = 1E4 / sim['T_K'].to_numpy()
-    y_sim = np.log(lambda_to_K(sim['lam'].to_numpy(), sim['T_K'].to_numpy()))
-    ax1.scatter(x_sim, y_sim, marker='^', color='goldenrod', alpha=0.7, #c=sim['hold_min'], cmap=cmap2, norm=norm2,
-                edgecolor='black', linewidth=0.8, zorder=6,
-                label='Simulated Apparent K with Cooling')
-    x_ticked = np.concatenate([x, x_sim])  # sim grid spans a wider T range than the actual data
 
-if sim is not None:
-    # Tick the top (Temperature) axis at exactly the simulation grid's own
-    # hold temperatures, rather than an arbitrary evenly-spaced set.
-    tick_temps_C = np.sort(sim['T_C'].unique())
-    ax2.set_xticks(1E4 / (tick_temps_C + 273))
-    ax2.set_xlim(ax1.get_xlim())
-    ax2.set_xticklabels([f'{c:.0f}' for c in tick_temps_C])
-else:
-    ax2.set_xticks(np.linspace(x_ticked.min(), x_ticked.max(), 5))
-    ax2.set_xlim(ax1.get_xlim())
-    ax2.set_xticklabels([f'{1E4 / xt - 273:.0f}' for xt in ax2.get_xticks()])
-ax2.set_xlabel('Temperature (°C)')
-ax1.set_xlabel(r'$10^4/T$ (K)')
-ax1.set_ylabel(r'$\ln(K)$ (atoms sec$^{-1}$ cm$^{-1}$ atm$^{-1}$)')
-ax1.set_title('Win-06-01b Apparent He Permeability\nDetermined with Sequential Isothermal Steps')
-#ax1.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=2, fontsize=8)
-ax1.legend(fontsize=8)
-plt.sca(ax1)  # make_grid() grids whichever axes is current; twiny() left ax2 current
-make_grid()
-plt.tight_layout()
-fig.savefig(os.path.join(OUTDIR, 'AmpoulePermeability_Arrhenius.pdf'), dpi=300)
-plt.close(fig)
+def plot_arrhenius(outname, include_sim):
+    """Draw the ln(lambda/T) Arrhenius figure. include_sim=False omits the
+    simulated-with-cooling triangles (manuscript version); the axes, top
+    temperature ticks and everything else are otherwise identical."""
+    fig, ax1 = plt.subplots(constrained_layout=True)
+    ax2 = ax1.twiny()
+
+    xline = np.array([x.min(), x.max()])
+    ax1.plot(xline, slope_lam * xline + intercept_lam, color='teal',
+             label=f'Regression: ln(λ/T) = {slope_lam:.3f}x + {intercept_lam:.3f}')
+
+    # Prediction from geometry + literature permeability of fused silica: Swets et
+    # al. 1961 give the 4He permeability K; Jones 1953 gives the 3He/4He
+    # permeability ratio, so their product is the 3He permeability, converted to
+    # a rate constant for this ampoule via lambda/T = K*G*R.
+    xref = np.linspace(x.min(), x.max(), 50)
+    Kref = np.array([swets('K', 1E4 / xt) * Jones(1E4 / xt) for xt in xref])
+    ax1.plot(xref, np.log(Kref * G * Ratoms), color='black', linestyle='--',
+             label='Prediction by geometry + Swets et al., 1961 and Jones 1953')
+
+    ax1.errorbar(x, y_lam, yerr=yerr, fmt='none', ecolor='black', capsize=4, zorder=4)
+    cmap2 = mpl.cm.viridis
+    dur_min, dur_max = step_min.min(), step_min.max()
+    if sim is not None:
+        dur_min = min(dur_min, sim['hold_min'].min())
+        dur_max = max(dur_max, sim['hold_min'].max())
+    norm2 = mpl.colors.Normalize(vmin=dur_min, vmax=dur_max)
+    sc = ax1.scatter(x, y_lam, color='teal', alpha = 0.7, edgecolor='black', linewidth=0.8, #c=step_min, cmap=cmap2, norm=norm2, edgecolor='black',
+                      zorder=5, label='Experimentally Determined Apparent λ')
+    #fig.colorbar(sc, ax=[ax1, ax2], label='Isothermal Step Duration (min)')
+
+    # Overlay: simulated lambda fits from goethite_thermal_sims.py's
+    # temperature/hold-duration finite-difference permeation grid, fit with the
+    # same (lambda, n0) model as the actual sequences above, colored by hold
+    # duration on the same scale as the actual data, for direct comparison.
+    x_ticked = x  # x-range used to place the top (Temperature) axis's ticks below
+    if include_sim and sim is not None:
+        x_sim = 1E4 / sim['T_K'].to_numpy()
+        y_sim = np.log(sim['lam'].to_numpy() / sim['T_K'].to_numpy())
+        ax1.scatter(x_sim, y_sim, marker='^', color='goldenrod', alpha=0.7, #c=sim['hold_min'], cmap=cmap2, norm=norm2,
+                    edgecolor='black', linewidth=0.8, zorder=6,
+                    label='Simulated Apparent λ with Cooling')
+        x_ticked = np.concatenate([x, x_sim])  # sim grid spans a wider T range than the actual data
+
+    if sim is not None:
+        # Tick the top (Temperature) axis at exactly the simulation grid's own
+        # hold temperatures, rather than an arbitrary evenly-spaced set.
+        tick_temps_C = np.sort(sim['T_C'].unique())
+        ax2.set_xticks(1E4 / (tick_temps_C + 273))
+        ax2.set_xlim(ax1.get_xlim())
+        ax2.set_xticklabels([f'{c:.0f}' for c in tick_temps_C])
+    else:
+        ax2.set_xticks(np.linspace(x_ticked.min(), x_ticked.max(), 5))
+        ax2.set_xlim(ax1.get_xlim())
+        ax2.set_xticklabels([f'{1E4 / xt - 273:.0f}' for xt in ax2.get_xticks()])
+    ax2.set_xlabel('Temperature (°C)')
+    ax1.set_xlabel(r'$10^4/T$ (K)')
+    ax1.set_ylabel(r'$\ln(\lambda/T)$  ($\lambda$ in s$^{-1}$, $T$ in K)')
+    ax1.set_title('Win-06-01b Apparent He Permeation Rate Constant\nDetermined with Sequential Isothermal Steps')
+    #ax1.legend(loc='upper center', bbox_to_anchor=(0.5, -0.15), ncol=2, fontsize=8)
+    ax1.legend(fontsize=8)
+    plt.sca(ax1)  # make_grid() grids whichever axes is current; twiny() left ax2 current
+    plt.tight_layout()
+    fig.canvas.draw()  # make_grid() reads tick positions, which are only set once drawn
+    make_grid()
+    fig.savefig(os.path.join(OUTDIR, outname), dpi=300)
+    plt.close(fig)
+
+
+# Manuscript version first (no simulated-with-cooling triangles), then the
+# dissertation version with them.
+plot_arrhenius('AmpoulePermeability_Arrhenius_NoSim.pdf', include_sim=False)
+plot_arrhenius('AmpoulePermeability_Arrhenius.pdf', include_sim=True)
 
 # ---------------------------------------------------------------------------
 # SI tables: raw per-step isothermal dataset + per-sequence fit results.

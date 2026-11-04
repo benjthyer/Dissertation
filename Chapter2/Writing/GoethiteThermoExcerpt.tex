@@ -112,7 +112,7 @@ programming against the phase-equilibrium brackets of \citet{voigt1981}.
   \vspace{0.5ex}
   \begin{minipage}{0.85\linewidth}\footnotesize
   Enthalpy, entropy and $C_p$: \citet{majzlan2003a,majzlan2003}; surface energies: \citet{navrotsky2008}.
-  Water: $\Delta_f H^0_{\mathrm{w}} = -285.83$~kJ\,mol$^{-1}$, $S^0_{\mathrm{w}} = 69.95$~J\,mol$^{-1}$\,K$^{-1}$; IAPWS-95 for $h(T,P)$, $s(T,P)$.
+  Water: $\Delta_f H^0_{\mathrm{w}} = -285.83$~kJ\,mol$^{-1}$, $S^0_{\mathrm{w}} = 69.95$~J\,mol$^{-1}$\,K$^{-1}$ \citep{cox1989}; IAPWS-95 for $h(T,P)$, $s(T,P)$.
   \end{minipage}
 \end{table}
 
@@ -510,7 +510,7 @@ both (\S\ref{sec:gt_vacuum}).
 
 \paragraph{Fits to the vacuum data.} Table~\ref{tab:gt_mech_fits} gives the fit of each model to
 the cumulative KAF $^3$He release within the fitting window. It also gives the misfit of the
-resulting out-of-sample prediction of HDM, and the fit to the KAF water data. F1 gives the best
+resulting out-of-sample prediction of HDM. F1 gives the best
 fit and the best prediction. R3 and R2 are close behind, so we describe the mechanism as
 nucleation- or interface-controlled rather than claim first order specifically. The Avrami
 fits reach the lower bound of $E_a$ and fail on both data sets. Spherical diffusion with
@@ -520,8 +520,8 @@ and with $\phi$ free, over the same \ChTwoKinNKAF{} KAF steps. The imposed plate
 misfit to \ChTwoKinDThreePhiRmsKAF{} and \ChTwoKinDThreeFreeRmsKAF, which still ranks below F1, R3 and
 R2, and the out-of-sample prediction of HDM does not improve (rms \ChTwoKinDThreePhiRmsHDM{} and
 \ChTwoKinDThreeFreeRmsHDM, against \ChTwoKinFOneRmsHDM{} for F1). These fits also require
-$E_a$ of \ChTwoKinDThreePhiEa--\ChTwoKinDThreeFreeEa~kJ\,mol$^{-1}$ and a rate factor
-$s = \ChTwoKinDThreePhiS$ for the trap-isolated steps, although a diffusive process should not
+$E_a$ of \ChTwoKinDThreePhiEa--\ChTwoKinDThreeFreeEa~kJ\,mol$^{-1}$. The rate factor for the trap-isolated steps is fixed at
+$s=1$ in all three D3 fits, because a diffusive process should not
 respond to the water pressure at all.
 
 The fitting window excludes the low-temperature steps, where release is dominated by diffusion from
@@ -534,15 +534,15 @@ for the HDM prediction), followed by R3 (\ChTwoKinAllRThreeEa~kJ\,mol$^{-1}$; \C
 
 \begin{table}[htbp]
   \centering
-  \caption{Kinetic and Diffusive Model fits to the vacuum experiments (from \citet{monteiro2017}~and~\citet{farley2024}). $s$: rate factor for the trap-isolated steps. All rms values are over the same \ChTwoKinNKAF{} KAF and \ChTwoKinNHDM{} HDM steps. D3 is fitted with $\phi$ fixed at 0, fixed at the F1 value, and free; the water fit does not depend on $\phi$ and is given once.}
+  \caption{Kinetic and Diffusive Model fits to the vacuum experiments (from \citet{monteiro2017}~and~\citet{farley2024}). All rms values are over the same \ChTwoKinNKAF{} KAF and \ChTwoKinNHDM{} HDM steps. D3 is fitted with $\phi$ fixed at 0, fixed at the F1 value, and free.}
   \label{tab:gt_mech_fits}
-  \begin{tabular}{lccccccc}
+  \begin{tabular}{lcccccc}
     \hline
-    Model & $E_a$ & $\ln A$ & $\phi$ & $s$ & rms KAF & rms HDM & $E_a$ (water) \\
+    Model & $E_a$ & $\ln A$ & $\phi$ & rms KAF & rms HDM \\
     \hline
 \ChTwoKinMechFitRows
     \hline
-    \multicolumn{8}{l}{\footnotesize $E_a$ in kJ\,mol$^{-1}$, $A$ in s$^{-1}$. $^{a}$At the lower bound of the fit.}
+    \multicolumn{6}{l}{\footnotesize $E_a$ in kJ\,mol$^{-1}$, $A$ in s$^{-1}$. $^{a}$At the lower bound of the fit.}
   \end{tabular}
 \end{table}
 

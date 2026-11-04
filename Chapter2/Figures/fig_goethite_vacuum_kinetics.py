@@ -193,22 +193,29 @@ def fit_model(model, df, target="F", use_noLN2=True, window=True,
     phi handling: by default phi is free for the reaction models and fixed
     at 0 for D3 and for the water data.  phi=<float> fixes it at that value
     (e.g. the F1 hematite-inherited fraction, so that D3 can be compared on
-    the same footing); phi_free=True frees it for D3 as well."""
+    the same footing); phi_free=True frees it for D3 as well.
+
+    The trap-isolated rate factor s (p[2] = ln s) is fixed at 1 for D3: a
+    diffusive process should not respond to the evolved water, so D3 is not
+    given the extra freedom; it is free for the reaction models."""
     diff = (model.startswith("D3") or target == "alpha_w") and not phi_free
     y = df[target].values
     w = fit_window(df) if window else np.ones(len(df), bool)
     nl = df["noLN2"].values if use_noLN2 else None
     fixed = 0.0 if (diff and phi is None) else phi
+    lns_fixed = 0.0 if model.startswith("D3") else None
     best = None
     for Ea0 in (60, 100, 150, 200, 300):
         c0 = -np.log(arrhenius_time(df["Temp (C)"], df["Time (h)"],
                                     Ea0 * 1e3)[-1])
+        q0, lb, ub = [Ea0, c0], [20, -300], [600, 300]
+        if lns_fixed is None:
+            q0, lb, ub = q0 + [0.0], lb + [-6], ub + [3]
         if fixed is None:
-            q0, lb, ub = [Ea0, c0, 0.0, 0.1], [20, -300, -6, 0.0], [600, 300, 3, 0.5]
-            full = lambda q: q
-        else:
-            q0, lb, ub = [Ea0, c0, 0.0], [20, -300, -6], [600, 300, 3]
-            full = lambda q, f=fixed: np.r_[q, f]
+            q0, lb, ub = q0 + [0.1], lb + [0.0], ub + [0.5]
+        n_free = len(q0)
+        full = lambda q, f=fixed, ls=lns_fixed: np.r_[
+            q[:2], q[2] if ls is None else ls, q[n_free - 1] if f is None else f]
         r = least_squares(
             lambda q: (predict(model, full(q), df["Temp (C)"], df["Time (h)"], nl)
                        - y)[w],
@@ -1169,13 +1176,10 @@ def write_kinetics_macros(tab, line, sup, resid, synth):
     rows = []
     for m, r in t.iterrows():
         lb = "$^{a}$" if r.Ea_kJ <= 20.0001 else ""
-        lbw = "$^{a}$" if r.Ea_water_kJ <= 20.0001 else ""
         lnA = _f(r.lnA, 2)
         lnA = f"${lnA}$" if r.lnA < 0 else lnA
-        water = "---" if "," in m else _f(r.Ea_water_kJ, 1) + lbw
         rows.append(f"{short[m]} & {_f(r.Ea_kJ, 1)}{lb} & {lnA} & {_f(r.phi, 3)} & "
-                    f"{_f(r.noLN2_rate_factor, 2)} & {_f(r.rms_KAF_He, 4)} & "
-                    f"{_f(r.rms_HM_pred, 4)} & {water} \\\\")
+                    f"{_f(r.rms_KAF_He, 4)} & {_f(r.rms_HM_pred, 4)} \\\\")
     M["ChTwoKinMechFitRows"] = "\n".join(rows)
     # synthetic degeneracy table rows (SI Table tab:gt_synth)
     sy = synth.pivot(index="model", columns="schedule")

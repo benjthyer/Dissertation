@@ -3105,3 +3105,79 @@ The trapped vacuum line was previously assigned an arbitrary P_H2O = 1e-8 atm. I
 - **EDIT** [Table gt_gamma] gamma_eff columns recomputed with P_on -> 0 (0.138/0.145, 0.150/0.158, 0.164/0.173, 0.178/0.188 -> 0.120/0.124, 0.126/0.130, 0.140/0.145, 0.147/0.152).
 
 - **EDIT** [Calibration paragraph, both bodies] Sentence order fixed: the zero-pressure-limit sentences now follow the "pressure estimate ... capacitance manometry" sentence.
+
+---
+
+# 2026-11-04 -- Nucleation argument: trap-isolated calibration replaced by a threshold interfacial energy
+
+Pre-change state: commit 2c63c00, plus your one uncommitted line in GoethitePaper_SI_body.tex.
+Backups of the six edited .tex files are in the local VM at $HOME/bak_1104.
+
+## Argument
+- The data require a saturated nucleation barrier of about 9 kBT (conversion below 1% over the
+  schedule; sum k_vac dt ~ 60).
+- The CNT barrier provides this for any gamma >= 0.08 J/m2, a factor of 3 below the 0.24 J/m2
+  hematite twin boundary (Saito et al. 2016).
+- A goethite|hematite interphase boundary is unlikely to undercut a twin boundary, because it adds
+  a chemical term to the structural one (Porter & Easterling).
+- Nucleus at the threshold: r* = 0.44 nm, ~7 Fe2O3 formula units. At 0.24 J/m2: r* = 1.4 nm, ~212
+  formula units, barrier ~259 kBT.
+- The trap-isolated slowdown is kept only as a check of sign.
+
+## Chapter 2
+- chapter2_body.tex, sec:gt_nucleation:
+  - removed the Calibration and Translation paragraphs, eq:gt_gamma_cal and eq:gt_translate;
+  - added "Interfacial energy" and "Threshold for suppression";
+  - rewrote "Assumptions" as three items;
+  - lead-in sentence and the trap-step forward reference updated.
+- chapter2goethite_SI_body.tex: removed the section "Calibration of gamma_eff" (sec:gt_supp_barrier,
+  tab:gt_gamma, the uncertainty-propagation subsection).
+- chapter2_abstract.tex: "calibrated on" became "using the vacuum step heat kinetics of".
+
+## Goethite paper
+- GoethitePaper_body.tex, sec:gt_nucleation: the calibration and Monte Carlo sentences were replaced
+  by "any reasonable value predicts no appreciable reaction" plus the threshold and twin boundary.
+  The trap-step forward reference was updated.
+- GoethitePaper_SI_body.tex, sec:gt_nuc_si:
+  - from the end of "Internal nucleation" through the uncertainty subsection, replaced with the same
+    threshold text as the chapter;
+  - your "%%%%%%% Stopped here..." comment line was inside the replaced span and is gone.
+- GoethitePaper_abstract.tex: dropped "calibrated on the vacuum data".
+
+## Chapter2/Figures/fig_goethite_vacuum_kinetics.py
+- Added gamma_threshold() and threshold_macros().
+- 11 new macros: \ChTwoKinBarReq, \ChTwoKinGammaMin, \ChTwoKinGammaTwin, \ChTwoKinGammaRatio,
+  \ChTwoKinRstarMin, \ChTwoKinNfuMin, \ChTwoKinBarMin, \ChTwoKinRstarTwin, \ChTwoKinNfuTwin,
+  \ChTwoKinBarTwin, \ChTwoKinLogAlphaTwin.
+- The old calibration/MC macros are still generated (now unused) so that nothing else breaks.
+- INCIDENT: my first write of this script through the file bridge replaced it with the 2026-09-26
+  version (39efad5). It was restored from HEAD on the device, and the change was applied as a patch
+  there (final md5 b68a8d8b...). The .tex edits were applied the same way.
+
+## Verification
+- GoethitePaper / GoethitePaper_SI: no new undefined references (sec:ch2-si-finalstep was already
+  undefined).
+- Both have two pre-existing "Missing $" errors in your text, outside these edits:
+  - GoethitePaper_body.tex line 274 (T_\mathrm{max} outside math);
+  - GoethitePaper_SI_body.tex line 10 (\leq115^{...} outside math).
+- The chapter body and SI were checked in a minimal wrapper: no errors from these edits, and all new
+  references resolve.
+
+## 2026-11-04b — Threshold target α = 10⁻⁶ (single tabulated root)
+
+- `Chapter2/Figures/fig_goethite_vacuum_kinetics.py`: `DETECT_ALPHA` 0.01 → 1e-6; new macro `\ChTwoKinAlphaTarget` (= `10^{-6}`); `\ChTwoKinGammaRatio` now 1 decimal. Re-ran; `chapter2_kinetics_values.tex` now gives γ_min = 0.10 J/m² (twin/γ_min = 2.4), r* = 0.56 nm, 14 formula units, barrier 18 k_BT (ln Σk_vacΔt/α = 18). Twin-value numbers unchanged.
+- `Chapter2/Writing/chapter2_body.tex`: replaced the "below 1% … constant barrier" passage with the explicit α(γ) equation (`eq:gt_alpha_gamma`), the single-root statement α(γ_min) = `\ChTwoKinAlphaTarget`, and the 250 °C-hold dominance sentence (matches the paper SI).
+- `Chapter2/Writing/GoethitePaper_SI_body.tex`: two hard-coded 0.01 → `\ChTwoKinAlphaTarget`.
+- `Chapter2/Writing/GoethitePaper_body.tex`: "Suppressing conversion below 1\%" → "Limiting conversion to $\ChTwoKinAlphaTarget$".
+- Left unchanged: the 1% criterion attached to the empirical rate-ratio bound `\ChTwoKinLogRDetect` (chapter body ~l. 953, paper body ~l. 551), which is a separate data-derived bound.
+- Paper and SI build clean (only the pre-existing undefined `sec:ch2-si-finalstep`). Backups in local VM `$HOME/bak_1105`.
+
+## 2026-11-04c — Predicted α at the twin-boundary interfacial energy (paper SI)
+
+- `Chapter2/Writing/GoethitePaper_SI_body.tex` (threshold paragraph): after the twin-value nucleus size, added the 250 °C barrier (`\ChTwoKinBarTwin` = 259 k_BT) and the predicted conversion from Eq. `eq:gt_alpha_gamma`, α ≈ 10^`\ChTwoKinLogAlphaTwin` (= 10⁻¹¹¹). Macros were already generated; no script change. SI builds without errors.
+
+## 2026-11-05 — SEM methods moved from Chapter 1 SI to Chapter 3 SI
+
+- `Chapter1/Writing/chapter1_SI_body.tex`: removed the section "Sample Preparation and SEM Imaging of Buffered and Decomposed Sulfides" (4 paragraphs, label `sem-imaging-of-buffered-and-decomposed-sulfides`), which followed the in-situ λ section.
+- `Chapter3/Writing/HeInSulfides_SI_body.tex`: inserted that section verbatim (label unchanged) as the first SI section, ahead of the Cu/Pb sulfide section, because the main text cites it first (Fig. `fig:ch3-sulfide-sem-grid`, ~l. 153); added it to the header "Contents" comment.
+- The four existing `\ref{sem-imaging-of-buffered-and-decomposed-sulfides}` calls in `HeInSulfides_Main_Body.tex` now point within Chapter 3; there are no hard-coded section numbers in either chapter. The Tube paper SI never held this section. Backups in local VM `$HOME/bak_1105b`.

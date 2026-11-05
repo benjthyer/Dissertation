@@ -1,0 +1,12 @@
+% Free-standing Chapter 4 build with the real thesis class + preamble.
+% Compile from the repository root:
+%   latexmk -pdf -outdir=Standalone/build Standalone/chapter4_standalone.tex
+\documentclass{caltech_thesis}
+\input{dissertation_preamble}
+\title{Chapter 4: nGibbs}\author{Ben J. Thyer}\copyyear{2026}
+\begin{document}
+\mainmatter
+\setcounter{chapter}{3}
+\input{Chapter4/chapter4}
+\printbibliography[heading=bibintoc, title={References}]
+\end{document}

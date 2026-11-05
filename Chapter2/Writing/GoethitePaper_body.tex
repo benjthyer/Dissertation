@@ -271,7 +271,7 @@ three free parameters.
   \item \textbf{Steady cooling:} goethite crystallizes at an elevated temperature $T_0$ at
   formation age $t_\mathrm{form}$ (e.g. in a hydrothermal environment) and linearly cools to 25\,\textdegree C today. 
   \item \textbf{Burial and exhumation:} goethite crystallizes at the surface (20$^{\circ}$C) at formation age $t_\mathrm{form}$. 
-  It is buried and linearly heated, reaching a peak temperature T_\mathrm{max} at time $t_\mathrm{peak}$. 
+  It is buried and linearly heated, reaching a peak temperature $T_\mathrm{max}$ at time $t_\mathrm{peak}$. 
   It is then exhumed to the surface by the paleogene: it is linearly cooled to (20$^{\circ}$C) at 50~Ma. This model roughly 
   follows the thermal history \citet{gibsonstuwe2000} and \citet{mitchell1998} interpreted for the region from apatite 
   fission track thermochronometry. 
@@ -392,7 +392,7 @@ to less than 2\% of the $^3$He.
 In two KAF steps the trap was isolated and evolved water accumulated in the line. At
 230~$^\circ$C the step rate constant fell to \ChTwoKinTrapSuppLow{} times the mean of its neighbors at the same
 temperature, and at 240~$^\circ$C to \ChTwoKinTrapSuppHigh{} times. The rate recovered fully when the trap was
-restored. We return to these two steps in \S\ref{sec:gt_nucleation}, where they calibrate the nucleation model.
+restored. We return to these two steps in \S\ref{sec:gt_nucleation}.
 
 \section{Discussion}\label{ch2-discussion}
 
@@ -545,25 +545,24 @@ $^3$He cumulative and fractional yields. The six low-signal steps are omitted.}
 \subsection{Why Water Suppresses Dehydroxylation}\label{sec:gt_nucleation}
 
 Under the vacuum kinetics of Eq.~\eqref{eq:gt_line}, the water-saturated heating schedule would have
-converted the sample completely many times over ($\sum_i k_{\mathrm{vac}}(T_i)\,\Delta t_i \approx \ChTwoKinSumKdt$). Even if
-all of the observed $^3$He release came from conversion ($\alpha = \ChTwoKinHTAlphaObs$), the conversion rate
-at water saturation can be at most $10^{\ChTwoKinLogRObs}$ times the vacuum rate, and at most
-$10^{\ChTwoKinLogRDetect}$ times for conversion to stay below 1\%. A thermodynamic and
-classical-nucleation model of goethite dehydroxylation accounts for this suppression (SI,
-\S\ref{sec:eqm-thermo}--\ref{sec:gt_nuc_si}). Goethite is unstable relative to hematite and water both in
+converted the sample completely many times over ($\sum_i k_{\mathrm{vac}}(T_i)\,\Delta t_i \approx \ChTwoKinSumKdt$).
+
+A thermodynamic and classical-nucleation model of goethite dehydroxylation accounts for the suppression of the
+dehydroxylation (SI, \S\ref{sec:eqm-thermo}--\ref{sec:gt_nuc_si}). Goethite is unstable relative to hematite 
+and water both in
 vacuum and at water saturation (SI Fig.~\ref{fig:gt_PT}), but water is a product of the reaction and exerts
-strong control over the reaction's driving force $\Delta\mu$. In the vacuum of a step-heating line the water
+strong control over the reaction's driving force $\Delta\mu$. In the vacuum of the step-heating line, the water
 pressure approaches zero and $\Delta\mu$ is unbounded; at water saturation $\Delta\mu$ is only 6--11~kJ per mole
 Fe$_2$O$_3$, 1.6--2.4 times $RT$ (SI Table~\ref{tab:gt_dmu}). Because the barrier to nucleating hematite
 within goethite scales as $\gamma^3/\Delta\mu^2$ \citep{turnbull1949}, it vanishes in vacuum, consistent
 with the simple Arrhenius behavior observed in both vacuum experiments, but this nucleation barrier is present at saturation. 
-We calibrate the model's one free parameter, an effective interfacial energy ($\gamma_{\mathrm{eff}} =
-\ChTwoKinMCGammaMid$~J\,m$^{-2}$), using the relative reaction rates at two known partial pressures of water from 
-the vacuum experiment of \citet{farley2024} (\S\ref{sec:gt_kin_results}). From this calibration follows the nucleation barrier
-of \ChTwoKinBarSat~$k_BT$ at water saturation and 250~$^\circ$C. The predicted fractional conversion over the water-saturated 
-schedule given this barrier is $10^{\ChTwoKinMCCNTLo}$ to $10^{\ChTwoKinMCCNTHi}$ (95\% uncertainty interval): essentially 
-predicting no appreciable reaction to occur. This explanation applies to solid-state (topotactic) conversion; fluid-mediated reaction 
-lies outside it (\S\ref{sec:gt_hydro}).
+Classical nucleation theory can be used to predict the ratio of the solid-state conversion rates in vacuum and at 
+saturation, given the energy of the goethite--hematite interface ($\gamma$). Although $\gamma$ is not known explicitly, 
+any reasonable value predicts no appreciable reaction at saturation. Limiting conversion to $\ChTwoKinAlphaTarget$ requires a minimum 
+of $\gamma\gtrsim\ChTwoKinGammaMin$~J\,m$^{-2}$, a factor of \ChTwoKinGammaRatio{} below the energy of twin
+boundaries within hematite formed by dehydrating goethite \citep{saito2016}. An interface between
+two different phases is unlikely to undercut a stable interface within a single phase (SI, \S\ref{sec:gt_nuc_si}). 
+This explanation applies to solid-state (topotactic) conversion and does not pertain to fluid-mediated reaction (\S\ref{sec:gt_hydro}).
 
 \subsection{\texorpdfstring{High Helium Retentivity of
 Win-06-01b-HT}{ High Helium Retentivity of Win-06-01b-HT}}\label{high-helium-retentivity-of-win-06-01b-ht}
@@ -798,8 +797,8 @@ relationships that could have appeared to influence the work reported in this pa
 \section*{Acknowledgements}
 
 This work was supported by National Science Foundation (NSF) grant EAR 1945974 to K.A. Farley.
-Dr. Hevelyn Monteiro is thanked for her mentorship and resources provided to BJT in support of 
-the SEM work presented here. This manuscript benefitted greatly from conversations with Drs. 
+Hevelyn Monteiro is thanked for her mentorship and resources provided to BJT in support of 
+the SEM work presented here. This manuscript benefitted greatly from conversations with 
 Ed Stolper and Paul Asimow. 
 
 \section*{Declaration of Generative AI and AI-assisted technologies in the writing process}

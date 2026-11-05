@@ -994,6 +994,48 @@ def cnt_scales(gamma, T_C=250.0):
 
 
 # ----------------------------------------------------------------------------
+# Threshold interfacial energy (added 2026-11-04; replaces the trap-isolated
+# calibration of gamma_eff in the text).  The smallest goethite|hematite
+# interfacial energy for which the nucleation barrier at water saturation keeps
+# conversion over the hydrothermal schedule below DETECT_ALPHA.  Evaluated step
+# by step through the actual schedule (alpha = 1 - exp(-sum k_vac R dt)), with
+# the vacuum barrier taken as zero (P_H2O -> 0 in the trapped line).
+# ----------------------------------------------------------------------------
+DETECT_ALPHA = 1e-6        # target conversion over the hydrothermal schedule
+GAMMA_TWIN = 0.24          # J/m2, prismatic (100) twin boundary in hematite (Saito et al. 2016)
+
+
+def gamma_threshold(line, detect_alpha=DETECT_ALPHA):
+    from scipy.optimize import brentq
+    ht = load_ht()
+    target = np.log10(detect_alpha)
+    f = lambda g: log10_alpha_law("CNT", g, ht["Temp (C)"], ht["Time (h)"], line) - target
+    return brentq(f, 0.01, 0.5, xtol=1e-5)
+
+
+def threshold_macros(line):
+    bd = empirical_bounds(line, line["phi"])
+    g_min = gamma_threshold(line)
+    ht = load_ht()
+    a_twin = log10_alpha_law("CNT", GAMMA_TWIN, ht["Temp (C)"], ht["Time (h)"], line)
+    smin, stw = cnt_scales(g_min)["sat"], cnt_scales(GAMMA_TWIN)["sat"]
+    return {
+        "ChTwoKinBarReq": _f(np.log(bd["sum_kdt"] / DETECT_ALPHA), 0),
+        "ChTwoKinGammaMin": _f(g_min, 2),
+        "ChTwoKinGammaTwin": _f(GAMMA_TWIN, 2),
+        "ChTwoKinGammaRatio": _f(GAMMA_TWIN / g_min, 1),
+        "ChTwoKinAlphaTarget": "10^{%d}" % round(np.log10(DETECT_ALPHA)),
+        "ChTwoKinRstarMin": _f(smin["r_nm"], 2),
+        "ChTwoKinNfuMin": _f(smin["n_fu"], 0),
+        "ChTwoKinBarMin": _f(smin["barrier_kBT"], 0),
+        "ChTwoKinRstarTwin": _f(stw["r_nm"], 1),
+        "ChTwoKinNfuTwin": _f(stw["n_fu"], 0),
+        "ChTwoKinBarTwin": _f(stw["barrier_kBT"], 0),
+        "ChTwoKinLogAlphaTwin": _f(a_twin, 0),
+    }
+
+
+# ----------------------------------------------------------------------------
 # Statistics cache + LaTeX macros for Chapter 2
 # ----------------------------------------------------------------------------
 # Every kinetic-fit statistic quoted in Chapter 2 (main text and SI) is read
@@ -1167,6 +1209,7 @@ def write_kinetics_macros(tab, line, sup, resid, synth):
         "ChTwoKinTrapResidHigh": _f(-resid["trap_offsets"][1], 2),
     }
     M.update(M_rl)
+    M.update(threshold_macros(line))
     # model-fit table rows (SI Table tab:gt_mech_fits)
     short = {"R2 contracting cylinder": "R2", "R3 contracting sphere": "R3",
              "F1 first order": "F1", "A2 Avrami n=2": "A2", "A3 Avrami n=3": "A3",
@@ -1201,8 +1244,11 @@ def write_kinetics_macros(tab, line, sup, resid, synth):
            "%  Rerun that script (or run_all_figures.py) after any change to the data\n"
            "%  or fitting code.\n"
            "% =============================================================\n")
-    body = "".join(f"\\newcommand{{\\{k}}}{{{v}}}\n" if "Rows" not in k else
-                   f"\\newcommand{{\\{k}}}{{%\n{v}}}\n" for k, v in M.items())
+    # Every definition on one line, table rows included: `calkit tex to-docx`
+    # reads only one-line \newcommand definitions, and a multi-line one
+    # leaves Pandoc an unclosed brace.
+    body = "".join(f"\\newcommand{{\\{k}}}{{{' '.join(str(v).splitlines())}}}\n"
+                   for k, v in M.items())
     MACRO_PATH.write_text(hdr + body, encoding="utf-8")
     CACHE_PATH.parent.mkdir(exist_ok=True)
     cache = dict(fits=tab.to_dict(orient="records"),

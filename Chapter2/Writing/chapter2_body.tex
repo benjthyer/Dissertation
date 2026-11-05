@@ -707,8 +707,7 @@ to less than 2\% of the $^3$He.
 In two KAF steps the trap was isolated and evolved water accumulated in the line. At
 230~$^\circ$C the step rate constant fell to \ChTwoKinTrapSuppLow{} times the mean of its neighbors at the same
 temperature, and at 240~$^\circ$C to \ChTwoKinTrapSuppHigh{} times. The rate recovered fully when the trap was
-restored. Water and $^3$He were suppressed together. We return to these two steps in \S\ref{sec:gt_nucleation}, where
-they calibrate the nucleation model.
+restored. Water and $^3$He were suppressed together. We return to these two steps in \S\ref{sec:gt_nucleation}.
 
 \subsection{Isothermal Discrimination Test at 250~$^\circ$C}\label{sec:gt_hold_results}
 
@@ -842,9 +841,9 @@ with $r/r_0<0.1$; $f_\mathrm{main}$ and $r_\mathrm{main}/r_0$ are the fraction a
 the largest-fraction domain. For $N\ge5$, the dominant domain is split among several
 domains of identical size.}
 \label{tab:ch2-mdd-domains}
-\begin{tabular}{rrrrrrr}
+\begin{tabular}{rrrrrr}
 \toprule
-$N$ & $k$ & RMS & Arrh.\ $\chi^2_\nu$ & fast (\%) & $f_\mathrm{main}$ (\%) & $r_\mathrm{main}/r_0$\\
+$N$ & RMS & Arrh.\ $\chi^2_\nu$ & fast (\%) & $f_\mathrm{main}$ (\%) & $r_\mathrm{main}/r_0$\\
 \midrule
 \MDDDomainTableRows
 \bottomrule
@@ -952,7 +951,8 @@ then even if all of the observed $^3$He release came from conversion
 ($\alpha = F/(1-\phi) = \ChTwoKinHTFEnd/\ChTwoKinOneMinusPhi = \ChTwoKinHTAlphaObs$), $R$ can be at most
 $10^{\ChTwoKinLogRObs}$. The release is second order volume diffusion (\S\ref{sec:gt_hydro}). Limiting 
 the dehydroxylation fraction to below 1\% requires $R \le 10^{\ChTwoKinLogRDetect}$. Here we show that classical nucleation
-theory, calibrated on the vacuum data alone, predicts an even stronger rate suppression under water-saturated conditions.
+theory predicts suppression of this size for any reasonable value of its one unknown, the
+goethite--hematite interfacial energy.
 
 \textit{Nucleation barrier.} In classical nucleation theory \citep{gibbs1878,volmer1926,becker1935},
 reviewed by \citet{christian2002}, \citet{kashchiev2000} and, for mineral systems,
@@ -988,53 +988,52 @@ grows without bound, but is significant at water saturation, where $\Delta\mu$ i
 the parent crystal, inherits its oxygen framework and orientation, and the pseudomorph develops
 pores and twinned hematite domains \citep{limadefaria1963,watari1979,watari1983,cudennec2005}.
 We therefore consider only internal nucleation, in which the new interface of the burgeoning nuclei is between hematite
-and goethite. We know of no measured or calculated energy for that interface, so $\gamma$ is
-replaced by an effective parameter $\gamma_{\mathrm{eff}}$, calibrated from the data.
+and goethite.
 
-\textit{Calibration.} When \citet{farley2024} isolated the liquid nitrogen trap from the heated goethite, they raised $P_{\mathrm{H_2O}}$ in the line and lowered
-$\Delta\mu$, and the isothermal rate fell by a factor $s$ (\S\ref{sec:gt_vacuum}). With $A$ and $E_a$
-unchanged, Eq.~\eqref{eq:gt_knuc} gives
+\textit{Interfacial energy.} We know of no measured or calculated energy for the goethite--hematite
+interface. It is unlikely to be lower than that of a twin boundary in hematite,
+\ChTwoKinGammaTwin~J\,m$^{-2}$ for the prismatic twins formed by dehydrating goethite
+\citep{saito2016}: a twin boundary separates crystals of the same phase and carries only a
+structural energy, whereas an interface between two phases adds a chemical term
+\citep{porter2009}, here the change from hydroxylated goethite to anhydrous hematite and a 27\%
+reduction in volume.
+
+\textit{Threshold for suppression.} Rather than assigning a value to $\gamma$, we ask how large it
+must be to explain the data. In the vacuum line the water pressure approaches zero, $\Delta\mu$ is
+unbounded and the barrier vanishes, so the observed vacuum rate constant is the mobility term
+$A\exp(-E_a/RT)$ of Eq.~\eqref{eq:gt_knuc} (Eq.~\eqref{eq:gt_line}). At water saturation the same mobility
+term is multiplied by $\exp(-\Delta G^{*}_{\mathrm{sat}}/k_BT)$. For an interfacial energy $\gamma$, the
+conversion predicted over the hydrothermal schedule is
 \begin{equation}
-  \gamma_{\mathrm{eff}} = \left[\frac{T\,\Delta\mu_{\mathrm{off}}^{2}\ln(1/s)}{C}\right]^{1/3},
-  \label{eq:gt_gamma_cal}
+  \alpha(\gamma) = 1-\exp\!\left[-\sum_i k_{\mathrm{vac}}(T_i)\,\Delta t_i\,
+  \exp\!\left(-\frac{C\,\gamma^{3}}{T_i\,\Delta\mu_{\mathrm{sat}}(T_i)^{2}}\right)\right],
+  \label{eq:gt_alpha_gamma}
 \end{equation}
-where $\Delta\mu_{\mathrm{off}}$ is evaluated at an upper bound on the water pressure with the trap isolated.
-This pressure estimate of the water released depends on the
-volume of the experimental apparatus and the water content emitted by the goethite, which was measured with 
-capacitance manometry (\S\ref{sec:gt_supp_barrier}). With the trap in place, the water pressure approaches zero,
-the driving force is unbounded, and its contribution to the barrier vanishes. Any finite water pressure in
-the trapped line would give a larger $\gamma_{\mathrm{eff}}$, so this limit is conservative. This gives $\gamma_{\mathrm{eff}} = \ChTwoKinMCGammaMid$~J\,m$^{-2}$
-(range \ChTwoKinGammaLo--\ChTwoKinGammaHi). In vacuum the barrier vanishes, so conversion is barrierless,
-consistent with the simple Arrhenius behavior of both vacuum experiments. At saturation and
-250~$^\circ$C, the critical nucleus has a radius of \ChTwoKinRstarSat~nm (\ChTwoKinNfuSat{} formula units)
-and the barrier is \ChTwoKinBarSat~$k_BT$. For nuclei this small, classical nucleation theory has no
-literal meaning, so $\gamma_{\mathrm{eff}}$ is best read as the single parameter of a rate law in which
-$\ln k$ falls as $-1/\Delta\mu^{2}$, not as an interface energy.
+summed over the steps of the experiment, with $k_{\mathrm{vac}}$ from Eq.~\eqref{eq:gt_line} and
+$\Delta\mu_{\mathrm{sat}}$ evaluated at each step temperature (Table~\ref{tab:gt_dmu}). Because every term
+decreases with $\gamma$, the condition $\alpha(\gamma_{\min}) = \ChTwoKinAlphaTarget$ has a single root, which we
+find numerically: $\gamma_{\min} = \ChTwoKinGammaMin$~J\,m$^{-2}$, a factor of \ChTwoKinGammaRatio{} below the
+twin-boundary value. The sum is dominated by the hottest steps, where $\Delta\mu_{\mathrm{sat}}$ is largest
+and the barrier smallest; at $\gamma_{\min}$ the barrier at 250~$^\circ$C is \ChTwoKinBarMin~$k_BT$, close to
+$\ln(\sum_i k_{\mathrm{vac}}\Delta t_i/\ChTwoKinAlphaTarget)$, the barrier that would be needed if it were the
+same at every step. At this threshold the critical nucleus at 250~$^\circ$C has a radius of
+\ChTwoKinRstarMin~nm and contains about \ChTwoKinNfuMin{} Fe$_2$O$_3$ formula units, a size at which
+classical nucleation theory is only approximate. For an interfacial energy near the twin-boundary
+value, the critical nucleus has a radius of \ChTwoKinRstarTwin~nm and contains about \ChTwoKinNfuTwin{}
+formula units (several hematite unit cells), and the barrier is \ChTwoKinBarTwin~$k_BT$. Any
+interfacial energy of this order suppresses solid-state conversion far below detection at water
+saturation while leaving the vacuum rate unaffected, consistent with the simple Arrhenius behavior of
+both vacuum experiments. The slowdown observed when the trap was isolated in the KAF experiment
+(\S\ref{sec:gt_kin_results}) has the sign this picture predicts: added water lowers $\Delta\mu$ and raises the
+barrier. Omitting surface terms is conservative: for pseudomorphic conversion they stabilize
+goethite (\S\ref{sec:gt_thermo_methods}), lowering $\Delta\mu_{\mathrm{sat}}$ and raising the barrier.
 
-\textit{Translation to water saturation.} For the same sample, only $\Delta\mu$ changes between
-vacuum and saturation:
-\begin{equation}
-  \frac{k_{\mathrm{sat}}}{k_{\mathrm{vac}}} = \exp\!\left[-\frac{C\gamma_{\mathrm{eff}}^{3}}{T}\frac{1}{\Delta\mu_{\mathrm{sat}}^{2}}\right].
-  \label{eq:gt_translate}
-\end{equation}
-Applied step by step to the hydrothermal schedule, Eq.~\eqref{eq:gt_translate} predicts a total
-conversion ($\sum_i \frac{k_{\mathrm{sat}}}{k_{\mathrm{vac}}}(T_i)\,k_{\mathrm{vac}}(T_i)\,\Delta t_i$) 
-of $10^{\ChTwoKinLogAlphaLow}$, $10^{\ChTwoKinLogAlphaMid}$ and $10^{\ChTwoKinLogAlphaHigh}$ for
-$\gamma_{\mathrm{eff}} = 0.12$, 0.14 and 0.15~J\,m$^{-2}$, and $10^{\ChTwoKinMCCNTLo}$ to
-$10^{\ChTwoKinMCCNTHi}$ (95\%) when the uncertainties in the calibration and in the thermodynamic
-data are propagated (\S\ref{sec:gt_supp_barrier}). The exact values reflect the assumed
-$\Delta\mu^{-2}$ dependence; what matters is that the model predicts
-suppression far beyond the $10^{\ChTwoKinLogRDetect}$ that the data require.
-
-\textit{Assumptions.} This is a consistent physical explanation of the data, not a proof. It is not exhaustive. This analysis
-assumes (i) that the trap-isolated slowdown acts through $\Delta\mu$, rather than, for example,
-through water blocking reactive sites; (ii) that $\gamma_{\mathrm{eff}}$, $A$ and $E_a$ are the same in
-vacuum and in water; (iii) that the barrier depends on the bulk driving force without significant contribution from surface
-terms (this analysis extended to 10~nm grains raises the predicted conversion only to $\sim10^{-13}$;
-\S\ref{sec:gt_supp_barrier}); and (iv) that conversion is solid-state. Conversion by dissolution
-of goethite and precipitation of hematite from the fluid is not described by
-Eq.~\eqref{eq:gt_translate} (see \S\ref{sec:gt_pigment}). The calibrated $\gamma_{\mathrm{eff}}$ absorbs contributions from the
-sample's microstructure and cannot be transferred to other goethites.
+\textit{Assumptions.} This is a consistent physical explanation of the data, not a proof. It
+assumes (i) that conversion is limited by internal nucleation of hematite, as the first-order kinetics
+of the vacuum experiments imply; (ii) that the mobility term $A\exp(-E_a/RT)$ is the same in vacuum and
+in water, so that only $\Delta\mu$ changes; and (iii) that conversion is solid-state. Conversion by
+dissolution of goethite and precipitation of hematite from the fluid is not described by this model
+(\S\ref{sec:gt_pigment}).
 
 \subsection{Goethite Dehydration and/or Recrystallization During Helium Step Heat Experiments}\label{goethite-dehydration-andor-recrystallization-during-hydrothermal-experiments}
 

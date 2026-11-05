@@ -1,0 +1,18 @@
+% Free-standing Chapter 5 build (+ Appendices A/B, which Ch. 5 cites) with the
+% real thesis class + preamble. Compile from the repository root:
+%   latexmk -pdf -outdir=Standalone/build Standalone/chapter5_standalone.tex
+\documentclass{caltech_thesis}
+\input{dissertation_preamble}
+\title{Chapter 5: Draaikraal}\author{Ben J. Thyer}\copyyear{2026}
+% Downsampled copies of the three large vector maps come first.
+\graphicspath{{Standalone/lite_figs/}{Chapter5/Figures/}{Chapter5/Figures/source/}{Chapter5/Figures/generated/}{ChapterA/Figures/}}
+\begin{document}
+\mainmatter
+\setcounter{chapter}{4}
+\input{Chapter5/chapter5}
+\begin{appendices}
+\input{ChapterA/chapterA}
+\input{ChapterB/chapterB}
+\end{appendices}
+\printbibliography[heading=bibintoc, title={References}]
+\end{document}

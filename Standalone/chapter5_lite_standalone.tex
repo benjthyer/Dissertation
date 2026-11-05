@@ -1,0 +1,35 @@
+% Chapter 5 for e-mailing: same as chapter5_standalone.tex but Appendix A keeps
+% the field-station table and OMITS the annotated photo album (the bulk of the
+% file size), and Appendix B (text only) is kept. Compile from the repo root:
+%   latexmk -pdf -outdir=Standalone/build_lite Standalone/chapter5_lite_standalone.tex
+\documentclass{caltech_thesis}
+\input{dissertation_preamble}
+\title{Chapter 5: Draaikraal}\author{Ben J. Thyer}\copyyear{2026}
+% Photo numbers would link to the (omitted) album: make them plain text.
+\newcommand{\ChFivePhotoLink}[2]{#2}
+% Downsampled copies of the three large vector maps (25 MB -> 3 MB) come first.
+\graphicspath{{Standalone/lite_figs/}{Chapter5/Figures/}{Chapter5/Figures/source/}{Chapter5/Figures/generated/}{ChapterA/Figures/}}
+\begin{document}
+\mainmatter
+\setcounter{chapter}{4}
+\input{Chapter5/chapter5}
+\begin{appendices}
+\chapter{Draaikraal Field Observation Data}
+\label{app:bushveld}
+\label{app:draaikraal-field-data}
+\section{Field Observations}
+\label{sec:ch5-SI-field-data}
+Every geotagged field observation of the July 2023 campaign is listed in
+Table~\ref{tab:ch5-field-stations}, in order of stratigraphic height relative to
+the Merensky Reef ($h = 0$ m), with location, interpreted map unit and lithology,
+structural readings, and the IDs of the photographs taken there. Detailed field
+notes are footnotes to the observation names.
+\ChFiveFieldStationTable
+\section{Annotated Field Photographs}
+\label{sec:ch5-SI-photo-album}
+The annotated field-photograph album is omitted from this abbreviated PDF to
+keep the file small; it is included in the full dissertation.
+\input{ChapterB/chapterB}
+\end{appendices}
+\printbibliography[heading=bibintoc, title={References}]
+\end{document}

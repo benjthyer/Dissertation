@@ -7,7 +7,7 @@
 Helium evolved from silica glass encapsulated Win-06-01b goethite sample was only available for 
 measurement after a secondary process of permeation through the silica glass ampoule, complicating the analysis. This
 effect is tractable, however. Following the procedures outlined in \citet{thyer2026method}, 
-we made sequences of isothermal low-temperature measurements (\leq115^{\circ}C) for which the sample
+we made sequences of isothermal low-temperature measurements ($\leq115^{\circ}C$) for which the sample
 was assumed not to have evolved helium between each high-temperature step where the sample 
 does evolve significant helium. The low-temperature steps, referred to as "permeation steps", were entirely
 controlled by the process of permeation through silica glass, and
@@ -358,119 +358,50 @@ is significant at water saturation, where $\Delta\mu$ is only 6--11~kJ
 the parent crystal, inherits its oxygen framework and orientation, and the pseudomorph develops
 pores and twinned hematite domains \citep{limadefaria1963,watari1979,watari1983,cudennec2005}.
 We therefore consider only internal nucleation, in which the new interface of the burgeoning nuclei is between hematite
-and goethite. We know of no measured or calculated energy for that interface, so $\gamma$ is
-replaced by an effective parameter $\gamma_{\mathrm{eff}}$, calibrated from the data.
-%%%%%%% Stopped here to reconsider calibration argument entirely
-\textit{Calibration.} When \citet{farley2024} isolated the liquid nitrogen trap from the heated goethite, they raised $P_{\mathrm{H_2O}}$ in the line and lowered
-$\Delta\mu$, and the isothermal rate fell by a factor $s$ (\S\ref{sec:gt_kin_results}). With $A$ and $E_a$
-unchanged, Eq.~\eqref{eq:gt_knuc} gives
+and goethite.
+
+\textit{Interfacial energy.} We know of no measured or calculated energy for the goethite--hematite
+interface. It is unlikely to be lower than that of a twin boundary in hematite,
+\ChTwoKinGammaTwin~J\,m$^{-2}$ for the prismatic twins formed by dehydrating goethite
+\citep{saito2016}: a twin boundary separates crystals of the same phase and carries only a
+structural energy, whereas an interface between two phases adds a chemical term
+\citep{porter2009}. The goethite--hematite interface must also accommodate an additional 27\% difference in volume
+between the two phases, which hematite twins do not.
+
+\textit{Threshold for suppression.} Rather than assigning a value to $\gamma$, we ask how large it
+must be to effectively suppress solid state dehydroxylation in water-saturated conditions. 
+In the vacuum line, the nucleation barrier vanishes, so the observed 
+reaction rate constant is the mobility term alone: $k_{\mathrm{vac}}(T) = A\exp(-E_a/RT)$ of Eq.~\eqref{eq:gt_knuc} 
+(main text, Eq.~\eqref{eq:gt_line}). At water saturation the same mobility
+term is multiplied by $\exp(-\Delta G^{*}_{\mathrm{sat}}/k_BT)$. 
+For an interfacial energy $\gamma$, the conversion predicted over the hydrothermal schedule is
 \begin{equation}
-  \gamma_{\mathrm{eff}} = \left[\frac{T\,\Delta\mu_{\mathrm{off}}^{2}\ln(1/s)}{C}\right]^{1/3},
-  \label{eq:gt_gamma_cal}
+  \alpha(\gamma) = 1-\exp\!\left[-\sum_i k_{\mathrm{vac}}(T_i)\,\Delta t_i\,
+  \exp\!\left(-\frac{C\,\gamma^{3}}{T_i\,\Delta\mu_{\mathrm{sat}}(T_i)^{2}}\right)\right],
+  \label{eq:gt_alpha_gamma}
 \end{equation}
-where $\Delta\mu_{\mathrm{off}}$ is evaluated at an upper bound on the water pressure with the trap isolated.
-This pressure estimate of the water released depends on the
-volume of the experimental apparatus and the water content emitted by the goethite, which was measured with 
-capacitance manometry With the trap in place, the water pressure approaches zero,
-the driving force is unbounded, and its contribution to the barrier vanishes. Any finite water pressure in
-the trapped line would give a larger $\gamma_{\mathrm{eff}}$, so this limit is conservative. This gives $\gamma_{\mathrm{eff}} = \ChTwoKinMCGammaMid$~J\,m$^{-2}$
-(range \ChTwoKinGammaLo--\ChTwoKinGammaHi). At saturation and
-250~$^\circ$C, the nucleation barrier is \ChTwoKinBarSat~$k_BT$: the critical nucleus has a radius of \ChTwoKinRstarSat~nm 
-and a volume of \ChTwoKinNfuSat{} formula units.
-For nuclei this small, classical nucleation theory has no
-literal meaning, so $\gamma_{\mathrm{eff}}$ is best read as the single parameter of a rate law in which
-$\ln k$ falls as $-1/\Delta\mu^{2}$, not as an interface energy.
+summed over the steps of the experiment, with $k_{\mathrm{vac}}$ from Eq.~\eqref{eq:gt_line} and
+$\Delta\mu_{\mathrm{sat}}$ evaluated at each step temperature. Because this function is monotonic with $\gamma$,
+the condition $\alpha(\gamma_{\min}) = \ChTwoKinAlphaTarget$ has a single root, which we find numerically:
+$\gamma_{\min} = \ChTwoKinGammaMin$~J\,m$^{-2}$. 
+At this threshold the critical nucleus at 250~$^\circ$C has a radius of
+\ChTwoKinRstarMin~nm and contains about \ChTwoKinNfuMin{} Fe$_2$O$_3$ formula units, a size at which
+classical nucleation theory is only approximate. For the conservatively low interfacial energy of the twin-boundary
+of hematite reported by \citet{saito2016}, the critical nucleus has a radius of 
+\ChTwoKinRstarTwin~nm and contains about \ChTwoKinNfuTwin{} formula units (several hematite unit cells). 
+For this value, Eq.~\eqref{eq:gt_alpha_gamma} predicts $\alpha \approx 10^{\ChTwoKinLogAlphaTwin}$ 
+over the hydrothermal schedule. 
+Any interfacial energy of this order suppresses solid-state conversion far below detection at water
+saturation while leaving the vacuum rate unaffected, consistent with the simple Arrhenius behavior of
+both vacuum experiments. Our omission of the surface terms in the calculation of the reaction driving force 
+is conservative: for pseudomorphic conversion these terms stabilize goethite (\S\ref{sec:gt_thermo}), 
+lowering $\Delta\mu_{\mathrm{sat}}$ and raising the barrier.
 
-\textit{Translation to water saturation.} For the same sample, only $\Delta\mu$ changes between
-vacuum and saturation:
-\begin{equation}
-  \frac{k_{\mathrm{sat}}}{k_{\mathrm{vac}}} = \exp\!\left[-\frac{C\gamma_{\mathrm{eff}}^{3}}{T}\frac{1}{\Delta\mu_{\mathrm{sat}}^{2}}\right].
-  \label{eq:gt_translate}
-\end{equation}
-Applied step by step to the water vapor saturated schedule, Eq.~\eqref{eq:gt_translate} predicts a total
-conversion ($\sum_i \frac{k_{\mathrm{sat}}}{k_{\mathrm{vac}}}(T_i)\,k_{\mathrm{vac}}(T_i)\,\Delta t_i$) 
-of $10^{\ChTwoKinLogAlphaLow}$, $10^{\ChTwoKinLogAlphaMid}$ and $10^{\ChTwoKinLogAlphaHigh}$ for
-$\gamma_{\mathrm{eff}} = 0.12$, 0.14 and 0.15~J\,m$^{-2}$, and $10^{\ChTwoKinMCCNTLo}$ to
-$10^{\ChTwoKinMCCNTHi}$ (95\%) when the uncertainties in the calibration and in the thermodynamic
-data are propagated (\S\ref{sec:gt_supp_barrier}). The exact values reflect the assumed
-$\Delta\mu^{-2}$ dependence; what matters is that the model predicts
-suppression far beyond the $10^{\ChTwoKinLogRDetect}$ that the data require (main text,
-\S\ref{sec:gt_nucleation}).
-
-\textit{Assumptions.} This is a consistent physical explanation of the data, not a proof. It is not exhaustive. This analysis
-assumes (i) that the trap-isolated slowdown acts through $\Delta\mu$, rather than, for example,
-through water blocking reactive sites; (ii) that $\gamma_{\mathrm{eff}}$, $A$ and $E_a$ are the same in
-vacuum and in water; (iii) that the barrier depends on the bulk driving force without significant contribution from surface
-terms (this analysis extended to 10~nm grains raises the predicted conversion only to $\sim10^{-13}$;
-\S\ref{sec:gt_supp_barrier}); and (iv) that conversion is solid-state. Conversion by dissolution
-of goethite and precipitation of hematite from the fluid is not described by
-Eq.~\eqref{eq:gt_translate} (see \S\ref{sec:gt_pigment}). The calibrated $\gamma_{\mathrm{eff}}$ absorbs contributions from the
-sample's microstructure and cannot be transferred to other goethites.
-
-\subsection{Calibration of $\gamma_{\mathrm{eff}}$}
-\label{sec:gt_supp_barrier}
-
-Equation~\eqref{eq:gt_gamma_cal} follows from Eq.~\eqref{eq:gt_knuc} applied to a trap-isolated step
-and its trapped neighbors,
-$\ln(1/s) = C\gamma_{\mathrm{eff}}^{3}/(T\,\Delta\mu_{\mathrm{off}}^{2})$; the corresponding term for the
-trapped neighbors vanishes because their driving force is unbounded (item 2).
-The driving forces are evaluated as follows.
-\begin{enumerate}
-  \item $\Delta\mu_{\mathrm{off}}$ is a bulk driving force,
-  $-\Delta G_r$ from Eq.~\eqref{eq:gt_dGr} (\S\ref{sec:eqm-thermo}) with $\Delta G_{\mathrm{surf}} = 0$, at the
-  step temperature and with the solids at vacuum.
-  \item With the trap in place, the water pressure in the line approaches zero, so the chemical
-  potential of water falls without bound, $\Delta\mu_{\mathrm{on}}$ is unbounded, and its term
-  $\Delta\mu_{\mathrm{on}}^{-2}$ vanishes. This is the conservative limit: any finite water pressure in
-  the trapped line would give a larger $\gamma_{\mathrm{eff}}$ and a stronger predicted slowdown at
-  saturation. $\Delta\mu_{\mathrm{off}}$ is evaluated at the water pressure reached with the trap
-  isolated (below).
-  \item Surface terms are omitted. The barrier of an internal nucleus depends on the free
-  energy per volume of material transformed, not on the external surface of the host grain. The external surface
-  energy of the grain enters the overall thermodynamic stability (\S\ref{sec:gt_thermo}), but is not
-  a part of the nucleation barrier, which is evaluated for internal nuclei.
-\end{enumerate}
-We bound the water pressure with the trap isolated by assuming that all evolved water was in the
-vapor, distributed uniformly through an apparatus of volume $V_{\mathrm{app}}$ at 298~K:
-\begin{equation}
-  P_{\mathrm{H_2O}} = \frac{(m_{\mathrm{w}}/M_{\mathrm{w}})\,RT}{V_{\mathrm{app}}} .
-\end{equation}
-With $m_{\mathrm{w}} = 0.027$~mg at 230~$^\circ$C and 0.016~mg at 240~$^\circ$C ($1.50$ and
-$0.89~\mu$mol), and $190\le V_{\mathrm{app}}\le600$~mL, Table~\ref{tab:gt_gamma} gives the pressures
-and the resulting $\gamma_{\mathrm{eff}}$. The pressures are end-of-step values; we also evaluate half
-of each as a time average for steady accumulation. This is an upper bound on the pressure, because
-some water adsorbs on the walls of the line; a lower true pressure gives a larger
-$\gamma_{\mathrm{eff}}$ and more suppression at saturation, so the bound is conservative. Pressure
-enters only through $\ln P$ in $\Delta\mu_{\mathrm{off}}$ and then through $\Delta\mu_{\mathrm{off}}^{2/3}$, so a
-threefold uncertainty in volume changes $\gamma_{\mathrm{eff}}$ by only about 5\%. The two steps agree within
-20\%, and we adopt $\gamma_{\mathrm{eff}} = \ChTwoKinMCGammaMid$~J\,m$^{-2}$, with a range of
-\ChTwoKinGammaLo--\ChTwoKinGammaHi~J\,m$^{-2}$.
-
-\begin{table}[htbp]
-  \centering
-  \caption{Water pressure with the trap isolated and the calibrated $\gamma_{\mathrm{eff}}$ (J\,m$^{-2}$; Eq.~\eqref{eq:gt_gamma_cal}).}
-  \label{tab:gt_gamma}
-  \begin{tabular}{cccccc}
-    \hline
-    $T$ ($^\circ$C) & $s$ & $V_{\mathrm{app}}$ (mL) & $P_{\mathrm{H_2O}}$ (Pa) & $\gamma_{\mathrm{eff}}$, end-of-step $P$ & $\gamma_{\mathrm{eff}}$, $P/2$ \\
-    \hline
-    230 & 0.333 & 190 & 19.6 & 0.120 & 0.124 \\
-    230 & 0.333 & 600 & 6.2  & 0.126 & 0.130 \\
-    240 & 0.224 & 190 & 11.6 & 0.140 & 0.145 \\
-    240 & 0.224 & 600 & 3.7  & 0.147 & 0.152 \\
-    \hline
-  \end{tabular}
-\end{table}
-
-\subsection{Uncertainty propagation} The Monte Carlo range quoted in \S\ref{sec:gt_nucleation}
-(\ChTwoKinNMC{} draws) samples the trap-isolated step (230 or 240~$^\circ$C); $s$, log-uniformly between
-\ChTwoKinSLowRange{} at 230~$^\circ$C and \ChTwoKinSHighRange{} at 240~$^\circ$C; the apparatus volume,
-log-uniformly between 190 and 600~mL; a time-averaging coefficient for the pressure between 0.5 and 1 to account for 
-how quickly the evolved water accumulates in the diffusion cell, and a common offset of $\Delta G_r$, uniformly within $\pm2.8$~kJ per reaction
-(the $\pm1.4$~kJ per mole FeOOH of \citealt{majzlan2003}), which shifts every driving force
-together. The offset barely changes $\gamma_{\mathrm{eff}}$ (95\% range
-\ChTwoKinMCGammaLo--\ChTwoKinMCGammaHi~J\,m$^{-2}$) but contributes most of the spread in the predicted
-conversion, because it enters the small $\Delta\mu_{\mathrm{sat}}$ (6--11~kJ) squared.
+\textit{Assumptions.} This is a consistent physical explanation of the data and is non-exhaustive. It
+assumes that conversion is limited by internal nucleation of hematite, as the first-order kinetics
+of the vacuum experiments imply, and that conversion is solid-state. Conversion by
+dissolution of goethite and precipitation of hematite from the fluid is not described by this model
+(\S\ref{sec:gt_pigment}).
 
 \section{Multiple Diffusion Domain Fits and Thermal History Results}\label{sec:ch2-si-mdd}
 
@@ -500,9 +431,9 @@ with $r/r_0<0.1$; $f_\mathrm{main}$ and $r_\mathrm{main}/r_0$ are the fraction a
 the largest-fraction domain. For $N\ge5$, the dominant domain is split among several
 domains of identical size.}
 \label{tab:ch2-mdd-domains}
-\begin{tabular}{rrrrrrr}
+\begin{tabular}{rrrrrr}
 \toprule
-$N$ & $k$ & RMS & Arrh.\ $\chi^2_\nu$ & fast (\%) & $f_\mathrm{main}$ (\%) & $r_\mathrm{main}/r_0$\\
+$N$ & RMS & Arrh.\ $\chi^2_\nu$ & fast (\%) & $f_\mathrm{main}$ (\%) & $r_\mathrm{main}/r_0$\\
 \midrule
 \MDDDomainTableRows
 \bottomrule
@@ -537,18 +468,17 @@ $T_\mathrm{max}$ (1$\sigma$)\\
 \subsection{Methods}\label{sec:gt_pigment_methods}
 
 Synthetic goethite pigment, a commercial yellow iron-oxide pigment of acicular crystals
-$\sim$1~\textmu m long, was treated in the same way as the Bahia goethite (main text, \S\ref{sem-study-of-thermally-treated-polycrystalline-goethite}) but only with water, without vacuum or
-open-air runs: at least five larger silica glass ampoules, each loaded with pigment and an excess
-of water and fused shut at ambient pressure, were held at 200--250~$^\circ$C for about a day in an
-oven whose voltage was adjusted by hand. These runs were a rapid, qualitative test; details of
-individual runs (temperature histories, durations, water-to-solid ratios) were not recorded, and
-reaction was assessed by color (yellow goethite, red hematite) before imaging.
+$\sim$1~\textmu m long, was treated in the same way as the Bahia goethite
+(main text, \S\ref{sem-study-of-thermally-treated-polycrystalline-goethite}) but without vacuum or
+open-air runs. At least five larger silica glass ampoules were loaded with pigment and an excess
+of water, then were fused shut at ambient pressure. The ampoules were held at 200--250~$^\circ$C 
+for about a day in an oven whose voltage was adjusted by hand. Reaction was assessed by color 
+(yellow goethite, red hematite) before imaging with the Zeiss 1550 Scanning Electron Microscope
+(SEM) at Caltech.
 
 \subsection{Results and Interpretation}
 
-We observed the spontaneous conversion of synthetic goethite pigment (\S\ref{sec:gt_pigment_methods}) to hematite when 
-heated in ampoules with excess water at experimental temperatures. Roughly equal proportions of
-ampoules were completely reacted (red), completely unreacted (yellow), or contained both
+Roughly equal proportions of ampoules were completely reacted (red), completely unreacted (yellow), or contained both
 reacted and unreacted material in isolated patches. In the mixed ampoules, the red and yellow portions were entirely
 isolated from one another, separated by gas bubbles. Unreacted pigment retains its original acicular habit
 (Fig.~\ref{fig:gt_pigment}b). The reacted hematite product is instead composed of equant to platy crystals

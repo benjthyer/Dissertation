@@ -1,0 +1,16 @@
+% Free-standing Chapter 5 build (+ Appendices A/B, which Ch. 5 cites) with the
+% real thesis class + preamble. Compile from the repository root:
+%   latexmk -pdf -outdir=Standalone/build Standalone/chapter5_standalone.tex
+\documentclass{caltech_thesis}
+\input{dissertation_preamble}
+\title{Chapter 5: Draaikraal}\author{Ben J. Thyer}\copyyear{2026}
+\begin{document}
+\mainmatter
+\setcounter{chapter}{4}
+\input{Chapter5/chapter5}
+\begin{appendices}
+\input{ChapterA/chapterA}
+\input{ChapterB/chapterB}
+\end{appendices}
+\printbibliography[heading=bibintoc, title={References}]
+\end{document}
